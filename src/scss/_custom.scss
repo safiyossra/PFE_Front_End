@@ -1,1 +1,10 @@
 // Here you can add other styles
+
+.marker-transition {
+    transition: transform 1.5s ease;
+    // object-fit: contain;
+}
+
+.leaflet-marker-icon {
+    object-fit: contain;
+}

@@ -26,7 +26,24 @@ export const navItems: INavData[] = [
         icon: 'icon-book-open'
       }
     ]
-    },
+  },
+  {
+    name: 'Map',
+    url: '/map',
+    icon: 'cil-location-pin',
+    children: [
+      {
+        name: 'Par véhicule',
+        url: '/map/vehicule',
+        icon: 'cil-garage'
+      },
+      {
+        name: 'Par Groupe',
+        url: '/map/groupe',
+        icon: 'cil-grain'
+      }
+    ]
+  },
   {
     title: true,
     name: 'Theme'
