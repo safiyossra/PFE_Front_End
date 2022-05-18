@@ -1,26 +1,51 @@
 // Here you can add other styles
 
-.marker-transition {
+@for $i from 0 through 359 {
+    .rotate-#{$i} {
+        transform: rotateZ($i+deg);
+    }
+}
+
+// .marker-transition {
+//     transition: transform 1.5s ease;
+// }
+
+.leaflet-marker-icon {
     transition: transform 1.5s ease;
 }
 
 .my-div-icon {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    transition: transform 1.5s ease;
+}
+
+.center-marker {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    z-index: 99999;
+    background: yellow;
+    top: 24px;
+    // top: calc(50% - 2.5px);
+    // left: calc(50% - 2.5px);
 }
 
 .my-icon-img {
     position: relative;
-    object-fit: contain;
+    margin-top: 5px;
+    // object-fit: contain;
     height: 80%;
 }
 
 .my-icon-title {
     position: absolute;
     white-space: nowrap;
-    left: -25px;
+    // left: -25px;
     height: 20%;
     bottom: 0;
+    font-size: 11px;
     color: darkblue;
     font-weight: bold;
 }

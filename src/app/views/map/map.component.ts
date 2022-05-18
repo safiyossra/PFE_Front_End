@@ -1,13 +1,9 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core'
-import { interval, Observable, Subscriber } from 'rxjs';
-import { VehiculeService } from 'src/app/views/map/vehicule.service'
+import { VehiculeService } from 'src/app/services/vehicule.service'
 
 import * as L from 'leaflet'
-import * as K from 'leaflet-marker-rotation'
 
 import { Vehicule } from '../../models/vehicule'
-import { transformAll } from '@angular/compiler/src/render3/r3_ast';
-import { getTime } from 'date-fns';
 
 @Component({
   selector: 'app-map',
@@ -25,7 +21,7 @@ export class MapComponent implements AfterViewInit {
     lng: -7.75
   }
   marker: any
-  markers: K.RotatedMarker[] = []
+  markers: L.Marker[] = []
   vehicules: Vehicule[] = []
 
   inter: any
@@ -81,10 +77,13 @@ export class MapComponent implements AfterViewInit {
   }
 
   myIcon(vehicule: any, status: number, vehiculeType: string) {
-    let icon = status == 61714 ? `assets/img/vehicules/${vehiculeType}/blue150b2.png` : `assets/img/vehicules/${vehiculeType}/red1502.png`
+    let icon = status == 61714 ? `assets/img/vehicules/${vehiculeType}/blue_final.png` : `assets/img/vehicules/${vehiculeType}/red_final.png`
     return L.divIcon({
-      html: `<img class="my-icon-img" src="${icon}"><span class="my-icon-title">${vehicule.name}</span>`,
-      iconSize: [30, 80],
+      html: `<div class="center-marker"></div>` +
+        `<img class="my-icon-img rotate-${Math.round(vehicule.heading)}" src="${icon}">` +
+        `<span class="my-icon-title">${vehicule.name}</span>`,
+      iconSize: [50, 50],
+      // iconAnchor: [25, 20],
       className: 'marker-transition my-div-icon'
     })
   }
@@ -92,28 +91,28 @@ export class MapComponent implements AfterViewInit {
   initMarkers() {
     this.vehicules.forEach((veh, index) => {
       this.markers.push(
-        new K.RotatedMarker([veh.lat, veh.lng], {
-          rotationAngle: veh.heading,
-          rotationOrigin: "center",
+        L.marker([veh.lat, veh.lng], {
           icon: this.myIcon(veh, veh.statusCode, 'car')
-        }).bindPopup(`` +
-          `<div>Device: ${veh.name}</div>` +
-          `<div>Speed: ${veh.speed} Km/h</div>` +
-          `<div>Status: ${veh.statusCode} </div>` +
-          `<div>Heading: ${veh.heading} </div>` +
-          `<div>Fuel Level: ${veh.fuelLevel * 100}%</div>`, {
-          closeButton: false,
-          offset: L.point(0, -20)
-
-        }).on('dblclick', () => {
-          console.log('double clicked : ' + index);
-          this.selectedVehiculeIndex = index
-          this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
-        }).on('mouseover', (event) => {
-          event.target.openPopup()
-        }).on('mouseout', (event) => {
-          event.target.closePopup()
         })
+          .bindPopup(`` +
+            `<div>Device: ${veh.name}</div>` +
+            `<div>Speed: ${veh.speed} Km/h</div>` +
+            `<div>Status: ${veh.statusCode} </div>` +
+            `<div>Heading: ${veh.heading} </div>` +
+            `<div>Fuel Level: ${veh.fuelLevel * 100}%</div>`, {
+            closeButton: false,
+            offset: L.point(0, -20)
+
+          }).on('dblclick', () => {
+            console.log('double clicked : ' + index);
+            this.selectedVehiculeIndex = index
+            this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
+          }).on('mouseover', (event) => {
+            event.target.openPopup()
+          })
+        // .on('mouseout', (event) => {
+        //   event.target.closePopup()
+        // })
       )
     });
 
@@ -141,7 +140,7 @@ export class MapComponent implements AfterViewInit {
     for (let i = 0; i < this.markers.length; i++) {
       if (this.vehicules[i]) {
         this.markers[i].setLatLng([this.vehicules[i].lat, this.vehicules[i].lng])
-        this.markers[i].setRotationAngle(this.vehicules[i].heading)
+        // this.markers[i].setRotationAngle(this.vehicules[i].heading)
         this.markers[i].setIcon(
           this.myIcon(this.vehicules[i], this.vehicules[i].statusCode, 'car')
         )

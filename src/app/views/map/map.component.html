@@ -1,11 +1,24 @@
 <div class="animated fadeIn">
     <div class="row">
-        <div class="col-lg-12">
-            <div class="card test">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <div class="py-2">
+                        <i class="cil-garage mr-2"></i>
+                        <span class="font-weight-bold">Véhicules</span>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <div class="py-2">
-                        <i class="cil-location-pin"></i>
-                        <span class="font-weight-bold ms-4">Map</span>
+                        <i class="cil-location-pin mr-2"></i>
+                        <span class="font-weight-bold">Map</span>
                     </div>
                     <button *ngIf="selectedVehiculeIndex != -1" class="btn btn-sm btn-outline-danger" (click)="reset()">
                         Reset
