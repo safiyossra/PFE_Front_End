@@ -82,19 +82,12 @@ export class MapComponent implements AfterViewInit {
 
   myIcon(vehicule: any, status: number, vehiculeType: string) {
     let icon = status == 61714 ? `assets/img/vehicules/${vehiculeType}/blue150b2.png` : `assets/img/vehicules/${vehiculeType}/red1502.png`
-    // html: `<div class="marker-container">` + `<img src="${icon}">` + `<div>${vehicule.name}</div>` + `</div>`,
-    return L.icon({
-      iconUrl: icon,
-      iconSize: [60, 60],
-      className: 'marker-transition' //marker-12
+    return L.divIcon({
+      html: `<img class="my-icon-img" src="${icon}"><span class="my-icon-title">${vehicule.name}</span>`,
+      iconSize: [30, 80],
+      className: 'marker-transition my-div-icon'
     })
   }
-
-  // L.icon({
-  //   iconUrl: veh.statusCode == 61714 ? 'assets/img/vehicules/cars/blue150b2.png' : 'assets/img/vehicules/cars/red1502.png',
-  //     iconSize: [60, 60],
-  //       className: 'marker-transition' //marker-12
-  //         })
 
   initMarkers() {
     this.vehicules.forEach((veh, index) => {
@@ -102,7 +95,7 @@ export class MapComponent implements AfterViewInit {
         new K.RotatedMarker([veh.lat, veh.lng], {
           rotationAngle: veh.heading,
           rotationOrigin: "center",
-          icon: this.myIcon(veh, veh.statusCode, 'cars')
+          icon: this.myIcon(veh, veh.statusCode, 'car')
         }).bindPopup(`` +
           `<div>Device: ${veh.name}</div>` +
           `<div>Speed: ${veh.speed} Km/h</div>` +
@@ -150,7 +143,7 @@ export class MapComponent implements AfterViewInit {
         this.markers[i].setLatLng([this.vehicules[i].lat, this.vehicules[i].lng])
         this.markers[i].setRotationAngle(this.vehicules[i].heading)
         this.markers[i].setIcon(
-          this.myIcon(this.vehicules[i], this.vehicules[i].statusCode, 'cars')
+          this.myIcon(this.vehicules[i], this.vehicules[i].statusCode, 'car')
         )
         this.markers[i].setPopupContent(`` +
           `<div>Device: ${this.vehicules[i].name}</div>` +

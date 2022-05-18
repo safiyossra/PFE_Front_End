@@ -2,9 +2,25 @@
 
 .marker-transition {
     transition: transform 1.5s ease;
-    // object-fit: contain;
 }
 
-.leaflet-marker-icon {
+.my-div-icon {
+    display: flex;
+    flex-direction: column;
+}
+
+.my-icon-img {
+    position: relative;
     object-fit: contain;
+    height: 80%;
+}
+
+.my-icon-title {
+    position: absolute;
+    white-space: nowrap;
+    left: -25px;
+    height: 20%;
+    bottom: 0;
+    color: darkblue;
+    font-weight: bold;
 }
