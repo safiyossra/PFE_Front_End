@@ -1,0 +1,22 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-lg-3">
+            <my-table [vehicules]="vehicules"></my-table>
+        </div>
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <div class="py-2">
+                        <i class="cil-location-pin mr-2"></i>
+                        <span class="font-weight-bold">Map</span>
+                    </div>
+                    <button *ngIf="selectedVehiculeIndex != -1" class="btn btn-sm btn-outline-danger" (click)="reset()">
+                        Reset
+                    </button>
+                </div>
+                <div class="card-body" id="map">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -59,6 +59,10 @@ export const routes: Routes = [
         loadChildren: () => import('./views/rapports/rapport.module').then(m => m.RapportModule)
       },
       {
+        path: 'map',
+        loadChildren: () => import('./views/map/map.module').then(m => m.MapModule)
+      },
+      {
         path: 'buttons',
         loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule)
       },
@@ -92,7 +96,7 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }) ],
-  exports: [ RouterModule ]
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
