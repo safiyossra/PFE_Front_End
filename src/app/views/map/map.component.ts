@@ -8,12 +8,11 @@ import { Vehicule } from '../../models/vehicule'
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+  styleUrls: ['./map.component.scss'],
 })
 
 
-
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements OnInit, AfterViewInit {
 
   map: any
   car = {
@@ -24,15 +23,9 @@ export class MapComponent implements AfterViewInit {
   markers: L.Marker[] = []
   vehicules: Vehicule[] = []
 
-  inter: any
+  typesCount = [0, 0, 0, 0]
 
-  // myIcon = L.icon({
-  //   iconSize: [25, 41],
-  //   iconAnchor: [10, 41],
-  //   popupAnchor: [2, -40],
-  //   iconUrl: "https://unpkg.com/leaflet@1.6/dist/images/marker-icon.png",
-  //   shadowUrl: "https://unpkg.com/leaflet@1.6/dist/images/marker-shadow.png"
-  // })
+  inter: any
 
   selectedVehiculeIndex = -1
 
@@ -43,19 +36,18 @@ export class MapComponent implements AfterViewInit {
 
   constructor(private vehiculeService: VehiculeService) { }
 
+  ngOnInit(): void {
+  }
+
   ngAfterViewInit() {
     this.loadData()
-
     setTimeout(() => {
       this.createMap()
       this.inter = setInterval(() => {
         this.loadData()
-      }, 5000)
-
-      // setTimeout(() => {
-      //   clearInterval(this.inter)
-      // }, 10000);
+      }, 10000)
     }, 100);
+
   }
 
   createMap() {
@@ -104,7 +96,6 @@ export class MapComponent implements AfterViewInit {
             offset: L.point(0, -20)
 
           }).on('dblclick', () => {
-            console.log('double clicked : ' + index);
             this.selectedVehiculeIndex = index
             this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
           }).on('mouseover', (event) => {
@@ -205,6 +196,27 @@ export class MapComponent implements AfterViewInit {
         }
       }
     })
+    this.setTypesCount()
+  }
+
+  setTypesCount() {
+    this.vehicules.map(vehicule => {
+      if (vehicule.statusCode == 61714) {
+        this.typesCount[0] += 1;
+      }
+
+      if (vehicule.statusCode == 62465) {
+        this.typesCount[1] += 1;
+      }
+
+      if (vehicule.statusCode == 62467) {
+        this.typesCount[2] += 1;
+      }
+
+      if (vehicule.statusCode == 61472 || vehicule.statusCode == 64783) {
+        this.typesCount[3] += 1;
+      }
+    })
   }
 
   center() {
@@ -220,4 +232,6 @@ export class MapComponent implements AfterViewInit {
     })
     this.map.fitBounds(bounds)
   }
+
+
 }

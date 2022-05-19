@@ -1,0 +1,89 @@
+.vehicules-card {
+    min-height: 600px;
+}
+
+table {
+    // width: 100%;
+    padding-bottom: 20px;
+}
+
+.card-body {
+    padding: 1.25rem 0;
+}
+
+.mat-icon-button {
+    background: transparent;
+}
+
+.mat-icon-button:focus {
+    background: transparent;
+    outline: 0;
+}
+
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+}
+
+th.mat-header-cell,
+td.mat-cell,
+td.mat-footer-cell {
+    border: 0 solid #ebebeb;
+    border-width: 0px 0px 0px 1px;
+    padding: inherit;
+    padding-left: 15px;
+}
+
+th.mat-header-cell:first-child,
+td.mat-cell:first-child,
+td.mat-footer-cell:first-child {
+    border: 0;
+}
+
+th.mat-header-cell:first-child {
+    padding-left: 10px;
+}
+
+td.mat-cell:first-child {
+    padding-left: 8px;
+}
+
+.mat-header-row {
+    height: auto;
+    line-height: 3;
+    background-image: -webkit-linear-gradient(top, #fff, #e3e3e3);
+}
+
+.mat-row {
+    height: auto;
+    line-height: 3;
+    cursor: pointer;
+}
+
+.mat-row:hover {
+    background-color: #d9d9d9;
+}
+
+th.mat-header-cell:last-of-type,
+td.mat-cell:last-of-type,
+td.mat-footer-cell:last-of-type {
+    padding-right: 0px;
+}
+
+// .mat-row:nth-child(even) {
+//     background-color: #d9d9d9;
+// }
+
+// .mat-row:nth-child(even):hover {
+//     background-color: #f4f4f4;
+// }
+
+.mat-cell {
+    padding-left: 0;
+    font-size: 10px;
+}
+
+img {
+    width: 30px;
+    margin-right: 5px;
+}

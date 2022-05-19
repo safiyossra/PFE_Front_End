@@ -1,0 +1,106 @@
+<div class="card vehicules-card">
+    <div class="card-header">
+        <div class="row align-items-center justify-content-between mb-2">
+            <div class="col-md-8">
+                <div class="input-group form-inline align-items-center">
+                    <span class="input-group-prepend mr-2">
+                        <i class="fa fa-search"></i>
+                    </span>
+                    <input type="text" id="input1-group2" name="input1-group2" placeholder="Rechercher..."
+                        class="form-control" (keyup)="applyFilter($event)" #input />
+                </div>
+            </div>
+            <div class="col-md-4 d-flex justify-content-end">
+                <i class="cil-view-column text-dark mr-4"></i>
+                <i class="cil-fullscreen text-dark"></i>
+                <i class="cil-chevron-left text-dark ml-4"></i>
+            </div>
+        </div>
+        <hr>
+        <div class="row justify-content-between">
+            <div class="col d-flex justify-content-around align-items-center text-center border-right"
+                matTooltip="Véhicules en Mouvement">
+                <i class="fa fa-circle text-success"></i>
+                <span class="">{{ typesCount[0] }}</span>
+            </div>
+
+            <div class="col d-flex justify-content-around align-items-center text-center border-right"
+                matTooltip="Véhicules Démarrées">
+                <i class="fa fa-circle-o text-success"></i>
+                <span class="">{{ typesCount[1] }}</span>
+            </div>
+            <div class="col d-flex justify-content-around align-items-center text-center border-right"
+                matTooltip="Véhicules en Arrêt">
+                <i class="fa fa-circle text-danger"></i>
+                <span class="">{{ typesCount[2] }}</span>
+            </div>
+            <div class="col d-flex justify-content-around align-items-center text-center" matTooltip="Statut Inconnu">
+                <i class="fa fa-close text-dark"></i>
+                <span class="">{{ typesCount[3]}}</span>
+            </div>
+            <div class="col d-flex justify-content-around align-items-center text-center"
+                matTooltip="Somme des Véhicules">
+                <b>&#8721;</b>
+                <span class=""> {{ vehicules.length }}</span>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-body">
+        <table class="w-100" mat-table [dataSource]="dataSource" matSort>
+
+            <ng-container matColumnDef="#">
+                <th mat-header-cell *matHeaderCellDef>#</th>
+                <td mat-cell *matCellDef="let vehicule">
+                    <img src="assets/img/vehicules/car/car.png" alt="car" style="object-fit: contain;">
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Véhicule</th>
+                <td mat-cell *matCellDef="let vehicule">
+                    {{ vehicule.name }}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="statusCode">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+
+                <td mat-cell *matCellDef="let vehicule">
+                    <ng-container *ngIf="vehicule.statusCode == 61714">
+                        <i class="fa fa-circle text-success"></i>
+
+                    </ng-container>
+                    <ng-container *ngIf="vehicule.statusCode == 62465">
+                        <i class="fa fa-circle-o text-success"></i>
+                    </ng-container>
+                    <ng-container *ngIf="vehicule.statusCode == 62467">
+                        <i class="fa fa-circle text-danger"></i>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicule.statusCode == 61472 || vehicule.statusCode == 64783">
+                        <i class="fa fa-close text-dark"></i>
+                    </ng-container>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="speed">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Vitesse</th>
+                <td mat-cell *matCellDef="let vehicule">{{ vehicule.speed}} km/h</td>
+            </ng-container>
+
+            <ng-container matColumnDef="fuelLevel">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Fuel</th>
+                <td mat-cell *matCellDef="let vehicule">{{ vehicule.fuelLevel *100 }} %</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let vehicule;columns: displayedColumns" (click)="onRowClicked(vehicule)"></tr>
+
+        </table>
+    </div>
+    <div class="card-footer">
+        <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [pageSize]="selectedPageSize">
+        </mat-paginator>
+    </div>
+</div>
