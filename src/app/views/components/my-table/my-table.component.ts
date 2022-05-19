@@ -16,13 +16,13 @@ export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
 
   @Input() vehicules: Vehicule[]
 
-  displayedColumns: string[] = ['name', 'statusCode', 'speed', 'fuelLevel'];
+  displayedColumns: string[] = ['#','name', 'speed', 'fuelLevel'];
 
   public dataSource = new MatTableDataSource<Vehicule>();
 
-  public pageSizeOptions = [5, 10, 25];
+  public pageSizeOptions = [5, 10, 15, 25];
 
-  public selectedPageSize = 10;
+  public selectedPageSize = 15;
   // public maxSize: number = 5;
   public totalItems: number;
   public currentPage: number = 1;
