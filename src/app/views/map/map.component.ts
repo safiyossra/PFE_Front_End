@@ -190,7 +190,6 @@ export class MapComponent implements OnInit, AfterViewInit {
         vehicules = []
         if (isFirstTime) {
           this.initMarkers()
-
         } else {
           this.updateMarkers()
         }

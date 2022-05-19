@@ -10,7 +10,13 @@
 // .marker-transition {
 //     transition: transform 1.5s ease;
 // }
+.main .container-fluid {
+    padding: 0 10px;
+}
 
+.breadcrumb {
+    margin-bottom: 0.5rem;
+}
 .leaflet-marker-icon {
     transition: transform 1.5s ease;
 }

@@ -1,16 +1,20 @@
 .vehicules-card {
-    min-height: 600px;
+    min-height: 82vh;
+        max-height: 82vh;
 }
 
 table {
-    // width: 100%;
+    width: 100%;
     padding-bottom: 20px;
 }
 
 .card-body {
-    padding: 1.25rem 0;
+    padding: 0.35rem 0;
 }
-
+.card-header,
+.card-footer {
+    background-color: white;
+}
 .mat-icon-button {
     background: transparent;
 }
@@ -28,7 +32,7 @@ table {
 th.mat-header-cell,
 td.mat-cell,
 td.mat-footer-cell {
-    border: 0 solid #ebebeb;
+    border: 0 solid #f8f8f8;
     border-width: 0px 0px 0px 1px;
     padding: inherit;
     padding-left: 15px;
@@ -70,9 +74,9 @@ td.mat-footer-cell:last-of-type {
     padding-right: 0px;
 }
 
-// .mat-row:nth-child(even) {
-//     background-color: #d9d9d9;
-// }
+.mat-row:nth-child(even) {
+    background-color: #f8f8f8;
+}
 
 // .mat-row:nth-child(even):hover {
 //     background-color: #f4f4f4;
@@ -80,10 +84,15 @@ td.mat-footer-cell:last-of-type {
 
 .mat-cell {
     padding-left: 0;
-    font-size: 10px;
+    font-size: 11px;
 }
 
-img {
+.list-car {
     width: 30px;
+    margin-left: 5px;
+        object-fit: contain;
+    }
+    
+    .status-cercle {
     margin-right: 5px;
 }

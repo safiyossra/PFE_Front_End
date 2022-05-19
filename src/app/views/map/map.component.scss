@@ -1,4 +1,16 @@
 #map {
-    min-height: 600px;
+    height: 98%;
+        min-height: 82vh;
+        max-height: 82vh;
+        border-radius: 10px;
     width: 100%;
+}
+.my-map {
+    padding-right: 10px;
+    padding-left: 4px;
+}
+
+.list-vehicules {
+    padding-right: 5px;
+    padding-left: 10px;
 }

@@ -50,37 +50,23 @@
         <table class="w-100" mat-table [dataSource]="dataSource" matSort>
 
             <ng-container matColumnDef="#">
-                <th mat-header-cell *matHeaderCellDef>#</th>
+                <th mat-header-cell *matHeaderCellDef><input type="checkbox" value="option1" id="checkbox1"></th>
                 <td mat-cell *matCellDef="let vehicule">
-                    <img src="assets/img/vehicules/car/car.png" alt="car" style="object-fit: contain;">
+                    <input type="checkbox" value="{{vehicule.id}}" id="{{vehicule.id}}">
+                    <img src="assets/img/vehicules/car/car.png" alt="car" class="list-car" >
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Véhicule</th>
                 <td mat-cell *matCellDef="let vehicule">
+                    <ng-container >
+                        <i *ngIf="vehicule.statusCode == 62465" class="fa fa-circle-o text-success status-cercle"></i>
+                        <i *ngIf="vehicule.statusCode == 61714" class="fa fa-circle text-success status-cercle"></i>
+                        <i *ngIf="vehicule.statusCode == 62467" class="fa fa-circle text-danger status-cercle"></i>
+                        <i *ngIf="vehicule.statusCode == 61472 || vehicule.statusCode == 64783" class="fa fa-close text-dark status-cercle"></i>
+                    </ng-container>
                     {{ vehicule.name }}
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="statusCode">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
-
-                <td mat-cell *matCellDef="let vehicule">
-                    <ng-container *ngIf="vehicule.statusCode == 61714">
-                        <i class="fa fa-circle text-success"></i>
-
-                    </ng-container>
-                    <ng-container *ngIf="vehicule.statusCode == 62465">
-                        <i class="fa fa-circle-o text-success"></i>
-                    </ng-container>
-                    <ng-container *ngIf="vehicule.statusCode == 62467">
-                        <i class="fa fa-circle text-danger"></i>
-                    </ng-container>
-
-                    <ng-container *ngIf="vehicule.statusCode == 61472 || vehicule.statusCode == 64783">
-                        <i class="fa fa-close text-dark"></i>
-                    </ng-container>
                 </td>
             </ng-container>
 
