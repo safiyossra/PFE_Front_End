@@ -16,8 +16,8 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   map: any
   car = {
-    lat: 33.5,
-    lng: -7.75
+    lat: 35.75,
+    lng: -5.83
   }
   marker: any
   markers: L.Marker[] = []
@@ -57,7 +57,8 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
     const zoomLevel = 12
-    this.map = L.map('map', { attributionControl: false, inertia: true }).setView([this.car.lat, this.car.lng], zoomLevel)
+    this.map = L.map('map', { attributionControl: false, inertia: true })
+      .setView([this.car.lat, this.car.lng], zoomLevel)
 
     // https://leaflet-extras.github.io/leaflet-providers/preview/
     const mainLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

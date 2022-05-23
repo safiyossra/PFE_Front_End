@@ -1,17 +1,13 @@
 <div class="animated fadeIn">
-  <button
-    *ngIf="selectedVehiculeIndex != -1"
-    class="btn btn-sm btn-outline-danger"
-    style="position: absolute; right: 30px; top: 95px"
-    (click)="reset()"
-  >
+  <button *ngIf="selectedVehiculeIndex != -1" class="btn btn-sm btn-outline-danger"
+    style="position: absolute; right: 30px; top: 95px" (click)="reset()">
     Reset
   </button>
   <div class="row">
     <div class="col-lg-3 list-vehicules">
       <my-table [vehicules]="vehicules"></my-table>
     </div>
-    <div class="col-lg-9 my-map" >
+    <div class="col-lg-9 my-map">
       <div class="card-body" id="map"></div>
     </div>
   </div>
