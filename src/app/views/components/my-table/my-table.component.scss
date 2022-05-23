@@ -1,6 +1,6 @@
 .vehicules-card {
     min-height: 82vh;
-        max-height: 82vh;
+    max-height: 82vh;
 }
 
 table {
@@ -11,10 +11,12 @@ table {
 .card-body {
     padding: 0.35rem 0;
 }
+
 .card-header,
 .card-footer {
     background-color: white;
 }
+
 .mat-icon-button {
     background: transparent;
 }
@@ -90,9 +92,14 @@ td.mat-footer-cell:last-of-type {
 .list-car {
     width: 30px;
     margin-left: 5px;
-        object-fit: contain;
-    }
-    
-    .status-cercle {
+    object-fit: contain;
+}
+
+.status-cercle {
     margin-right: 5px;
+}
+
+.fa-tripadvisor {
+    font-size: 18px;
+    align-self: center;
 }

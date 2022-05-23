@@ -46,7 +46,8 @@ export const routes: Routes = [
   },
   {
     path: '',
-    component: DefaultLayoutComponent, //canActivate: [BasicGuard],
+    component: DefaultLayoutComponent,
+    canActivate: [BasicGuard],
     data: {
       title: 'Home'
     },

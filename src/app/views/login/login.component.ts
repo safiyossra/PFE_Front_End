@@ -21,7 +21,7 @@ export class LoginComponent {
   ngOnInit(): void {
     this.JWT = localStorage.getItem('JWT')
     if (this.JWT) {
-      this.route.navigate(['vehicule']);
+      this.route.navigate(['map']);
     }
 
   }
@@ -35,13 +35,16 @@ export class LoginComponent {
       this.errorMessage = "Veuillez remplir les champs obligatoires."
     } else {
       this.loading = true;
-      this.authenticate.init(this.user, this.password, this.accountid).subscribe(
+      this.authenticate.init(this.accountid, this.user, this.password).subscribe(
         (response) => {
           localStorage.setItem('JWT', response.token)
-          this.route.navigate(['vehicule']);
+          localStorage.setItem('username', response.user)
+          this.route.navigate(['map']);
           this.loading = false;
         },
         (error) => {
+          console.log(error);
+
           this.errorMessage = 'Identifiants invalides';
           this.loading = false;
         }
