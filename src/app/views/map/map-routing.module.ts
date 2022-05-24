@@ -6,44 +6,33 @@ import { MapComponent } from './map.component';
 const routes: Routes = [
   {
     path: '',
+    // component: MapComponent
+    pathMatch: 'full',
+    redirectTo: 'vehicule',
     data: {
-      title: 'Map'
+      title: 'Par Vehicule'
+    }
+  },
+  {
+    path: 'vehicule',
+    data: {
+      title: 'Par Vehicule'
     },
     children: [
       {
         path: '',
-        redirectTo: 'vehicule',
-        pathMatch: 'full',
-      },
-      {
-        path: 'vehicule',
-        children: [
-          {
-            path: '',
-            children: [
-              {
-                path: '',
-                component: MapComponent,
-                data: {
-                  title: 'Par Vehicule'
-                },
-              },
-              {
-                path: 'details',
-                component: DetailsComponent,
-                data: {
-                  title: 'Details',
-                },
-              },
-            ],
-
-          },
-        ],
+        component: MapComponent,
         data: {
           title: 'Par Vehicule'
-        },
+        }
       },
-
+      {
+        path: 'details/:id',
+        component: DetailsComponent,
+        data: {
+          title: 'Details'
+        }
+      }
     ]
   }
 ];

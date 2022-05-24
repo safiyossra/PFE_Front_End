@@ -76,16 +76,11 @@
                 <td mat-cell *matCellDef="let vehicule">{{ vehicule.speed}} km/h</td>
             </ng-container>
 
-            <ng-container matColumnDef="fuelLevel">
+            <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let vehicule" class="d-flex justify-content-around align-items-center">
-                    <a href=""><i class="fa fa-tripadvisor"></i></a>
+                    <a [routerLink]="['./details', vehicule.id]"><i class="fa fa-tripadvisor"></i></a>
                 </td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
-                <td mat-cell *matCellDef="let vehicule">{{ vehicule.fuelLevel *100 }} %</td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

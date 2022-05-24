@@ -16,7 +16,7 @@ export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
 
   @Input() vehicules: Vehicule[]
 
-  displayedColumns: string[] = ['#', 'name', 'speed', 'fuelLevel'];
+  displayedColumns: string[] = ['#', 'name', 'speed', 'actions'];
 
   public dataSource = new MatTableDataSource<Vehicule>();
 
@@ -92,5 +92,10 @@ export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
 
     return typesCount
   }
+
+  // onDetailClick(vehicule) {
+  //   console.log(vehicule);
+
+  // }
 
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { environment } from './../../environments/environment'
 
 import { JwtService } from './jwt.service';
@@ -27,5 +27,26 @@ export class VehiculeService {
     // } else {
     //   return this.route.navigate(['login']);
     // }
+  }
+
+  getVehiculeEvents(id) {
+    console.log("id : " + id);
+
+    let SERVER_URL = environment.apiUrl + "map-events?d=" + id;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    let params = new HttpParams({
+      fromObject: {
+        d: id
+      }
+    })
+
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+    })
+
   }
 }
