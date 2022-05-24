@@ -79,7 +79,7 @@
             <ng-container matColumnDef="fuelLevel">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let vehicule" class="d-flex justify-content-around align-items-center">
-                    <a href=""><i class="fa fa-tripadvisor"></i></a>
+                    <a [routerLink]="['details']"><i class="fa fa-tripadvisor"></i></a>
                 </td>
             </ng-container>
 

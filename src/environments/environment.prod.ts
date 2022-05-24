@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
+  production: true,
   apiUrl: 'http://backup.sendatrack.com/sendatrack/public/api/',
 };
