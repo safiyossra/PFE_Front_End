@@ -21,6 +21,8 @@
             <button
               type="button"
               class="card-header-action btn btn-link btn-close"
+              (click)="reset()"
+            
             >
               <i class="icon-close"></i>
             </button>
@@ -52,8 +54,8 @@
                       [errorMsg]="errorMessageDevice"
                       [showErrorMsg]="showErrorDevice"
                       [options]="devices"
-                      [display]="'label'"
-                      [value]="'data'"
+                      [display]="'name'"
+                      [value]="'dID'"
                       [multiple]="false"
                       [labelCount]="0"
                       [selectedOptions]="selectedDevices"
@@ -88,8 +90,6 @@
                       class="form-control"
                       [placeholder]="'Select a Condition on Trip'"
                       [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessagekm"
-                      [showErrorMsg]="showErrorkm"
                       [options]="kmConditions"
                       [display]="'label'"
                       [value]="'data'"
@@ -145,8 +145,8 @@
                       class="form-control"
                       [placeholder]="'Select a Value'"
                       [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessageparams1"
-                      [showErrorMsg]="showErrorparams1"
+                      [errorMsg]="errorMessageparams"
+                      [showErrorMsg]="showErrorparams"
                       [options]="params"
                       [display]="'label'"
                       [value]="'data'"
@@ -157,10 +157,16 @@
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"><i>KM</i></span>
+                      <span class="input-group-text"
+                        ><i 
+                          *ngIf="selectedparam1.length == 0"
+                        >KM</i
+                        ><i *ngIf="selectedparam1 != null">{{
+                          selectedparam1
+                        }}</i></span
+                      >
                     </div>
                   </div>
-                  <!--</div> -->
                 </div>
               </div>
               <div class="col-md-3">
@@ -200,8 +206,8 @@
                       class="form-control"
                       [placeholder]="'Select a Value'"
                       [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessageparams2"
-                      [showErrorMsg]="showErrorparams2"
+                      [errorMsg]="errorMessageparams"
+                      [showErrorMsg]="showErrorparams"
                       [options]="params"
                       [display]="'label'"
                       [value]="'data'"
@@ -212,7 +218,14 @@
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"><i>KM</i></span>
+                      <span class="input-group-text"
+                        ><i 
+                          *ngIf="selectedparam2.length == 0"
+                        >KM</i
+                        ><i *ngIf="selectedparam2 != null">{{
+                          selectedparam2
+                        }}</i></span
+                      >
                     </div>
                   </div>
                   <!--</div> -->
@@ -255,8 +268,8 @@
                       class="form-control"
                       [placeholder]="'Select a Value'"
                       [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessageparams3"
-                      [showErrorMsg]="showErrorparams3"
+                      [errorMsg]="errorMessageparams"
+                      [showErrorMsg]="showErrorparams"
                       [options]="params"
                       [display]="'label'"
                       [value]="'data'"
@@ -267,7 +280,14 @@
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"><i>KM</i></span>
+                      <span class="input-group-text"
+                        ><i 
+                          *ngIf="selectedparam3.length == 0"
+                        >KM</i
+                        ><i *ngIf="selectedparam3 != null">{{
+                          selectedparam3
+                        }}</i></span
+                      >
                     </div>
                   </div>
                   <!--</div> -->
@@ -310,8 +330,8 @@
                       class="form-control"
                       [placeholder]="'Select a Value'"
                       [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessageparams4"
-                      [showErrorMsg]="showErrorparams4"
+                      [errorMsg]="errorMessageparams"
+                      [showErrorMsg]="showErrorparams"
                       [options]="params"
                       [display]="'label'"
                       [value]="'data'"
@@ -322,7 +342,14 @@
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"><i>KM</i></span>
+                      <span class="input-group-text"
+                        ><i 
+                          *ngIf="selectedparam4.length == 0"
+                        >KM</i
+                        ><i *ngIf="selectedparam4 != null">{{
+                          selectedparam4
+                        }}</i></span
+                      >
                     </div>
                   </div>
                   <!--</div> -->
@@ -330,12 +357,18 @@
               </div>
             </div>
             <div class="form-actions">
-              <button type="submit" class="btn btn-sm btn-primary">
+              <button type="submit" class="btn btn-sm btn-primary" (click)="submit()">
                 <i class="fa fa-dot-circle-o"></i> &nbsp;Apply
               </button>
-              &nbsp;<button type="reset" class="btn btn-sm btn-danger">
+             <!---->
+                &nbsp;<button type="reset" class="btn btn-sm btn-danger" (click)="reset()">
                 <i class="fa fa-ban"></i> &nbsp;Reset
               </button>
+             <!-- -->
+              &nbsp;<button type="button" class="btn btn-sm btn-info" (click)="toggle('symbol')">
+                <i class="fa fa-check"></i>&nbsp; test
+              </button>
+
             </div>
           </form>
         </div>
@@ -349,13 +382,14 @@
       <!-- Nav tabs -->
       <tabset>
         <tab style="min-height: 660px">
-          <ng-template tabHeading
-            ><i class="icon-list"></i> Table &nbsp;<span
-              class="badge badge-success"
-              >New</span
-            ></ng-template
-          >
-          <my-data-table></my-data-table>
+          <ng-template tabHeading>
+            <i class="icon-list"></i>
+             Table &nbsp;
+          </ng-template>
+          <my-data-table [data]="reportData" [displayedColumns]="displayColumns">
+
+            
+          </my-data-table>
         </tab>
         <tab style="min-height: 660px">
           <ng-template tabHeading
@@ -376,6 +410,7 @@
                 <canvas
                   baseChart
                   class="chart"
+                  height="100"
                   [datasets]="barChartData"
                   [labels]="barChartLabels"
                   [options]="barChartOptions"
