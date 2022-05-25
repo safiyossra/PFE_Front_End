@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core'
+import { AfterViewInit, Component, OnInit, HostListener, Inject, Input } from '@angular/core'
 import { VehiculeService } from 'src/app/services/vehicule.service'
-
+import { util } from '../../tools/utils'
 import * as L from 'leaflet'
 
 import { Vehicule } from '../../models/vehicule'
@@ -12,8 +12,13 @@ import { Vehicule } from '../../models/vehicule'
 })
 
 
-export class MapComponent implements OnInit, AfterViewInit {
+export class MapComponent implements AfterViewInit {
 
+
+  @Input() showFullScreenControle?: Boolean = true
+  @Input() showPositionControle?: Boolean = true
+  isMyPositionVisible: Boolean = false
+  MyPositionMarker: L.Marker
   map: any
   car = {
     lat: 35.75,
@@ -23,6 +28,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   markers: L.Marker[] = []
   vehicules: Vehicule[] = []
 
+  isFullScreen: boolean;
+  fullScreenControl: L.Control;
+  positionControl: L.Control;
   typesCount = [0, 0, 0, 0]
 
   inter: any
@@ -34,9 +42,8 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   animatedMarker: any
 
-  constructor(private vehiculeService: VehiculeService) { }
-
-  ngOnInit(): void {
+  constructor(private vehiculeService: VehiculeService, private tools: util) {
+    document.onfullscreenchange = () => this.chkScreenMode();
   }
 
   ngAfterViewInit() {
@@ -49,24 +56,72 @@ export class MapComponent implements OnInit, AfterViewInit {
     }, 100);
 
   }
-
   createMap() {
-    const testCoord = {
-      lat: 33.589886,
-      lng: -7.603869
-    }
-
     const zoomLevel = 12
     this.map = L.map('map', { attributionControl: false, inertia: true })
       .setView([this.car.lat, this.car.lng], zoomLevel)
 
     // https://leaflet-extras.github.io/leaflet-providers/preview/
-    const mainLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // https://stackoverflow.com/questions/33343881/leaflet-in-google-maps
+    //osm layer
+    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    })
+    });
+    // dark map 
+    const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
+    });
+    const googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    });
+    // google street 
+    const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    });
 
-    mainLayer.addTo(this.map)
+    //google satellite
+    const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    });
+    const googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    });
+    const baseMaps = {
+      "Google Hybrid": googleHybrid,
+      "Google Terrain": googleTerrain,
+      "Google Satellite": googleSat,
+      'Google Street': googleStreets,
+      "OSM": osm,
+      'Dark': dark,
+    };
+    googleHybrid.addTo(this.map)
 
+    let FullScreenControl = L.Control.extend({
+      onAdd(map: L.Map) {
+        return L.DomUtil.get('fullScreenControl');
+      },
+      onRemove(map: L.Map) { }
+    });
+    let PositionControl = L.Control.extend({
+      onAdd(map: L.Map) {
+        return L.DomUtil.get('positionControl');
+      },
+      onRemove(map: L.Map) { }
+    });
+    this.fullScreenControl = new FullScreenControl({
+      position: "topleft"
+    }).addTo(this.map);
+    this.positionControl = new PositionControl({
+      position: "topleft"
+    }).addTo(this.map);
+    L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
+    L.control.scale().addTo(this.map);
   }
 
   myIcon(vehicule: any, status: number, vehiculeType: string) {
@@ -99,7 +154,7 @@ export class MapComponent implements OnInit, AfterViewInit {
           }).on('dblclick', () => {
             this.selectedVehiculeIndex = index
             this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
-          }).on('mouseover', (event) => {
+          }).on('click', (event) => {
             event.target.openPopup()
           })
         // .on('mouseout', (event) => {
@@ -225,7 +280,6 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   centerMap() {
     let bounds = this.markers.map((e) => {
       return e.getLatLng()
@@ -233,5 +287,59 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.map.fitBounds(bounds)
   }
 
+  toggleMapFullscreen() {
+    if (!this.isFullScreen) {
+      this.tools.openFullscreen(document.getElementById("map"))
+    }
+    else {
+      this.tools.closeFullscreen()
+    }
+  }
 
+  chkScreenMode() {
+    var fullScreenCtl = document.getElementById("fullScreenControl")
+    if (document.fullscreenElement) {
+      //fullscreen
+      fullScreenCtl.style.backgroundPosition = "64% 96%";
+      fullScreenCtl.setAttribute("title", "Exit FullScreen");
+      this.isFullScreen = true;
+    } else {
+      //not in full screen
+      fullScreenCtl.style.backgroundPosition = "55% 2%";
+      fullScreenCtl.setAttribute("title", "Enter FullScreen");
+      this.isFullScreen = false;
+    }
+  }
+
+  toggleMyPosition() {
+    console.log("toggleMyPosition");
+    if (navigator.geolocation) {
+      let options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      };
+      navigator.geolocation.getCurrentPosition((p) => {
+        console.log(p.coords);
+        var positionCtl = document.getElementById("positionControl")
+        if (!this.isMyPositionVisible) {
+          positionCtl.classList.replace("icon-target", "icon-close")
+          if (this.MyPositionMarker) {
+            this.MyPositionMarker.setLatLng([p.coords.latitude, p.coords.longitude])
+          } else {
+            this.MyPositionMarker = new L.Marker([p.coords.latitude, p.coords.longitude])
+          }
+          this.MyPositionMarker.removeFrom(this.map)
+          this.MyPositionMarker.addTo(this.map)
+          this.isMyPositionVisible = true
+          this.map.fitBounds([[p.coords.latitude, p.coords.longitude]])
+        } else {
+          this.MyPositionMarker.removeFrom(this.map)
+          this.isMyPositionVisible = false
+          this.centerMap()
+          positionCtl.classList.replace("icon-close", "icon-target")
+        }
+      }, null, options)
+    }
+  }
 }

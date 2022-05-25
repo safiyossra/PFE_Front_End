@@ -3,6 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Vehicule } from 'src/app/models/vehicule';
+import { util } from 'src/app/tools/utils';
 import { MapComponent } from '../../map/map.component';
 
 @Component({
@@ -14,6 +15,10 @@ import { MapComponent } from '../../map/map.component';
 
 export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
 
+  isFullScreen: boolean;
+  @Input() showFullScreenControle?: Boolean = true
+  @Input() showColumnsControle?: Boolean = true
+  @Input() showCollapsControle?: Boolean = true
   @Input() vehicules: Vehicule[]
 
   displayedColumns: string[] = ['#', 'name', 'speed', 'fuelLevel'];
@@ -34,8 +39,8 @@ export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private _injector: Injector) {
-
+  constructor(private _injector: Injector, private tools: util) {
+    document.onfullscreenchange = () => this.chkScreenMode();
   }
 
   ngOnInit(): void {
@@ -93,4 +98,27 @@ export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
     return typesCount
   }
 
+  toggleListFullscreen() {
+    if (!this.isFullScreen) {
+      this.tools.openFullscreen(document.getElementById("list-vehicules"))
+    }
+    else {
+      this.tools.closeFullscreen()
+    }
+  }
+
+  chkScreenMode() {
+    var fullScreenCtl = document.getElementById("list-fullscreenControl")
+    if (document.fullscreenElement) {
+      //fullscreen
+      fullScreenCtl.style.backgroundPosition = "64% 96%";
+      fullScreenCtl.setAttribute("title", "Exit FullScreen");
+      this.isFullScreen = true;
+    } else {
+      //not in full screen
+      fullScreenCtl.style.backgroundPosition = "55% 2%";
+      fullScreenCtl.setAttribute("title", "Enter FullScreen");
+      this.isFullScreen = false;
+    }
+  }
 }

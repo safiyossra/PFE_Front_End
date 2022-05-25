@@ -1,22 +1,21 @@
-<div class="card vehicules-card">
+<div class="card vehicules-card" id="list-vehicules">
     <div class="card-header">
-        <div class="row align-items-center justify-content-between mb-2">
+        <div class="row align-items-center mb-1">
             <div class="col-md-8">
                 <div class="input-group form-inline align-items-center">
-                    <span class="input-group-prepend mr-2">
-                        <i class="fa fa-search"></i>
-                    </span>
+                    <span class="input-group-prepend mr-2 icon-magnifier"></span>
                     <input type="text" id="input1-group2" name="input1-group2" placeholder="Rechercher..."
                         class="form-control" (keyup)="applyFilter($event)" #input />
                 </div>
             </div>
-            <div class="col-md-4 d-flex justify-content-end">
-                <i class="cil-view-column text-dark mr-4"></i>
-                <i class="cil-fullscreen text-dark"></i>
-                <i class="cil-chevron-left text-dark ml-4"></i>
+            <div class="col-md-4 d-flex justify-content-end p-1">
+                <button *ngIf="showColumnsControle" title="Show Columns" class="mcontrol icon-list mx-auto" id="list-columns" (click)="toggleListFullscreen()"></button>
+                <button *ngIf="showFullScreenControle" title="Enter FullScreen" class="mcontrol control-fullscreen-button mx-auto" id="list-fullscreenControl" (click)="toggleListFullscreen()"></button>
+                <button *ngIf="showCollapsControle" title="Collaps list" class="mcontrol icon-arrow-left mx-auto" id="list-collaps" (click)="toggleListFullscreen()"></button>
+                <!-- <i class="cil-chevron-left text-dark ml-4"></i> -->
             </div>
         </div>
-        <hr>
+        <hr class="mb-1 mt-2">
         <div class="row justify-content-between">
             <div class="col d-flex justify-content-around align-items-center text-center border-right"
                 matTooltip="Véhicules en Mouvement">

@@ -1,8 +1,6 @@
 <div class="animated fadeIn">
-  <button *ngIf="selectedVehiculeIndex != -1" class="btn btn-sm btn-outline-danger"
-    style="position: absolute; right: 30px; top: 95px" (click)="reset()">
-    Reset
-  </button>
+  <button  id="fullScreenControl" *ngIf="showFullScreenControle" title="Enter FullScreen" class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
+  <button  id="positionControl" *ngIf="showPositionControle" title="My Postion" class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
   <div class="row">
     <div class="col-lg-3 list-vehicules">
       <my-table [vehicules]="vehicules"></my-table>
