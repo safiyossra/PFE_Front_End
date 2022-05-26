@@ -11,3 +11,27 @@
 body {
     background-color: #f5f5f5;
 }
+
+#logoutBtn {
+    cursor: pointer;
+}
+.leaflet-touch .leaflet-control-layers-toggle {
+    width: 26px;
+    height: 26px;
+    background-size: 20px;
+}
+
+.leaflet-control-container a:hover {
+    text-decoration: none;
+}
+
+.leaflet-touch .leaflet-bar a {
+    width: 26px;
+    height: 26px;
+}
+
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+    border: 1px solid rgb(0 0 0 / 48%);
+    background-clip: padding-box;
+}

@@ -3,6 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Vehicule } from 'src/app/models/vehicule';
+import { util } from 'src/app/tools/utils';
 import { MapComponent } from '../../map/map.component';
 
 @Component({
@@ -14,9 +15,12 @@ import { MapComponent } from '../../map/map.component';
 
 export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
 
+  @Input() showFullScreenControle?: Boolean = true
+  @Input() showColumnsControle?: Boolean = true
+  @Input() showCollapsControle?: Boolean = true
   @Input() vehicules: Vehicule[]
 
-  displayedColumns: string[] = ['#','name', 'speed', 'fuelLevel'];
+  displayedColumns: string[] = ['#', 'name', 'speed', 'actions'];
 
   public dataSource = new MatTableDataSource<Vehicule>();
 
@@ -34,8 +38,7 @@ export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private _injector: Injector) {
-
+  constructor(private _injector: Injector, private tools: util) {
   }
 
   ngOnInit(): void {
@@ -72,6 +75,10 @@ export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
     console.log('Row clicked: ', row);
   }
 
+  onRowDoubleClicked(row: any) {
+    console.log('Row double clicked: ', row);
+  }
+
   get typesCount() {
     let typesCount = [0, 0, 0, 0]
     this.vehicules.map(vehicule => {
@@ -87,6 +94,15 @@ export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
     })
 
     return typesCount
+  }
+
+  toggleListFullscreen() {
+    if (!this.tools.isFullScreen) {
+      this.tools.openFullscreen(document.getElementById("list-vehicules"))
+    }
+    else {
+      this.tools.closeFullscreen()
+    }
   }
 
 }

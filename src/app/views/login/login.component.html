@@ -1,5 +1,5 @@
 <div class="app-body">
-  <main class="main d-flex align-items-center">
+  <main class="main d-flex align-items-center bg-style">
     <div class="container">
       <div class="row">
         <div class="col-md-8 mx-auto">
@@ -11,22 +11,38 @@
                   <p class="text-muted">Sign In to your account</p>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="icon-shield"></i></span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Account" [(ngModel)]="accountid"
+                      [ngModelOptions]="{standalone: true}" autocomplete="Account" required>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-user"></i></span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Username" autocomplete="username" required>
+                    <input type="text" class="form-control" placeholder="User" [(ngModel)]="user"
+                      [ngModelOptions]="{standalone: true}" autocomplete="user" required>
                   </div>
                   <div class="input-group mb-4">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-lock"></i></span>
                     </div>
-                    <input type="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
+                    <input type="password" class="form-control" placeholder="Password" [(ngModel)]="password"
+                      [ngModelOptions]="{standalone: true}" (keyup.enter)="signin()" autocomplete="current-password"
+                      required>
+                  </div>
+                  <div class="row mb-4">
+                    <div class="col-md-12">
+                      <small class="text-danger">{{ errorMessage }}</small>
+                    </div>
                   </div>
                   <div class="row">
                     <div class="col-6">
-                      <button type="button" class="btn btn-primary px-4">Login</button>
+                      <button type="button" class="btn btn-primary px-4" (click)="signin()"><i
+                          class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i>Login</button>
                     </div>
                     <div class="col-6 text-right">
-                      <button type="button" class="btn btn-link px-0">Forgot password?</button>
+                      <a type="button" class="btn btn-link px-0" [routerLink]="['/register']">Forgot password?</a>
                     </div>
                   </div>
                 </form>
@@ -35,9 +51,13 @@
             <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
               <div class="card-body text-center">
                 <div>
-                  <h2>Sign up</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                  <button type="button" class="btn btn-primary active mt-3">Register Now!</button>
+                  <h2>Sendatrack ® </h2>
+                  <p>Fournisseur agrée des solutions GPS au Maroc</p><br>
+                  <p class="text-muted">Géolocalisation et suivi de flottes de véhicules par GPS … </p>
+                  <p class="text-muted"> Solution innovante développée dans son intégralité par une équipe 100%
+                    marocaine.</p><br>
+                  <a type="button" class="btn btn-primary active mt-3" target="_blank"
+                    href="https://www.sendatrack.ma/demande-de-devis/">Demande de devis!</a>
                 </div>
               </div>
             </div>
