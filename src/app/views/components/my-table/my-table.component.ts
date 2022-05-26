@@ -3,6 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Vehicule } from 'src/app/models/vehicule';
+import { util } from 'src/app/tools/utils';
 import { MapComponent } from '../../map/map.component';
 
 @Component({
@@ -14,6 +15,9 @@ import { MapComponent } from '../../map/map.component';
 
 export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
 
+  @Input() showFullScreenControle?: Boolean = true
+  @Input() showColumnsControle?: Boolean = true
+  @Input() showCollapsControle?: Boolean = true
   @Input() vehicules: Vehicule[]
 
   displayedColumns: string[] = ['#', 'name', 'speed', 'actions'];
@@ -34,8 +38,7 @@ export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private _injector: Injector) {
-
+  constructor(private _injector: Injector, private tools: util) {
   }
 
   ngOnInit(): void {
@@ -93,9 +96,13 @@ export class MyTableComponent implements AfterViewInit, OnChanges, OnInit {
     return typesCount
   }
 
-  // onDetailClick(vehicule) {
-  //   console.log(vehicule);
-
-  // }
+  toggleListFullscreen() {
+    if (!this.tools.isFullScreen) {
+      this.tools.openFullscreen(document.getElementById("list-vehicules"))
+    }
+    else {
+      this.tools.closeFullscreen()
+    }
+  }
 
 }

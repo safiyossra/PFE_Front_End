@@ -95,8 +95,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     },
     { // dark grey
-      backgroundColor: 'rgba(77,83,96,0.4)',
-      borderColor: 'rgba(77,83,96,1)',
+      backgroundColor: '#03a9f460',
+      borderColor: '#03a9f4a3',
       pointBackgroundColor: 'rgba(77,83,96,1)',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
