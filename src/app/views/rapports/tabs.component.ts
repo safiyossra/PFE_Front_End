@@ -1,25 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
-
 import { DataService } from '../../services/data.service';
-import { ConditionalExpr } from '@angular/compiler';
-import { FormBuilder, Validators } from '@angular/forms';
-import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
-import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 
 
 @Component({
   templateUrl: 'tabs.component.html',
-  styles: [
-    `
-  ::ng-deep .mat-select-arrow {
-    color: white;
-}
-`
-  ]
 })
 export class TabsComponent {
-  
+
   constructor(private dataService: DataService) { }
 
   value: string | Object;
@@ -31,8 +19,9 @@ export class TabsComponent {
   isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   reportData: any;
+  displayedColumns: any[];
+  columns: any[];
   reportDetails: any;
-  displayColumns:any;
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -184,14 +173,6 @@ export class TabsComponent {
   showErrorparams = false;
   errorMessageparams = "";
 
-  // onToggleDropdown() {
-  //   this.myDropdown.toggleDropdown();
-  // }
-
-  // resetAll() {
-  //   this.selectedOptions = [];
-  // }
-
   getSelectedDevices(selected) {
     // console.log(selected);
     this.selectedDevice = selected;
@@ -228,7 +209,7 @@ export class TabsComponent {
     this.showErrorparams = !this.showErrorparams;
     this.errorMessageparams = "required";
   }
-  
+
   resetValidator() {
     this.showErrorparams = false;
     this.errorMessageparams = "";
@@ -262,86 +243,79 @@ export class TabsComponent {
     console.log(e);
   }
 
-
-
-
-  /// 
-  toggle(column: string) {
-    console.log('toggle');
-    
-   // this.displayColumns= [, 'DureeAr'];
-
-    // let old = []
-    // this.dataService.resultList$
-    //   .subscribe(resultList => old = resultList);
-
-
-    // let index = old.indexOf(column)
-    // console.log('index : ' + index);
-
-    // if (index > -1) {
-    //   old.forEach((element, i) => {
-    //     if (element == column) old.splice(i, 1);
-    //   });
-    //   console.log('new : ' + old);
-
-    // } else {
-    //   old.push(column)
-    // }
-
-    // this.dataService.updateResultList(old)
-  }
-
   submit() {
-   this.resetValidator()
-    //console.log(this.myDateRangePicker.dateFrom, this.myDateRangePicker.dateTo.getTime()/1000, this.selectedDevice, this.selectedkm, this.selectedparam1, this.selectedparam2, this.selectedparam3, this.selectedparam4);
+    this.resetValidator()
     if (this.selectedDevice.length == 0) {
       this.onValidateDevice()
-    }
-   
-    var paramstab = [];
-    if (this.selectedkm.length != 0)
-      paramstab.push('kilom='+this.selectedkm)
-    if (this.selectedparam1.length != 0)
-      paramstab.push(this.selectedparam1)
-    if (this.selectedparam2.length != 0)
-      paramstab.push(this.selectedparam2)
-    if (this.selectedparam3.length != 0)
-      paramstab.push(this.selectedparam3)
-    if (this.selectedparam4.length != 0)
-      paramstab.push(this.selectedparam4)
-
-    var requestparams = Array.from(new Set(paramstab)).join("&")
-    if (requestparams != "") {
-      var urlParams = "?d=" + this.selectedDevice + "&st="+this.myDateRangePicker.dateFrom.getTime()/1000+"&et="+this.myDateRangePicker.dateTo.getTime()/1000+"&" + requestparams
-      
-      console.log(urlParams);
-      this.dataService.getStatistique(urlParams).subscribe({
-        next: (d) => {
-          this.reportData = d;
-          console.log("data");
-          console.log(d);         
-        },
-      })      
     } else {
-      this.onValidateParam()
+      var paramstab = [];
+      var iskm = ""
+      if (this.selectedkm.length != 0)
+        iskm = '&kilom=' + this.selectedkm
+      if (this.selectedparam1.length != 0)
+        paramstab.push(this.selectedparam1)
+      if (this.selectedparam2.length != 0)
+        paramstab.push(this.selectedparam2)
+      if (this.selectedparam3.length != 0)
+        paramstab.push(this.selectedparam3)
+      if (this.selectedparam4.length != 0)
+        paramstab.push(this.selectedparam4)
+
+      paramstab = Array.from(new Set(paramstab))
+      var requestparams = paramstab.join("&")
+      if (requestparams != "") {
+        var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000 + "&" + requestparams + iskm
+
+        console.log(urlParams);
+        this.dataService.getStatistique(urlParams).subscribe({
+          next: (d: any) => {
+            this.displayedColumns = ["Date", ...this.getColumnsNames(paramstab)]
+            this.columns = ["timestamp", ...paramstab]
+            d.forEach((e) => { e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toDateString() })
+            console.log(d);
+
+            this.reportData = d;
+          },
+        })
+      } else {
+        this.onValidateParam()
+      }
     }
-    var urldetails = "?d=" + this.selectedDevice + "&st="+this.myDateRangePicker.dateFrom.getTime()/1000+"&et="+this.myDateRangePicker.dateTo.getTime()/1000
+  };
+
+  getColumnsNames(p) {
+    var clmns = []
+    p.forEach((e) => {
+      for (let i = 0; i < this.params.length; i++) {
+        if (this.params[i].data == e) {
+          clmns.push(this.params[i].label);
+          break;
+        }
+      }
+    })
+    return clmns
+  }
+
+  getdetails() {
+    if (this.selectedDevice.length == 0) {
+      this.onValidateDevice()
+    } else {
+      var urldetails = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000
       this.dataService.getDetails(urldetails).subscribe({
         next: (d) => {
           this.reportDetails = d;
-          console.log("data");
-          console.log(d);          
+          // console.log("data");
+          // console.log(d);          
         },
       })
-
-  };
+    }
+  }
 
   getDev() {
     this.dataService.getVehicule().subscribe({
       next: (res) => {
         this.devices = res;
-        console.log(this.devices);
+        // console.log(this.devices);
       },
       error: (errors) => {
 
@@ -349,18 +323,18 @@ export class TabsComponent {
     })
   }
 
-  reset() { 
-      this.selectedDevices = [], 
-      this.selectedkmConditions = [], 
-      this.selectedparams1 = [], 
+  reset() {
+    this.selectedDevices = [],
+      this.selectedkmConditions = [],
+      this.selectedparams1 = [],
       this.selectedparams2 = [],
       this.selectedparams3 = [],
       this.selectedparams4 = []
   }
 
-  getParam(p:any){
-   return p=="t"?"°C":p=="v"?"Km/h":p=="da"||p=="dc"?"H:min:s":p=="c"||p=="cr"?"L":p=="k"?"KM":p=="na"?"#":""
-  } 
+  getParam(p: any) {
+    return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
+  }
 
   // social box charts
 
@@ -391,7 +365,7 @@ export class TabsComponent {
 
   public brandBoxChartLabels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
   public brandBoxChartOptions: any = {
-   
+
     responsive: true,
     scales: {
       xAxes: [{
