@@ -21,12 +21,14 @@
             <button
               type="button"
               class="card-header-action btn btn-link btn-close"
+              (click)="reset()"
+            
             >
               <i class="icon-close"></i>
             </button>
           </div>
         </div>
-        <div [collapse]="isCollapsed" class="card-body">
+        <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
           <form class="form-horizontal">
             <div class="form-group row">
               <div class="col-md-4">
@@ -52,8 +54,8 @@
                       [errorMsg]="errorMessageDevice"
                       [showErrorMsg]="showErrorDevice"
                       [options]="devices"
-                      [display]="'label'"
-                      [value]="'data'"
+                      [display]="'name'"
+                      [value]="'dID'"
                       [multiple]="false"
                       [labelCount]="0"
                       [selectedOptions]="selectedDevices"
@@ -88,8 +90,6 @@
                       class="form-control"
                       [placeholder]="'Select a Condition on Trip'"
                       [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessagekm"
-                      [showErrorMsg]="showErrorkm"
                       [options]="kmConditions"
                       [display]="'label'"
                       [value]="'data'"
@@ -145,8 +145,8 @@
                       class="form-control"
                       [placeholder]="'Select a Value'"
                       [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessageparams1"
-                      [showErrorMsg]="showErrorparams1"
+                      [errorMsg]="errorMessageparams"
+                      [showErrorMsg]="showErrorparams"
                       [options]="params"
                       [display]="'label'"
                       [value]="'data'"
@@ -157,10 +157,16 @@
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"><i>KM</i></span>
+                      <span class="input-group-text"
+                        ><i 
+                          *ngIf="selectedparam1.length == 0"
+                        >...</i
+                        ><i *ngIf="selectedparam1 != null">{{
+                          getParam(selectedparam1)
+                        }}</i></span
+                      >
                     </div>
                   </div>
-                  <!--</div> -->
                 </div>
               </div>
               <div class="col-md-3">
@@ -200,8 +206,8 @@
                       class="form-control"
                       [placeholder]="'Select a Value'"
                       [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessageparams2"
-                      [showErrorMsg]="showErrorparams2"
+                      [errorMsg]="errorMessageparams"
+                      [showErrorMsg]="showErrorparams"
                       [options]="params"
                       [display]="'label'"
                       [value]="'data'"
@@ -212,7 +218,14 @@
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"><i>KM</i></span>
+                      <span class="input-group-text"
+                        ><i 
+                          *ngIf="selectedparam2.length == 0"
+                        >...</i
+                        ><i *ngIf="selectedparam2 != null">{{
+                          getParam(selectedparam2)
+                        }}</i></span
+                      >
                     </div>
                   </div>
                   <!--</div> -->
@@ -255,8 +268,8 @@
                       class="form-control"
                       [placeholder]="'Select a Value'"
                       [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessageparams3"
-                      [showErrorMsg]="showErrorparams3"
+                      [errorMsg]="errorMessageparams"
+                      [showErrorMsg]="showErrorparams"
                       [options]="params"
                       [display]="'label'"
                       [value]="'data'"
@@ -267,7 +280,14 @@
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"><i>KM</i></span>
+                      <span class="input-group-text"
+                        ><i 
+                          *ngIf="selectedparam3.length == 0"
+                        >...</i
+                        ><i *ngIf="selectedparam3 != null">{{
+                          getParam(selectedparam3)
+                        }}</i></span
+                      >
                     </div>
                   </div>
                   <!--</div> -->
@@ -310,8 +330,8 @@
                       class="form-control"
                       [placeholder]="'Select a Value'"
                       [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessageparams4"
-                      [showErrorMsg]="showErrorparams4"
+                      [errorMsg]="errorMessageparams"
+                      [showErrorMsg]="showErrorparams"
                       [options]="params"
                       [display]="'label'"
                       [value]="'data'"
@@ -322,7 +342,14 @@
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"><i>KM</i></span>
+                      <span class="input-group-text"
+                        ><i 
+                          *ngIf="selectedparam4.length == 0"
+                        >...</i
+                        ><i *ngIf="selectedparam4 != null">{{
+                          getParam(selectedparam4)
+                        }}</i></span
+                      >
                     </div>
                   </div>
                   <!--</div> -->
@@ -330,12 +357,18 @@
               </div>
             </div>
             <div class="form-actions">
-              <button type="submit" class="btn btn-sm btn-primary">
+              <button type="submit" class="btn btn-sm btn-primary" (click)="submit()">
                 <i class="fa fa-dot-circle-o"></i> &nbsp;Apply
               </button>
-              &nbsp;<button type="reset" class="btn btn-sm btn-danger">
+             <!--
+                &nbsp;<button type="reset" class="btn btn-sm btn-danger" (click)="reset()">
                 <i class="fa fa-ban"></i> &nbsp;Reset
               </button>
+              -->
+              &nbsp;<button type="button" class="btn btn-sm btn-info" (click)="toggle('symbol')">
+                <i class="fa fa-check"></i>&nbsp; test
+              </button>
+
             </div>
           </form>
         </div>
@@ -350,12 +383,124 @@
       <tabset>
         <tab style="min-height: 660px">
           <ng-template tabHeading
-            ><i class="icon-list"></i> Table &nbsp;<span
-              class="badge badge-success"
-              >New</span
-            ></ng-template
-          >
-          <my-data-table></my-data-table>
+            ><i class="icon-calculator"></i> Resume &nbsp;</ng-template>
+          
+          <div class="row">
+            <div class="col-sm-6 col-lg-3">
+              <div class="brand-card">
+                <div class="brand-card-header bg-facebook">
+                  <i class="fa fa-facebook"></i>
+                  <div class="chart-wrapper">
+                    <canvas baseChart class="chart"
+                    [datasets]="brandBoxChartData1"
+                    [labels]="brandBoxChartLabels"
+                    [options]="brandBoxChartOptions"
+                    [colors]="brandBoxChartColours"
+                    [legend]="brandBoxChartLegend"
+                    [chartType]="brandBoxChartType"></canvas>
+                  </div>
+                </div>
+                <div class="brand-card-body">
+                  <div>
+                    <div class="text-value">89k</div>
+                    <div class="text-uppercase text-muted small">friends</div>
+                  </div>
+                  <div>
+                    <div class="text-value">459</div>
+                    <div class="text-uppercase text-muted small">feeds</div>
+                  </div>
+                </div>
+              </div>
+            </div><!--/.col-->
+            <div class="col-sm-6 col-lg-3">
+              <div class="brand-card">
+                <div class="brand-card-header bg-twitter">
+                  <i class="fa fa-twitter"></i>
+                  <div class="chart-wrapper">
+                    <canvas baseChart class="chart"
+                    [datasets]="brandBoxChartData2"
+                    [labels]="brandBoxChartLabels"
+                    [options]="brandBoxChartOptions"
+                    [colors]="brandBoxChartColours"
+                    [legend]="brandBoxChartLegend"
+                    [chartType]="brandBoxChartType"></canvas>
+                  </div>
+                </div>
+                <div class="brand-card-body">
+                  <div>
+                    <div class="text-value">973k</div>
+                    <div class="text-uppercase text-muted small">followers</div>
+                  </div>
+                  <div>
+                    <div class="text-value">1.792</div>
+                    <div class="text-uppercase text-muted small">tweets</div>
+                  </div>
+                </div>
+              </div>
+            </div><!--/.col-->
+            <div class="col-sm-6 col-lg-3">
+              <div class="brand-card">
+                <div class="brand-card-header bg-linkedin">
+                  <i class="fa fa-linkedin"></i>
+                  <div class="chart-wrapper">
+                    <canvas baseChart class="chart"
+                    [datasets]="brandBoxChartData3"
+                    [labels]="brandBoxChartLabels"
+                    [options]="brandBoxChartOptions"
+                    [colors]="brandBoxChartColours"
+                    [legend]="brandBoxChartLegend"
+                    [chartType]="brandBoxChartType"></canvas>
+                  </div>
+                </div>
+                <div class="brand-card-body">
+                  <div>
+                    <div class="text-value">500+</div>
+                    <div class="text-uppercase text-muted small">contacts</div>
+                  </div>
+                  <div>
+                    <div class="text-value">292</div>
+                    <div class="text-uppercase text-muted small">feeds</div>
+                  </div>
+                </div>
+              </div>
+            </div><!--/.col-->
+            <div class="col-sm-6 col-lg-3">
+              <div class="brand-card">
+                <div class="brand-card-header bg-google-plus">
+                  <i class="fa fa-google-plus"></i>
+                  <div class="chart-wrapper">
+                    <canvas baseChart class="chart"
+                    [datasets]="brandBoxChartData4"
+                    [labels]="brandBoxChartLabels"
+                    [options]="brandBoxChartOptions"
+                    [colors]="brandBoxChartColours"
+                    [legend]="brandBoxChartLegend"
+                    [chartType]="brandBoxChartType"></canvas>
+                  </div>
+                </div>
+                <div class="brand-card-body">
+                  <div>
+                    <div class="text-value">894</div>
+                    <div class="text-uppercase text-muted small">followers</div>
+                  </div>
+                  <div>
+                    <div class="text-value">92</div>
+                    <div class="text-uppercase text-muted small">circles</div>
+                  </div>
+                </div>
+              </div>
+            </div><!--/.col-->
+          </div>
+        </tab>
+        <tab style="min-height: 660px">
+          <ng-template tabHeading>
+            <i class="icon-list"></i>
+             Table &nbsp;
+          </ng-template>
+          <my-data-table [data]="reportData" [displayedColumns]="displayColumns">
+
+            
+          </my-data-table>
         </tab>
         <tab style="min-height: 660px">
           <ng-template tabHeading
@@ -376,6 +521,7 @@
                 <canvas
                   baseChart
                   class="chart"
+                  height="100"
                   [datasets]="barChartData"
                   [labels]="barChartLabels"
                   [options]="barChartOptions"
@@ -390,18 +536,9 @@
         </tab>
         <tab style="min-height: 660px">
           <ng-template tabHeading
-            ><i class="icon-calculator"></i> Resume &nbsp;<span
-              class="badge badge-pill badge-danger"
-              >29</span
-            ></ng-template
+            ><i class="fa fa-list-alt"></i> Details &nbsp;</ng-template
           >
-          2. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
+          ...
         </tab>
       </tabset>
     </div>
