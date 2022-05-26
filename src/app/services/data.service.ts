@@ -1,10 +1,12 @@
-import { Injectable ,ViewChild} from '@angular/core';
+import { Injectable, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {MatTableDataSource} from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import { TabsComponent } from '../views/rapports/tabs.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { environment } from './../../environments/environment';
+import { JwtService } from './jwt.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +14,10 @@ import { TabsComponent } from '../views/rapports/tabs.component';
 
 export class DataService {
 
-    constructor(private http: HttpClient){
-   
+  constructor(private http: HttpClient, private JWT: JwtService) {
 
-      }
+
+  }
   private resultList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(null);
   public resultList$: Observable<any[]> = this.resultList.asObservable();
 
@@ -23,21 +25,33 @@ export class DataService {
     this.resultList.next(updatedList);
   }
 
-  getVehicule(){
+  getVehicule() {
+    let SERVER_URL = environment.apiUrl + "vehicule";
+    let jwt = this.JWT.get();
+    // if (jwt) {
     let headers = new HttpHeaders({
-        'Accept': 'application/json',
-      });
-     return  this.http.get('http://backup.sendatrack.com/sendatrack/public/vehicule',{headers:headers})
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
   }
-  dataSource: MatTableDataSource<any>=new MatTableDataSource();
+  dataSource: MatTableDataSource<any> = new MatTableDataSource();
   public totalItems: number = 0;
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  getStatistique(){  
+  getStatistique(urlParams) {
+    let SERVER_URL = environment.apiUrl + "statistique" + urlParams;
+    let jwt = this.JWT.get();
     let headers = new HttpHeaders({
-      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
     });
-    return this.http.get('http://backup.sendatrack.com/sendatrack/public/statistique?d=dacia&st=1647298800&et=1647647999&dc&k&da&c',{headers:headers})
-  } //urlParams
- }
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+  
+}

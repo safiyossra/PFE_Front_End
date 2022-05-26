@@ -4,6 +4,8 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import { ConditionalExpr } from '@angular/compiler';
 import { FormBuilder, Validators } from '@angular/forms';
+import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
+import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 
 
 @Component({
@@ -148,30 +150,14 @@ export class TabsComponent {
       label: "Fuel moyenne",
       data: "cr"
     },
-    // {
-    //   label: "Vitesse max",
-    //   data: "v"
-    // },
-    // {
-    //   label: "Vitesse min",
-    //   data: "v"
-    // },
-    // {
-    //   label: "Vitesse moy",
-    //   data: "v"
-    // },
-    // {
-    //   label: "Temperature max",
-    //   data: "t"
-    // },
-    // {
-    //   label: "Temperature min",
-    //   data: "t"
-    // },
-    // {
-    //   label: "Temperature moy",
-    //   data: "t"
-    // }
+    {
+      label: "Vitesse",
+      data: "v"
+    },
+    {
+      label: "Temperature",
+      data: "t"
+    },
   ];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
@@ -324,11 +310,14 @@ export class TabsComponent {
 
     var requestparams = Array.from(new Set(paramstab)).join("&")
     if (requestparams != "") {
-      var urlParams = "?d=" + this.selectedDevice + "&st="+this.myDateRangePicker.dateFrom.getTime()/1000+"et="+this.myDateRangePicker.dateTo.getTime()/1000+"&" + requestparams
+      var urlParams = "?d=" + this.selectedDevice + "&st="+this.myDateRangePicker.dateFrom.getTime()/1000+"&et="+this.myDateRangePicker.dateTo.getTime()/1000+"&" + requestparams
       console.log(urlParams);
-      this.dataService.getStatistique().subscribe({
+      this.dataService.getStatistique(urlParams).subscribe({
         next: (d) => {
           this.reportData = d;
+          console.log("data");
+          console.log(d);
+          
         },
 
       })
@@ -359,6 +348,73 @@ export class TabsComponent {
       this.selectedparams4 = []
   }
 
+  getParam(p:any){
+   return p=="t"?"°C":p=="v"?"Km/h":p=="da"||p=="dc"?"H:min:s":p=="c"||p=="cr"?"L":p=="k"?"KM":p=="na"?"#":""
+  } 
+
+  // social box charts
+
+  public brandBoxChartData1: Array<any> = [
+    {
+      data: [65, 59, 84, 84, 51, 55, 40],
+      label: 'Facebook'
+    }
+  ];
+  public brandBoxChartData2: Array<any> = [
+    {
+      data: [1, 13, 9, 17, 34, 41, 38],
+      label: 'Twitter'
+    }
+  ];
+  public brandBoxChartData3: Array<any> = [
+    {
+      data: [78, 81, 80, 45, 34, 12, 40],
+      label: 'LinkedIn'
+    }
+  ];
+  public brandBoxChartData4: Array<any> = [
+    {
+      data: [35, 23, 56, 22, 97, 23, 64],
+      label: 'Google+'
+    }
+  ];
+
+  public brandBoxChartLabels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+  public brandBoxChartOptions: any = {
+   
+    responsive: true,
+    scales: {
+      xAxes: [{
+        display: false,
+      }],
+      yAxes: [{
+        display: false,
+      }]
+    },
+    elements: {
+      line: {
+        borderWidth: 2
+      },
+      point: {
+        radius: 0,
+        hitRadius: 10,
+        hoverRadius: 4,
+        hoverBorderWidth: 3,
+      }
+    },
+    legend: {
+      display: false
+    }
+  };
+  public brandBoxChartColours: Array<any> = [
+    {
+      backgroundColor: 'rgba(255,255,255,.1)',
+      borderColor: 'rgba(255,255,255,.55)',
+      pointHoverBackgroundColor: '#fff'
+    }
+  ];
+  public brandBoxChartLegend = false;
+  public brandBoxChartType = 'line';
 }
 
 
