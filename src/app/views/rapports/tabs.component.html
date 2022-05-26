@@ -535,10 +535,13 @@
           </div>
         </tab>
         <tab style="min-height: 660px">
-          <ng-template tabHeading
-            ><i class="fa fa-list-alt"></i> Details &nbsp;</ng-template
-          >
-          ...
+          <ng-template tabHeading>
+            <i class="fa fa-list-alt"></i> Details &nbsp;
+          </ng-template>
+            <my-data-table [data]="reportDetails">
+
+            
+            </my-data-table>
         </tab>
       </tabset>
     </div>

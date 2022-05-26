@@ -31,6 +31,7 @@ export class TabsComponent {
   isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   reportData: any;
+  reportDetails: any;
   displayColumns:any;
 
   @ViewChild('calendar', { static: true })
@@ -97,31 +98,31 @@ export class TabsComponent {
   public kmConditions = [
     {
       label: ">=50",
-      data: "1"
+      data: "50"
     },
     {
       label: ">=100",
-      data: "2"
+      data: "100"
     },
     {
       label: ">=150",
-      data: "3"
+      data: "150"
     },
     {
       label: ">=200",
-      data: "4"
+      data: "200"
     },
     {
       label: ">=300",
-      data: "5"
+      data: "300"
     },
     {
       label: ">=400",
-      data: "6"
+      data: "400"
     },
     {
       label: ">=600",
-      data: "7"
+      data: "600"
     }
   ];
 
@@ -299,6 +300,8 @@ export class TabsComponent {
     }
    
     var paramstab = [];
+    if (this.selectedkm.length != 0)
+      paramstab.push('kilom='+this.selectedkm)
     if (this.selectedparam1.length != 0)
       paramstab.push(this.selectedparam1)
     if (this.selectedparam2.length != 0)
@@ -311,19 +314,26 @@ export class TabsComponent {
     var requestparams = Array.from(new Set(paramstab)).join("&")
     if (requestparams != "") {
       var urlParams = "?d=" + this.selectedDevice + "&st="+this.myDateRangePicker.dateFrom.getTime()/1000+"&et="+this.myDateRangePicker.dateTo.getTime()/1000+"&" + requestparams
+      
       console.log(urlParams);
       this.dataService.getStatistique(urlParams).subscribe({
         next: (d) => {
           this.reportData = d;
           console.log("data");
-          console.log(d);
-          
+          console.log(d);         
         },
-
-      })
+      })      
     } else {
       this.onValidateParam()
     }
+    var urldetails = "?d=" + this.selectedDevice + "&st="+this.myDateRangePicker.dateFrom.getTime()/1000+"&et="+this.myDateRangePicker.dateTo.getTime()/1000
+      this.dataService.getDetails(urldetails).subscribe({
+        next: (d) => {
+          this.reportDetails = d;
+          console.log("data");
+          console.log(d);          
+        },
+      })
 
   };
 

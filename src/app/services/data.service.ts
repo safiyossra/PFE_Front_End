@@ -53,5 +53,19 @@ export class DataService {
       headers: headers
     })
   }
-  
+
+  //fonction de detail
+
+  getDetails(urldetails) {
+    let SERVER_URL = environment.apiUrl + "eventspagination" + urldetails;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
 }
