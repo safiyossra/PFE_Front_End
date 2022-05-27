@@ -1,9 +1,13 @@
 <div class="animated fadeIn">
-  <button  id="fullScreenControl" *ngIf="showFullScreenControle" title="Enter FullScreen" class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
-  <button  id="positionControl" *ngIf="showPositionControle" title="My Postion" class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
+  <button id="fullScreenControl" *ngIf="showFullScreenControle" title="Enter FullScreen"
+    class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
+  <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
+    class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
+  <button id="resetConrtol" title="Default View" class="control-position-button icon-close text-danger btn btn-danger"
+    [ngClass]="selectedVehiculeIndex==-1 ? 'd-none':''" (click)="reset()"></button>
   <div class="row">
     <div class="col-lg-3 list-vehicules">
-      <my-table [vehicules]="vehicules"></my-table>
+      <my-table [vehicules]="vehicules" (rowDoubleClicked)="rowDoubleClicked($event)"></my-table>
     </div>
     <div class="col-lg-9 my-map">
       <div class="card-body" id="map"></div>

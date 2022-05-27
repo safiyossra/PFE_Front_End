@@ -5,7 +5,7 @@
                 <div class="input-group form-inline align-items-center">
                     <span class="input-group-prepend mr-2 icon-magnifier"></span>
                     <input type="text" id="input1-group2" name="input1-group2" placeholder="Rechercher..."
-                        class="form-control" (keyup)="applyFilter($event)" #input />
+                        class="form-control" (keyup)="search($event)" #input />
                 </div>
             </div>
             <div class="col-md-4 d-flex justify-content-end p-1">
@@ -22,26 +22,27 @@
         <hr class="mb-1 mt-2">
         <div class="row justify-content-between">
             <div class="col d-flex justify-content-around align-items-center text-center border-right"
-                matTooltip="Véhicules en Mouvement">
+                (click)="applySort('moving')" matTooltip="Véhicules en Mouvement">
                 <i class="fa fa-circle text-success"></i>
                 <span class="">{{ typesCount[0] }}</span>
             </div>
 
             <div class="col d-flex justify-content-around align-items-center text-center border-right"
-                matTooltip="Véhicules Démarrées">
+                (click)="applySort('on')" matTooltip="Véhicules Démarrées">
                 <i class="fa fa-circle-o text-success"></i>
                 <span class="">{{ typesCount[1] }}</span>
             </div>
             <div class="col d-flex justify-content-around align-items-center text-center border-right"
-                matTooltip="Véhicules en Arrêt">
+                (click)="applySort('off')" matTooltip="Véhicules en Arrêt">
                 <i class="fa fa-circle text-danger"></i>
                 <span class="">{{ typesCount[2] }}</span>
             </div>
-            <div class="col d-flex justify-content-around align-items-center text-center" matTooltip="Statut Inconnu">
+            <div class="col d-flex justify-content-around align-items-center text-center" (click)="applySort('other')"
+                matTooltip="Statut Inconnu">
                 <i class="fa fa-close text-dark"></i>
                 <span class="">{{ typesCount[3]}}</span>
             </div>
-            <div class="col d-flex justify-content-around align-items-center text-center"
+            <div class="col d-flex justify-content-around align-items-center text-center" (click)="applySort('all')"
                 matTooltip="Somme des Véhicules">
                 <b>&#8721;</b>
                 <span class=""> {{ vehicules.length }}</span>
@@ -64,8 +65,8 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Véhicule</th>
                 <td mat-cell *matCellDef="let vehicule">
                     <ng-container>
-                        <i *ngIf="vehicule.statusCode == 62465" class="fa fa-circle-o text-success status-cercle"></i>
                         <i *ngIf="vehicule.statusCode == 61714" class="fa fa-circle text-success status-cercle"></i>
+                        <i *ngIf="vehicule.statusCode == 62465" class="fa fa-circle-o text-success status-cercle"></i>
                         <i *ngIf="vehicule.statusCode == 62467" class="fa fa-circle text-danger status-cercle"></i>
                         <i *ngIf="vehicule.statusCode != 62465 && vehicule.statusCode != 61714 && vehicule.statusCode != 62467"
                             class="fa fa-close text-dark status-cercle"></i>

@@ -29,6 +29,7 @@ export class MapComponent implements AfterViewInit {
   vehicules: Vehicule[] = []
 
   fullScreenControl: L.Control;
+  resetControl: L.Control;
   positionControl: L.Control;
   typesCount = [0, 0, 0, 0]
 
@@ -51,13 +52,34 @@ export class MapComponent implements AfterViewInit {
       this.inter = setInterval(() => {
         this.loadData()
       }, 10000)
+      // setInterval(() => {
+      //   this.updateMarkers()
+      // }, 500);
     }, 100);
 
   }
   createMap() {
     const zoomLevel = 12
-    this.map = L.map('map', { attributionControl: false, inertia: true })
+    this.map = L.map('map', { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
       .setView([this.car.lat, this.car.lng], zoomLevel)
+
+    // this.map.on('zoomstart', () => {
+    //   const elems = document.getElementsByClassName('my-div-icon')
+
+    //   for (let index = 0; index < elems.length; index++) {
+    //     elems.item(index).classList.remove('marker-transition')
+    //   }
+    // })
+
+    // this.map.on('zoomend', () => {
+    //   const elems = document.getElementsByClassName('my-div-icon')
+
+    //   setTimeout(() => {
+    //     for (let index = 0; index < elems.length; index++) {
+    //       elems.item(index).classList.add('marker-transition')
+    //     }
+    //   }, 100);
+    // })
 
     // https://leaflet-extras.github.io/leaflet-providers/preview/
     // https://stackoverflow.com/questions/33343881/leaflet-in-google-maps
@@ -100,24 +122,41 @@ export class MapComponent implements AfterViewInit {
     };
     googleHybrid.addTo(this.map)
 
-    let FullScreenControl = L.Control.extend({
+    let ResetControl = L.Control.extend({
       onAdd(map: L.Map) {
-        return L.DomUtil.get('fullScreenControl');
+        return L.DomUtil.get('resetConrtol');
       },
       onRemove(map: L.Map) { }
     });
-    let PositionControl = L.Control.extend({
-      onAdd(map: L.Map) {
-        return L.DomUtil.get('positionControl');
-      },
-      onRemove(map: L.Map) { }
-    });
-    this.fullScreenControl = new FullScreenControl({
+    this.resetControl = new ResetControl({
       position: "topleft"
     }).addTo(this.map);
-    this.positionControl = new PositionControl({
-      position: "topleft"
-    }).addTo(this.map);
+
+    L.control.zoom().addTo(this.map)
+
+    if (this.showFullScreenControle) {
+      let FullScreenControl = L.Control.extend({
+        onAdd(map: L.Map) {
+          return L.DomUtil.get('fullScreenControl');
+        },
+        onRemove(map: L.Map) { }
+      });
+      this.fullScreenControl = new FullScreenControl({
+        position: "topleft"
+      }).addTo(this.map);
+    }
+    if (this.showPositionControle) {
+      let PositionControl = L.Control.extend({
+        onAdd(map: L.Map) {
+          return L.DomUtil.get('positionControl');
+        },
+        onRemove(map: L.Map) { }
+      });
+      this.positionControl = new PositionControl({
+        position: "topleft"
+      }).addTo(this.map);
+    }
+
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
     L.control.scale().addTo(this.map);
   }
@@ -130,7 +169,8 @@ export class MapComponent implements AfterViewInit {
         `<span class="my-icon-title">${vehicule.name}</span>`,
       iconSize: [50, 50],
       // iconAnchor: [25, 20],
-      className: 'marker-transition my-div-icon'
+      className: 'marker-transition my-div-icon',
+
     })
   }
 
@@ -138,7 +178,8 @@ export class MapComponent implements AfterViewInit {
     this.vehicules.forEach((veh, index) => {
       this.markers.push(
         L.marker([veh.lat, veh.lng], {
-          icon: this.myIcon(veh, veh.statusCode, 'car')
+          icon: this.myIcon(veh, veh.statusCode, 'car'),
+
         })
           .bindPopup(`` +
             `<div>Device: ${veh.name}</div>` +
@@ -150,9 +191,10 @@ export class MapComponent implements AfterViewInit {
             offset: L.point(0, -20)
 
           }).on('dblclick', () => {
-            this.selectedVehiculeIndex = index
-            this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
+            this.rowDoubleClicked(index)
           }).on('click', (event) => {
+            console.log(event.target);
+
             event.target.openPopup()
           })
         // .on('mouseout', (event) => {
@@ -178,10 +220,6 @@ export class MapComponent implements AfterViewInit {
   }
 
   updateMarkers() {
-    this.markers.forEach(marker => {
-      marker.getLatLng()
-    })
-
     for (let i = 0; i < this.markers.length; i++) {
       if (this.vehicules[i]) {
         this.markers[i].setLatLng([this.vehicules[i].lat, this.vehicules[i].lng])
@@ -199,17 +237,17 @@ export class MapComponent implements AfterViewInit {
         )
       }
     }
-
     this.center()
   }
 
   reset() {
     this.selectedVehiculeIndex = -1
+    const elems = document.getElementsByClassName('my-div-icon')
 
-    // let bounds = this.markers.map((e) => {
-    //   return e.getLatLng()
-    // })
-    // this.map.fitBounds(bounds)
+    for (let index = 0; index < elems.length; index++) {
+      elems.item(index).classList.remove('marker-transition')
+    }
+    this.centerMap()
   }
 
   loadData() {
@@ -238,6 +276,7 @@ export class MapComponent implements AfterViewInit {
             )
           }
         });
+
 
         const isFirstTime = this.vehicules.length == 0
         this.vehicules = vehicules
@@ -324,5 +363,24 @@ export class MapComponent implements AfterViewInit {
         }
       }, null, options)
     }
+  }
+
+  rowClicked(event) {
+    console.log(event);
+  }
+
+  rowDoubleClicked(event) {
+    const elems = document.getElementsByClassName('my-div-icon')
+
+    for (let index = 0; index < elems.length; index++) {
+      elems.item(index).classList.remove('marker-transition')
+    }
+
+    this.selectedVehiculeIndex = event
+    this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
+
+    // for (let index = 0; index < elems.length; index++) {
+    //   elems.item(index).classList.add('marker-transition')
+    // }
   }
 }

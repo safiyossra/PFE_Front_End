@@ -6,35 +6,45 @@ import { MapComponent } from './map.component';
 const routes: Routes = [
   {
     path: '',
-    // component: MapComponent
-    pathMatch: 'full',
-    redirectTo: 'vehicule',
+    // pathMatch: 'full',
+    // redirectTo: 'vehicule',
     data: {
-      title: 'Par Vehicule'
-    }
-  },
-  {
-    path: 'vehicule',
-    data: {
-      title: 'Par Vehicule'
+      title: 'Map'
     },
     children: [
       {
         path: '',
-        component: MapComponent,
+        pathMatch: 'full',
+        redirectTo: 'vehicule',
         data: {
           title: 'Par Vehicule'
-        }
+        },
       },
       {
-        path: 'details/:id',
-        component: DetailsComponent,
+        path: 'vehicule',
         data: {
-          title: 'Details'
-        }
+          title: 'Par Vehicule'
+        },
+        children: [
+          {
+            path: '',
+            component: MapComponent,
+            data: {
+              title: 'Par Vehicule'
+            }
+          },
+          {
+            path: 'details/:id',
+            component: DetailsComponent,
+            data: {
+              title: 'Details'
+            }
+          }
+        ]
       }
     ]
-  }
+  },
+
 ];
 
 @NgModule({

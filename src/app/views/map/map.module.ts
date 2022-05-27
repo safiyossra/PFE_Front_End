@@ -5,10 +5,11 @@ import { MapComponent } from './map.component';
 
 import { MapRoutingModule } from './map-routing.module';
 import { HttpClientModule } from '@angular/common/http';
-import { MyTableComponent } from '../components/my-table/my-table.component';
+import { MyTableComponent } from './my-table/my-table.component';
 import { MaterialsModule } from 'src/app/materials.module';
 import { DetailsComponent } from './details/details.component';
 import { ChartsModule } from 'ng2-charts';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -23,6 +24,9 @@ import { ChartsModule } from 'ng2-charts';
     HttpClientModule,
     MaterialsModule,
     ChartsModule,
+    FormsModule,
+    ReactiveFormsModule
+
 
   ]
 })

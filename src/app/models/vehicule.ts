@@ -10,7 +10,7 @@ export class Vehicule {
     fuelLevel: any // EventData.fuelLevel
 
     constructor({ id, name, timestamp, statusCode, lat, lng, heading, speed, fuelLevel }) {
-        this.id = id
+        this.id = id ?? ''
         this.name = name ?? ''
         this.timestamp = timestamp ?? 0
         this.statusCode = statusCode ?? ''
