@@ -1,4 +1,4 @@
-<div class="card vehicules-card" id="list-vehicules">
+<div class="card animated fadeIn vehicules-card" id="list-vehicules">
     <div class="card-header">
         <div class="row align-items-center mb-1">
             <div class="col-md-8">
@@ -9,13 +9,18 @@
                 </div>
             </div>
             <div class="col-md-4 d-flex justify-content-end p-1">
-                <button *ngIf="showColumnsControle" title="Show Columns" class="mcontrol icon-list mx-auto"
-                    id="list-columns" (click)="toggleListFullscreen()"></button>
+                <my-dropdown-checkbox *ngIf="showColumnsControle" title="Show Columns" class=" mx-auto"
+                    id="list-columns" [options]="displayedColumns" [selected]="displayedColumns"
+                    (changeDisplayedColumn)="changeDisplayedColumn($event)">
+                </my-dropdown-checkbox>
+
                 <button *ngIf="showFullScreenControle" title="Enter FullScreen"
                     class="mcontrol control-fullscreen-button mx-auto" id="list-fullscreenControl"
-                    (click)="toggleListFullscreen()"></button>
+                    (click)="toggleListFullscreen($event)"></button>
+
                 <button *ngIf="showCollapsControle" title="Collaps list" class="mcontrol icon-arrow-left mx-auto"
-                    id="list-collaps" (click)="toggleListFullscreen()"></button>
+                    id="list-collaps" (click)="toggleTable()"></button>
+
                 <!-- <i class="cil-chevron-left text-dark ml-4"></i> -->
             </div>
         </div>

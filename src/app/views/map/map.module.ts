@@ -10,6 +10,8 @@ import { MaterialsModule } from 'src/app/materials.module';
 import { DetailsComponent } from './details/details.component';
 import { ChartsModule } from 'ng2-charts';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DropdownCheckboxComponent } from './../components/dropdown-checkbox/dropdown-checkbox.component'
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 
 @NgModule({
@@ -17,6 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MapComponent,
     MyTableComponent,
     DetailsComponent,
+    DropdownCheckboxComponent
   ],
   imports: [
     CommonModule,
@@ -25,9 +28,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MaterialsModule,
     ChartsModule,
     FormsModule,
-    ReactiveFormsModule
-
-
+    ReactiveFormsModule,
+    BsDropdownModule
   ]
 })
 export class MapModule { }

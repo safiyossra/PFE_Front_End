@@ -16,6 +16,8 @@ export class util {
     }
 
     public openFullscreen(elem: any) {
+        console.log(elem);
+
         if (elem.requestFullscreen) {
             elem.requestFullscreen();
         } else if (elem.mozRequestFullScreen) {

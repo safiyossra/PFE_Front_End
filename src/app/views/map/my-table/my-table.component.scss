@@ -1,7 +1,9 @@
 .vehicules-card {
     min-height: 82vh;
     max-height: 82vh;
+    transition: all 1.5s;
 }
+
 
 table {
     width: 100%;
@@ -103,6 +105,7 @@ td.mat-footer-cell:last-of-type {
     font-size: 18px;
     align-self: center;
 }
+
 .mcontrol {
     background: #fff no-repeat 0 0;
     background-size: 26px 52px;

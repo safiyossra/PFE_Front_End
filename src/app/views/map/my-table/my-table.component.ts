@@ -36,7 +36,7 @@ export class MyTableComponent implements OnChanges, OnInit {
   public currentPage: number = 1;
   public numPages: number = 0;
 
-  _parent: any
+  tableCollapsed: Boolean = false
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -52,29 +52,7 @@ export class MyTableComponent implements OnChanges, OnInit {
   }
 
   ngOnInit(): void {
-    // this.dataSource.filterPredicate = (
-    //   data: Vehicule,
-    //   filter: string
-    // ): boolean => {
-    //   let searchString = JSON.parse(filter);
 
-    //   console.log('searchString');
-    //   console.log(searchString);
-    //   return (
-    //     data.statusCode.toString().trim().indexOf(searchString['statusCode']) !== -1 &&
-    //     data.name
-    //       .toString()
-    //       .trim()
-    //       .toLowerCase()
-    //       .indexOf(searchString['name'].toLowerCase()) !== -1
-    //   );
-    // };
-
-    // this.dataSource.filterPredicate = function (data: Vehicule, filter) {
-    //   console.log('searchString');
-
-    //   return data.name.toString().trim().toLowerCase().indexOf(filter) !== -1;
-    // }
   }
 
   // TODO
@@ -83,21 +61,6 @@ export class MyTableComponent implements OnChanges, OnInit {
       data: Vehicule,
       filter: string
     ): boolean => {
-      // var globalMatch = !this.globalFilter;
-
-      // if (this.globalFilter) {
-      //   // search all text fields
-      //   globalMatch =
-      //     data.name
-      //       .toString()
-      //       .trim()
-      //       .toLowerCase()
-      //       .indexOf(this.globalFilter.toLowerCase()) !== -1;
-      // }
-
-      // if (!globalMatch) {
-      //   return;
-      // }
 
       let searchString = JSON.parse(filter);
 
@@ -214,5 +177,15 @@ export class MyTableComponent implements OnChanges, OnInit {
     else {
       this.tools.closeFullscreen()
     }
+  }
+
+  changeDisplayedColumn(newColumnList) {
+    this.displayedColumns = newColumnList
+  }
+
+  toggleTable() {
+    console.log('TOGGLE table');
+
+
   }
 }

@@ -1,0 +1,14 @@
+<div class="dropdown" dropdown [autoClose]="true" [insideClick]="true">
+    <button dropdownToggle title="Show Columns" class="mcontrol icon-list mx-auto" id="list-columns"></button>
+    <div class="dropdown-menu" *dropdownMenu>
+        <mat-checkbox class="dropdown-item checkbox-all checkbox-option" [checked]="allChecked"
+            [indeterminate]="someChecked()" (change)="setAll($event.checked)">
+            Tout
+        </mat-checkbox>
+        <!-- <div role="separator" class="dropdown-divider"></div> -->
+        <mat-checkbox *ngFor="let option of myOptions" class="dropdown-item checkbox-option"
+            [(ngModel)]="option.selected" (ngModelChange)="updateAllComplete()">
+            {{option.name}}
+        </mat-checkbox>
+    </div>
+</div>

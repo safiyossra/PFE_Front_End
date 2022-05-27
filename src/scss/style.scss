@@ -15,6 +15,7 @@ body {
 #logoutBtn {
     cursor: pointer;
 }
+
 .leaflet-touch .leaflet-control-layers-toggle {
     width: 26px;
     height: 26px;
@@ -34,4 +35,23 @@ body {
 .leaflet-touch .leaflet-bar {
     border: 1px solid rgb(0 0 0 / 48%);
     background-clip: padding-box;
+}
+
+.mat-checkbox {
+    padding: 0;
+}
+
+.checkbox-all label {
+    width: 100%;
+    padding: 15px 20px;
+}
+
+.mat-checkbox-layout {
+    width: 100%;
+    padding: 15px 30px;
+    margin: 0;
+}
+
+.mat-checkbox-label {
+    flex-grow: 1;
 }
