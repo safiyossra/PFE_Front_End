@@ -360,15 +360,6 @@
               <button type="submit" class="btn btn-sm btn-primary" (click)="submit()">
                 <i class="fa fa-dot-circle-o"></i> &nbsp;Apply
               </button>
-             <!--
-                &nbsp;<button type="reset" class="btn btn-sm btn-danger" (click)="reset()">
-                <i class="fa fa-ban"></i> &nbsp;Reset
-              </button>
-              -->
-              &nbsp;<button type="button" class="btn btn-sm btn-info" (click)="toggle('symbol')">
-                <i class="fa fa-check"></i>&nbsp; test
-              </button>
-
             </div>
           </form>
         </div>
@@ -497,7 +488,7 @@
             <i class="icon-list"></i>
              Table &nbsp;
           </ng-template>
-          <my-data-table [data]="reportData" [displayedColumns]="displayColumns">
+          <my-data-table [data]="reportData" [columnNames]="displayedColumns" [columns]="columns">
 
             
           </my-data-table>
@@ -535,10 +526,18 @@
           </div>
         </tab>
         <tab style="min-height: 660px">
-          <ng-template tabHeading
-            ><i class="fa fa-list-alt"></i> Details &nbsp;</ng-template
-          >
-          ...
+          <ng-template tabHeading>
+            <button
+              type="button"
+              (click)="getdetails()"
+            >
+            <i class="fa fa-list-alt"></i> Details &nbsp;
+          </button>
+          </ng-template>
+            <my-data-table [data]="reportDetails">
+
+            
+            </my-data-table>
         </tab>
       </tabset>
     </div>
