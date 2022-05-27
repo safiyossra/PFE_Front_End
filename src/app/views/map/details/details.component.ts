@@ -24,8 +24,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     lng: -5.83
   }
 
-  events: any
-  // trajets: any[]
+  events: any = []
+  trajets: any[] = []
 
 
   //DATATABLE Attributes
@@ -33,13 +33,13 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort
 
   dataSource = new MatTableDataSource()
-  displayedColumns: any[] = ['date', 'depart', 'arrivee']
-  columnNames: any[] = ['date', 'depart', 'arrivee']
+  displayedColumns: any[] = ['start', 'end', 'km', 'consom', 'nbrArr', 'dureeArr'] //dureeCond
+  columnNames: any[] = ['Départ', 'Arrivée', 'Distance (Km)', 'Consommation', "Nombre d'arrêts", "Durée d'arrêt"] //Durée de conduite
 
   pageSizeOptions = [5, 10, 15, 25]
 
   selectedPageSize = 5
-  maxSize = 5
+  // maxSize = 5
   totalItems: number
   curremtPage: number = 1
   numPages: number
@@ -150,7 +150,13 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
           this.lineChartLabels = this.events.map((event: { timestamp: any; }) => new Date(event.timestamp * 1000))
 
-          console.log(this.trajets);
+          this.getTrajets()
+
+          this.dataSource = new MatTableDataSource(this.trajets)
+          this.totalItems = this.dataSource.data.length
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+
 
         },
         )
@@ -164,6 +170,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
       console.log('Vehicule Does not exist');
       this.router.navigate(['/404'])
     }
+
+
   }
 
   ngAfterViewInit() {
@@ -194,7 +202,14 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   // table events 
   onRowClicked(row: any) {
-    console.log(row);
+    var latlngs = []
+    latlngs = row.events.map(ev => [ev.latitude, ev.longitude])
+    console.log(latlngs);
+
+    if (row.km > 0) {
+      console.log(row.events);
+      var polyline = L.polyline(latlngs, { color: 'blue' }).addTo(this.map);
+    }
   }
 
   // -------------------------------------------------// 
@@ -210,7 +225,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   // ----------------------- Getting info for the table --------------------------// 
 
-  get trajets() {
+  getTrajets() {
 
     let trajets = []
 
@@ -236,20 +251,35 @@ export class DetailsComponent implements OnInit, AfterViewInit {
           endTime = ev.timestamp
           carStat = 0
           events2 = this.events.slice(startIndex, endIndex + 1)
-          // let day = new Date(startTime * 1000)
-          // console.log(events2);
+
+          var date1 = new Date(null);
+          // var date2 = new Date(null);
+
+          date1.setSeconds(this.getStats(events2)['dureeArr']);
+          // date2.setSeconds(this.getStats(events2)['dureeCond']);
+
+          var durreArr = date1.toISOString().substr(11, 8);
+          // var dureeCond = date2.toISOString().substr(11, 8);
+
           trajets.push({
             start: new Date(startTime * 1000),
             end: new Date(endTime * 1000),
-            data: this.getStats(events2)
+            km: this.getStats(events2)['Km'],
+            consom: this.getStats(events2)['Consom'],
+            nbrArr: this.getStats(events2)['nbrArr'],
+            dureeArr: durreArr,
+            // dureeCond: dureeCond,
+            events: events2
           })
         }
       } else {
-        console.log('other status : ' + ev.statusCode);
+        //
       }
     });
 
-    return trajets
+    this.trajets = trajets
+
+    // return trajets
   }
 
   getStats(events) {
@@ -262,8 +292,44 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     stats['Consom'] = Math.round(this.getConsommation(events) * 100) / 100
     stats['nbrArr'] = this.getNbrArrets(events)
     stats['dureeArr'] = this.getDurreArret(events)
+    // stats['dureeCond'] = this.getDurreCond(events)
 
     return stats
+  }
+
+  // TODO : Fix this
+  getDurreCond(events) {
+    var carStat = 0
+    var dureeConduite = 0
+
+    console.log(5 - 15);
+
+    events.forEach(ev => {
+      if (ev.statusCode == 61714 || ev.statusCode == 62465) {
+        if (carStat == 0) {
+          var timeConduiteInit = ev.timestamp
+          carStat = 1
+        }
+      }
+
+      if (ev.statusCode == 62467 && carStat == 1) {
+        var timeConduiteFin = ev.timestamp
+
+        // followed the backend logic but this still not working
+        // TODO : Need to verify this 
+        dureeConduite += (timeConduiteFin - timeConduiteInit)
+
+        carStat = 0
+      }
+
+
+      console.log('conduite');
+      console.log(dureeConduite);
+    })
+
+
+
+    return dureeConduite
   }
 
   getDurreArret(events) {
@@ -394,7 +460,6 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
     return addressFin
   }
-
 
   // -----------------------------------------------------------------------------// 
 }
