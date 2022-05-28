@@ -332,6 +332,22 @@ export class TabsComponent {
       this.selectedparams4 = []
   }
 
+  resetkm() {
+    this.selectedkmConditions = []
+  }
+  resetparam1() {
+    this.selectedparams1 = []
+  }
+  resetparam2() {
+    this.selectedparams2 = []
+  }
+  resetparam3() {
+    this.selectedparams3 = []
+  }
+  resetparam4() {
+    this.selectedparams4 = []
+  }
+
   getParam(p: any) {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
   }
