@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 
+import * as dateFns from 'date-fns';
 
 @Component({
   templateUrl: 'tabs.component.html',
@@ -22,6 +23,8 @@ export class TabsComponent {
   displayedColumns: any[];
   columns: any[];
   reportDetails: any;
+  paramstab = [];
+  resume = [];
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -117,15 +120,15 @@ export class TabsComponent {
 
   public params = [
     {
-      label: "Km parcourue",
+      label: "Kilometrage parcourue (km)",
       data: "k"
     },
     {
-      label: "Duree de conduite",
+      label: "Duree de conduite (min)",
       data: "dc"
     },
     {
-      label: "Duree d'arrets",
+      label: "Duree d'arrets (min)",
       data: "da"
     },
     {
@@ -133,19 +136,19 @@ export class TabsComponent {
       data: "na"
     },
     {
-      label: "Consom Fuel",
+      label: "Consom Fuel (L)",
       data: "c"
     },
     {
-      label: "Fuel moyenne",
+      label: "Fuel moyenne (L)",
       data: "cr"
     },
     {
-      label: "Vitesse",
+      label: "Vitesse (km/h)",
       data: "v"
     },
     {
-      label: "Temperature",
+      label: "Temperature (km/h)",
       data: "t"
     },
   ];
@@ -173,6 +176,7 @@ export class TabsComponent {
   showErrorparams = false;
   errorMessageparams = "";
 
+  
   getSelectedDevices(selected) {
     // console.log(selected);
     this.selectedDevice = selected;
@@ -221,19 +225,19 @@ export class TabsComponent {
     scaleShowVerticalLines: false,
     responsive: true
   };
-  public barChartLabels: string[] = Array.from({ length: 15 }, (x, i) => "Feb " + i);
+
+  public barChartLabels: string[];
   public barChartType = 'bar';
   public barChartLegend = true;
 
-  public xVal: Number[] = Array.from({ length: 20 }, () => Math.floor(Math.random() * 40))
-  public yVal: Number[] = Array.from({ length: 20 }, () => Math.floor(Math.random() * 40))
+  public xVal: Number[];
+  public yVal: Number[];
   public barChartData: any[] = [
-    { data: this.xVal, label: 'Series A' },
-    { data: this.xVal, label: 'Series B' },
-    { data: this.xVal, label: 'Series c' },
-    { data: this.xVal, label: 'Series d' }
+    {
+      data: [],
+      label: ""
+    }
   ];
-
 
   public chartClicked(e: any): void {
     console.log(e);
@@ -242,39 +246,124 @@ export class TabsComponent {
   public chartHovered(e: any): void {
     console.log(e);
   }
+  public brandBoxChartOptions: any = {
+
+    responsive: true,
+    scales: {
+      xAxes: [{
+        display: false,
+      }],
+      yAxes: [{
+        display: false,
+      }]
+    },
+    elements: {
+      line: {
+        borderWidth: 2
+      },
+      point: {
+        radius: 0,
+        hitRadius: 10,
+        hoverRadius: 4,
+        hoverBorderWidth: 3,
+      }
+    },
+    legend: {
+      display: false
+    },
+    // plugins: {
+    //   data: {
+    //    color: "white",
+    //    formatter: (value, ctx) => {
+    //     var perc = ((value * 100)).toFixed(0) + "%";
+    //     return perc;
+    //    },
+    //   },
+    //  },
+  };
+  public brandBoxChartColours: Array<any> = [
+    {
+      backgroundColor: 'rgba(255,255,255,.1)',
+      borderColor: 'rgba(255,255,255,.55)',
+      pointHoverBackgroundColor: '#fff'
+    }
+  ];
+  public resumeColors: Array<any> = [
+    "facebook", "twitter", "google-plus", "linkedin"
+  ];
+  public resumeUnits: any =   {"k":"KM","da":"MIN","dc":"MIN","c":"L","cr":"L","v":"KM/H","t":"°C","na":" "};
+  public brandBoxChartLegend = false;
+  public brandBoxChartType = 'line';
 
   submit() {
     this.resetValidator()
     if (this.selectedDevice.length == 0) {
       this.onValidateDevice()
     } else {
-      var paramstab = [];
+      var paramstabtmp = []
       var iskm = ""
       if (this.selectedkm.length != 0)
         iskm = '&kilom=' + this.selectedkm
       if (this.selectedparam1.length != 0)
-        paramstab.push(this.selectedparam1)
+        paramstabtmp.push(this.selectedparam1)
       if (this.selectedparam2.length != 0)
-        paramstab.push(this.selectedparam2)
+        paramstabtmp.push(this.selectedparam2)
       if (this.selectedparam3.length != 0)
-        paramstab.push(this.selectedparam3)
+        paramstabtmp.push(this.selectedparam3)
       if (this.selectedparam4.length != 0)
-        paramstab.push(this.selectedparam4)
+        paramstabtmp.push(this.selectedparam4)
 
-      paramstab = Array.from(new Set(paramstab))
-      var requestparams = paramstab.join("&")
+      this.paramstab = []
+      this.resume = []
+      this.paramstab = Array.from(new Set(paramstabtmp))
+      var requestparams = this.paramstab.join("&")
       if (requestparams != "") {
         var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000 + "&" + requestparams + iskm
-
-        console.log(urlParams);
         this.dataService.getStatistique(urlParams).subscribe({
           next: (d: any) => {
-            this.displayedColumns = ["Date", ...this.getColumnsNames(paramstab)]
-            this.columns = ["timestamp", ...paramstab]
-            d.forEach((e) => { e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toDateString() })
+            this.displayedColumns = ["Date", ...this.getColumnsNames(this.paramstab)]
+            this.columns = ["timestamp", ...this.paramstab]
             console.log(d);
-
             this.reportData = d;
+            this.reportData.forEach((e) => {
+              e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toDateString();
+              if (e.da) e.da = Math.round(Number.parseInt(e.da)/60);
+              if (e.dc) e.dc =  Math.round(Number.parseInt(e.dc)/60);
+            })
+              // if (e.da) e.da = new Date(Number.parseInt(e.da) * 1000).toLocaleTimeString();
+              // if (e.dc) e.dc = new Date(Number.parseInt(e.dc) * 1000).toLocaleTimeString();
+            console.log(this.reportData);
+            let resumetmp = [];
+            this.paramstab.forEach((e) => {
+              resumetmp.push({
+                val: d.reduce((p, c) => {
+                  console.log(p);
+                  if (["da", "dc"].includes(e)){
+                    var f=isNaN(p) ? p[e] + c[e] : p + c[e]
+                    // var t=dateFns.format(f, 'H:i:s')
+                    console.log(f);
+                    return f
+                  }else 
+                  if (["t", "v"].includes(e)){
+                    if(isNaN(p))return p[e]>c[e]?p[e]:c[e]
+                    else return  p>c[e]?p:c[e]
+                  }
+                    return isNaN(p) ? Math.round(p[e] + c[e]) : Math.round(p + c[e])
+                }).toString()+" "+this.resumeUnits[e], 
+                // unit: this.resumeUnits[e],
+                label: this.getColNames(e),
+                labels: this.reportData.map((l) => { return l.timestamp }), 
+                data:
+                  [
+                    {
+                      data: d.map((l) => { return l[e] }),
+                      label: this.getColNames(e)
+                    }
+                  ]
+              })
+            })
+            this.resume = resumetmp
+            console.log(resumetmp);
           },
         })
       } else {
@@ -293,6 +382,19 @@ export class TabsComponent {
         }
       }
     })
+    return clmns
+  }
+
+  getColNames(p) {
+    var clmns;
+
+    for (let i = 0; i < this.params.length; i++) {
+      if (this.params[i].data == p) {
+        clmns = this.params[i].label;
+        break;
+      }
+    }
+
     return clmns
   }
 
@@ -352,69 +454,11 @@ export class TabsComponent {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
   }
 
-  // social box charts
+  getSumkm() {
 
-  public brandBoxChartData1: Array<any> = [
-    {
-      data: [65, 59, 84, 84, 51, 55, 40],
-      label: 'Facebook'
-    }
-  ];
-  public brandBoxChartData2: Array<any> = [
-    {
-      data: [1, 13, 9, 17, 34, 41, 38],
-      label: 'Twitter'
-    }
-  ];
-  public brandBoxChartData3: Array<any> = [
-    {
-      data: [78, 81, 80, 45, 34, 12, 40],
-      label: 'LinkedIn'
-    }
-  ];
-  public brandBoxChartData4: Array<any> = [
-    {
-      data: [35, 23, 56, 22, 97, 23, 64],
-      label: 'Google+'
-    }
-  ];
+  }
 
-  public brandBoxChartLabels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-  public brandBoxChartOptions: any = {
 
-    responsive: true,
-    scales: {
-      xAxes: [{
-        display: false,
-      }],
-      yAxes: [{
-        display: false,
-      }]
-    },
-    elements: {
-      line: {
-        borderWidth: 2
-      },
-      point: {
-        radius: 0,
-        hitRadius: 10,
-        hoverRadius: 4,
-        hoverBorderWidth: 3,
-      }
-    },
-    legend: {
-      display: false
-    }
-  };
-  public brandBoxChartColours: Array<any> = [
-    {
-      backgroundColor: 'rgba(255,255,255,.1)',
-      borderColor: 'rgba(255,255,255,.55)',
-      pointHoverBackgroundColor: '#fff'
-    }
-  ];
-  public brandBoxChartLegend = false;
-  public brandBoxChartType = 'line';
 }
 
 
