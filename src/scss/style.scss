@@ -55,3 +55,8 @@ body {
 .mat-checkbox-label {
     flex-grow: 1;
 }
+
+
+.important-marker {
+    z-index: 9999999999 !important;
+}

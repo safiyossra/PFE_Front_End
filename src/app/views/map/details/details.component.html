@@ -1,20 +1,24 @@
 <div class="row animated fadeIn">
     <div class="col-lg-8 py-2">
-
         <div class="card card-accent-primary rounded m-0" id="leftCard">
+            <button id="fullScreenControl" *ngIf="showFullScreenControle" title="Enter FullScreen"
+                class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
+            <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
+                class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
+
             <div class="card-header px-2 py-2">
                 <div class="h4 text-dark">Trajets</div>
             </div>
-            <div class="card-body p-2">
+            <div class="card-body pb-0 pt-2 px-2">
                 <div class="row">
                     <div class="col">
                         <div id="mapDetail"></div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="trajets-row">
                     <div class="col">
-                        <div class="card">
-                            <div class="card-body">
+                        <div class="card w-100 trajets-card">
+                            <div class="card-body p-0">
                                 <table mat-table [dataSource]="dataSource" matSort>
                                     <ng-container *ngFor="let column of displayedColumns; let index = index"
                                         [matColumnDef]="column">
@@ -41,8 +45,7 @@
                                 </table>
                             </div>
                             <div class="card-footer">
-                                <mat-paginator [pageSizeOptions]="pageSizeOptions" [pageSize]="selectedPageSize"
-                                    showFirstLastButtons></mat-paginator>
+                                <mat-paginator [pageSize]="selectedPageSize" showFirstLastButtons></mat-paginator>
                             </div>
                         </div>
                     </div>
