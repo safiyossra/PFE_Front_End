@@ -15,12 +15,12 @@ export class MyDataTableComponent implements OnChanges {
   @Input() data: any;
   @Input() columnNames?: any[]
   @Input() columns?: any[]
-  @Input() pageSizeOptions?= [5, 10, 25, 50, 100];
+  @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   public displayedColumns: any = []
-  public selectedPageSize = 10;
+  public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
   public currentPage: number = 1;
