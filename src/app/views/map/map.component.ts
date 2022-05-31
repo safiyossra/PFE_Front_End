@@ -56,7 +56,6 @@ export class MapComponent implements AfterViewInit {
       //   this.updateMarkers()
       // }, 500);
     }, 100);
-
   }
 
 
