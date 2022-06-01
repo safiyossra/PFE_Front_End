@@ -15,6 +15,17 @@
     padding-right: 5px;
     padding-left: 10px;
     transition: all 1.5s;
+    overflow: hidden;
+
+    .card-body {
+        overflow: scroll;
+
+        // table {
+        //     tbody {
+        //         overflow: scroll;
+        //     }
+        // }
+    }
 }
 
 .control-fullscreen-button,

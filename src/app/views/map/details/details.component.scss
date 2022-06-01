@@ -1,14 +1,14 @@
 #leftCard {
     // height: 77vh;
-    // min-height: 77vh;
+    min-height: 80vh;
     // max-height: 77vh;
     margin-right: 0;
 
     // overflow: hidden;
 
     #mapDetail {
-        min-height: 38vh;
-        max-height: 38vh;
+        min-height: 37vh;
+        max-height: 37vh;
         border-radius: 10px;
         width: 100%;
         margin-bottom: 10px;
@@ -18,15 +18,22 @@
     table {
         width: 100%;
         // overflow: scroll;
+        margin-right: 8px;
 
         tbody {
-            // height: 50%;
+            height: 215px;
+            min-height: 215px;
+            max-height: 215px;
             overflow: scroll;
         }
     }
 
     .trajets-card {
         display: flex;
+    }
+
+    #trajets-row {
+        height: auto;
     }
 
     // #trajets-table {
@@ -42,14 +49,6 @@
 }
 
 
-
-
-#trajets {
-    min-height: 35vh;
-    max-height: 35vh;
-    width: 100%;
-    margin-right: 0;
-}
 
 .divider {
     border: 1px solid rgba(128, 128, 128, 0.5);

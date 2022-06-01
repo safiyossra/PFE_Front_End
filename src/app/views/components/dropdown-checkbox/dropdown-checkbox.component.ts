@@ -24,6 +24,8 @@ export class DropdownCheckboxComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.options);
+
     this.options.forEach(op => {
       this.myOptions.push(
         {
