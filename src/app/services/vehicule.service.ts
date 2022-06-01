@@ -30,8 +30,6 @@ export class VehiculeService {
   }
 
   getVehiculeEvents(id) {
-    console.log("id : " + id);
-
     let SERVER_URL = environment.apiUrl + "map-events?d=" + id;
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
@@ -43,6 +41,21 @@ export class VehiculeService {
         d: id
       }
     })
+
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+    })
+
+  }
+
+
+  getDashboardStats(p: string) {
+    let SERVER_URL = environment.apiUrl + "dashboard-stats?p=" + p;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
 
     return this.http.get(SERVER_URL, {
       headers: headers,

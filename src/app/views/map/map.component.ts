@@ -56,59 +56,36 @@ export class MapComponent implements AfterViewInit {
       //   this.updateMarkers()
       // }, 500);
     }, 100);
-
   }
+
+
   createMap() {
     const zoomLevel = 12
     this.map = L.map('map', { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
       .setView([this.car.lat, this.car.lng], zoomLevel)
 
-    // this.map.on('zoomstart', () => {
-    //   const elems = document.getElementsByClassName('my-div-icon')
-
-    //   for (let index = 0; index < elems.length; index++) {
-    //     elems.item(index).classList.remove('marker-transition')
-    //   }
-    // })
-
-    // this.map.on('zoomend', () => {
-    //   const elems = document.getElementsByClassName('my-div-icon')
-
-    //   setTimeout(() => {
-    //     for (let index = 0; index < elems.length; index++) {
-    //       elems.item(index).classList.add('marker-transition')
-    //     }
-    //   }, 100);
-    // })
-
-    // https://leaflet-extras.github.io/leaflet-providers/preview/
-    // https://stackoverflow.com/questions/33343881/leaflet-in-google-maps
-    //osm layer
-    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    });
     // dark map 
     const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       subdomains: 'abcd',
       maxZoom: 19
     });
-    const googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    const googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
     // google street 
-    const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
 
     //google satellite
-    const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+    const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
-    const googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+    const googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
@@ -117,7 +94,6 @@ export class MapComponent implements AfterViewInit {
       "Google Terrain": googleTerrain,
       "Google Satellite": googleSat,
       'Google Street': googleStreets,
-      "OSM": osm,
       'Dark': dark,
     };
     googleHybrid.addTo(this.map)
@@ -190,12 +166,8 @@ export class MapComponent implements AfterViewInit {
             closeButton: false,
             offset: L.point(0, -20)
 
-          }).on('dblclick', () => {
-            this.rowDoubleClicked(index)
           }).on('click', (event) => {
-            console.log(event.target);
-
-            event.target.openPopup()
+            this.rowClicked(index)
           })
         // .on('mouseout', (event) => {
         //   event.target.closePopup()
@@ -366,7 +338,15 @@ export class MapComponent implements AfterViewInit {
   }
 
   rowClicked(event) {
-    console.log(event);
+    const elems = document.getElementsByClassName('my-div-icon')
+
+    for (let index = 0; index < elems.length; index++) {
+      elems.item(index).classList.remove('marker-transition')
+    }
+
+    this.selectedVehiculeIndex = event
+    this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
+
   }
 
   rowDoubleClicked(event) {

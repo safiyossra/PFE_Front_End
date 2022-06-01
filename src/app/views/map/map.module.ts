@@ -12,6 +12,7 @@ import { ChartsModule } from 'ng2-charts';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropdownCheckboxComponent } from './../components/dropdown-checkbox/dropdown-checkbox.component'
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { EventsTableComponent } from './events-table/events-table.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
     MapComponent,
     MyTableComponent,
     DetailsComponent,
-    DropdownCheckboxComponent
+    DropdownCheckboxComponent,
+    EventsTableComponent
   ],
   imports: [
     CommonModule,
