@@ -8,6 +8,7 @@ import * as dateFns from 'date-fns';
   templateUrl: 'tabs.component.html',
 })
 export class TabsComponent {
+  loading: boolean = false;
 
   constructor(private dataService: DataService) { }
 
@@ -76,7 +77,7 @@ export class TabsComponent {
       }
     };
 
-    this.getDev();
+     this.getDev();
   }
 
   toggleCollapse(): void {
@@ -271,6 +272,7 @@ export class TabsComponent {
     if (this.selectedDevice.length == 0) {
       this.onValidateDevice()
     } else {
+      this.loading = true;
       var paramstabtmp = []
       var iskm = ""
       if (this.selectedkm.length != 0)
@@ -332,9 +334,11 @@ export class TabsComponent {
             this.resume = resumetmp
             this.barChartLabels = labels
             this.barChartData= y.map((l) => { return l.data[0] });
+            this.loading = false;
           },
         })
       } else {
+        this.loading = false;
         this.onValidateParam()
       }
     }
