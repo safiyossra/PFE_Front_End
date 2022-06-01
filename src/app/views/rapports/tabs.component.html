@@ -158,17 +158,17 @@
                       [value]="'data'"
                       [multiple]="false"
                       [labelCount]="0"
-                      [selectedOptions]="selectedparams1"
-                      (selectionChange)="getSelectedparams1($event)"
+                      [selectedOptions]="selectedparams[0]"
+                      (selectionChange)="getSelectedparams($event,0)"
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <button
+                      <button *ngIf="selectedparams[0].length != 0"
                       type="button"
                       class="input-group-text"
-                      (click)="resetparam1()"
+                      (click)="resetparam(0)"
                      >
-                     <i *ngIf="selectedparam1 != null">x</i>
+                     <i>x</i>
                     </button>
                     </div>
                   </div>
@@ -217,18 +217,18 @@
                       [display]="'label'"
                       [value]="'data'"
                       [multiple]="false"
-                      [labelCount]="0"
-                      [selectedOptions]="selectedparams2"
-                      (selectionChange)="getSelectedparams2($event)"
+                      [labelCount]="0"  
+                      [selectedOptions]="selectedparams[1]"
+                      (selectionChange)="getSelectedparams($event,1)"
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <button
+                      <button *ngIf="selectedparams[1].length != 0"
                       type="button"
                       class="input-group-text"
-                      (click)="resetparam2()"
+                      (click)="resetparam(1)"
                      >
-                     <i *ngIf="selectedparam2 != null">x</i>
+                     <i>x</i>
                     </button>
                     </div>
                   </div>
@@ -278,26 +278,20 @@
                       [display]="'label'"
                       [value]="'data'"
                       [multiple]="false"
-                      [labelCount]="0"
-                      [selectedOptions]="selectedparams3"
-                      (selectionChange)="getSelectedparams3($event)"
+                      [labelCount]="0"    
+                      [selectedOptions]="selectedparams[2]"
+                      (selectionChange)="getSelectedparams($event,2)"
                     >
                     </my-dropdown-select>
-                    <!--====================================================================================================
-                      ====================================================================================================
-                    ====================================================================================================-->
                     <div class="input-group-append">
-                        <button
-                          type="button"
-                          class="input-group-text"
-                          (click)="resetparam3()"
-                         >
-                         <i *ngIf="selectedparam3 != null">x</i>
-                        </button>
+                      <button *ngIf="selectedparams[2].length != 0"
+                      type="button"
+                      class="input-group-text"
+                      (click)="resetparam(2)"
+                     >
+                     <i>x</i>
+                    </button>
                     </div>
-                    <!--====================================================================================================
-                      ====================================================================================================
-                    ====================================================================================================-->
                   </div>
                   <!--</div> -->
                 </div>
@@ -346,17 +340,17 @@
                       [value]="'data'"
                       [multiple]="false"
                       [labelCount]="0"
-                      [selectedOptions]="selectedparams4"
-                      (selectionChange)="getSelectedparams4($event)"
+                      [selectedOptions]="selectedparams[3]"
+                      (selectionChange)="getSelectedparams($event,3)"
                     >
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <button
+                      <button *ngIf="selectedparams[3].length != 0"
                       type="button"
                       class="input-group-text"
-                      (click)="resetparam4()"
+                      (click)="resetparam(3)"
                      >
-                     <i *ngIf="selectedparam4 != null">x</i>
+                     <i>x</i>
                     </button>
                     </div>
                   </div>
@@ -426,9 +420,9 @@
             Charts
             </ng-template>
 
-          <div class="card" style="min-height: 660px">
+          <div class="card" >
             <div class="card-header">
-              Bar Chart
+              Chart
               <div class="card-header-actions">
                 <a href="http://google.com">
                   <small class="text-muted">Download</small>
