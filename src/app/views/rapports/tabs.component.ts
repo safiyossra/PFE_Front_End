@@ -221,23 +221,20 @@ export class TabsComponent {
     this.errorMessageDevice = "";
   }
   // barChart
+
   public barChartOptions: any = {
     scaleShowVerticalLines: false,
     responsive: true
   };
-
-  public barChartLabels: string[];
+  public barChartLabels: string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
   public barChartType = 'bar';
   public barChartLegend = true;
 
-  public xVal: Number[];
-  public yVal: Number[];
   public barChartData: any[] = [
-    {
-      data: [],
-      label: ""
-    }
+    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
+    { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' }
   ];
+  //////////////////////
 
   public chartClicked(e: any): void {
     console.log(e);
@@ -289,7 +286,7 @@ export class TabsComponent {
     }
   ];
   public resumeColors: Array<any> = [
-    "facebook", "twitter", "google-plus", "linkedin"
+     "twitter", "yellow","google-plus", "facebook"
   ];
   public resumeUnits: any =   {"k":"KM","da":"MIN","dc":"MIN","c":"L","cr":"L","v":"KM/H","t":"°C","na":" "};
   public brandBoxChartLegend = false;
@@ -453,11 +450,6 @@ export class TabsComponent {
   getParam(p: any) {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
   }
-
-  getSumkm() {
-
-  }
-
 
 }
 
