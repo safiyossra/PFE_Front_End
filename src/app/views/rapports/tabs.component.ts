@@ -2,8 +2,6 @@ import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 
-import * as dateFns from 'date-fns';
-
 @Component({
   templateUrl: 'tabs.component.html',
 })
@@ -206,9 +204,7 @@ export class TabsComponent {
   public barChartLabels: string[] = [];
   public barChartType = 'bar';
   public barChartLegend = true;
-
-  public barChartData: any[] = [
-  ];
+  public barChartData: any[] = [];
   //////////////////////
 
   public chartClicked(e: any): void {

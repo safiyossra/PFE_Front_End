@@ -310,6 +310,9 @@ export class MyDateRangePickerComponent implements ControlValueAccessor, OnInit,
         }
 
         this.generateCalendar();
+
+        ////////////////////////////////////////////////////////////
+       // this.opened = false;
     }
 
     prevMonth(): void {
@@ -433,6 +436,7 @@ export class MyDateRangePickerComponent implements ControlValueAccessor, OnInit,
 
         this.range = range.alias;
         this.generateCalendar();
+        this.opened = false;
     }
 
     @HostListener('document:click', ['$event'])
