@@ -144,31 +144,20 @@ export class TabsComponent {
       data: "cr"
     },
     {
-      label: "Vitesse (km/h)",
+      label: "Vitesse maximale(km/h)",
       data: "v"
     },
     {
-      label: "Temperature (km/h)",
+      label: "Temperature maximale(km/h)",
       data: "t"
     },
   ];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
-
   selectedkmConditions = [];
   selectedkm = this.selectedkmConditions;
 
-  selectedparams1 = [];
-  selectedparam1 = this.selectedparams1;
-
-  selectedparams2 = [];
-  selectedparam2 = this.selectedparams2;
-
-  selectedparams3 = [];
-  selectedparam3 = this.selectedparams3;
-
-  selectedparams4 = [];
-  selectedparam4 = this.selectedparams4;
+  selectedparams = [[], [], [], []]
 
   showErrorDevice = false;
   errorMessageDevice = "";
@@ -176,7 +165,7 @@ export class TabsComponent {
   showErrorparams = false;
   errorMessageparams = "";
 
-  
+
   getSelectedDevices(selected) {
     // console.log(selected);
     this.selectedDevice = selected;
@@ -187,23 +176,10 @@ export class TabsComponent {
     this.selectedkm = selected;
   }
 
-  getSelectedparams1(selected) {
-    // console.log(selected);
-    this.selectedparam1 = selected;
+  getSelectedparams(selected, i) {
+    this.selectedparams[i] = selected;
   }
 
-  getSelectedparams2(selected) {
-    // console.log(selected);
-    this.selectedparam2 = selected;
-  }
-  getSelectedparams3(selected) {
-    // console.log(selected);
-    this.selectedparam3 = selected;
-  }
-  getSelectedparams4(selected) {
-    // console.log(selected);
-    this.selectedparam4 = selected;
-  }
   onValidateDevice() {
     this.showErrorDevice = !this.showErrorDevice;
     this.errorMessageDevice = "This field is required";
@@ -221,30 +197,25 @@ export class TabsComponent {
     this.errorMessageDevice = "";
   }
   // barChart
+
   public barChartOptions: any = {
     scaleShowVerticalLines: false,
     responsive: true
   };
-
-  public barChartLabels: string[];
+  public barChartLabels: string[] = [];
   public barChartType = 'bar';
   public barChartLegend = true;
 
-  public xVal: Number[];
-  public yVal: Number[];
   public barChartData: any[] = [
-    {
-      data: [],
-      label: ""
-    }
   ];
+  //////////////////////
 
   public chartClicked(e: any): void {
-    console.log(e);
+    // console.log(e);
   }
 
   public chartHovered(e: any): void {
-    console.log(e);
+    // console.log(e);
   }
   public brandBoxChartOptions: any = {
 
@@ -289,9 +260,9 @@ export class TabsComponent {
     }
   ];
   public resumeColors: Array<any> = [
-    "facebook", "twitter", "google-plus", "linkedin"
+    "twitter", "yellow", "google-plus", "facebook"
   ];
-  public resumeUnits: any =   {"k":"KM","da":"MIN","dc":"MIN","c":"L","cr":"L","v":"KM/H","t":"°C","na":" "};
+  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cr": "L", "v": "KM/H", "t": "°C", "na": " " };
   public brandBoxChartLegend = false;
   public brandBoxChartType = 'line';
 
@@ -304,14 +275,14 @@ export class TabsComponent {
       var iskm = ""
       if (this.selectedkm.length != 0)
         iskm = '&kilom=' + this.selectedkm
-      if (this.selectedparam1.length != 0)
-        paramstabtmp.push(this.selectedparam1)
-      if (this.selectedparam2.length != 0)
-        paramstabtmp.push(this.selectedparam2)
-      if (this.selectedparam3.length != 0)
-        paramstabtmp.push(this.selectedparam3)
-      if (this.selectedparam4.length != 0)
-        paramstabtmp.push(this.selectedparam4)
+      if (this.selectedparams[0].length != 0)
+        paramstabtmp.push(this.selectedparams[0])
+      if (this.selectedparams[1].length != 0)
+        paramstabtmp.push(this.selectedparams[1])
+      if (this.selectedparams[2].length != 0)
+        paramstabtmp.push(this.selectedparams[2])
+      if (this.selectedparams[3].length != 0)
+        paramstabtmp.push(this.selectedparams[3])
 
       this.paramstab = []
       this.resume = []
@@ -323,36 +294,31 @@ export class TabsComponent {
           next: (d: any) => {
             this.displayedColumns = ["Date", ...this.getColumnsNames(this.paramstab)]
             this.columns = ["timestamp", ...this.paramstab]
-            console.log(d);
             this.reportData = d;
             this.reportData.forEach((e) => {
               e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toDateString();
-              if (e.da) e.da = Math.round(Number.parseInt(e.da)/60);
-              if (e.dc) e.dc =  Math.round(Number.parseInt(e.dc)/60);
+              if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
+              if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
             })
-              // if (e.da) e.da = new Date(Number.parseInt(e.da) * 1000).toLocaleTimeString();
-              // if (e.dc) e.dc = new Date(Number.parseInt(e.dc) * 1000).toLocaleTimeString();
-            console.log(this.reportData);
+            // if (e.da) e.da = new Date(Number.parseInt(e.da) * 1000).toLocaleTimeString();
+            // if (e.dc) e.dc = new Date(Number.parseInt(e.dc) * 1000).toLocaleTimeString();
             let resumetmp = [];
+            let labels = this.reportData.map((l) => { return l.timestamp })
             this.paramstab.forEach((e) => {
               resumetmp.push({
                 val: d.reduce((p, c) => {
-                  console.log(p);
-                  if (["da", "dc"].includes(e)){
-                    var f=isNaN(p) ? p[e] + c[e] : p + c[e]
-                    // var t=dateFns.format(f, 'H:i:s')
-                    console.log(f);
+                  if (["da", "dc"].includes(e)) {
+                    var f = isNaN(p) ? p[e] + c[e] : p + c[e]
                     return f
-                  }else 
-                  if (["t", "v"].includes(e)){
-                    if(isNaN(p))return p[e]>c[e]?p[e]:c[e]
-                    else return  p>c[e]?p:c[e]
-                  }
-                    return isNaN(p) ? Math.round(p[e] + c[e]) : Math.round(p + c[e])
-                }).toString()+" "+this.resumeUnits[e], 
-                // unit: this.resumeUnits[e],
+                  } else
+                    if (["t", "v"].includes(e)) {
+                      if (isNaN(p)) return p[e] > c[e] ? p[e] : c[e]
+                      else return p > c[e] ? p : c[e]
+                    }
+                  return isNaN(p) ? Math.round(p[e] + c[e]) : Math.round(p + c[e])
+                }).toString() + " " + this.resumeUnits[e],
                 label: this.getColNames(e),
-                labels: this.reportData.map((l) => { return l.timestamp }), 
+                labels: labels,
                 data:
                   [
                     {
@@ -362,8 +328,10 @@ export class TabsComponent {
                   ]
               })
             })
+            var y = this.getValue(resumetmp)
             this.resume = resumetmp
-            console.log(resumetmp);
+            this.barChartLabels = labels
+            this.barChartData= y.map((l) => { return l.data[0] });
           },
         })
       } else {
@@ -371,6 +339,10 @@ export class TabsComponent {
       }
     }
   };
+
+  getValue(v){
+    return JSON.parse(JSON.stringify(v))
+  }
 
   getColumnsNames(p) {
     var clmns = []
@@ -417,7 +389,6 @@ export class TabsComponent {
     this.dataService.getVehicule().subscribe({
       next: (res) => {
         this.devices = res;
-        // console.log(this.devices);
       },
       error: (errors) => {
 
@@ -428,36 +399,19 @@ export class TabsComponent {
   reset() {
     this.selectedDevices = [],
       this.selectedkmConditions = [],
-      this.selectedparams1 = [],
-      this.selectedparams2 = [],
-      this.selectedparams3 = [],
-      this.selectedparams4 = []
+      this.selectedparams = [[], [], [], []]
   }
 
   resetkm() {
     this.selectedkmConditions = []
   }
-  resetparam1() {
-    this.selectedparams1 = []
-  }
-  resetparam2() {
-    this.selectedparams2 = []
-  }
-  resetparam3() {
-    this.selectedparams3 = []
-  }
-  resetparam4() {
-    this.selectedparams4 = []
+  resetparam(i) {
+    this.selectedparams[i] = []
   }
 
   getParam(p: any) {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
   }
-
-  getSumkm() {
-
-  }
-
 
 }
 
