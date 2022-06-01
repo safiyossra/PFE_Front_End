@@ -24,6 +24,7 @@ export class TabsComponent {
   reportDetails: any;
   paramstab = [];
   resume = [];
+  urldetails ="";
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -75,7 +76,7 @@ export class TabsComponent {
       }
     };
 
-     this.getDev();
+    this.getDev();
   }
 
   toggleCollapse(): void {
@@ -304,17 +305,7 @@ export class TabsComponent {
             let labels = this.reportData.map((l) => { return l.timestamp })
             this.paramstab.forEach((e) => {
               resumetmp.push({
-                val: d.reduce((p, c) => {
-                  if (["da", "dc"].includes(e)) {
-                    var f = isNaN(p) ? p[e] + c[e] : p + c[e]
-                    return f
-                  } else
-                    if (["t", "v"].includes(e)) {
-                      if (isNaN(p)) return p[e] > c[e] ? p[e] : c[e]
-                      else return p > c[e] ? p : c[e]
-                    }
-                  return isNaN(p) ? Math.round(p[e] + c[e]) : Math.round(p + c[e])
-                }).toString() + " " + this.resumeUnits[e],
+                val: this.reduce(d, e).toString() + " " + this.resumeUnits[e],
                 label: this.getColNames(e),
                 labels: labels,
                 data:
@@ -329,7 +320,7 @@ export class TabsComponent {
             var y = this.getValue(resumetmp)
             this.resume = resumetmp
             this.barChartLabels = labels
-            this.barChartData= y.map((l) => { return l.data[0] });
+            this.barChartData = y.map((l) => { return l.data[0] });
             this.loading = false;
           },
         })
@@ -340,7 +331,26 @@ export class TabsComponent {
     }
   };
 
-  getValue(v){
+  reduce(v, e) {
+    if (v && v.length != 0) {
+      if (v.length > 1) {
+        return v.reduce((p, c) => {
+          if (["da", "dc"].includes(e)) {
+            var f = isNaN(p) ? p[e] + c[e] : p + c[e]
+            return f
+          } else
+            if (["t", "v"].includes(e)) {
+              if (isNaN(p)) return p[e] > c[e] ? p[e] : c[e]
+              else return p > c[e] ? p : c[e]
+            }
+          return isNaN(p) ? Math.round(p[e] + c[e]) : Math.round(p + c[e])
+        })
+      }
+      return v[0][e]
+    }
+    return 0
+  }
+  getValue(v) {
     return JSON.parse(JSON.stringify(v))
   }
 
@@ -371,17 +381,11 @@ export class TabsComponent {
   }
 
   getdetails() {
+    this.resetValidator()
     if (this.selectedDevice.length == 0) {
       this.onValidateDevice()
     } else {
-      var urldetails = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000
-      this.dataService.getDetails(urldetails).subscribe({
-        next: (d) => {
-          this.reportDetails = d;
-          // console.log("data");
-          // console.log(d);          
-        },
-      })
+      this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
     }
   }
 

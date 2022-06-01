@@ -358,7 +358,8 @@
               </div>
             </div>
             <div class="form-actions">
-              <button type="submit" class="btn btn-sm btn-primary" (click)="submit()">
+              <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading">
+                <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
                 <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
               </button>
             </div>
@@ -457,9 +458,9 @@
             <i class="fa fa-list-alt"></i> Details &nbsp;
           </button>
           </ng-template>
-            <my-data-table [data]="reportDetails"  [columnNames]="displayedColumns" [columns]="columns">
+            <details-table [url]="urldetails" >
   
-            </my-data-table>
+            </details-table>
         </tab>
       </tabset>
     
