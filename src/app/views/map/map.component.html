@@ -1,4 +1,4 @@
-<div class="animated fadeIn">
+<!-- <div class="animated fadeIn">
   <button id="fullScreenControl" *ngIf="showFullScreenControle" title="Enter FullScreen"
     class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
   <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
@@ -13,4 +13,27 @@
       <div class="card-body" id="map"></div>
     </div>
   </div>
+</div> -->
+<!-- <tam-splitter splitterBarWidth=3 [direction]="snippetView.direction" (sizeChange)="sizeChange($event)" [useTransition]="100">
+  <tam-splitter-panel [size]="snippetView.refinedByWidth" [max]="snippetView.refinedByMax" [min]="snippetView.refinedByMin"
+      [visible]="snippetView.refineByShow" (collapsedChange)="collapsedChange($event)">
+      Refined By Panel
+  </tam-splitter-panel>
+  <tam-splitter-panel [visible]="snippetView.middleShow" [size]="snippetView.middleWidth" [max]="snippetView.middleMax" [min]="snippetView.middleMin">
+      Side List Panel
+  </tam-splitter-panel>
+  <tam-splitter-panel [size]="snippetView.previewWidth" [max]="snippetView.previewMax" [min]="snippetView.previewMin">
+      Preview Panel
+  </tam-splitter-panel>
+</tam-splitter> -->
+
+<div style="width: 500px; height: 500px; background: yellow;">
+  <as-split direction="horizontal">
+    <as-split-area [size]="40">
+      <p>LEFT</p>
+    </as-split-area>
+    <as-split-area [size]="60">
+      <p>RIGHT</p>
+    </as-split-area>
+  </as-split>
 </div>

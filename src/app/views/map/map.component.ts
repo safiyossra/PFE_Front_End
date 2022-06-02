@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, HostListener, Inject, Input } from '@angular/core'
+import { AfterViewInit, Component, Input } from '@angular/core'
 import { VehiculeService } from 'src/app/services/vehicule.service'
 import { util } from '../../tools/utils'
 import * as L from 'leaflet'
@@ -13,7 +13,42 @@ import { Vehicule } from '../../models/vehicule'
 
 
 export class MapComponent implements AfterViewInit {
+  //////////////////////////////////////////////
+  snippetView = {
+    direction: "horizontal",
+    refinedByWidth: 20,
+    refinedByMax: 30,
+    refinedByMin: 10,
+    refineByShow: true,
 
+    middleWidth: 30,
+    middleMax: 40,
+    middleMin: 20,
+    middleShow: true,
+
+    previewWidth: 50,
+    previewMax: 70,
+    previewMin: 30
+  }
+
+  collapse() {
+    this.snippetView.refineByShow = !this.snippetView.refineByShow;
+  }
+  changeDir() {
+    // this.snippetView.middleShow = !this.snippetView.middleShow;
+    this.snippetView.direction = this.snippetView.direction === "horizontal" ? "vertical" : "horizontal"
+  }
+  collapsedChange(e) {
+    if (e.collapsed) {
+      this.snippetView.previewWidth = e.collapsedComponentSize + e.sizes[e.sizes.length - 1]
+    } else {
+      this.snippetView.previewWidth = e.sizes[e.sizes.length - 1] - e.collapsedComponentSize
+    }
+  }
+  sizeChange(e) {
+    console.log(e)
+  }
+/////////////////////////////////////
 
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
@@ -46,16 +81,16 @@ export class MapComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.loadData()
-    setTimeout(() => {
-      this.createMap()
-      this.inter = setInterval(() => {
-        this.loadData()
-      }, 10000)
-      // setInterval(() => {
-      //   this.updateMarkers()
-      // }, 500);
-    }, 100);
+    // this.loadData()
+    // setTimeout(() => {
+    //   this.createMap()
+    //   this.inter = setInterval(() => {
+    //     this.loadData()
+    //   }, 10000)
+    //   // setInterval(() => {
+    //   //   this.updateMarkers()
+    //   // }, 500);
+    // }, 100);
   }
 
 
