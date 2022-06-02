@@ -37,6 +37,11 @@ export const navItems: INavData[] = [
         url: '/map/vehicule',
         icon: 'cil-garage'
       },
+      {
+        name: 'Zones',
+        url: '/map/zones',
+        icon: 'cil-map'
+      },
       // {
       //   name: 'Par Groupe',
       //   url: '/map/groupe',

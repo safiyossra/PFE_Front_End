@@ -37,11 +37,6 @@ export class MapComponent implements AfterViewInit {
 
   selectedVehiculeIndex = -1
 
-
-  angle = 0
-
-  animatedMarker: any
-
   constructor(private vehiculeService: VehiculeService, private tools: util) {
   }
 
@@ -51,7 +46,7 @@ export class MapComponent implements AfterViewInit {
       this.createMap()
       this.inter = setInterval(() => {
         this.loadData()
-      }, 10000)
+      }, 5000)
       // setInterval(() => {
       //   this.updateMarkers()
       // }, 500);
@@ -195,7 +190,6 @@ export class MapComponent implements AfterViewInit {
     for (let i = 0; i < this.markers.length; i++) {
       if (this.vehicules[i]) {
         this.markers[i].setLatLng([this.vehicules[i].lat, this.vehicules[i].lng])
-        // this.markers[i].setRotationAngle(this.vehicules[i].heading)
         this.markers[i].setIcon(
           this.myIcon(this.vehicules[i], this.vehicules[i].statusCode, 'car', this.selectedVehiculeIndex == i)
         )

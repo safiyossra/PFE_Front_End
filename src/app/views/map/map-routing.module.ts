@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DetailsComponent } from './details/details.component';
 import { MapComponent } from './map.component';
+import { ZoneComponent } from './zone/zone.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,13 @@ const routes: Routes = [
         data: {
           title: 'Par Vehicule'
         },
+      },
+      {
+        path: 'zones',
+        component: ZoneComponent,
+        data: {
+          title: 'Zones'
+        }
       },
       {
         path: 'vehicule',
@@ -39,9 +47,10 @@ const routes: Routes = [
             data: {
               title: 'Details'
             }
-          }
-        ]
-      }
+          },
+        ],
+      },
+
     ]
   },
 
