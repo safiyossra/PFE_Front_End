@@ -7,13 +7,13 @@
     [ngClass]="selectedVehiculeIndex==-1 ? 'd-none':''" (click)="reset()"></button>
     <button *ngIf="showCollapsControle" title="Expande list" class="mcontrol icon-arrow-right"
                     id="list-Expand" (click)="expandClicked()"></button>
-  <as-split #mySplit direction="horizontal" [useTransition]="true" >
-    <as-split-area [size]="size[0]"> 
+  <as-split #mySplit direction="horizontal" [useTransition]="true" (gutterClick)="resetSize($event)" (dragEnd)="onDragEnd($event)" (transitionEnd)="invalidate()">
+    <as-split-area [size]="size[0]" [order]="1" > 
       <div class="list-vehicules">
-      <my-table [vehicules]="vehicules" (rowClicked)="rowClicked($event)" (collapse)="collapseClicked()"></my-table>
+      <my-table [vehicules]="vehicules" (rowClicked)="rowClicked($event)"  (collapse)="collapseClicked()"></my-table>
     </div>
     </as-split-area>
-    <as-split-area [size]="size[1]">
+    <as-split-area [size]="size[1]" [order]="2" >
       <div class="my-map">
       <div class="card-body" id="map"></div>
     </div>

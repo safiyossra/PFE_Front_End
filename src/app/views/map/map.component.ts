@@ -370,17 +370,29 @@ export class MapComponent implements AfterViewInit, OnInit {
   }
 
   collapseClicked() {
-    console.log("collapseClicked");
-    console.log(this.size);
     this.size[0] = 0
     this.size[1] = 100
+    this.invalidate()
   }
 
   expandClicked() {
-    console.log("expandClicked");
-    console.log(this.size);
     this.size[0] = 100
     this.size[1] = 0
+    this.invalidate()
+  }
+
+  invalidate() {
+    this.map.invalidateSize(true)
+  }
+
+  resetSize(e) {
+    this.size[0] = 25
+    this.size[1] = 75
+    this.invalidate()
+  }
+  onDragEnd(e) {
+    this.size = [e.sizes[0], e.sizes[1]]
+    this.invalidate()
   }
   ngOnDestroy() {
   }
