@@ -1,4 +1,4 @@
-<div class="animated fadeIn">
+<!-- <div class="animated fadeIn">
   <button id="fullScreenControl" *ngIf="showFullScreenControle" title="Enter FullScreen"
     class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
   <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
@@ -13,4 +13,14 @@
       <div class="card-body" id="map"></div>
     </div>
   </div>
+</div> -->
+<div style="width: 500px; height: 500px; background: yellow;">
+  <as-split direction="horizontal">
+    <as-split-area [size]="40">
+      <p>LEFT</p>
+    </as-split-area>
+    <as-split-area [size]="60">
+      <p>RIGHT</p>
+    </as-split-area>
+  </as-split>
 </div>
