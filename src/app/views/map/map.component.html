@@ -1,26 +1,22 @@
-<!-- <div class="animated fadeIn">
+<div class="animated fadeIn" id="container" style="width: 100%; height: 82vh;">
   <button id="fullScreenControl" *ngIf="showFullScreenControle" title="Enter FullScreen"
     class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
   <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
     class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
-  <button id="resetConrtol" title="Default View" class="control-position-button icon-close text-danger btn btn-danger"
+  <button id="resetConrtol" title="Default View" class="control-position-button icon-close text-danger"
     [ngClass]="selectedVehiculeIndex==-1 ? 'd-none':''" (click)="reset()"></button>
-  <div class="row">
-    <div class="col-lg-3 list-vehicules">
-      <my-table [vehicules]="vehicules" (rowClicked)="rowClicked($event)"></my-table>
+    <button *ngIf="showCollapsControle" title="Expande list" class="mcontrol icon-arrow-right"
+                    id="list-Expand" (click)="expandClicked()"></button>
+  <as-split #mySplit direction="horizontal" [useTransition]="true" >
+    <as-split-area [size]="size[0]"> 
+      <div class="list-vehicules">
+      <my-table [vehicules]="vehicules" (rowClicked)="rowClicked($event)" (collapse)="collapseClicked()"></my-table>
     </div>
-    <div class="flex-grow-1 my-map">
+    </as-split-area>
+    <as-split-area [size]="size[1]">
+      <div class="my-map">
       <div class="card-body" id="map"></div>
     </div>
-  </div>
-</div> -->
-<div style="width: 500px; height: 500px; background: yellow;">
-  <as-split direction="horizontal">
-    <as-split-area [size]="40">
-      <p>LEFT</p>
-    </as-split-area>
-    <as-split-area [size]="60">
-      <p>RIGHT</p>
     </as-split-area>
   </as-split>
 </div>

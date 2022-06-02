@@ -16,13 +16,14 @@ import { util } from 'src/app/tools/utils';
 export class MyTableComponent implements OnChanges, OnInit {
 
   @Input() showFullScreenControle?: Boolean = true
-  @Input() showColumnsControle?: Boolean = true
   @Input() showCollapsControle?: Boolean = true
+  @Input() showColumnsControle?: Boolean = true
   @Input() vehicules: Vehicule[]
 
 
   @Output() rowClicked: EventEmitter<any> = new EventEmitter();
   @Output() rowDoubleClicked: EventEmitter<any> = new EventEmitter();
+  @Output() collapse: EventEmitter<any> = new EventEmitter();
 
   displayedColumns: string[] = ['#', 'name', 'speed', 'actions'];
 
@@ -36,12 +37,9 @@ export class MyTableComponent implements OnChanges, OnInit {
   public currentPage: number = 1;
   public numPages: number = 0;
 
-  tableCollapsed: Boolean = false
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   @ViewChild(MatSort) sort: MatSort;
-
 
   filterValues = {
     name: '',
@@ -64,8 +62,8 @@ export class MyTableComponent implements OnChanges, OnInit {
 
       let searchString = JSON.parse(filter);
 
-      console.log('searchString');
-      console.log(searchString);
+      // console.log('searchString');
+      // console.log(searchString);
       return (
         data.statusCode.toString().trim().indexOf(searchString.statusCode) !== -1 &&
         data.name
@@ -141,7 +139,7 @@ export class MyTableComponent implements OnChanges, OnInit {
   }
 
   onRowClicked(row: any) {
-    console.log('Row clicked: ', row);
+    // console.log('Row clicked: ', row);
     const isLargeNumber = (element) => element.id == row.id;
 
     let index = this.vehicules.findIndex(isLargeNumber)
@@ -149,7 +147,7 @@ export class MyTableComponent implements OnChanges, OnInit {
   }
 
   onRowDoubleClicked(row: any) {
-    console.log('Row double clicked: ', row);
+    // console.log('Row double clicked: ', row);
     const isLargeNumber = (element) => element.id == row.id;
 
     let index = this.vehicules.findIndex(isLargeNumber)
@@ -182,13 +180,11 @@ export class MyTableComponent implements OnChanges, OnInit {
     }
   }
 
-  changeDisplayedColumn(newColumnList) {
-    this.displayedColumns = newColumnList
+  collapseClicked() {
+    this.collapse.emit()
   }
 
-  toggleTable() {
-    console.log('TOGGLE table');
-
-
+  changeDisplayedColumn(newColumnList) {
+    this.displayedColumns = newColumnList
   }
 }

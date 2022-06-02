@@ -1,31 +1,11 @@
-#map {
+#map,
+#container {
     height: 97%;
     min-height: 82vh;
     max-height: 82vh;
     border-radius: 10px;
     width: 100%;
-}
-
-.my-map {
-    padding-right: 10px;
-    padding-left: 4px;
-}
-
-.list-vehicules {
-    padding-right: 5px;
-    padding-left: 10px;
-    transition: all 1.5s;
-    overflow: hidden;
-
-    .card-body {
-        overflow: scroll;
-
-        // table {
-        //     tbody {
-        //         overflow: scroll;
-        //     }
-        // }
-    }
+    // transition: all 1s;
 }
 
 .control-fullscreen-button,
@@ -33,7 +13,7 @@
     background: #fff no-repeat 0 0;
     background-size: 26px 52px;
     border-radius: 5px;
-    border: 1px solid rgb(0 0 0 / 48%);
+    border: 1px solid rgb(0 0 0 / 50%);
     width: 26px;
     height: 26px;
     background-repeat: no-repeat;
@@ -45,15 +25,3 @@
     background-position: 55% 2%;
 }
 
-.control-position-button {
-    font-size: 16px;
-    font-weight: bold;
-    padding: 0;
-    transition: all 1s;
-}
-// $splitter-theme: splitter-theme($bar-color: #011627,
-//         $handle-color: #ECAA53,
-//         $expander-color: #ECAA53,
-//         $border-radius: 0,
-//         $focus-color: #ECAA53,
-//         $size: 4px);

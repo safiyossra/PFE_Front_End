@@ -16,7 +16,7 @@ export class util {
     }
 
     public openFullscreen(elem: any) {
-        console.log(elem);
+        // console.log(elem);
 
         if (elem.requestFullscreen) {
             elem.requestFullscreen();

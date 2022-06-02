@@ -1,8 +1,7 @@
-import { AfterViewInit, Component, Input } from '@angular/core'
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core'
 import { VehiculeService } from 'src/app/services/vehicule.service'
 import { util } from '../../tools/utils'
 import * as L from 'leaflet'
-
 import { Vehicule } from '../../models/vehicule'
 
 @Component({
@@ -12,46 +11,12 @@ import { Vehicule } from '../../models/vehicule'
 })
 
 
-export class MapComponent implements AfterViewInit {
-  //////////////////////////////////////////////
-  snippetView = {
-    direction: "horizontal",
-    refinedByWidth: 20,
-    refinedByMax: 30,
-    refinedByMin: 10,
-    refineByShow: true,
-
-    middleWidth: 30,
-    middleMax: 40,
-    middleMin: 20,
-    middleShow: true,
-
-    previewWidth: 50,
-    previewMax: 70,
-    previewMin: 30
-  }
-
-  collapse() {
-    this.snippetView.refineByShow = !this.snippetView.refineByShow;
-  }
-  changeDir() {
-    // this.snippetView.middleShow = !this.snippetView.middleShow;
-    this.snippetView.direction = this.snippetView.direction === "horizontal" ? "vertical" : "horizontal"
-  }
-  collapsedChange(e) {
-    if (e.collapsed) {
-      this.snippetView.previewWidth = e.collapsedComponentSize + e.sizes[e.sizes.length - 1]
-    } else {
-      this.snippetView.previewWidth = e.sizes[e.sizes.length - 1] - e.collapsedComponentSize
-    }
-  }
-  sizeChange(e) {
-    console.log(e)
-  }
-  /////////////////////////////////////
-
+export class MapComponent implements AfterViewInit, OnInit {
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
+  @Input() showCollapsControle?: Boolean = true
+  public position_left: string = "0%"
+  public size = [25, 75]
   isMyPositionVisible: Boolean = false
   MyPositionMarker: L.Marker
   map: any
@@ -65,18 +30,20 @@ export class MapComponent implements AfterViewInit {
 
   fullScreenControl: L.Control;
   resetControl: L.Control;
+  expandControl: L.Control;
   positionControl: L.Control;
   typesCount = [0, 0, 0, 0]
 
   inter: any
 
   selectedVehiculeIndex = -1
-
   constructor(private vehiculeService: VehiculeService, private tools: util) {
+  }
+  ngOnInit(): void {
+    this.loadData()
   }
 
   ngAfterViewInit() {
-    this.loadData()
     setTimeout(() => {
       this.createMap()
       this.inter = setInterval(() => {
@@ -87,7 +54,6 @@ export class MapComponent implements AfterViewInit {
       // }, 500);
     }, 100);
   }
-
 
   createMap() {
     const zoomLevel = 12
@@ -128,6 +94,17 @@ export class MapComponent implements AfterViewInit {
     };
     googleHybrid.addTo(this.map)
 
+    if (this.showCollapsControle) {
+      let ExpandControl = L.Control.extend({
+        onAdd(map: L.Map) {
+          return L.DomUtil.get('list-Expand');
+        },
+        onRemove(map: L.Map) { }
+      });
+      this.expandControl = new ExpandControl({
+        position: "topleft"
+      }).addTo(this.map);
+    }
     let ResetControl = L.Control.extend({
       onAdd(map: L.Map) {
         return L.DomUtil.get('resetConrtol');
@@ -336,7 +313,7 @@ export class MapComponent implements AfterViewInit {
   }
 
   toggleMyPosition() {
-    console.log("toggleMyPosition");
+    // console.log("toggleMyPosition");
     if (navigator.geolocation) {
       let options = {
         enableHighAccuracy: true,
@@ -344,7 +321,7 @@ export class MapComponent implements AfterViewInit {
         maximumAge: 0
       };
       navigator.geolocation.getCurrentPosition((p) => {
-        console.log(p.coords);
+        // console.log(p.coords);
         var positionCtl = document.getElementById("positionControl")
         if (!this.isMyPositionVisible) {
           positionCtl.classList.replace("icon-target", "icon-close")
@@ -390,5 +367,21 @@ export class MapComponent implements AfterViewInit {
     this.selectedVehiculeIndex = event
     this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
 
+  }
+
+  collapseClicked() {
+    console.log("collapseClicked");
+    console.log(this.size);
+    this.size[0] = 0
+    this.size[1] = 100
+  }
+
+  expandClicked() {
+    console.log("expandClicked");
+    console.log(this.size);
+    this.size[0] = 100
+    this.size[1] = 0
+  }
+  ngOnDestroy() {
   }
 }

@@ -61,17 +61,33 @@ body {
 }
 
 .list-vehicules {
+    transition: all 1.5s;
+        overflow: hidden;
+    
+        .card-header {
+            padding: 5px 5px 10px 5px;
+    
+            border-radius: 10px;
+        }
     .card-body {
         overflow-y: scroll;
-
-        // table {
-        //     tbody {
-        //         overflow: scroll;
-        //     }
-        // }
     }
 }
 
 .dropdown-table>div {
     z-index: 999999999999 !important;
+}
+.mcontrol {
+    background: #fff no-repeat 0 0;
+    background-size: 26px 52px;
+    border-radius: 5px;
+    border: 1px solid rgb(0 0 0 / 48%);
+    width: 26px;
+    height: 26px;
+    background-repeat: no-repeat;
+    -webkit-tap-highlight-color: rgba(51, 181, 229, .4);
+}
+
+.mcontrol:focus {
+    outline: none;
 }

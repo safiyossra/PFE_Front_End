@@ -15,6 +15,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { EventsTableComponent } from './events-table/events-table.component';
 import { ZoneComponent } from './zone/zone.component';
 import { MatIconModule } from '@angular/material/icon';
+import { AngularSplitModule } from "angular-split";
 
 
 @NgModule({
@@ -35,7 +36,7 @@ import { MatIconModule } from '@angular/material/icon';
     FormsModule,
     ReactiveFormsModule,
     BsDropdownModule,
-    MatIconModule
+    MatIconModule, AngularSplitModule
 
   ]
 })
