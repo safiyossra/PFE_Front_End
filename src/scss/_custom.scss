@@ -28,6 +28,17 @@
     transition: transform 1s ease;
 }
 
+.marker-selected {
+    background: url('../assets/gif/full.gif') center center;
+    background-size: 70%;
+    background-repeat: no-repeat;
+
+    // .my-icon-img {
+    //     padding: 15px;
+    //     // border-radius: 50%;
+    // }
+}
+
 .center-marker {
     position: absolute;
     width: 2px;

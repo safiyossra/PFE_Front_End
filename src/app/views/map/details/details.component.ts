@@ -4,6 +4,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { util } from '../../../tools/utils'
+
 import * as L from 'leaflet'
 import { VehiculeService } from 'src/app/services/vehicule.service';
 
@@ -110,7 +112,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   public lineChartLegend = true;
   public lineChartType = 'line';
 
-  constructor(private activatedRoute: ActivatedRoute, private vehiculeService: VehiculeService, private router: Router) {
+  constructor(private activatedRoute: ActivatedRoute, private vehiculeService: VehiculeService, private router: Router, private tools: util) {
     this.vehiculeID = this.activatedRoute.snapshot.paramMap.get('id')
   }
 
@@ -241,6 +243,15 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   centerMap() {
     console.log(this.map.layers)
+  }
+
+  toggleMapFullscreen() {
+    if (!this.tools.isFullScreen) {
+      this.tools.openFullscreen(document.getElementById("mapDetail"))
+    }
+    else {
+      this.tools.closeFullscreen()
+    }
   }
 
   toggleMyPosition() {

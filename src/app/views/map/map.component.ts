@@ -137,7 +137,7 @@ export class MapComponent implements AfterViewInit {
     L.control.scale().addTo(this.map);
   }
 
-  myIcon(vehicule: any, status: number, vehiculeType: string) {
+  myIcon(vehicule: any, status: number, vehiculeType: string, isSelected: boolean = false) {
     let icon = status == 61714 ? `assets/img/vehicules/${vehiculeType}/blue_final.png` : `assets/img/vehicules/${vehiculeType}/red_final.png`
     return L.divIcon({
       html: `<div class="center-marker"></div>` +
@@ -145,7 +145,7 @@ export class MapComponent implements AfterViewInit {
         `<span class="my-icon-title">${vehicule.name}</span>`,
       iconSize: [50, 50],
       // iconAnchor: [25, 20],
-      className: 'marker-transition my-div-icon',
+      className: 'marker-transition my-div-icon' + (isSelected ? ' marker-selected' : ''),
 
     })
   }
@@ -197,7 +197,7 @@ export class MapComponent implements AfterViewInit {
         this.markers[i].setLatLng([this.vehicules[i].lat, this.vehicules[i].lng])
         // this.markers[i].setRotationAngle(this.vehicules[i].heading)
         this.markers[i].setIcon(
-          this.myIcon(this.vehicules[i], this.vehicules[i].statusCode, 'car')
+          this.myIcon(this.vehicules[i], this.vehicules[i].statusCode, 'car', this.selectedVehiculeIndex == i)
         )
         this.markers[i].setPopupContent(`` +
           `<div>Device: ${this.vehicules[i].name}</div>` +
@@ -218,6 +218,7 @@ export class MapComponent implements AfterViewInit {
 
     for (let index = 0; index < elems.length; index++) {
       elems.item(index).classList.remove('marker-transition')
+      elems.item(index).classList.remove('marker-selected')
     }
     this.centerMap()
   }
@@ -342,11 +343,12 @@ export class MapComponent implements AfterViewInit {
 
     for (let index = 0; index < elems.length; index++) {
       elems.item(index).classList.remove('marker-transition')
+      elems.item(index).classList.remove('marker-selected')
     }
 
     this.selectedVehiculeIndex = event
+    elems.item(this.selectedVehiculeIndex).classList.add('marker-selected')
     this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
-
   }
 
   rowDoubleClicked(event) {
@@ -359,8 +361,5 @@ export class MapComponent implements AfterViewInit {
     this.selectedVehiculeIndex = event
     this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
 
-    // for (let index = 0; index < elems.length; index++) {
-    //   elems.item(index).classList.add('marker-transition')
-    // }
   }
 }

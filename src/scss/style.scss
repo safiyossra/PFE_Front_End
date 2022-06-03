@@ -60,3 +60,19 @@ body {
 .important-marker {
     z-index: 9999999999 !important;
 }
+
+.list-vehicules {
+    .card-body {
+        overflow-y: scroll;
+
+        // table {
+        //     tbody {
+        //         overflow: scroll;
+        //     }
+        // }
+    }
+}
+
+.dropdown-table>div {
+    z-index: 999999999999 !important;
+}

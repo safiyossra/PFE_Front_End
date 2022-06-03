@@ -7,7 +7,7 @@
     [ngClass]="selectedVehiculeIndex==-1 ? 'd-none':''" (click)="reset()"></button>
   <div class="row">
     <div class="col-lg-3 list-vehicules">
-      <my-table [vehicules]="vehicules" (rowDoubleClicked)="rowDoubleClicked($event)"></my-table>
+      <my-table [vehicules]="vehicules" (rowClicked)="rowClicked($event)"></my-table>
     </div>
     <div class="flex-grow-1 my-map">
       <div class="card-body" id="map"></div>

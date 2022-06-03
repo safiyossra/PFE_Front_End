@@ -21,17 +21,17 @@ export class MyTableComponent implements OnChanges, OnInit {
   @Input() vehicules: Vehicule[]
 
 
-  @Output() rowClick: EventEmitter<any> = new EventEmitter();
+  @Output() rowClicked: EventEmitter<any> = new EventEmitter();
   @Output() rowDoubleClicked: EventEmitter<any> = new EventEmitter();
 
   displayedColumns: string[] = ['#', 'name', 'speed', 'actions'];
 
   public dataSource = new MatTableDataSource();
 
-  public pageSizeOptions = [5, 10, 15, 25];
+  // public pageSizeOptions = [5, 10, 15, 25];
 
-  public selectedPageSize = 15;
-  // public maxSize: number = 5;
+  public selectedPageSize = 5;
+  public maxSize: number = 5;
   public totalItems: number;
   public currentPage: number = 1;
   public numPages: number = 0;
@@ -142,7 +142,10 @@ export class MyTableComponent implements OnChanges, OnInit {
 
   onRowClicked(row: any) {
     console.log('Row clicked: ', row);
-    this.rowClick.emit(row.id)
+    const isLargeNumber = (element) => element.id == row.id;
+
+    let index = this.vehicules.findIndex(isLargeNumber)
+    this.rowClicked.emit(index)
   }
 
   onRowDoubleClicked(row: any) {
