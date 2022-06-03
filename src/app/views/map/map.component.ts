@@ -49,9 +49,6 @@ export class MapComponent implements AfterViewInit, OnInit {
       this.inter = setInterval(() => {
         this.loadData()
       }, 5000)
-      // setInterval(() => {
-      //   this.updateMarkers()
-      // }, 500);
     }, 100);
   }
 

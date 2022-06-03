@@ -88,7 +88,7 @@ export class MyTableComponent implements OnChanges, OnInit {
     this.totalItems = this.dataSource.data.length
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-
+    this.dataSource.filter = this.filterValues['name']
     // if (this.dataSource.filter != null) {
     //   this.applyFilter()
     // }
