@@ -50,6 +50,11 @@ export class MyDataTableComponent implements OnChanges {
     if (changes['data'] || changes['columnNames']) {
     let d = changes['data'].currentValue
     if (d && d.length>0) {
+      console.log("data");
+      
+      console.log(d);
+      console.log(changes['columnNames']);
+      
     this.dataSource = new MatTableDataSource(d)
     this.displayedColumns = this.columns
     this.totalItems = this.dataSource.data.length

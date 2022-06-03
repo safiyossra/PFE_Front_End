@@ -18,11 +18,77 @@ export class CardsComponent {
   iconCollapse: string = 'icon-arrow-up';
   iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
-  displayedColumns: any[];
-  columns: any[];
+  displayedColumns: any=["Depart","Arrive","Km Parcourue","Duree de conduite (min)","Max Vitesse (km/h)", "# Arrets", "Duree arrets (min)", "Consom Fuel (L)", "Fuel moyenne (L)", "Max Temperature(°C)"]
+  columns : any = ["timeStart","timeEnd","k","dc", "v", "na", "da", "c", "cr", "t"];
 
   resume = [];
   urldetails = "";
+  
+  public devices: any = [];
+  selectedDevices = null;
+  selectedDevice = this.selectedDevices;
+  showErrorDevice = false;
+  errorMessageDevice = "";
+  // barChart
+
+  public barChartOptions: any = {
+    scaleShowVerticalLines: false,
+    responsive: true
+  };
+  public barChartLabels: string[] = [];
+  public barChartType = 'bar';
+  public barChartLegend = true;
+  public barChartData: any[] = [];
+  
+  public brandBoxChartOptions: any = {
+
+    responsive: true,
+    scales: {
+      xAxes: [{
+        display: false,
+      }],
+      yAxes: [{
+        display: false,
+      }]
+    },
+    elements: {
+      line: {
+        borderWidth: 2
+      },
+      point: {
+        radius: 0,
+        hitRadius: 10,
+        hoverRadius: 4,
+        hoverBorderWidth: 3,
+      }
+    },
+    legend: {
+      display: false
+    },
+    // plugins: {
+    //   data: {
+    //    color: "white",
+    //    formatter: (value, ctx) => {
+    //     var perc = ((value * 100)).toFixed(0) + "%";
+    //     return perc;
+    //    },
+    //   },
+    //  },
+  };
+  public brandBoxChartColours: Array<any> = [
+    {
+      backgroundColor: 'rgba(255,255,255,.1)',
+      borderColor: 'rgba(255,255,255,.55)',
+      pointHoverBackgroundColor: '#fff'
+    }
+  ];
+  public resumeColors: Array<any> = [
+    "twitter", "google-plus", "gray" , "green" , "red","purple","yellow","pink"
+  ];
+  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cr": "L", "v": "KM/H", "t": "°C", "na": " " };
+  public brandBoxChartLegend = false;
+  public brandBoxChartType = 'line';
+
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -88,11 +154,6 @@ export class CardsComponent {
 
   }
 
-  public devices: any = [];
-  selectedDevices = null;
-  selectedDevice = this.selectedDevices;
-  showErrorDevice = false;
-  errorMessageDevice = "";
   getSelectedDevices(selected) {
     // console.log(selected);
     this.selectedDevice = selected;
@@ -107,107 +168,77 @@ export class CardsComponent {
     this.showErrorDevice = false;
     this.errorMessageDevice = "";
   }
-  // barChart
-
-  public barChartOptions: any = {
-    scaleShowVerticalLines: false,
-    responsive: true
-  };
-  public barChartLabels: string[] = [];
-  public barChartType = 'bar';
-  public barChartLegend = true;
-  public barChartData: any[] = [];
   //////////////////////
-
-  public chartClicked(e: any): void {
-    // console.log(e);
-  }
-
-  public chartHovered(e: any): void {
-    // console.log(e);
-  }
-  public brandBoxChartOptions: any = {
-
-    responsive: true,
-    scales: {
-      xAxes: [{
-        display: false,
-      }],
-      yAxes: [{
-        display: false,
-      }]
-    },
-    elements: {
-      line: {
-        borderWidth: 2
-      },
-      point: {
-        radius: 0,
-        hitRadius: 10,
-        hoverRadius: 4,
-        hoverBorderWidth: 3,
-      }
-    },
-    legend: {
-      display: false
-    },
-    // plugins: {
-    //   data: {
-    //    color: "white",
-    //    formatter: (value, ctx) => {
-    //     var perc = ((value * 100)).toFixed(0) + "%";
-    //     return perc;
-    //    },
-    //   },
-    //  },
-  };
-  public brandBoxChartColours: Array<any> = [
-    {
-      backgroundColor: 'rgba(255,255,255,.1)',
-      borderColor: 'rgba(255,255,255,.55)',
-      pointHoverBackgroundColor: '#fff'
-    }
-  ];
-  public resumeColors: Array<any> = [
-    "twitter", "yellow", "google-plus", "facebook"
-  ];
-  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cr": "L", "v": "KM/H", "t": "°C", "na": " " };
-  public brandBoxChartLegend = false;
-  public brandBoxChartType = 'line';
-
   submit() {
     this.resetValidator()
     if (this.selectedDevice.length == 0) {
       this.onValidateDevice()
     } else {
       this.loading = true;
-
       this.resume = []
-
-      var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000
-      // this.dataService.getStatistique(urlParams).subscribe({
-      //   next: (d: any) => {
-      //     this.reportData = d;
-      //     this.reportData.forEach((e) => {
-      //       e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toDateString();
-      //       if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
-      //       if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
-      //     })
-
-      //     let resumetmp = [];
-      //     let labels = this.reportData.map((l) => { return l.timestamp })
-
-
-      //     this.resume = resumetmp
-      //     this.barChartLabels = labels
-
-      //     this.loading = false;
-      //   },
-      // })
-
+        var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000 
+        this.dataService.getAllTrajets(urlParams).subscribe({
+          next: (d: any) => {
+          
+            console.log(d);
+            this.reportData = d;
+            this.reportData.forEach((e) => {
+              e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toDateString();
+              e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toDateString();
+              if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
+              if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
+            })
+            let resumetmp = [];
+            let labels = this.reportData.map((l) => { return l.timeStart })
+            this.columns.forEach((e,index) => {
+              if(!["timeStart","timeEnd"].includes(e))
+              resumetmp.push({
+                val: this.reduce(d, e).toString() + " " + this.resumeUnits[e],
+                label: this.displayedColumns[index],
+                labels: labels,
+                data:
+                  [
+                    {
+                      data: d.map((l) => { return l[e] }),
+                      label: this.displayedColumns[index]
+                    }
+                  ]    
+              })
+            })
+            var y = this.getValue(resumetmp)
+            this.resume = resumetmp
+            this.barChartLabels = labels
+            this.barChartData = y.map((l) => { return l.data[0] });
+            this.loading = false;
+          },
+        })
+      
     }
   };
 
+  reduce(v, e) {
+    if (v && v.length != 0) {
+      if (v.length > 1) {
+        return v.reduce((p, c) => {
+          if (["da", "dc"].includes(e)) {
+            var f = isNaN(p) ? p[e] + c[e] : p + c[e]
+            return f
+          } else
+            if (["t", "v"].includes(e)) {
+              if (isNaN(p)) return p[e] > c[e] ? p[e] : c[e]
+              else return p > c[e] ? p : c[e]
+            }
+          return isNaN(p) ? Math.round(p[e] + c[e]) : Math.round(p + c[e])
+        })
+      }
+      return v[0][e]
+    }
+    return 0
+  }
+
+  getValue(v) {
+    return JSON.parse(JSON.stringify(v))
+  }
 
   getdetails() {
     this.resetValidator()

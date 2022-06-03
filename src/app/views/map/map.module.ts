@@ -18,7 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { PointFormComponent } from './zone/point-form/point-form.component';
 import { AngularSplitModule } from "angular-split";
 
-
+ 
 @NgModule({
   declarations: [
     MapComponent,

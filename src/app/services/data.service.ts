@@ -54,6 +54,21 @@ export class DataService {
     })
   }
 
+
+  getAllTrajets(urlParams) {
+    let SERVER_URL = environment.apiUrl + "trajet-jour" + urlParams+"&k&na&da&dc&c&t&v&cr";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+
+
   //fonction de detail
 
   getDetails(urldetails) {
