@@ -1,0 +1,71 @@
+<div class="card card-accent" style="min-height: 660px">
+  <!--secondary-->
+  <div class="card-header">
+    <div class="row">
+      <div class="form-horizontal col-md-6">
+        <div class="input-group">
+          <div class="input-group-prepend" dropdown>
+            <button type="button" class="btn btn-primary">Search</button>
+            <button
+              type="button"
+              dropdownToggle
+              class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+            >
+              <span class="caret"></span>
+              <span class="sr-only">Split button!</span>
+            </button>
+            <div class="dropdown-menu" *dropdownMenu>
+              <a class="dropdown-item" href="#">Action prepend</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+              <div role="separator" class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Separated link 2</a>
+            </div>
+          </div>
+          <input
+            type="text"
+            id="input3-group3"
+            name="input3-group3"
+            class="form-control"
+            placeholder="..."
+            (keyup)="applyFilter($event)"
+            #input
+          />
+          <div class="input-group-append">
+            <button type="button" class="btn btn-primary">Action</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+  
+      <table mat-table [dataSource]="dataSource" matSort>
+
+        <ng-container
+				*ngFor="let column of displayedColumns; let index = index"
+				[matColumnDef]="column"
+			>
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>
+					{{ columnNames[index] | uppercase }}
+				</th>
+				<td mat-cell *matCellDef="let salle">
+					{{ salle[column] }}
+				</td>
+			</ng-container>
+
+			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+			<tr
+				mat-row
+				*matRowDef="let row; columns: displayedColumns"
+				(click)="onRowClicked(row)"
+			></tr>
+      </table>
+  </div>
+  <div class="card-footer"> 
+      <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="selectedPageSize"
+    [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page" showFirstLastButtons>
+  </mat-paginator>
+  </div>
+</div>

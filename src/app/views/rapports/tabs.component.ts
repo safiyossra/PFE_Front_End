@@ -2,29 +2,32 @@ import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 
-import * as dateFns from 'date-fns';
-
 @Component({
   templateUrl: 'tabs.component.html',
 })
 export class TabsComponent {
+  loading: boolean = false;
 
   constructor(private dataService: DataService) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
-  selectedType1: string = "0";
-  selectedType2: string = "0";
-  selectedType3: string = "0";
-  selectedType4: string = "0";
+  // selectedType1: string = "0";
+  // selectedType2: string = "0";
+  // selectedType3: string = "0";
+  // selectedType4: string = "0";
+  selectedType = ["0", "0", "0", "0"]
   isCollapsed: boolean = false;
+  isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
+  iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
   displayedColumns: any[];
   columns: any[];
   reportDetails: any;
   paramstab = [];
   resume = [];
+  urldetails ="";
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -82,6 +85,11 @@ export class TabsComponent {
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
+
+  }
+  toggleCollapseData(): void {
+    this.isCollapsedData = !this.isCollapsedData;
+    this.iconCollapseD = this.isCollapsedData ? 'icon-arrow-down' : 'icon-arrow-up';
 
   }
 
@@ -148,7 +156,7 @@ export class TabsComponent {
       data: "v"
     },
     {
-      label: "Temperature maximale(km/h)",
+      label: "Temperature maximale(°C)",
       data: "t"
     },
   ];
@@ -205,9 +213,7 @@ export class TabsComponent {
   public barChartLabels: string[] = [];
   public barChartType = 'bar';
   public barChartLegend = true;
-
-  public barChartData: any[] = [
-  ];
+  public barChartData: any[] = [];
   //////////////////////
 
   public chartClicked(e: any): void {
@@ -271,6 +277,7 @@ export class TabsComponent {
     if (this.selectedDevice.length == 0) {
       this.onValidateDevice()
     } else {
+      this.loading = true;
       var paramstabtmp = []
       var iskm = ""
       if (this.selectedkm.length != 0)
@@ -306,17 +313,7 @@ export class TabsComponent {
             let labels = this.reportData.map((l) => { return l.timestamp })
             this.paramstab.forEach((e) => {
               resumetmp.push({
-                val: d.reduce((p, c) => {
-                  if (["da", "dc"].includes(e)) {
-                    var f = isNaN(p) ? p[e] + c[e] : p + c[e]
-                    return f
-                  } else
-                    if (["t", "v"].includes(e)) {
-                      if (isNaN(p)) return p[e] > c[e] ? p[e] : c[e]
-                      else return p > c[e] ? p : c[e]
-                    }
-                  return isNaN(p) ? Math.round(p[e] + c[e]) : Math.round(p + c[e])
-                }).toString() + " " + this.resumeUnits[e],
+                val: this.reduce(d, e).toString() + " " + this.resumeUnits[e],
                 label: this.getColNames(e),
                 labels: labels,
                 data:
@@ -331,16 +328,37 @@ export class TabsComponent {
             var y = this.getValue(resumetmp)
             this.resume = resumetmp
             this.barChartLabels = labels
-            this.barChartData= y.map((l) => { return l.data[0] });
+            this.barChartData = y.map((l) => { return l.data[0] });
+            this.loading = false;
           },
         })
       } else {
+        this.loading = false;
         this.onValidateParam()
       }
     }
   };
 
-  getValue(v){
+  reduce(v, e) {
+    if (v && v.length != 0) {
+      if (v.length > 1) {
+        return v.reduce((p, c) => {
+          if (["da", "dc"].includes(e)) {
+            var f = isNaN(p) ? p[e] + c[e] : p + c[e]
+            return f
+          } else
+            if (["t", "v"].includes(e)) {
+              if (isNaN(p)) return p[e] > c[e] ? p[e] : c[e]
+              else return p > c[e] ? p : c[e]
+            }
+          return isNaN(p) ? Math.round(p[e] + c[e]) : Math.round(p + c[e])
+        })
+      }
+      return v[0][e]
+    }
+    return 0
+  }
+  getValue(v) {
     return JSON.parse(JSON.stringify(v))
   }
 
@@ -369,21 +387,16 @@ export class TabsComponent {
 
     return clmns
   }
-
+/*
   getdetails() {
+    this.resetValidator()
     if (this.selectedDevice.length == 0) {
       this.onValidateDevice()
     } else {
-      var urldetails = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000
-      this.dataService.getDetails(urldetails).subscribe({
-        next: (d) => {
-          this.reportDetails = d;
-          // console.log("data");
-          // console.log(d);          
-        },
-      })
+      this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
     }
   }
+  */
 
   getDev() {
     this.dataService.getVehicule().subscribe({

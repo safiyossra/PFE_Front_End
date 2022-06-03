@@ -21,8 +21,7 @@
             <button
               type="button"
               class="card-header-action btn btn-link btn-close"
-              (click)="reset()"
-            
+              (click)="reset()"           
             >
               <i class="icon-close"></i>
             </button>
@@ -119,7 +118,7 @@
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <mat-select
-                        [(value)]="selectedType1"
+                        [(value)]="selectedType[0]"
                         class="btn btn-primary text-white"
                       >
                         <mat-option value="0"
@@ -133,15 +132,15 @@
                         ></mat-option>
                         <mat-select-trigger>
                           <i
-                            *ngIf="selectedType1 == '0'"
+                            *ngIf="selectedType[0] == '0'"
                             class="icon-chart icons text-white"
                           ></i>
                           <i
-                            *ngIf="selectedType1 == '1'"
+                            *ngIf="selectedType[0] == '1'"
                             class="icon-graph icons text-white"
                           ></i>
                           <i
-                            *ngIf="selectedType1 == '2'"
+                            *ngIf="selectedType[0] == '2'"
                             class="icon-pie-chart icons text-white"
                           ></i>
                         </mat-select-trigger>
@@ -179,7 +178,7 @@
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <mat-select
-                        [(value)]="selectedType2"
+                        [(value)]="selectedType[1]"
                         class="btn btn-warning text-white"
                       >
                         <mat-option value="0"
@@ -193,15 +192,15 @@
                         ></mat-option>
                         <mat-select-trigger>
                           <i
-                            *ngIf="selectedType2 == '0'"
+                            *ngIf="selectedType[1] == '0'"
                             class="icon-chart icons text-white"
                           ></i>
                           <i
-                            *ngIf="selectedType2 == '1'"
+                            *ngIf="selectedType[1] == '1'"
                             class="icon-graph icons text-white"
                           ></i>
                           <i
-                            *ngIf="selectedType2 == '2'"
+                            *ngIf="selectedType[1] == '2'"
                             class="icon-pie-chart icons text-white"
                           ></i>
                         </mat-select-trigger>
@@ -240,7 +239,7 @@
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <mat-select
-                        [(value)]="selectedType3"
+                        [(value)]="selectedType[2]"
                         class="btn btn-danger text-white"
                       >
                         <mat-option value="0"
@@ -254,15 +253,15 @@
                         ></mat-option>
                         <mat-select-trigger>
                           <i
-                            *ngIf="selectedType3 == '0'"
+                            *ngIf="selectedType[2] == '0'"
                             class="icon-chart icons text-white"
                           ></i>
                           <i
-                            *ngIf="selectedType3 == '1'"
+                            *ngIf="selectedType[2] == '1'"
                             class="icon-graph icons text-white"
                           ></i>
                           <i
-                            *ngIf="selectedType3 == '2'"
+                            *ngIf="selectedType[2] == '2'"
                             class="icon-pie-chart icons text-white"
                           ></i>
                         </mat-select-trigger>
@@ -301,7 +300,7 @@
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <mat-select
-                        [(value)]="selectedType4"
+                        [(value)]="selectedType[3]"
                         class="btn btn-dark text-white"
                       >
                         <mat-option value="0"
@@ -315,15 +314,15 @@
                         ></mat-option>
                         <mat-select-trigger>
                           <i
-                            *ngIf="selectedType4 == '0'"
+                            *ngIf="selectedType[3] == '0'"
                             class="icon-chart icons text-white"
                           ></i>
                           <i
-                            *ngIf="selectedType4 == '1'"
+                            *ngIf="selectedType[3] == '1'"
                             class="icon-graph icons text-white"
                           ></i>
                           <i
-                            *ngIf="selectedType4 == '2'"
+                            *ngIf="selectedType[3] == '2'"
                             class="icon-pie-chart icons text-white"
                           ></i>
                         </mat-select-trigger>
@@ -359,8 +358,9 @@
               </div>
             </div>
             <div class="form-actions">
-              <button type="submit" class="btn btn-sm btn-primary" (click)="submit()">
-                <i class="fa fa-dot-circle-o"></i> &nbsp;Apply
+              <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading" (click)="toggleCollapseData()">
+                <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
               </button>
             </div>
           </form>
@@ -373,6 +373,7 @@
   <div class="row">
     <div class="col-lg-12">
       <!-- Nav tabs -->
+
       <tabset>
         <tab style="min-height: 660px">
           <ng-template tabHeading
@@ -448,20 +449,20 @@
             </div>
           </div>
         </tab>
+        <!--
         <tab style="min-height: 660px">
           <ng-template tabHeading>
-            <button
-              type="button"
-              (click)="getdetails()"
-            >
+            <button type="button" class="card-header-action btn btn-link" (click)="getdetails()">
             <i class="fa fa-list-alt"></i> Details &nbsp;
           </button>
           </ng-template>
-            <my-data-table [data]="reportDetails"  [columnNames]="displayedColumns" [columns]="columns">
+            <details-table [url]="urldetails" >
   
-            </my-data-table>
+            </details-table>
         </tab>
+        -->
       </tabset>
+    
     </div>
     <!--/.col-->
   </div>
