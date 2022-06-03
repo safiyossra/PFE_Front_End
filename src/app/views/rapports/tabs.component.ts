@@ -12,12 +12,15 @@ export class TabsComponent {
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
-  selectedType1: string = "0";
-  selectedType2: string = "0";
-  selectedType3: string = "0";
-  selectedType4: string = "0";
+  // selectedType1: string = "0";
+  // selectedType2: string = "0";
+  // selectedType3: string = "0";
+  // selectedType4: string = "0";
+  selectedType = ["0", "0", "0", "0"]
   isCollapsed: boolean = false;
+  isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
+  iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
   displayedColumns: any[];
   columns: any[];
@@ -84,6 +87,11 @@ export class TabsComponent {
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
 
   }
+  toggleCollapseData(): void {
+    this.isCollapsedData = !this.isCollapsedData;
+    this.iconCollapseD = this.isCollapsedData ? 'icon-arrow-down' : 'icon-arrow-up';
+
+  }
 
   public devices: any = [];
 
@@ -148,7 +156,7 @@ export class TabsComponent {
       data: "v"
     },
     {
-      label: "Temperature maximale(km/h)",
+      label: "Temperature maximale(°C)",
       data: "t"
     },
   ];
@@ -379,7 +387,7 @@ export class TabsComponent {
 
     return clmns
   }
-
+/*
   getdetails() {
     this.resetValidator()
     if (this.selectedDevice.length == 0) {
@@ -388,6 +396,7 @@ export class TabsComponent {
       this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
     }
   }
+  */
 
   getDev() {
     this.dataService.getVehicule().subscribe({

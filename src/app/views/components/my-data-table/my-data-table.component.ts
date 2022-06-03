@@ -47,7 +47,7 @@ export class MyDataTableComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data']) {
+    if (changes['data'] || changes['columnNames']) {
     let d = changes['data'].currentValue
     if (d && d.length>0) {
     this.dataSource = new MatTableDataSource(d)

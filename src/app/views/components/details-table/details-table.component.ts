@@ -14,12 +14,12 @@ import { DataService } from 'src/app/services/data.service';
 })
 export class DetailsTableComponent implements OnChanges {
   @Input() url: string
-  public columnNames = ["Time Stamp","Odometer (KM)"]
+  public columnNames = ["Time Stamp","Odometer (KM)","Status Code","Speed"]
   public pageSizeOptions = [10, 15, 20, 30, 50, 100];
   public data: any;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   public isLoading: boolean = false
-  public displayedColumns: any = ["timestamp","odometerKM"]
+  public displayedColumns: any = ["timestamp","odometerKM","statusCode","speedKPH"]
   public selectedPageSize = 10;
   public maxSize: number = 5;
   public totalRows: number = 0;
