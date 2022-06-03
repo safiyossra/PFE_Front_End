@@ -16,6 +16,7 @@ import { EventsTableComponent } from './events-table/events-table.component';
 import { ZoneComponent } from './zone/zone.component';
 import { MatIconModule } from '@angular/material/icon';
 import { PointFormComponent } from './zone/point-form/point-form.component';
+import { AngularSplitModule } from "angular-split";
 
 
 @NgModule({
@@ -37,7 +38,7 @@ import { PointFormComponent } from './zone/point-form/point-form.component';
     FormsModule,
     ReactiveFormsModule,
     BsDropdownModule,
-    MatIconModule
+    MatIconModule, AngularSplitModule
 
   ]
 })
