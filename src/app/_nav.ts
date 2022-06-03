@@ -10,45 +10,76 @@ export const navItems: INavData[] = [
     //   text: 'NEW'
     // }
   },
+
   {
-    name: 'Rapports',
-    url: '/rapport/menu',
-    icon: 'icon-docs',
-    children: [
-      {
-        name: 'Rapports journalier',
-        url: '/rapports/journalier',
-        icon: 'icon-graph'
-      },
-      {
-        name: 'Rapports Détaillés',
-        url: '/rapports/detaille',
-        icon: 'icon-book-open'
-      }
-    ]
+    title: true,
+    name: 'Rappports'
   },
   {
-    name: 'Map',
-    url: '/map',
-    icon: 'cil-location-pin',
-    children: [
-      {
-        name: 'Par véhicule',
-        url: '/map/vehicule',
-        icon: 'cil-garage'
-      },
-      {
-        name: 'Zones',
-        url: '/map/zones',
-        icon: 'cil-map'
-      },
-      // {
-      //   name: 'Par Groupe',
-      //   url: '/map/groupe',
-      //   icon: 'cil-grain'
-      // }
-    ]
+    name: 'Rapports journalier',
+    url: '/rapports/journalier',
+    icon: 'icon-graph'
   },
+  {
+    name: 'Rapports Détaillés',
+    url: '/rapports/detaille',
+    icon: 'icon-book-open'
+  },
+  // {
+  //   name: 'Rapports',
+  //   url: '/rapport/menu',
+  //   icon: 'icon-docs',
+  //   children: [
+  //     {
+  //       name: 'Rapports journalier',
+  //       url: '/rapports/journalier',
+  //       icon: 'icon-graph'
+  //     },
+  //     {
+  //       name: 'Rapports Détaillés',
+  //       url: '/rapports/detaille',
+  //       icon: 'icon-book-open'
+  //     }
+  //   ]
+  // },
+
+
+  {
+    title: true,
+    name: 'Map'
+  },
+  {
+    name: 'Vehicules',
+    url: '/map/vehicule',
+    icon: 'cil-garage'
+  },
+  {
+    name: 'Zones',
+    url: '/map/zones',
+    icon: 'cil-map'
+  },
+  // {
+  //   name: 'Map',
+  //   url: '/map',
+  //   icon: 'cil-location-pin',
+  //   children: [
+  //     {
+  //       name: 'Par véhicule',
+  //       url: '/map/vehicule',
+  //       icon: 'cil-garage'
+  //     },
+  //     {
+  //       name: 'Zones',
+  //       url: '/map/zones',
+  //       icon: 'cil-map'
+  //     },
+  //     // {
+  //     //   name: 'Par Groupe',
+  //     //   url: '/map/groupe',
+  //     //   icon: 'cil-grain'
+  //     // }
+  //   ]
+  // },
   // {
   //   title: true,
   //   name: 'Theme'

@@ -2,6 +2,7 @@ import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } fro
 import { util } from '../../../tools/utils'
 import * as L from 'leaflet'
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { LoginComponent } from '../../login/login.component';
 
 @Component({
   selector: 'app-zone',
@@ -21,6 +22,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     latitude: 35.75,
     longitude: -5.83,
     radius: 10000,
+    description: '',
     color: '#000'
   }
 
@@ -64,12 +66,14 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
       latitude: new FormControl(this.default.latitude),
       longitude: new FormControl(this.default.longitude),
       radius: new FormControl(this.default.radius),
+      description: new FormControl(this.default.description),
       color: new FormControl('#4dbd74'),
     })
 
     this.point = fb.group({
       latitude: new FormControl(this.default.latitude),
       longitude: new FormControl(this.default.longitude),
+      description: new FormControl(this.default.description),
       color: new FormControl('#63c2de'),
     })
 
@@ -89,6 +93,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
         }),
 
       ]),
+      description: new FormControl(this.default.description),
       color: new FormControl('#ffc107')
 
     })
@@ -160,7 +165,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
         }
 
         this.myPolygon.addTo(this.map)
-        // this.map.fitBounds(this.myPolygon.getBounds())
+        this.map.fitBounds(this.myPolygon.getBounds())
         break;
 
       default:
@@ -180,6 +185,19 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
+
+  pointOnChanges(): void {
+    this.point.valueChanges.subscribe(val => {
+      if (val.latitude != null && val.longitude != null) {
+        console.log('not Null');
+        this.myPoint.setLatLng([val.latitude, val.longitude])
+        this.map.setView(this.myPoint.getLatLng())
+      } else {
+        console.log('Null');
+      }
+    });
+  }
+
   circleOnChanges(): void {
     this.circle.valueChanges.subscribe(val => {
       if (val.latitude != null && val.longitude != null && val.radius != null) {
@@ -196,32 +214,92 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-  pointOnChanges(): void {
-    this.point.valueChanges.subscribe(val => {
-      if (val.latitude != null && val.longitude != null) {
-        console.log('not Null');
-        this.myPoint.setLatLng([val.latitude, val.longitude])
-        this.map.setView(this.myPoint.getLatLng())
-      } else {
-        console.log('Null');
-      }
-    });
-  }
 
   polygonPointOnchanges(): void {
     this.polygonPoints.valueChanges.subscribe(val => {
       var latlngs = []
-      val.forEach((point, index) => {
-        console.log('latitude ' + (index + 1) + ' : ' + point.latitude + ' - longitude ' + index + ': ' + point.longitude);
+      val.forEach((point: any, index) => {
         if (point.latitude != null && point.longitude != null) {
-          latlngs.push([point.latitude, point.longitude])
+          latlngs.push(new L.LatLng(point.latitude, point.longitude))
         }
       });
 
       this.myPolygon.setLatLngs(latlngs)
-
+      this.myCircle.setStyle({ color: this.polygon.value.color })
       this.map.fitBounds(this.myPolygon.getBounds())
+
     })
+  }
+
+  resetPoint() {
+    this.point.reset({
+      latitude: this.default.latitude,
+      longitude: this.default.longitude,
+      description: this.default.description,
+      color: '#63c2de',
+    })
+  }
+
+  resetCircle() {
+    this.circle.reset({
+      latitude: this.default.latitude,
+      longitude: this.default.longitude,
+      radius: this.default.radius,
+      description: this.default.description,
+      color: '#4dbd74',
+    })
+  }
+
+  resetPolygon() {
+    this.polygon.reset({
+      points: [
+        {
+          latitude: [this.default.latitude],
+          longitude: [this.default.longitude]
+        },
+        {
+          latitude: [this.default.latitude + 1],
+          longitude: [this.default.longitude]
+        },
+        {
+          latitude: [this.default.latitude],
+          longitude: [this.default.longitude - 1]
+        },
+      ],
+      description: this.default.description,
+      color: '#ffc107'
+    })
+  }
+
+  resetZone() {
+    switch (this.selectedType) {
+      case 'point':
+        console.log('reset point');
+        this.resetPoint()
+        break;
+
+      case 'circle':
+        console.log('reset circle');
+        this.resetCircle()
+        break;
+
+      case 'polygon':
+        console.log('reset polygon');
+        this.resetPolygon()
+        break;
+
+      default:
+        console.log('default reset');
+        break;
+    }
+  }
+
+  addZone() {
+
+  }
+
+  updateZone() {
+
   }
 
   addPoint() {

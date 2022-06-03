@@ -67,3 +67,11 @@
     color: darkblue;
     font-weight: bold;
 }
+
+.zones-tabs {
+    .tab-pane {
+        min-height: 78vh;
+        max-height: 78vh;
+        overflow: hidden;
+    }
+}
