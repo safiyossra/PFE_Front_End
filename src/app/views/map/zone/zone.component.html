@@ -30,18 +30,18 @@
                         </mat-select>
                     </mat-form-field>
 
-                    <hr>
+                    <!-- <hr> -->
                     <p class="font-weight-bold">{{ selectedType | uppercase }}</p>
 
                     <ng-container *ngIf="selectedType=='circle'">
                         <form [formGroup]="circle">
 
-                            <mat-form-field class="w-100" appearance="fill">
+                            <mat-form-field class="col-6 pl-0" appearance="fill">
                                 <mat-label>Latitude</mat-label>
                                 <input matInput type="number" formControlName="latitude">
                             </mat-form-field>
 
-                            <mat-form-field class="w-100" appearance="fill">
+                            <mat-form-field class="col-6 pr-0" appearance="fill">
                                 <mat-label>Longitude</mat-label>
                                 <input matInput type="number" formControlName="longitude">
                             </mat-form-field>
@@ -67,12 +67,12 @@
                     <ng-container *ngIf="selectedType=='point'">
                         <form [formGroup]="point">
 
-                            <mat-form-field class="w-100" appearance="fill">
+                            <mat-form-field class="col-6 pl-0" appearance="fill">
                                 <mat-label>Latitude</mat-label>
                                 <input matInput type="number" formControlName="latitude">
                             </mat-form-field>
 
-                            <mat-form-field class="w-100" appearance="fill">
+                            <mat-form-field class="col-6 pr-0" appearance="fill">
                                 <mat-label>Longitude</mat-label>
                                 <input matInput type="number" formControlName="longitude">
                             </mat-form-field>
@@ -90,6 +90,49 @@
                         </form>
                     </ng-container>
 
+                    <ng-container *ngIf="selectedType=='polygon'">
+                        <form [formGroup]="polygon">
+                            <ng-container formArrayName="points">
+                                <ng-container *ngFor="let pointForm of polygonPoints.controls; let i = index">
+                                    <div class="d-flex justify-content-between align-items-center px-2">
+                                        <span class="font-weight-bold">{{ i+1 }}</span>
+                                        <div class="row col-10" [formGroup]="pointForm">
+                                            <mat-form-field class="col-6 pl-0" appearance="fill">
+                                                <mat-label>Latitude</mat-label>
+                                                <input matInput type="number" formControlName="latitude">
+                                            </mat-form-field>
+
+                                            <mat-form-field class="col-6 pr-0" appearance="fill">
+                                                <mat-label>Longitude</mat-label>
+                                                <input matInput type="number" formControlName="longitude">
+                                            </mat-form-field>
+                                        </div>
+                                        <button role="button" class="btn btn-danger my-auto" (click)="deletePoint(i)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </ng-container>
+
+                                <div class="d-flex w-100 justify-content-center"
+                                    *ngIf="polygonPoints.value.length < 10">
+                                    <button (click)="addPoint()" class="btn btn-sm btn-primary mx-auto">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button class="btn btn-sm btn-success mr-2" type="button" (click)="apply()">
+                                        <i class="fa fa-check"></i>
+                                        Appliquer
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" type="button" (click)="apply()">
+                                        <i class="fa fa-close"></i>
+                                        Rénitialiser
+                                    </button>
+                                </div>
+                            </ng-container>
+                        </form>
+                    </ng-container>
                 </div>
             </div>
         </div>
