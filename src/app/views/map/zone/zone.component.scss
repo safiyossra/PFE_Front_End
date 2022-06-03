@@ -1,110 +1,26 @@
-.vehicules-card {
+#map {
+    height: 97%;
     min-height: 82vh;
     max-height: 82vh;
-    margin-bottom: 0px;
-        border-radius: 10px;
-}
-
-
-table {
-    width: 100%;
-    padding-bottom: 20px;
-}
-
-.card-body {
-    padding: 0.35rem 0;
-}
-
-.card-header,
-.card-footer {
-    background-color: white;
-}
-
-.mat-icon-button {
-    background: transparent;
-}
-
-.mat-icon-button:focus {
-    background: transparent;
-    outline: 0;
-}
-
-.mat-form-field {
-    font-size: 14px;
+    border-radius: 10px;
     width: 100%;
 }
 
-th.mat-header-cell,
-td.mat-cell,
-td.mat-footer-cell {
-    border: 0 solid #f8f8f8;
-    border-width: 0px 0px 0px 1px;
-    padding: inherit;
-    padding-left: 15px;
+.my-map {
+    padding-right: 10px;
+    padding-left: 4px;
 }
 
-th.mat-header-cell:first-child,
-td.mat-cell:first-child,
-td.mat-footer-cell:first-child {
-    border: 0;
-}
-
-th.mat-header-cell:first-child {
-    padding-left: 10px;
-}
-
-td.mat-cell:first-child {
-    padding-left: 8px;
-}
-
-.mat-header-row {
-    height: auto;
-    line-height: 3;
-    background-image: -webkit-linear-gradient(top, #fff, #e3e3e3);
-}
-
-.mat-row {
-    height: auto;
-    line-height: 3;
-    cursor: pointer;
-}
-
-.mat-row:hover {
-    background-color: #d9d9d9;
-}
-
-th.mat-header-cell:last-of-type,
-td.mat-cell:last-of-type,
-td.mat-footer-cell:last-of-type {
-    padding-right: 0px;
-}
-
-.mat-row:nth-child(even) {
-    background-color: #f8f8f8;
-}
-
-.mat-row:nth-child(even):hover {
-    background-color: #d9d9d9;
-}
-
-.mat-cell {
-    padding-left: 0;
-    font-size: 11px;
-}
-
-.list-car {
-    width: 30px;
-    margin-left: 5px;
-    object-fit: contain;
-}
-
-.status-cercle {
-    margin-right: 5px;
-}
-
-.fa-tripadvisor {
-    font-size: 18px;
-    align-self: center;
+.control-fullscreen-button,
+.control-position-button {
+    background: #fff no-repeat 0 0;
+    background-size: 26px 52px;
+    border-radius: 5px;
+    border: 1px solid rgb(0 0 0 / 48%);
+    width: 26px;
+    height: 26px;
+    background-repeat: no-repeat;
+    -webkit-tap-highlight-color: rgba(51, 181, 229, .4);
 }
 
 .control-fullscreen-button {
@@ -117,4 +33,16 @@ td.mat-footer-cell:last-of-type {
     font-weight: bold;
     padding: 0;
     transition: all 1s;
+}
+
+hr {
+    width: 50%;
+    border-width: 2px;
+    border-color: rgba($color: #000, $alpha: .4);
+    border-radius: 8px;
+    margin: 10px auto;
+}
+
+.polygon-point-form-field {
+    width: auto;
 }

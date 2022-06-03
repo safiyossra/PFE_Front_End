@@ -13,6 +13,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DropdownCheckboxComponent } from './../components/dropdown-checkbox/dropdown-checkbox.component'
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { EventsTableComponent } from './events-table/events-table.component';
+import { ZoneComponent } from './zone/zone.component';
+import { MatIconModule } from '@angular/material/icon';
+import { PointFormComponent } from './zone/point-form/point-form.component';
+import { AngularSplitModule } from "angular-split";
 
 
 @NgModule({
@@ -21,7 +25,9 @@ import { EventsTableComponent } from './events-table/events-table.component';
     MyTableComponent,
     DetailsComponent,
     DropdownCheckboxComponent,
-    EventsTableComponent
+    EventsTableComponent,
+    ZoneComponent,
+    PointFormComponent,
   ],
   imports: [
     CommonModule,
@@ -31,7 +37,9 @@ import { EventsTableComponent } from './events-table/events-table.component';
     ChartsModule,
     FormsModule,
     ReactiveFormsModule,
-    BsDropdownModule
+    BsDropdownModule,
+    MatIconModule, AngularSplitModule
+
   ]
 })
 export class MapModule { }

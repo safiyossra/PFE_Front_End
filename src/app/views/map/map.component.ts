@@ -1,8 +1,7 @@
-import { AfterViewInit, Component, OnInit, HostListener, Inject, Input } from '@angular/core'
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core'
 import { VehiculeService } from 'src/app/services/vehicule.service'
 import { util } from '../../tools/utils'
 import * as L from 'leaflet'
-
 import { Vehicule } from '../../models/vehicule'
 
 @Component({
@@ -12,11 +11,12 @@ import { Vehicule } from '../../models/vehicule'
 })
 
 
-export class MapComponent implements AfterViewInit {
-
-
+export class MapComponent implements AfterViewInit, OnInit {
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
+  @Input() showCollapsControle?: Boolean = true
+  public position_left: string = "0%"
+  public size = [25, 75]
   isMyPositionVisible: Boolean = false
   MyPositionMarker: L.Marker
   map: any
@@ -30,34 +30,27 @@ export class MapComponent implements AfterViewInit {
 
   fullScreenControl: L.Control;
   resetControl: L.Control;
+  expandControl: L.Control;
   positionControl: L.Control;
   typesCount = [0, 0, 0, 0]
 
   inter: any
 
   selectedVehiculeIndex = -1
-
-
-  angle = 0
-
-  animatedMarker: any
-
   constructor(private vehiculeService: VehiculeService, private tools: util) {
+  }
+  ngOnInit(): void {
+    this.loadData()
   }
 
   ngAfterViewInit() {
-    this.loadData()
     setTimeout(() => {
       this.createMap()
       this.inter = setInterval(() => {
         this.loadData()
-      }, 10000)
-      // setInterval(() => {
-      //   this.updateMarkers()
-      // }, 500);
+      }, 5000)
     }, 100);
   }
-
 
   createMap() {
     const zoomLevel = 12
@@ -98,6 +91,17 @@ export class MapComponent implements AfterViewInit {
     };
     googleHybrid.addTo(this.map)
 
+    if (this.showCollapsControle) {
+      let ExpandControl = L.Control.extend({
+        onAdd(map: L.Map) {
+          return L.DomUtil.get('list-Expand');
+        },
+        onRemove(map: L.Map) { }
+      });
+      this.expandControl = new ExpandControl({
+        position: "topleft"
+      }).addTo(this.map);
+    }
     let ResetControl = L.Control.extend({
       onAdd(map: L.Map) {
         return L.DomUtil.get('resetConrtol');
@@ -195,7 +199,6 @@ export class MapComponent implements AfterViewInit {
     for (let i = 0; i < this.markers.length; i++) {
       if (this.vehicules[i]) {
         this.markers[i].setLatLng([this.vehicules[i].lat, this.vehicules[i].lng])
-        // this.markers[i].setRotationAngle(this.vehicules[i].heading)
         this.markers[i].setIcon(
           this.myIcon(this.vehicules[i], this.vehicules[i].statusCode, 'car', this.selectedVehiculeIndex == i)
         )
@@ -307,7 +310,7 @@ export class MapComponent implements AfterViewInit {
   }
 
   toggleMyPosition() {
-    console.log("toggleMyPosition");
+    // console.log("toggleMyPosition");
     if (navigator.geolocation) {
       let options = {
         enableHighAccuracy: true,
@@ -315,7 +318,7 @@ export class MapComponent implements AfterViewInit {
         maximumAge: 0
       };
       navigator.geolocation.getCurrentPosition((p) => {
-        console.log(p.coords);
+        // console.log(p.coords);
         var positionCtl = document.getElementById("positionControl")
         if (!this.isMyPositionVisible) {
           positionCtl.classList.replace("icon-target", "icon-close")
@@ -361,5 +364,33 @@ export class MapComponent implements AfterViewInit {
     this.selectedVehiculeIndex = event
     this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
 
+  }
+
+  collapseClicked() {
+    this.size[0] = 0
+    this.size[1] = 100
+    this.invalidate()
+  }
+
+  expandClicked() {
+    this.size[0] = 100
+    this.size[1] = 0
+    this.invalidate()
+  }
+
+  invalidate() {
+    this.map.invalidateSize(true)
+  }
+
+  resetSize(e) {
+    this.size[0] = 25
+    this.size[1] = 75
+    this.invalidate()
+  }
+  onDragEnd(e) {
+    this.size = [e.sizes[0], e.sizes[1]]
+    this.invalidate()
+  }
+  ngOnDestroy() {
   }
 }
