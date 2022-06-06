@@ -58,6 +58,25 @@ export const navItems: INavData[] = [
     url: '/map/zones',
     icon: 'cil-map'
   },
+
+
+  {
+    title: true,
+    name: ''
+  },
+
+  {
+    name: 'Paramétrage',
+    url: '/parametrage',
+    icon: 'cil-settings'
+  },
+  {
+    name: 'Maintenance',
+    url: '/maintenance',
+    icon: 'cil-recycle'
+  },
+
+
   // {
   //   name: 'Map',
   //   url: '/map',

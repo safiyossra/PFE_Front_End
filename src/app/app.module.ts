@@ -72,7 +72,7 @@ import { MatSortModule } from '@angular/material/sort'
     MapModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
   ],
   declarations: [
     AppComponent,
@@ -90,6 +90,7 @@ import { MatSortModule } from '@angular/material/sort'
     IconSetService,
   ],
   bootstrap: [AppComponent],
-  exports: []
+  exports: [
+  ]
 })
 export class AppModule { }

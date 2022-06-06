@@ -65,6 +65,14 @@ export const routes: Routes = [
         loadChildren: () => import('./views/map/map.module').then(m => m.MapModule)
       },
       {
+        path: 'parametrage',
+        loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
+      },
+      {
+        path: 'maintenance',
+        loadChildren: () => import('./views/maintenance/maintenance.module').then(m => m.MaintenanceModule)
+      },
+      {
         path: 'buttons',
         loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule)
       },
