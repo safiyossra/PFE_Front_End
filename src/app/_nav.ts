@@ -49,6 +49,23 @@ export const navItems: INavData[] = [
       // }
     ]
   },
+  {
+    name: 'Eco',
+    url: '/eco',
+    icon: 'cil-apple',
+    children: [
+      {
+        name: 'Eco-Conduite',
+        url: '/eco/rank',
+        icon: 'icon-graph'
+      },
+      {
+        name: 'Eco-Conduite Détaillés',
+        url: '/eco/details',
+        icon: 'icon-book-open'
+      }
+    ]
+  },
   // {
   //   title: true,
   //   name: 'Theme'
