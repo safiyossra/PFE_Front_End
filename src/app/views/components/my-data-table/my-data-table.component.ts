@@ -47,7 +47,7 @@ export class MyDataTableComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data'] || changes['columnNames']) {
+    if (changes['data']) {
     let d = changes['data'].currentValue
     if (d && d.length>0) {
       console.log("data");

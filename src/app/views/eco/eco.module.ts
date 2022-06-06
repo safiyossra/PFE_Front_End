@@ -19,7 +19,6 @@ import { SharedModule } from '../components/shared.module';
     EcoRoutingModule,
     ButtonsModule.forRoot(),
     MaterialsModule,
-    SharedModule
   ]
 })
 export class EcoModule { }

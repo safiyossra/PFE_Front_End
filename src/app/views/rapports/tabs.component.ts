@@ -27,7 +27,7 @@ export class TabsComponent {
   reportDetails: any;
   paramstab = [];
   resume = [];
-  urldetails ="";
+  urldetails = "";
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -387,16 +387,16 @@ export class TabsComponent {
 
     return clmns
   }
-/*
-  getdetails() {
-    this.resetValidator()
-    if (this.selectedDevice.length == 0) {
-      this.onValidateDevice()
-    } else {
-      this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
+  /*
+    getdetails() {
+      this.resetValidator()
+      if (this.selectedDevice.length == 0) {
+        this.onValidateDevice()
+      } else {
+        this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
+      }
     }
-  }
-  */
+    */
 
   getDev() {
     this.dataService.getVehicule().subscribe({

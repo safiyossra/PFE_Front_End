@@ -7,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class MenuCardComponent implements OnInit {
 
-  @Input() background = 'bg-light'
+  @Input() background = 'bg-white'
   @Input() underlineColor = 'bg-info'
   @Input() title
   @Input() subtitle
@@ -23,14 +23,14 @@ export class MenuCardComponent implements OnInit {
 
   mouseover(event: any) {
     this.background = this.underlineColor
-    this.underlineColor = 'bg-light'
+    this.underlineColor = 'bg-white'
     this.textMuted = ''
 
   }
 
   mouseout(event: any) {
     this.underlineColor = this.background
-    this.background = 'bg-light'
+    this.background = 'bg-white'
     this.textMuted = 'text-muted'
 
   }
