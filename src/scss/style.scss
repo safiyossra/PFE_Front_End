@@ -62,13 +62,14 @@ body {
 
 .list-vehicules {
     transition: all 1.5s;
-        overflow: hidden;
-    
-        .card-header {
-            padding: 5px 5px 10px 5px;
-    
-            border-radius: 10px;
-        }
+    overflow-y: hidden;
+
+    .card-header {
+        padding: 5px 5px 10px 5px;
+
+        border-radius: 10px;
+    }
+
     .card-body {
         overflow-y: scroll;
     }
@@ -77,6 +78,7 @@ body {
 .dropdown-table>div {
     z-index: 999999999999 !important;
 }
+
 .mcontrol {
     background: #fff no-repeat 0 0;
     background-size: 26px 52px;

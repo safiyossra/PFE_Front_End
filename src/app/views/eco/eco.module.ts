@@ -3,17 +3,15 @@ import { CommonModule } from '@angular/common';
 
 import { EcoRoutingModule } from './eco-routing.module';
 import { RankComponent } from './rank/rank.component';
-import { DetailsComponent } from './details/details.component';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { FormsModule } from '@angular/forms';
 import { MaterialsModule } from 'src/app/materials.module';
-import { DetailsTableComponent } from '../components/details-table/details-table.component';
+import { SharedModule } from '../components/shared.module';
 
 
 @NgModule({
   declarations: [
     RankComponent,
-    DetailsComponent
   ],
   imports: [
     FormsModule,
@@ -21,6 +19,7 @@ import { DetailsTableComponent } from '../components/details-table/details-table
     EcoRoutingModule,
     ButtonsModule.forRoot(),
     MaterialsModule,
+    SharedModule
   ]
 })
 export class EcoModule { }

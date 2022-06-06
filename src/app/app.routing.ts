@@ -69,6 +69,22 @@ export const routes: Routes = [
         loadChildren: () => import('./views/eco/eco.module').then(m => m.EcoModule)
       },
       {
+        path: 'parametrage',
+        loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
+      },
+      {
+        path: 'maintenance',
+        loadChildren: () => import('./views/maintenance/maintenance.module').then(m => m.MaintenanceModule)
+      },
+      {
+        path: 'buttons',
+        loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule)
+      },
+      {
+        path: 'charts',
+        loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule)
+      },
+      {
         path: 'dashboard',
         loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
       },
