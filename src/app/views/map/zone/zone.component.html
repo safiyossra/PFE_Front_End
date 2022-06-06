@@ -10,7 +10,71 @@
             <tabset>
                 <tab>
                     <ng-template tabHeading><i class="cil-list"></i> | Zones</ng-template>
-                    La liste des zones sera mise dans cet onglet
+                    <div class="card-header p-0">
+                        <div class="row align-items-center w-100 m-0">
+                            <div class="col-md-8">
+                                <div class="input-group form-inline align-items-center">
+                                    <span class="input-group-prepend mr-2 icon-magnifier"></span>
+                                    <input type="text" id="input1-group2" name="input1-group2"
+                                        placeholder="Rechercher..." class="form-control" (keyup)="search($event)"
+                                        #input />
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-flex justify-content-end p-1">
+                                <my-dropdown-checkbox *ngIf="showColumnsControle" title="Show Columns" class="mx-auto"
+                                    id="list-columns" [options]="displayedColumns" [selected]="displayedColumns"
+                                    (changeDisplayedColumn)="changeDisplayedColumn($event)">
+                                </my-dropdown-checkbox>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="w-100" mat-table [dataSource]="dataSource" matSort>
+
+                            <ng-container matColumnDef="description">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+                                <td mat-cell *matCellDef="let zone">
+                                    <ng-container>
+                                        <i *ngIf="zone.isActive" class="fa fa-circle text-success status-cercle"></i>
+                                        <i *ngIf="!zone.isActive" class="fa fa-circle text-danger status-cercle"></i>
+                                    </ng-container>
+                                    {{ zone.description }}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="creationTime">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date de création</th>
+                                <td mat-cell *matCellDef="let zone">
+                                    {{ zone.creationTime | date:'dd-MM-yyyy' }}
+                            </ng-container>
+
+                            <ng-container matColumnDef="clientID">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Client</th>
+                                <td mat-cell *matCellDef="let zone">
+                                    {{ zone.clientID }}
+                            </ng-container>
+
+                            <ng-container matColumnDef="groupID">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Groupe</th>
+                                <td mat-cell *matCellDef="let zone">
+                                    {{ zone.groupID }}
+                            </ng-container>
+
+
+                            <!-- <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                                <td mat-cell *matCellDef="let zone" class="d-flex justify-content-around align-items-center">
+                                    <a [routerLink]="['./details', zone.id]"><i class="fa fa-tripadvisor"></i></a>
+                                </td>
+                            </ng-container> -->
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let zone;columns: displayedColumns" (click)="onRowClicked(zone)"
+                                (dblclick)="onRowDoubleClicked(zone)"></tr>
+
+                        </table>
+                    </div>
                 </tab>
 
                 <tab>

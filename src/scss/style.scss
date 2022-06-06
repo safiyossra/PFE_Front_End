@@ -62,7 +62,7 @@ body {
 
 .list-vehicules {
     transition: all 1.5s;
-    overflow: hidden;
+    overflow-y: hidden;
 
     .card-header {
         padding: 5px 5px 10px 5px;

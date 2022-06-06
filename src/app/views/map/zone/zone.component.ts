@@ -1,8 +1,11 @@
-import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { util } from '../../../tools/utils'
 import * as L from 'leaflet'
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { LoginComponent } from '../../login/login.component';
+import { ZoneService } from './../../../services/zone.service'
+import { Zone, ZoneType } from './../../../models/zone'
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-zone',
@@ -32,6 +35,13 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   // ---------------- MAP -----------------
 
   // ---------------- Zones ------------------
+  zones: Zone[]
+  public dataSource = new MatTableDataSource();
+  displayedColumns: string[] = ['description', 'creationTime'];
+  showColumnsControle: Boolean = true
+
+  @ViewChild(MatSort) sort: MatSort;
+
   zoneTypes = [
     {
       name: 'point',
@@ -58,10 +68,14 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   polygon: FormGroup
   myPolygon: L.Polygon
 
+  onRowClicked(row: any) {
+    console.log('Row clicked: ', row);
+
+  }
   // ---------------- Zones ------------------
 
 
-  constructor(private tools: util, private fb: FormBuilder) {
+  constructor(private tools: util, private fb: FormBuilder, private zoneService: ZoneService) {
     this.circle = fb.group({
       latitude: new FormControl(this.default.latitude),
       longitude: new FormControl(this.default.longitude),
@@ -104,7 +118,60 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.loadZones()
+  }
 
+  loadZones() {
+    this.zoneService.getData().subscribe({
+      next: (res: any) => {
+        var zones = []
+        res.map((element: any) => {
+          var zone = new Zone()
+          zone.accountID = element.accountID
+          zone.clientID = element.clientID
+          zone.groupID = element.groupID
+          zone.description = element.description
+          zone.isActive = element.isActive
+          zone.shapeColor = element.shapeColor
+          zone.radius = element.radius
+          zone.zoneType = element.zoneType
+          zone.latitude1 = element.latitude1
+          zone.longitude1 = element.longitude1
+          zone.latitude2 = element.latitude2
+          zone.longitude2 = element.longitude2
+          zone.latitude3 = element.latitude3
+          zone.longitude3 = element.longitude3
+          zone.latitude4 = element.latitude4
+          zone.longitude4 = element.longitude4
+          zone.latitude5 = element.latitude5
+          zone.longitude5 = element.longitude5
+          zone.latitude6 = element.latitude6
+          zone.longitude6 = element.longitude6
+          zone.latitude7 = element.latitude7
+          zone.longitude7 = element.longitude7
+          zone.latitude8 = element.latitude8
+          zone.longitude8 = element.longitude8
+          zone.latitude9 = element.latitude9
+          zone.longitude9 = element.longitude9
+          zone.latitude10 = element.latitude10
+          zone.longitude10 = element.longitude10
+          zone.creationTime = element.creationTime * 1000
+
+          zones.push(zone)
+        });
+
+        this.zones = zones
+        console.log(this.zones.length);
+
+        this.dataSource = new MatTableDataSource(this.zones)
+        this.dataSource.sort = this.sort
+      }
+    })
+
+  }
+
+  changeDisplayedColumn(newColumnList) {
+    this.displayedColumns = newColumnList
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -433,5 +500,14 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+  search(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    // this.filterValues['name'] = filterValue
+
+    this.dataSource.filter = filterValue
+    // this.dataSource.filter = JSON.stringify(this.filterValues)
+
+    // this.applyFilter()
+  }
 
 }

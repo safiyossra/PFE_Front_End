@@ -72,6 +72,17 @@
     .tab-pane {
         min-height: 78vh;
         max-height: 78vh;
-        overflow: hidden;
+        overflow-y: hidden;
+
+        .card-body {
+            height: 78vh;
+            overflow-y: scroll;
+        }
     }
+
+    .nav-tabs {
+        justify-content: space-between;
+    }
+
+
 }
