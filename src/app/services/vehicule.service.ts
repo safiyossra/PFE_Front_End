@@ -62,4 +62,30 @@ export class VehiculeService {
     })
 
   }
+
+  getIndexes(params: string) {
+    let SERVER_URL = environment.apiUrl + "EcoDriving" + params;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+    })
+  }
+
+
+  getVehicule() {
+    let SERVER_URL = environment.apiUrl + "vehicule";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
 }

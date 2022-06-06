@@ -1,1 +1,79 @@
-<p>rank works!</p>
+<div class="animated fadeIn">
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading" class="bg-primary"></mat-progress-bar>
+    <div class="card card-accent-primary">
+        <div class="card-header bg-white">
+            <div class="row">
+                <div class="col-sm-5">
+                  <h4 class="card-title mb-0"><i class="cil-apple"></i> Eco-Index</h4>
+                  <div class="small text-muted">November 2017</div>
+                </div><!--/.col-->
+                <div class="col-sm-7 d-none d-md-block">
+                  <button type="button" class="btn btn-primary float-right"><i class="icon-cloud-download"></i></button>
+                  <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+                    <label class="btn btn-outline-secondary" [ngModelOptions]="{standalone: true}" 
+         [(ngModel)]="radioModel" btnRadio="Day" id="option1" (click)="changeGender($event)">Aujourd'hui</label>
+                    <label class="btn btn-outline-secondary" [ngModelOptions]="{standalone: true}" 
+         [(ngModel)]="radioModel" btnRadio="Month" id="option2" (click)="changeGender($event)">Mois</label>
+                    <label class="btn btn-outline-secondary" [ngModelOptions]="{standalone: true}" 
+         [(ngModel)]="radioModel" btnRadio="Year" id="option3" (click)="changeGender($event)">année</label>
+                  </div>
+                </div><!--/.col-->
+              </div><!--/.row-->
+        </div>
+        <div class="card-body row">
+        <!--/.col-->
+        <div class="col-lg-6">
+    <div class="card card-accent-success">
+      <div class="card-header">
+        <i class="fa fa-arrow-down"></i> Les 5 meilleurs conducteurs
+      </div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Vehicule</th>
+              <th>Eco-ecoIndex</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of data">
+              <td>{{row.description}}</td>
+              <td>{{row.ecoIndex}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+          </div>
+          <!--/.col-->
+
+        <!--/.col-->
+        <div class="col-lg-6">
+    <div class="card  card-accent-danger">
+      <div class="card-header">
+        <i class="fa fa-arrow-up"></i> Les 5 pires conducteurs
+      </div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Vehicule</th>
+              <th>Eco-ecoIndex</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of dataDesc">
+                <td>{{row.description}}</td>
+                <td>{{row.ecoIndex}}</td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+          </div>
+          <!--/.col-->
+
+        </div>
+
+    </div>
+</div>

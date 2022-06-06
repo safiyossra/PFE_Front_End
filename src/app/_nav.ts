@@ -60,7 +60,7 @@ export const navItems: INavData[] = [
         icon: 'icon-graph'
       },
       {
-        name: 'Eco-Conduite Détaillés',
+        name: 'Eco-Détaillés',
         url: '/eco/details',
         icon: 'icon-book-open'
       }
