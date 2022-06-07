@@ -12,10 +12,6 @@ export class TabsComponent {
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
-  // selectedType1: string = "0";
-  // selectedType2: string = "0";
-  // selectedType3: string = "0";
-  // selectedType4: string = "0";
   selectedType = ["0", "0", "0", "0"]
   isCollapsed: boolean = false;
   isCollapsedData: boolean = false;
@@ -303,7 +299,7 @@ export class TabsComponent {
             this.columns = ["timestamp", ...this.paramstab]
             this.reportData = d;
             this.reportData.forEach((e) => {
-              e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toDateString();
+              e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toLocaleDateString();
               if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
               if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
             })
@@ -387,16 +383,6 @@ export class TabsComponent {
 
     return clmns
   }
-/*
-  getdetails() {
-    this.resetValidator()
-    if (this.selectedDevice.length == 0) {
-      this.onValidateDevice()
-    } else {
-      this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
-    }
-  }
-  */
 
   getDev() {
     this.dataService.getVehicule().subscribe({
