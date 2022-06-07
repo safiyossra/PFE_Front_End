@@ -109,7 +109,28 @@ export const navItems: INavData[] = [
       }
     ]
   },
-
+  {
+    name: 'Notifications',
+    url: '/notifications/alerts',
+    icon: 'icon-bell',
+    // children: [
+    //   {
+    //     name: 'Alerts',
+    //     url: '/notifications/alerts',
+    //     icon: 'icon-bell'
+    //   },
+    // {
+    //   name: 'Badges',
+    //   url: '/notifications/badges',
+    //   icon: 'icon-bell'
+    // },
+    // {
+    //   name: 'Modals',
+    //   url: '/notifications/modals',
+    //   icon: 'icon-bell'
+    // }
+    // ]
+  },
   // {
   //   name: 'Map',
   //   url: '/map',

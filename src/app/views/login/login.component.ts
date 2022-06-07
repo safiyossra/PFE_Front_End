@@ -39,6 +39,7 @@ export class LoginComponent {
         (response) => {
           localStorage.setItem('JWT', response.token)
           localStorage.setItem('username', response.user)
+          localStorage.setItem('compte', this.accountid)
           this.route.navigate(['map']);
           this.loading = false;
         },

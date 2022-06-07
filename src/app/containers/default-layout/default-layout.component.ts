@@ -11,12 +11,14 @@ export class DefaultLayoutComponent implements OnInit {
   public navItems = navItems;
 
   username: String
+  compte: String
   constructor(private route: Router) {
 
   }
 
   ngOnInit(): void {
     this.username = localStorage.getItem('username')
+    this.compte = localStorage.getItem('compte')
   }
 
   toggleMinimize(e) {
