@@ -11,37 +11,37 @@ export const navItems: INavData[] = [
     // }
   },
 
-  {
-    title: true,
-    name: 'Rappports'
-  },
-  {
-    name: 'Rapports journalier',
-    url: '/rapports/journalier',
-    icon: 'icon-graph'
-  },
-  {
-    name: 'Rapports Détaillés',
-    url: '/rapports/detaille',
-    icon: 'icon-book-open'
-  },
   // {
-  //   name: 'Rapports',
-  //   url: '/rapport/menu',
-  //   icon: 'icon-docs',
-  //   children: [
-  //     {
-  //       name: 'Rapports journalier',
-  //       url: '/rapports/journalier',
-  //       icon: 'icon-graph'
-  //     },
-  //     {
-  //       name: 'Rapports Détaillés',
-  //       url: '/rapports/detaille',
-  //       icon: 'icon-book-open'
-  //     }
-  //   ]
+  //   title: true,
+  //   name: 'Rappports'
   // },
+  // {
+  //   name: 'Rapports journalier',
+  //   url: '/rapports/journalier',
+  //   icon: 'icon-graph'
+  // },
+  // {
+  //   name: 'Rapports Détaillés',
+  //   url: '/rapports/detaille',
+  //   icon: 'icon-book-open'
+  // },
+  {
+    name: 'Rapports',
+    url: '/rapport/menu',
+    icon: 'icon-docs',
+    children: [
+      {
+        name: 'Rapports journalier',
+        url: '/rapports/journalier',
+        icon: 'icon-graph'
+      },
+      {
+        name: 'Rapports Détaillés',
+        url: '/rapports/detaille',
+        icon: 'icon-book-open'
+      }
+    ]
+  },
 
 
   {
@@ -49,7 +49,7 @@ export const navItems: INavData[] = [
     name: 'Map'
   },
   {
-    name: 'Vehicules',
+    name: 'Map',
     url: '/map/vehicule',
     icon: 'cil-garage'
   },

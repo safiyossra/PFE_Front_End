@@ -12,6 +12,7 @@ export class RankComponent implements OnInit {
   public isLoading: boolean = false
   data = []
   dataDesc = []
+  interval = "Un mois à partir de maintenant"
   ngOnInit(): void {
     this.getEcoIndexes("")
   }
@@ -21,8 +22,8 @@ export class RankComponent implements OnInit {
     this.dataService.getIndexes(params).subscribe({
       next: (res: any) => {
         let d = res;
-        this.data = this.getValue(d)
-        this.dataDesc = d.sort(
+        this.dataDesc = this.getValue(d)
+        this.data = d.sort(
           (a, b) => b.ecoIndex - a.ecoIndex
         )
         this.isLoading = false
@@ -36,8 +37,9 @@ export class RankComponent implements OnInit {
 
   changeGender(ev) {
     let p = ""
-    if (this.radioModel == "Day") p = "?st=" + this.getLastxDate(1) + "&et=" + this.getLastxDate(0)
-    else if (this.radioModel == "Year") p = "?st=" + this.getLastxDate(365) + "&et=" + this.getLastxDate(0)
+    if (this.radioModel == "Day") { this.interval = "Les dernières 24 heures"; p = "?st=" + this.getLastxDate(1) + "&et=" + this.getLastxDate(0) }
+    else if (this.radioModel == "Year") { this.interval = "Un an à partir de maintenant"; p = "?st=" + this.getLastxDate(365) + "&et=" + this.getLastxDate(0) }
+    else this.interval = "Un mois à partir de maintenant";
     this.getEcoIndexes(p)
     console.log(p);
 

@@ -44,24 +44,26 @@ import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-d
 import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
+// import { SharedModule } from '../components/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     RapportRoutingModule,
-    BsDropdownModule.forRoot(),
-    TabsModule,
-    FormsModule,
     CollapseModule.forRoot(),
     PaginationModule.forRoot(),
     PopoverModule.forRoot(),
     ProgressbarModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    TabsModule,
+    FormsModule,
     MatSelectModule,
     ChartsModule,
-    MaterialsModule, MaterialsModule,
+    MaterialsModule,
     MyDateRangePickerModule,
     MyDropdownModule,
     ReactiveFormsModule,
+    // SharedModule,
   ],
   declarations: [
     CardsComponent,

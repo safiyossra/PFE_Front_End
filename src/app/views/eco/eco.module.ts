@@ -5,7 +5,7 @@ import { EcoRoutingModule } from './eco-routing.module';
 import { RankComponent } from './rank/rank.component';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { FormsModule } from '@angular/forms';
-import { MaterialsModule } from 'src/app/materials.module';
+// import { MaterialsModule } from 'src/app/materials.module';
 import { SharedModule } from '../components/shared.module';
 
 
@@ -18,7 +18,8 @@ import { SharedModule } from '../components/shared.module';
     CommonModule,
     EcoRoutingModule,
     ButtonsModule.forRoot(),
-    MaterialsModule,
+    // MaterialsModule,
+    SharedModule,
   ]
 })
 export class EcoModule { }
