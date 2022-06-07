@@ -92,6 +92,10 @@ export const routes: Routes = [
         path: 'notifications',
         loadChildren: () => import('./views/notifications/notifications.module').then(m => m.NotificationsModule)
       },
+      {
+        path: 'planentretien',
+        loadChildren: () => import('./views/planentretien/planentretien.module').then(m => m.PlanentretienModule)
+      },
     ]
   },
   { path: '**', component: P404Component }
