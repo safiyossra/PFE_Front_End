@@ -46,6 +46,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 // Our Modules
 import { MapModule } from './views/map/map.module';
+import { EcoModule } from './views/eco/eco.module';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort'
@@ -70,9 +71,10 @@ import { MatSortModule } from '@angular/material/sort'
     ReactiveFormsModule,
     // Our modules
     MapModule,
+    EcoModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
   ],
   declarations: [
     AppComponent,
@@ -90,6 +92,7 @@ import { MatSortModule } from '@angular/material/sort'
     IconSetService,
   ],
   bootstrap: [AppComponent],
-  exports: []
+  exports: [
+  ]
 })
 export class AppModule { }

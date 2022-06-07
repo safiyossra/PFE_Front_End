@@ -23,7 +23,7 @@ export class TabsComponent {
   reportDetails: any;
   paramstab = [];
   resume = [];
-  urldetails ="";
+  urldetails = "";
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -383,6 +383,19 @@ export class TabsComponent {
 
     return clmns
   }
+<<<<<<< HEAD
+=======
+  /*
+    getdetails() {
+      this.resetValidator()
+      if (this.selectedDevice.length == 0) {
+        this.onValidateDevice()
+      } else {
+        this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
+      }
+    }
+    */
+>>>>>>> eb048fb4b9916d73a65ab07ac6a9bc0eb451cd47
 
   getDev() {
     this.dataService.getVehicule().subscribe({

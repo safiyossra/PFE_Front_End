@@ -67,8 +67,6 @@ export class DataService {
     })
   }
 
-
-
   //fonction de detail
 
   getDetails(urldetails) {

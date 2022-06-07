@@ -1,0 +1,8 @@
+.card {
+    cursor: pointer;
+
+    .menu-card {
+        transition: all .5s ease-in-out;
+        border-radius: 0.25rem;
+    }
+}

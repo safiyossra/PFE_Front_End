@@ -17,6 +17,7 @@ import { ZoneComponent } from './zone/zone.component';
 import { MatIconModule } from '@angular/material/icon';
 import { PointFormComponent } from './zone/point-form/point-form.component';
 import { AngularSplitModule } from "angular-split";
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
  
 @NgModule({
@@ -38,7 +39,9 @@ import { AngularSplitModule } from "angular-split";
     FormsModule,
     ReactiveFormsModule,
     BsDropdownModule,
-    MatIconModule, AngularSplitModule
+    MatIconModule,
+    AngularSplitModule,
+    TabsModule
 
   ]
 })

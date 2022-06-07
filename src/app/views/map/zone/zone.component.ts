@@ -1,7 +1,11 @@
-import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { util } from '../../../tools/utils'
 import * as L from 'leaflet'
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ZoneService } from './../../../services/zone.service'
+import { Zone, ZoneType } from './../../../models/zone'
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-zone',
@@ -21,6 +25,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     latitude: 35.75,
     longitude: -5.83,
     radius: 10000,
+    description: '',
     color: '#000'
   }
 
@@ -30,6 +35,13 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   // ---------------- MAP -----------------
 
   // ---------------- Zones ------------------
+  zones: Zone[]
+  public dataSource = new MatTableDataSource();
+  displayedColumns: string[] = ['description', 'creationTime'];
+  showColumnsControle: Boolean = true
+
+  @ViewChild(MatSort) sort: MatSort;
+
   zoneTypes = [
     {
       name: 'point',
@@ -56,20 +68,26 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   polygon: FormGroup
   myPolygon: L.Polygon
 
+  onRowClicked(row: any) {
+    console.log('Row clicked: ', row);
+
+  }
   // ---------------- Zones ------------------
 
 
-  constructor(private tools: util, private fb: FormBuilder) {
+  constructor(private tools: util, private fb: FormBuilder, private zoneService: ZoneService) {
     this.circle = fb.group({
       latitude: new FormControl(this.default.latitude),
       longitude: new FormControl(this.default.longitude),
       radius: new FormControl(this.default.radius),
+      description: new FormControl(this.default.description),
       color: new FormControl('#4dbd74'),
     })
 
     this.point = fb.group({
       latitude: new FormControl(this.default.latitude),
       longitude: new FormControl(this.default.longitude),
+      description: new FormControl(this.default.description),
       color: new FormControl('#63c2de'),
     })
 
@@ -89,6 +107,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
         }),
 
       ]),
+      description: new FormControl(this.default.description),
       color: new FormControl('#ffc107')
 
     })
@@ -99,7 +118,60 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.loadZones()
+  }
 
+  loadZones() {
+    this.zoneService.getData().subscribe({
+      next: (res: any) => {
+        var zones = []
+        res.map((element: any) => {
+          var zone = new Zone()
+          zone.accountID = element.accountID
+          zone.clientID = element.clientID
+          zone.groupID = element.groupID
+          zone.description = element.description
+          zone.isActive = element.isActive
+          zone.shapeColor = element.shapeColor
+          zone.radius = element.radius
+          zone.zoneType = element.zoneType
+          zone.latitude1 = element.latitude1
+          zone.longitude1 = element.longitude1
+          zone.latitude2 = element.latitude2
+          zone.longitude2 = element.longitude2
+          zone.latitude3 = element.latitude3
+          zone.longitude3 = element.longitude3
+          zone.latitude4 = element.latitude4
+          zone.longitude4 = element.longitude4
+          zone.latitude5 = element.latitude5
+          zone.longitude5 = element.longitude5
+          zone.latitude6 = element.latitude6
+          zone.longitude6 = element.longitude6
+          zone.latitude7 = element.latitude7
+          zone.longitude7 = element.longitude7
+          zone.latitude8 = element.latitude8
+          zone.longitude8 = element.longitude8
+          zone.latitude9 = element.latitude9
+          zone.longitude9 = element.longitude9
+          zone.latitude10 = element.latitude10
+          zone.longitude10 = element.longitude10
+          zone.creationTime = element.creationTime * 1000
+
+          zones.push(zone)
+        });
+
+        this.zones = zones
+        console.log(this.zones.length);
+
+        this.dataSource = new MatTableDataSource(this.zones)
+        this.dataSource.sort = this.sort
+      }
+    })
+
+  }
+
+  changeDisplayedColumn(newColumnList) {
+    this.displayedColumns = newColumnList
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -160,7 +232,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
         }
 
         this.myPolygon.addTo(this.map)
-        // this.map.fitBounds(this.myPolygon.getBounds())
+        this.map.fitBounds(this.myPolygon.getBounds())
         break;
 
       default:
@@ -180,6 +252,19 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
+
+  pointOnChanges(): void {
+    this.point.valueChanges.subscribe(val => {
+      if (val.latitude != null && val.longitude != null) {
+        console.log('not Null');
+        this.myPoint.setLatLng([val.latitude, val.longitude])
+        this.map.setView(this.myPoint.getLatLng())
+      } else {
+        console.log('Null');
+      }
+    });
+  }
+
   circleOnChanges(): void {
     this.circle.valueChanges.subscribe(val => {
       if (val.latitude != null && val.longitude != null && val.radius != null) {
@@ -196,32 +281,92 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-  pointOnChanges(): void {
-    this.point.valueChanges.subscribe(val => {
-      if (val.latitude != null && val.longitude != null) {
-        console.log('not Null');
-        this.myPoint.setLatLng([val.latitude, val.longitude])
-        this.map.setView(this.myPoint.getLatLng())
-      } else {
-        console.log('Null');
-      }
-    });
-  }
 
   polygonPointOnchanges(): void {
     this.polygonPoints.valueChanges.subscribe(val => {
       var latlngs = []
-      val.forEach((point, index) => {
-        console.log('latitude ' + (index + 1) + ' : ' + point.latitude + ' - longitude ' + index + ': ' + point.longitude);
+      val.forEach((point: any, index) => {
         if (point.latitude != null && point.longitude != null) {
-          latlngs.push([point.latitude, point.longitude])
+          latlngs.push(new L.LatLng(point.latitude, point.longitude))
         }
       });
 
       this.myPolygon.setLatLngs(latlngs)
-
+      this.myCircle.setStyle({ color: this.polygon.value.color })
       this.map.fitBounds(this.myPolygon.getBounds())
+
     })
+  }
+
+  resetPoint() {
+    this.point.reset({
+      latitude: this.default.latitude,
+      longitude: this.default.longitude,
+      description: this.default.description,
+      color: '#63c2de',
+    })
+  }
+
+  resetCircle() {
+    this.circle.reset({
+      latitude: this.default.latitude,
+      longitude: this.default.longitude,
+      radius: this.default.radius,
+      description: this.default.description,
+      color: '#4dbd74',
+    })
+  }
+
+  resetPolygon() {
+    this.polygon.reset({
+      points: [
+        {
+          latitude: [this.default.latitude],
+          longitude: [this.default.longitude]
+        },
+        {
+          latitude: [this.default.latitude + 1],
+          longitude: [this.default.longitude]
+        },
+        {
+          latitude: [this.default.latitude],
+          longitude: [this.default.longitude - 1]
+        },
+      ],
+      description: this.default.description,
+      color: '#ffc107'
+    })
+  }
+
+  resetZone() {
+    switch (this.selectedType) {
+      case 'point':
+        console.log('reset point');
+        this.resetPoint()
+        break;
+
+      case 'circle':
+        console.log('reset circle');
+        this.resetCircle()
+        break;
+
+      case 'polygon':
+        console.log('reset polygon');
+        this.resetPolygon()
+        break;
+
+      default:
+        console.log('default reset');
+        break;
+    }
+  }
+
+  addZone() {
+
+  }
+
+  updateZone() {
+
   }
 
   addPoint() {
@@ -355,5 +500,14 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+  search(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    // this.filterValues['name'] = filterValue
+
+    this.dataSource.filter = filterValue
+    // this.dataSource.filter = JSON.stringify(this.filterValues)
+
+    // this.applyFilter()
+  }
 
 }

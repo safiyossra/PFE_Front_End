@@ -312,10 +312,9 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   }
 
   myIcon(status: string) {
-    let icon = `/assets/img/markers/${status}.png`
-
-    return L.icon({
-      iconUrl: icon,
+    let icon = `assets/img/markers/${status}.png`
+    return L.divIcon({
+      html: `<img class="my-icon-img" src="${icon}">`,
       iconSize: (status == 'start' || status == 'end') ? [50, 50] : [30, 30],
       iconAnchor: (status == 'start' || status == 'end') ? [25, 50] : [15, 30],
       className: (status == 'start' || status == 'end') ? 'important-marker' : ''

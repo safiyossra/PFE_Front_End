@@ -45,7 +45,7 @@ export class DetailsTableComponent implements OnChanges {
       this.dataSource.paginator.firstPage();
     }
   }
-  ngAfterViewInit() {
+  OnInit() {
     this.dataSource.paginator = this.paginator;
   }
 
@@ -68,6 +68,8 @@ export class DetailsTableComponent implements OnChanges {
     var urlTmp = this.url+"&limE="+this.selectedPageSize+"&page="+this.currentPage
     this.dataService.getDetails(urlTmp).subscribe({
       next: (d:any) => {
+        console.log(d);
+
         this.dataSource = new MatTableDataSource(d.data)
         this.loadDonnee = d.data;
         console.log(d.data);

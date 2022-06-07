@@ -58,7 +58,7 @@ import { ChartsModule } from 'ng2-charts';
     ProgressbarModule.forRoot(),
     MatSelectModule,
     ChartsModule,
-    MaterialsModule,
+    MaterialsModule, MaterialsModule,
     MyDateRangePickerModule,
     MyDropdownModule,
     ReactiveFormsModule,
