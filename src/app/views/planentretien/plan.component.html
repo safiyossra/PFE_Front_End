@@ -1,0 +1,82 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card card-accent-info">
+        <div class="card-header">
+          <i class="fa fa-edit"></i> PLAN ENTRETIEN
+          <div class="card-header-actions">
+            <button type="button" class="card-header-action btn btn-link btn-setting">
+              <i class="icon-settings"></i>
+            </button>
+            <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
+              <i class="{{ iconCollapse }}"></i>
+            </button>
+            <button type="button" class="card-header-action btn btn-link btn-close" (click)="reset()">
+              <i class="icon-close"></i>
+            </button>
+          </div>
+        </div>
+        <div  class="card-body">
+          <form class="form-horizontal">
+            <div class="form-group row">
+              <div class="col-md-5">
+                <my-daterangepicker
+                  #calendar
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="value"
+                  [options]="myDateRangePickerOptions"
+                ></my-daterangepicker>
+              </div>
+              <div class="col-md-5">
+                <div class="controls">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"
+                        ><i class="fa fa-car fa-sm"></i
+                      ></span>
+                    </div>
+                    <my-dropdown-select
+                      class="form-control"
+                      [placeholder]="'Vehicle Selection'"
+                      [selectPlaceholder]="'search...'"
+                      [errorMsg]="errorMessageDevice"
+                      [showErrorMsg]="showErrorDevice"
+                      [options]="devices"
+                      [display]="'name'"
+                      [value]="'dID'"
+                      [multiple]="false"
+                      [labelCount]="0"
+                      [selectedOptions]="selectedDevices"
+                      (selectionChange)="getSelectedDevices($event)"
+                    >
+                    </my-dropdown-select>
+                    <div class="input-group-append">
+                      <span class="input-group-text"
+                        ><i
+                          class="fa fa-key fa-sm"
+                          *ngIf="selectedDevice.length == 0"
+                        ></i
+                        ><i *ngIf="selectedDevice != null">{{
+                          selectedDevice
+                        }}</i></span
+                      >
+                    </div>
+                  </div>
+                  <!--</div> -->
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading">
+                  <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
+                </button>
+              </div>
+            </div>
+        
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--/.col-->
+</div>
+<!--/.row-->

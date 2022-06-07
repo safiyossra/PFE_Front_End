@@ -383,8 +383,6 @@ export class TabsComponent {
 
     return clmns
   }
-<<<<<<< HEAD
-=======
   /*
     getdetails() {
       this.resetValidator()
@@ -395,7 +393,6 @@ export class TabsComponent {
       }
     }
     */
->>>>>>> eb048fb4b9916d73a65ab07ac6a9bc0eb451cd47
 
   getDev() {
     this.dataService.getVehicule().subscribe({
