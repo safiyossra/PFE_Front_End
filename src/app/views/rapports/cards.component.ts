@@ -1,15 +1,17 @@
 import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  templateUrl: 'cards.component.html'
+  templateUrl: 'cards.component.html',
+  providers: [DatePipe]
 })
 export class CardsComponent {
 
   loading: boolean = false;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private datePipe:DatePipe) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -18,7 +20,8 @@ export class CardsComponent {
   iconCollapse: string = 'icon-arrow-up';
   iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
-  displayedColumns: any=["Depart","Arrive","Km Parcourue","Duree de conduite (min)","Max Vitesse (km/h)", "# Arrets", "Duree arrets (min)", "Consom Fuel (L)", "Fuel moyenne (L)", "Max Temperature(°C)"]
+  reportDetails: any;
+  displayedColumns: any=["Depart","Arrivé","Km Parcourue","Duree de conduite (min)","Max Vitesse (km/h)", "# Arrets", "Duree arrets (min)", "Consom Fuel (L)", "Fuel moyenne (L)", "Max Temperature(°C)"]
   columns : any = ["timeStart","timeEnd","k","dc", "v", "na", "da", "c", "cr", "t"];
 
   resume = [];
@@ -183,8 +186,10 @@ export class CardsComponent {
             console.log(d);
             this.reportData = d;
             this.reportData.forEach((e) => {
-              e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toDateString();
-              e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toDateString();
+              e.timeStart = this.datePipe.transform( new Date(Number.parseInt(e.timeStart) * 1000),'yyyy-MM-dd  h:mm:ss');
+              e.timeEnd = this.datePipe.transform( new Date(Number.parseInt(e.timeEnd) * 1000),'yyyy-MM-dd  h:mm:ss');
+             // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
+              //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
               if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
               if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
             })
@@ -247,7 +252,19 @@ export class CardsComponent {
     } else {
       this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000) +"&all"
     }
-    console.log(this.urldetails);
+    // this.dataService.getDetails(this.urldetails).subscribe({
+    //   next: (d: any) => {
+      
+    //     console.log(d);
+    //     this.reportDetails = d;
+    //     this.reportDetails.forEach((e) => {
+    //       e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toDateString();
+    //       e.odometerKM = Math.round(Number.parseInt(e.odometerKM));
+    //       // if (e.dc) e.dc = Math.round(Number.parseInt(e.dc));
+    //     })
+    //    // this.loading = false;
+    //   },
+    // })
     
   }
 
