@@ -30,34 +30,53 @@ export class Zone {
     creationTime: any
 
     constructor() {
-        this.accountID = ''
-        this.clientID = ''
-        this.groupID = ''
-        this.description = ''
-        this.isActive = false
+        this.accountID = null
+        this.clientID = null
+        this.groupID = null
+        this.description = null
+        this.isActive = null
         this.zoneType = null
-        this.radius = 5
-        this.shapeColor = ''
-        this.latitude1 = 0
-        this.latitude2 = 0
-        this.latitude3 = 0
-        this.latitude4 = 0
-        this.latitude5 = 0
-        this.latitude6 = 0
-        this.latitude7 = 0
-        this.latitude8 = 0
-        this.latitude9 = 0
-        this.latitude10 = 0
-        this.longitude1 = 0
-        this.longitude2 = 0
-        this.longitude3 = 0
-        this.longitude4 = 0
-        this.longitude5 = 0
-        this.longitude6 = 0
-        this.longitude7 = 0
-        this.longitude8 = 0
-        this.longitude9 = 0
-        this.longitude10 = 0
+        this.radius = null
+        this.shapeColor = null
+        this.latitude1 = null
+        this.latitude2 = null
+        this.latitude3 = null
+        this.latitude4 = null
+        this.latitude5 = null
+        this.latitude6 = null
+        this.latitude7 = null
+        this.latitude8 = null
+        this.latitude9 = null
+        this.latitude10 = null
+        this.longitude1 = null
+        this.longitude2 = null
+        this.longitude3 = null
+        this.longitude4 = null
+        this.longitude5 = null
+        this.longitude6 = null
+        this.longitude7 = null
+        this.longitude8 = null
+        this.longitude9 = null
+        this.longitude10 = null
+    }
+
+    get latLngs() {
+        var latlngs = [
+            [this.latitude1, this.longitude1],
+            [this.latitude2, this.longitude2],
+            [this.latitude3, this.longitude3],
+            [this.latitude4, this.longitude4],
+            [this.latitude5, this.longitude5],
+            [this.latitude6, this.longitude6],
+            [this.latitude7, this.longitude7],
+            [this.latitude8, this.longitude8],
+            [this.latitude9, this.longitude9],
+            [this.latitude10, this.longitude10],
+        ]
+
+        var filtered = latlngs.filter(elem => elem[0] != null && elem[0] != null);
+
+        return filtered
     }
 }
 

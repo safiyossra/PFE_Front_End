@@ -10,7 +10,7 @@
             <tabset>
                 <tab>
                     <ng-template tabHeading><i class="cil-list"></i> | Zones</ng-template>
-                    <div class="card-header p-0">
+                    <div class="card-header p-0 pb-2">
                         <div class="row align-items-center w-100 m-0">
                             <div class="col-md-8">
                                 <div class="input-group form-inline align-items-center">
@@ -31,7 +31,6 @@
                     </div>
                     <div class="card-body p-0">
                         <table class="w-100" mat-table [dataSource]="dataSource" matSort>
-
                             <ng-container matColumnDef="description">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
                                 <td mat-cell *matCellDef="let zone">
@@ -46,7 +45,7 @@
                             <ng-container matColumnDef="creationTime">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Date de création</th>
                                 <td mat-cell *matCellDef="let zone">
-                                    {{ zone.creationTime | date:'dd-MM-yyyy' }}
+                                    {{ zone.creationTime | date:'dd - MM - yyyy' }}
                             </ng-container>
 
                             <ng-container matColumnDef="clientID">
@@ -61,24 +60,18 @@
                                     {{ zone.groupID }}
                             </ng-container>
 
-
-                            <!-- <ng-container matColumnDef="actions">
-                                <th mat-header-cell *matHeaderCellDef>Actions</th>
-                                <td mat-cell *matCellDef="let zone" class="d-flex justify-content-around align-items-center">
-                                    <a [routerLink]="['./details', zone.id]"><i class="fa fa-tripadvisor"></i></a>
-                                </td>
-                            </ng-container> -->
-
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                            <tr mat-row *matRowDef="let zone;columns: displayedColumns" (click)="onRowClicked(zone)"
-                                (dblclick)="onRowDoubleClicked(zone)"></tr>
+                            <tr mat-row *matRowDef="let zone;let index = index; columns: displayedColumns"
+                                (click)="onRowClicked(index, zone)"></tr>
 
                         </table>
                     </div>
                 </tab>
 
-                <tab>
-                    <ng-template tabHeading><i class="cil-plus"></i> | Ajouter</ng-template>
+                <tab (selectTab)="selectTab()">
+                    <ng-template tabHeading>
+                        <i class="cil-plus"></i> | Ajouter
+                    </ng-template>
                     <label class="font-weight-bold">Type</label>
                     <mat-form-field appearance="fill" class="w-100">
                         <mat-label>Selectionner un type</mat-label>
@@ -98,6 +91,74 @@
                     </mat-form-field>
 
                     <!-- <hr> -->
+                    <p class="font-weight-bold">{{ selectedType | uppercase }}</p>
+
+                    <form [formGroup]="zone">
+                        <mat-form-field class="w-100" appearance="fill">
+                            <mat-label>Description</mat-label>
+                            <input matInput type="text" formControlName="description">
+                        </mat-form-field>
+
+                        <mat-form-field class="w-100" appearance="fill">
+                            <mat-label>Rayon (en mètres)</mat-label>
+                            <input matInput type="number" formControlName="radius">
+                        </mat-form-field>
+
+                        <div formArrayName="points">
+                            <ng-container *ngIf="selectedType=='circle' || selectedType=='circle'">
+                                <div class="form-group" [formGroup]="zonePoints.controls[0]">
+                                    <mat-form-field class="col-6 pl-0" appearance="fill">
+                                        <mat-label>Latitude</mat-label>
+                                        <input matInput type="number" formControlName="latitude">
+                                    </mat-form-field>
+
+                                    <mat-form-field class="col-6 pr-0" appearance="fill">
+                                        <mat-label>Longitude</mat-label>
+                                        <input matInput type="number" formControlName="longitude">
+                                    </mat-form-field>
+                                </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="selectedType == 'polygon' ">
+
+                            </ng-container>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-sm btn-success mr-2" type="button" (click)="addZone()">
+                                <i class="fa fa-check"></i>
+                                Appliquer
+                            </button>
+                            <button class="btn btn-sm btn-danger" type="button" (click)="resetZone()">
+                                <i class="fa fa-close"></i>
+                                Rénitialiser
+                            </button>
+                        </div>
+                    </form>
+
+                </tab>
+
+                <tab (selectTab)="selectTab()">
+                    <ng-template tabHeading>
+                        <i class="cil-plus"></i> | Ajouter
+                    </ng-template>
+                    <label class="font-weight-bold">Type</label>
+                    <mat-form-field appearance="fill" class="w-100">
+                        <mat-label>Selectionner un type</mat-label>
+                        <mat-select [(value)]="selectedType" (selectionChange)="onTypeChange($event)">
+                            <mat-option>None</mat-option>
+                            <mat-option *ngFor="let type of zoneTypes" [value]="type.name">
+                                <div class="d-flex justify-content">
+                                    <span class="mr-4 text-dark">
+                                        <i [class]="type.icon"></i>
+                                    </span>
+                                    <span class="">
+                                        {{ type.name | uppercase }}
+                                    </span>
+                                </div>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
                     <p class="font-weight-bold">{{ selectedType | uppercase }}</p>
 
                     <ng-container *ngIf="selectedType=='circle'">
