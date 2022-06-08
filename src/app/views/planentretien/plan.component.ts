@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
+import {ModalDirective} from 'ngx-bootstrap/modal';
 
 @Component({
   templateUrl: 'plan.component.html',
@@ -10,6 +11,7 @@ import { DatePipe } from '@angular/common';
 export class PlanComponent {
 
   loading: boolean = false;
+  @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
   constructor(private dataService: DataService, private datePipe:DatePipe) { }
 
@@ -32,6 +34,29 @@ export class PlanComponent {
   selectedDevice = this.selectedDevices;
   showErrorDevice = false;
   errorMessageDevice = "";
+
+  selectedDevicesModal = null;
+  selectedDeviceModal = this.selectedDevicesModal;
+  showErrorDeviceModal = false;
+  errorMessageDeviceModal = "";
+
+  public operations: any = [];
+  selectedOperations = null;
+  selectedOperation = this.selectedOperations;
+  showErrorOperation = false;
+  errorMessageOperation = "";
+ 
+  getSelectedOperations(selected) {
+    // console.log(selected);
+    this.selectedOperation = selected;
+  }
+  resetValidator() {
+    this.showErrorDevice = false;
+    this.errorMessageDevice = "";
+    this.showErrorOperation = false;
+    this.errorMessageOperation = "";
+  }
+
   // barChart
 
   public barChartOptions: any = {
@@ -162,15 +187,16 @@ export class PlanComponent {
     this.selectedDevice = selected;
   }
 
+  getSelectedDevicesModal(selected) {
+    // console.log(selected);
+    this.selectedDeviceModal = selected;
+  }
+
   onValidateDevice() {
     this.showErrorDevice = !this.showErrorDevice;
     this.errorMessageDevice = "This field is required";
   }
 
-  resetValidator() {
-    this.showErrorDevice = false;
-    this.errorMessageDevice = "";
-  }
   //////////////////////
   submit() {
     // this.resetValidator()
@@ -279,7 +305,9 @@ export class PlanComponent {
   }
   
   reset() {
-    this.selectedDevices = []
+    this.selectedDevices = [],
+    this.selectedDevicesModal = [],
+    this.selectedOperations = []
   }
 
 

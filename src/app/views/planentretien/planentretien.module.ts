@@ -15,6 +15,7 @@ import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-d
 import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { ChartsModule } from 'ng2-charts';
     MyDateRangePickerModule,
     MyDropdownModule,
     ReactiveFormsModule,
+    ModalModule.forRoot()
   ],
   declarations: [
     PlanComponent,
