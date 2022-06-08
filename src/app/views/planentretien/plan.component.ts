@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
@@ -12,7 +12,11 @@ export class PlanComponent {
 
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-
+  @ViewChild('compt1') input1: ElementRef;
+  @ViewChild('compt2') input2: ElementRef;
+  @ViewChild('motif') motif: ElementRef;
+  @ViewChild('type') type: ElementRef;
+  @ViewChild('modele') modele: ElementRef;
   constructor(private dataService: DataService, private datePipe:DatePipe) { }
 
   value: string | Object;
@@ -271,19 +275,6 @@ export class PlanComponent {
     } else {
       this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000) +"&all"
     }
-    // this.dataService.getDetails(this.urldetails).subscribe({
-    //   next: (d: any) => {
-      
-    //     console.log(d);
-    //     this.reportDetails = d;
-    //     this.reportDetails.forEach((e) => {
-    //       e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toDateString();
-    //       e.odometerKM = Math.round(Number.parseInt(e.odometerKM));
-    //       // if (e.dc) e.dc = Math.round(Number.parseInt(e.dc));
-    //     })
-    //    // this.loading = false;
-    //   },
-    // })
     
   }
 
@@ -297,11 +288,27 @@ export class PlanComponent {
       }
     })
   }
-  
+
+  ajouter(){
+    
+    console.log(this.input1.nativeElement.value);
+    console.log(this.input2.nativeElement.value);
+    console.log(this.motif.nativeElement.value);
+    console.log(this.type.nativeElement.value);
+    console.log(this.modele.nativeElement.value);
+    
+  }
+
+ 
   reset() {
     this.selectedDevices = [],
     this.selectedDevicesModal = [],
-    this.selectedOperations = []
+    this.selectedOperations = [],
+    this.input1.nativeElement.value= ''
+    this.input2.nativeElement.value= ''
+    this.motif.nativeElement.value= ''
+    this.type.nativeElement.value= ''
+    this.modele.nativeElement.value= ''
   }
 
 
