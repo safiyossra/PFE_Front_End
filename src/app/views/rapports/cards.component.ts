@@ -143,7 +143,7 @@ export class CardsComponent {
       }
     };
 
-    this.getDev();
+    this.getDev(); 
   }
 
   toggleCollapse(): void {

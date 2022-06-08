@@ -20,7 +20,6 @@ export class PlanComponent {
   isCollapsed: boolean = false;
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
-  iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
   reportDetails: any;
   displayedColumns: any=["Depart","Arrivé","Km Parcourue","Duree de conduite (min)","Max Vitesse (km/h)", "# Arrets", "Duree arrets (min)", "Consom Fuel (L)", "Fuel moyenne (L)", "Max Temperature(°C)"]
@@ -174,11 +173,6 @@ export class PlanComponent {
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
-
-  }
-  toggleCollapseData(): void {
-    this.isCollapsedData = !this.isCollapsedData;
-    this.iconCollapseD = this.isCollapsedData ? 'icon-arrow-down' : 'icon-arrow-up';
 
   }
 
