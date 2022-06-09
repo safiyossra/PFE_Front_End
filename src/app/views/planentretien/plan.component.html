@@ -16,7 +16,7 @@
             </button>
           </div>
         </div>
-        <div bsModal #primaryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+        <div bsModal #primaryModal="bs-modal"  [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1" role="dialog"
           aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-primary" role="document">
             <div class="modal-content">
@@ -34,10 +34,10 @@
                         <div class="card-header">
                           * Champs Obligatoires
                         </div>
-                        <div class="card-body">
+                        <div class="card-body1">
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="select1">Device</label>
-                            <div class="col-md-6 input-group">
+                            <label class=" col-md-4 col-form-label" for="select1">Device</label>
+                            <div class="col-8 input-group">
                               <my-dropdown-select
                               class="form-control"
                               [placeholder]="'Vehicle Selection'"
@@ -67,15 +67,15 @@
                             </div>
                           </div>
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="text-input">Modèle</label>
-                            <div class="col-md-6">
+                            <label class=" col-md-4 col-form-label" for="text-input">Modèle</label>
+                            <div class="col-8">
                               <input type="text" id="text-input" #modele name="modele" class="form-control"
                                 placeholder="Saisir le modèle">
                             </div>
                           </div>
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="text-input">Type d'équipement</label>
-                            <div class="col-md-6">
+                            <label class="col-md-4 col-form-label" for="text-input">Type d'équipement</label>
+                            <div class="col-8">
                               <input type="text" id="text-input" #type name="typeequip" class="form-control"
                                 placeholder="Saisir type d'équipements">
                             </div>
@@ -86,8 +86,8 @@
                         <div class="card-body">
                           <div class="form-group row">
                             <!-- <label class="col-md-3 col-form-label" for="text-input">Motif</label> -->
-                            <div class="col-md-9">
-                              <input type="text" id="text-input"#motif name="motif" class="form-control"
+                            <div class="col-md-12">
+                              <input type="textarea" id="text-input"#motif name="motif" class="form-control"
                                 placeholder="Saisir Votre Motif ..">
                             </div>
                           </div>
@@ -98,8 +98,8 @@
                       <div class="card">
                         <div class="card-body">
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="select2">Opération</label>
-                            <div class="col-md-6 input-group">
+                            <label class=" col-md-4 col-form-label" for="select2">Opération</label>
+                            <div class="col-8 input-group">
                               <my-dropdown-select class="form-control" [placeholder]="'Operation Selection'"
                                 [selectPlaceholder]="'search...'" [errorMsg]="errorMessageOperation"
                                 [showErrorMsg]="showErrorOperation" [options]="devices" [display]="'name'"
@@ -119,9 +119,11 @@
                       </div>
                       <div class="card">
                         <div class="card-header">
-                          Pas de déclenchement
+                          pe de déclenchement
                         </div>
                         <div class="card-body">
+                          <label class="col-md-4 col-form-label" for="text-input"></label>
+                           
                           <div class="form-check form-check-inline mr-1" id="inline-radios">
                             <input class="form-check-input" type="radio" name="compteurradio" id="inlineRadio1"
                               value="option1" #option1>
@@ -132,10 +134,12 @@
                               value="option2" #option2>
                             <label class="form-check-label" for="inlineRadio2">Mois</label>
                           </div>
+
+                       
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="text-input">Compteur</label>
-                            <div class="col-md-6">
-                              <input type="text" id="text-input" #compt1 name="compteurdecl" class="form-control"
+                            <label class="col-md-4 col-form-label" for="text-input">Compteur</label>
+                            <div class="col-8">
+                              <input type="number" id="text-input" #compt1 name="compteurdecl" class="form-control"
                                 placeholder="Saisir .." >
                             </div>
                           </div>
@@ -144,10 +148,10 @@
                       <div class="card">
                         <div class="card-body">
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="text-input">Compteur</label>
-                            <div class="col-md-6">
-                              <input type="text" id="compteur" #compt2 name="compteur" class="form-control"
-                                placeholder="Saisir ..">
+                            <label class="col-md-4 col-form-label" for="text-input">Compteur</label>
+                            <div class="col-8">
+                              <input type="number" id="compteur" #compt2 name="compteur" class="form-control"
+                                placeholder="Saisir .." >
                             </div>
                           </div>
                         </div>
@@ -159,7 +163,7 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
                 <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"> &nbsp; Annuler</button>
-                <button type="button" class="btn btn-primary" (click)="ajouter()">Ajouter</button>
+                <button type="button" class="btn btn-primary" *ngIf="isnotNum==false" (click)="ajouter()">Ajouter</button>
               </div>
             </div>
           </div>
@@ -193,7 +197,7 @@
                 </div>
               </div>
               <div class="form-actions">
-                <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading">
+                <button type="submit" class="btn btn-sm btn-primary" [disabled]="loading">
                   <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
                   <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
                 </button>
@@ -207,3 +211,15 @@
     <!--/.col-->
   </div>
   <!--/.row-->
+
+  
+  <div class="row">
+    <div class="col-lg-12">
+  <!-- <tabset> 
+     <tab style="min-height: 660px">
+    
+    </tab> 
+  </tabset> -->
+  </div>
+  </div>
+  </div>

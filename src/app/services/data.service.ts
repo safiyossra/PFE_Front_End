@@ -28,7 +28,6 @@ export class DataService {
   getVehicule() {
     let SERVER_URL = environment.apiUrl + "vehicule";
     let jwt = this.JWT.get();
-    // if (jwt) {
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
       'Accept': 'application/json'
@@ -71,6 +70,20 @@ export class DataService {
 
   getDetails(urldetails) {
     let SERVER_URL = environment.apiUrl + "eventspagination" + urldetails;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+
+  // fonction de AlertPlanEntretien
+  getPlanEntretien(urlplan) {
+    let SERVER_URL = environment.apiUrl + "planentretien" + urlplan; 
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
