@@ -81,7 +81,7 @@ export class Zone {
 }
 
 export enum ZoneType {
-    Circle = 0,
-    Polygon = 3,
-    Point = 4,
+    circle = 0,
+    polygon = 3,
+    point = 4,
 }

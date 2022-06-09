@@ -72,10 +72,32 @@
     .tab-pane {
         min-height: 78vh;
         max-height: 78vh;
+        padding: 10px;
+        overflow: hidden;
 
         .card-body {
             height: 78vh;
             overflow-y: scroll;
+        }
+
+        form {
+            max-height: 78vh;
+            overflow-y: scroll;
+            padding-bottom: 10px;
+
+            .form-group {
+                .mat-form-field-wrapper {
+                    padding-bottom: 8px;
+                }
+
+                .mat-form-field {
+                    padding: 0 0 10px 0;
+                }
+
+                input.mat-input-element {
+                    padding-bottom: 8px;
+                }
+            }
         }
     }
 

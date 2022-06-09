@@ -8,10 +8,16 @@
     <div class="row">
         <div class="col-lg-3 zones-tabs">
             <tabset>
-                <tab>
+                <tab [active]="mode == 'list' " (selectTab)="selectTab('list')">
                     <ng-template tabHeading><i class="cil-list"></i> | Zones</ng-template>
                     <div class="card-header p-0 pb-2">
                         <div class="row align-items-center w-100 m-0">
+                            <div class="col-md-4 d-flex justify-content-start p-1">
+                                <my-dropdown-checkbox *ngIf="showColumnsControle" title="Show Columns" class=""
+                                    id="list-columns" [options]="columns" [selected]="displayedColumns"
+                                    (changeDisplayedColumn)="changeDisplayedColumn($event)">
+                                </my-dropdown-checkbox>
+                            </div>
                             <div class="col-md-8">
                                 <div class="input-group form-inline align-items-center">
                                     <span class="input-group-prepend mr-2 icon-magnifier"></span>
@@ -20,17 +26,25 @@
                                         #input />
                                 </div>
                             </div>
-                            <div class="col-md-4 d-flex justify-content-end p-1">
-                                <my-dropdown-checkbox *ngIf="showColumnsControle" title="Show Columns" class="mx-auto"
-                                    id="list-columns" [options]="displayedColumns" [selected]="displayedColumns"
-                                    (changeDisplayedColumn)="changeDisplayedColumn($event)">
-                                </my-dropdown-checkbox>
-                            </div>
+
                         </div>
 
                     </div>
                     <div class="card-body p-0">
                         <table class="w-100" mat-table [dataSource]="dataSource" matSort>
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
+                                <td mat-cell *matCellDef="let zone">
+                                    <button class="btn btn-link text-primary p-0 mr-2"
+                                        (click)="editZone(zone); $event.stopPropagation();">
+                                        <i class="fa fa-edit h4 my-auto"></i>
+                                    </button>
+                                    <button class="btn btn-link text-danger p-0">
+                                        <i class="fa fa-trash h4 my-auto"></i>
+                                    </button>
+                                </td>
+                            </ng-container>
+
                             <ng-container matColumnDef="description">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
                                 <td mat-cell *matCellDef="let zone">
@@ -68,64 +82,88 @@
                     </div>
                 </tab>
 
-                <tab (selectTab)="selectTab()">
+                <tab [active]="mode == 'create' || mode == 'edit' "
+                    (selectTab)="mode != 'edit' ? selectTab('create'):selectTab('edit')">
                     <ng-template tabHeading>
                         <i class="cil-plus"></i> | Ajouter
                     </ng-template>
-                    <label class="font-weight-bold">Type</label>
-                    <mat-form-field appearance="fill" class="w-100">
-                        <mat-label>Selectionner un type</mat-label>
-                        <mat-select [(value)]="selectedType" (selectionChange)="onTypeChange($event)">
-                            <mat-option>None</mat-option>
-                            <mat-option *ngFor="let type of zoneTypes" [value]="type.name">
-                                <div class="d-flex justify-content">
-                                    <span class="mr-4 text-dark">
-                                        <i [class]="type.icon"></i>
-                                    </span>
-                                    <span class="">
-                                        {{ type.name | uppercase }}
-                                    </span>
-                                </div>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <!-- <hr> -->
-                    <p class="font-weight-bold">{{ selectedType | uppercase }}</p>
-
                     <form [formGroup]="zone">
                         <mat-form-field class="w-100" appearance="fill">
                             <mat-label>Description</mat-label>
                             <input matInput type="text" formControlName="description">
                         </mat-form-field>
-
-                        <mat-form-field class="w-100" appearance="fill">
-                            <mat-label>Rayon (en mètres)</mat-label>
-                            <input matInput type="number" formControlName="radius">
+                        <mat-form-field appearance="fill" class="w-100">
+                            <mat-label>Selectionner un type</mat-label>
+                            <mat-select [(value)]="selectedType" (selectionChange)="onTypeChange($event)">
+                                <mat-option>None</mat-option>
+                                <mat-option *ngFor="let type of zoneTypes" [value]="type.name">
+                                    <div class="d-flex justify-content">
+                                        <span class="mr-4 text-dark">
+                                            <i [class]="type.icon"></i>
+                                        </span>
+                                        <span class="">
+                                            {{ type.name | uppercase }}
+                                        </span>
+                                    </div>
+                                </mat-option>
+                            </mat-select>
                         </mat-form-field>
+                        <!--  -->
+                        <ng-container *ngIf="selectedType == 'circle'">
+                            <mat-form-field class="w-100" appearance="fill">
+                                <mat-label>Rayon (en mètres)</mat-label>
+                                <input matInput type="number" formControlName="radius">
+                            </mat-form-field>
+                        </ng-container>
 
                         <div formArrayName="points">
-                            <ng-container *ngIf="selectedType=='circle' || selectedType=='circle'">
-                                <div class="form-group" [formGroup]="zonePoints.controls[0]">
-                                    <mat-form-field class="col-6 pl-0" appearance="fill">
+                            <ng-container *ngIf="selectedType=='circle' || selectedType=='point'">
+                                <div class="form-group row justify-content-between px-2 m-0"
+                                    [formGroup]="zonePoints.controls[0]">
+                                    <mat-form-field class="col-5 pl-0" appearance="fill">
                                         <mat-label>Latitude</mat-label>
-                                        <input matInput type="number" formControlName="latitude">
+                                        <input matInput type="number" step="0.1" formControlName="latitude">
                                     </mat-form-field>
 
-                                    <mat-form-field class="col-6 pr-0" appearance="fill">
+                                    <mat-form-field class="col-5 pr-0" appearance="fill">
                                         <mat-label>Longitude</mat-label>
-                                        <input matInput type="number" formControlName="longitude">
+                                        <input matInput type="number" step="0.1" formControlName="longitude">
                                     </mat-form-field>
+
+                                    <button role="button" class="btn btn-link text-danger my-auto"
+                                        (click)="resetZonePoint(0)">
+                                        <i class="fa fa-close"></i>
+                                    </button>
                                 </div>
                             </ng-container>
 
                             <ng-container *ngIf="selectedType == 'polygon' ">
+                                <ng-container *ngFor="let pointForm of zonePoints.controls; let i = index">
+                                    <div class="form-group row justify-content-around  m-0 px-2"
+                                        [formGroup]="pointForm">
 
+                                        <mat-form-field class="col-5 pl-0" appearance="fill">
+                                            <mat-label>Latitude</mat-label>
+                                            <input matInput type="number" step="0.1" formControlName="latitude">
+                                        </mat-form-field>
+
+                                        <mat-form-field class="col-5 pr-0" appearance="fill">
+                                            <mat-label>Longitude</mat-label>
+                                            <input matInput type="number" step="0.1" formControlName="longitude">
+                                        </mat-form-field>
+
+                                        <button role="button" class="btn btn-link text-danger my-auto"
+                                            (click)="resetZonePoint(i)">
+                                            <i class="fa fa-close"></i>
+                                        </button>
+                                    </div>
+                                </ng-container>
                             </ng-container>
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <button class="btn btn-sm btn-success mr-2" type="button" (click)="addZone()">
+                        <div class="d-flex justify-content-end mb-4">
+                            <button class="btn btn-sm btn-success mr-2" [class]="selectedType != null ? '' : 'disabled'"
+                                type="button" (click)="addZone()">
                                 <i class="fa fa-check"></i>
                                 Appliquer
                             </button>
@@ -138,7 +176,7 @@
 
                 </tab>
 
-                <tab (selectTab)="selectTab()">
+                <!-- <tab>
                     <ng-template tabHeading>
                         <i class="cil-plus"></i> | Ajouter
                     </ng-template>
@@ -170,12 +208,12 @@
 
                             <mat-form-field class="col-6 pl-0" appearance="fill">
                                 <mat-label>Latitude</mat-label>
-                                <input matInput type="number" formControlName="latitude">
+                                <input matInput type="number" step="0.1" formControlName="latitude">
                             </mat-form-field>
 
                             <mat-form-field class="col-6 pr-0" appearance="fill">
                                 <mat-label>Longitude</mat-label>
-                                <input matInput type="number" formControlName="longitude">
+                                <input matInput type="number" step="0.1" formControlName="longitude">
                             </mat-form-field>
 
                             <mat-form-field class="w-100" appearance="fill">
@@ -205,12 +243,12 @@
 
                             <mat-form-field class="col-6 pl-0" appearance="fill">
                                 <mat-label>Latitude</mat-label>
-                                <input matInput type="number" formControlName="latitude">
+                                <input matInput type="number" step="0.1" formControlName="latitude">
                             </mat-form-field>
 
                             <mat-form-field class="col-6 pr-0" appearance="fill">
                                 <mat-label>Longitude</mat-label>
-                                <input matInput type="number" formControlName="longitude">
+                                <input matInput type="number" step="0.1" formControlName="longitude">
                             </mat-form-field>
 
                             <div class="d-flex justify-content-end">
@@ -240,12 +278,12 @@
                                         <div class="row col-10" [formGroup]="pointForm">
                                             <mat-form-field class="col-6 pl-0" appearance="fill">
                                                 <mat-label>Latitude</mat-label>
-                                                <input matInput type="number" formControlName="latitude">
+                                                <input matInput type="number" step="0.1" formControlName="latitude">
                                             </mat-form-field>
 
                                             <mat-form-field class="col-6 pr-0" appearance="fill">
                                                 <mat-label>Longitude</mat-label>
-                                                <input matInput type="number" formControlName="longitude">
+                                                <input matInput type="number" step="0.1" formControlName="longitude">
                                             </mat-form-field>
                                         </div>
                                         <button role="button" class="btn btn-danger my-auto" (click)="deletePoint(i)">
@@ -274,7 +312,7 @@
                             </ng-container>
                         </form>
                     </ng-container>
-                </tab>
+                </tab> -->
             </tabset>
         </div>
         <div class="flex-grow-1 my-map">
