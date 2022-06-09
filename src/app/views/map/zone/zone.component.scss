@@ -47,25 +47,23 @@ hr {
     width: auto;
 }
 
-// .zones-tabs {
-//     .nav-tabs {
-//         justify-content: space-between;
-//     }
-// }
+table {
+    .mat-row {
+        cursor: pointer;
+    }
 
-// .zones {
-//     background-color: red;
-//     min-height: 82vh;
-//     max-height: 82vh;
-// }
+    .mat-row:hover {
+        background-color: beige;
+    }
 
+    .mat-cell:first-child,
+    .mat-header-cell:first-child {
+        padding-left: 0;
+        margin-right: 10px;
+    }
 
-// .tab-content {
-//     height: 100%;
-//     background-color: yellow;
-// }
-
-// .tab-pane {
-//     height: 100%;
-//     background-color: red;
-// }
+    .mat-cell:last-child,
+    .mat-header-cell:last-child {
+        padding-right: 0;
+    }
+}
