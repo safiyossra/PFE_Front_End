@@ -84,6 +84,8 @@ export class MyTableComponent implements OnChanges, OnInit {
   // }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // console.log(changes);
+
     this.dataSource = new MatTableDataSource(changes.vehicules.currentValue)
     this.totalItems = this.dataSource.data.length
     this.dataSource.paginator = this.paginator;

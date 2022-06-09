@@ -3,11 +3,8 @@
     <div class="col-lg-12">
       <div class="card card-accent-info">
         <div class="card-header">
-          <i class="fa fa-edit"></i> PLAN ENTRETIEN
+            <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i class="fa fa-plus-circle"></i> Ajouter Plan Entretien </button>
           <div class="card-header-actions">
-            <button type="button" class="btn btn-primary mr-1" data-toggle="modal" (click)="primaryModal.show()">
-              Add Device
-            </button>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}"></i>
             </button>
@@ -150,7 +147,7 @@
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        <div  class="card-body">
+        <div [collapse]="isCollapsed" [isAnimated]="true"  class="card-body">
           <form class="form-horizontal">
             <div class="form-group row">
               <div class="col-md-5">

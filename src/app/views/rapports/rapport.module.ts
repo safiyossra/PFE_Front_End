@@ -38,13 +38,12 @@ import { ProgressComponent } from './progress.component';
 import {MaterialsModule} from 'src/app/materials.module';
 // Components Routing
 import { RapportRoutingModule } from './rapport-routing.module';
-import { MyDataTableComponent } from '../components/my-data-table/my-data-table.component';
 import { DetailsTableComponent } from '../components/details-table/details-table.component';
 import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-daterangepicker.module';
 import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
-// import { SharedModule } from '../components/shared.module';
+import { MyDataTableComponent } from './my-data-table/my-data-table.component';
 
 @NgModule({
   imports: [
@@ -60,10 +59,9 @@ import { ChartsModule } from 'ng2-charts';
     MatSelectModule,
     ChartsModule,
     MaterialsModule,
+    ReactiveFormsModule, 
     MyDateRangePickerModule,
     MyDropdownModule,
-    ReactiveFormsModule,
-    // SharedModule,
   ],
   declarations: [
     CardsComponent,

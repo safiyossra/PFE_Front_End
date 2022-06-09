@@ -4,24 +4,6 @@
     <div class="row">
       <div class="form-horizontal col-md-6">
         <div class="input-group">
-          <div class="input-group-prepend" dropdown>
-            <button type="button" class="btn btn-primary">Search</button>
-            <button
-              type="button"
-              dropdownToggle
-              class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-            >
-              <span class="caret"></span>
-              <span class="sr-only">Split button!</span>
-            </button>
-            <div class="dropdown-menu" *dropdownMenu>
-              <a class="dropdown-item" href="#">Action prepend</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-              <div role="separator" class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Separated link 2</a>
-            </div>
-          </div>
           <input
             type="text"
             id="input3-group3"
@@ -32,7 +14,7 @@
             #input
           />
           <div class="input-group-append">
-            <button type="button" class="btn btn-primary">Action</button>
+            <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
           </div>
         </div>
       </div>
@@ -40,7 +22,6 @@
   </div>
   <div class="card-body">
       <table mat-table [dataSource]="dataSource" matSort>
-
         <ng-container
 				*ngFor="let column of displayedColumns; let index = index"
 				[matColumnDef]="column"

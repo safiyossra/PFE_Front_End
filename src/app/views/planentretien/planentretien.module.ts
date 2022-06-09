@@ -16,6 +16,7 @@ import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 @NgModule({
   imports: [
@@ -24,11 +25,12 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     FormsModule,
     MatSelectModule,
     ChartsModule,
-    MaterialsModule, MaterialsModule,
+    MaterialsModule,
     MyDateRangePickerModule,
     MyDropdownModule,
     ReactiveFormsModule,
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    CollapseModule.forRoot(),
   ],
   declarations: [
     PlanComponent,

@@ -15,15 +15,16 @@ export class MyDataTableComponent implements OnChanges {
   @Input() data: any;
   @Input() columnNames?: any[]
   @Input() columns?: any[]
+  @Input() title?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   public displayedColumns: any = []
-  public selectedPageSize = 15;
+  public selectedPageSize = 5;
   public maxSize: number = 5;
   public totalItems: number = 0;
-  public currentPage: number = 1;
+  public currentPage: number = 0;
   public numPages: number = 0;
 
 
@@ -48,20 +49,15 @@ export class MyDataTableComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
-    let d = changes['data'].currentValue
-    if (d && d.length>0) {
-      console.log("data");
-      
-      console.log(d);
-      console.log(changes['columnNames']);
-      
-    this.dataSource = new MatTableDataSource(d)
-    this.displayedColumns = this.columns
-    this.totalItems = this.dataSource.data.length
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+      let d = changes['data'].currentValue
+      if (d && d.length > 0) {
+        this.dataSource = new MatTableDataSource(d)
+        this.displayedColumns = this.columns
+        this.totalItems = this.dataSource.data.length
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      }
     }
   }
-}
 }
 

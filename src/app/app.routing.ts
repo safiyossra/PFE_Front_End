@@ -13,7 +13,7 @@ import { BasicGuard } from './guards/basic.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'map',
     pathMatch: 'full',
   },
   {
@@ -53,10 +53,6 @@ export const routes: Routes = [
     },
     children: [
       {
-        path: 'base',
-        loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
-      },
-      {
         path: 'rapports',
         loadChildren: () => import('./views/rapports/rapport.module').then(m => m.RapportModule)
       },
@@ -75,14 +71,6 @@ export const routes: Routes = [
       {
         path: 'maintenance',
         loadChildren: () => import('./views/maintenance/maintenance.module').then(m => m.MaintenanceModule)
-      },
-      {
-        path: 'buttons',
-        loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule)
-      },
-      {
-        path: 'charts',
-        loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule)
       },
       {
         path: 'dashboard',
