@@ -10,21 +10,20 @@ export const navItems: INavData[] = [
     //   text: 'NEW'
     // }
   },
-
-  // {
-  //   title: true,
-  //   name: 'Rappports'
-  // },
-  // {
-  //   name: 'Rapports journalier',
-  //   url: '/rapports/journalier',
-  //   icon: 'icon-graph'
-  // },
-  // {
-  //   name: 'Rapports Détaillés',
-  //   url: '/rapports/detaille',
-  //   icon: 'icon-book-open'
-  // },
+  {
+    title: true,
+    name: 'Map'
+  },
+  {
+    name: 'Map',
+    url: '/map/vehicule',
+    icon: 'cil-garage'
+  },
+  {
+    name: 'Zones',
+    url: '/map/zones',
+    icon: 'cil-map'
+  },
   {
     name: 'Rapports',
     url: '/rapport/menu',
@@ -43,21 +42,6 @@ export const navItems: INavData[] = [
     ]
   },
 
-
-  {
-    title: true,
-    name: 'Map'
-  },
-  {
-    name: 'Map',
-    url: '/map/vehicule',
-    icon: 'cil-garage'
-  },
-  {
-    name: 'Zones',
-    url: '/map/zones',
-    icon: 'cil-map'
-  },
   {
     name: 'Eco',
     url: '/eco',
@@ -92,45 +76,12 @@ export const navItems: INavData[] = [
     url: '/maintenance',
     icon: 'cil-recycle'
   },
-  {
-    name: 'Plan',
-    url: '/planentretien',
-    icon: 'icon-list',
-    children: [
-      {
-        name: 'Add Plan Entretien',
-        url: '/planentretien/form',
-        icon: 'icon-plus'
-      },
-      {
-        name: 'Alert Plan Entretien',
-        url: '/planentretien/alert',
-        icon: 'icon-note'
-      }
-    ]
-  },
+
   {
     name: 'Notifications',
     url: '/notifications/alerts',
     icon: 'icon-bell',
-    // children: [
-    //   {
-    //     name: 'Alerts',
-    //     url: '/notifications/alerts',
-    //     icon: 'icon-bell'
-    //   },
-    // {
-    //   name: 'Badges',
-    //   url: '/notifications/badges',
-    //   icon: 'icon-bell'
-    // },
-    // {
-    //   name: 'Modals',
-    //   url: '/notifications/modals',
-    //   icon: 'icon-bell'
-    // }
-    // ]
-  },
+  }
   // {
   //   name: 'Map',
   //   url: '/map',

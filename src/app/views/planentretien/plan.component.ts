@@ -1,8 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
-import {ModalDirective} from 'ngx-bootstrap/modal';
+import {ModalDirective, ModalOptions} from 'ngx-bootstrap/modal';
 
 @Component({
   templateUrl: 'plan.component.html',
@@ -12,7 +12,11 @@ export class PlanComponent {
 
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-
+  @ViewChild('compt1') input1: ElementRef;
+  @ViewChild('compt2') input2: ElementRef;
+  @ViewChild('motif') motif: ElementRef;
+  @ViewChild('type') type: ElementRef;
+  @ViewChild('modele') modele: ElementRef;
   constructor(private dataService: DataService, private datePipe:DatePipe) { }
 
   value: string | Object;
@@ -20,14 +24,10 @@ export class PlanComponent {
   isCollapsed: boolean = false;
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
-  iconCollapseD: string = 'icon-arrow-up';
-  reportData: any;
-  reportDetails: any;
-  displayedColumns: any=["Depart","Arrivé","Km Parcourue","Duree de conduite (min)","Max Vitesse (km/h)", "# Arrets", "Duree arrets (min)", "Consom Fuel (L)", "Fuel moyenne (L)", "Max Temperature(°C)"]
-  columns : any = ["timeStart","timeEnd","k","dc", "v", "na", "da", "c", "cr", "t"];
+  data = [];
+  public isnotNum: boolean = false
+  displayedColumns: any= ["Sélectionner","Véhicule","Date de Création","Type Opération","Déclenchement", "Anticipant"]
 
-  resume = [];
-  urldetails = "";
   
   public devices: any = [];
   selectedDevices = null;
@@ -56,66 +56,6 @@ export class PlanComponent {
     this.showErrorOperation = false;
     this.errorMessageOperation = "";
   }
-
-  // barChart
-
-  public barChartOptions: any = {
-    scaleShowVerticalLines: false,
-    responsive: true
-  };
-  public barChartLabels: string[] = [];
-  public barChartType = 'bar';
-  public barChartLegend = true;
-  public barChartData: any[] = [];
-  
-  public brandBoxChartOptions: any = {
-
-    responsive: true,
-    scales: {
-      xAxes: [{
-        display: false,
-      }],
-      yAxes: [{
-        display: false,
-      }]
-    },
-    elements: {
-      line: {
-        borderWidth: 2
-      },
-      point: {
-        radius: 0,
-        hitRadius: 10,
-        hoverRadius: 4,
-        hoverBorderWidth: 3,
-      }
-    },
-    legend: {
-      display: false
-    },
-    // plugins: {
-    //   data: {
-    //    color: "white",
-    //    formatter: (value, ctx) => {
-    //     var perc = ((value * 100)).toFixed(0) + "%";
-    //     return perc;
-    //    },
-    //   },
-    //  },
-  };
-  public brandBoxChartColours: Array<any> = [
-    {
-      backgroundColor: 'rgba(255,255,255,.1)',
-      borderColor: 'rgba(255,255,255,.55)',
-      pointHoverBackgroundColor: '#fff'
-    }
-  ];
-  public resumeColors: Array<any> = [
-    "twitter", "google-plus", "gray" , "green" , "red","purple","yellow","pink"
-  ];
-  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cr": "L", "v": "KM/H", "t": "°C", "na": " " };
-  public brandBoxChartLegend = false;
-  public brandBoxChartType = 'line';
 
 
   @ViewChild('calendar', { static: true })
@@ -176,11 +116,6 @@ export class PlanComponent {
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
 
   }
-  toggleCollapseData(): void {
-    this.isCollapsedData = !this.isCollapsedData;
-    this.iconCollapseD = this.isCollapsedData ? 'icon-arrow-down' : 'icon-arrow-up';
-
-  }
 
   getSelectedDevices(selected) {
     // console.log(selected);
@@ -204,94 +139,25 @@ export class PlanComponent {
     //   this.onValidateDevice()
     // } else {
       this.loading = true;
-      this.resume = []
         var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000 
-        this.dataService.getAllTrajets(urlParams).subscribe({
-          next: (d: any) => {
-          
+        this.dataService.getPlanEntretien(urlParams).subscribe({
+          next: (d: any) => {          
             console.log(d);
-            this.reportData = d;
-            this.reportData.forEach((e) => {
+            this.data = d;
+            this.data.forEach((e) => {
               e.timeStart = this.datePipe.transform( new Date(Number.parseInt(e.timeStart) * 1000),'yyyy-MM-dd  h:mm:ss');
               e.timeEnd = this.datePipe.transform( new Date(Number.parseInt(e.timeEnd) * 1000),'yyyy-MM-dd  h:mm:ss');
              // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
               //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
               if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
               if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
-            })
-            let resumetmp = [];
-            let labels = this.reportData.map((l) => { return l.timeStart })
-            this.columns.forEach((e,index) => {
-              if(!["timeStart","timeEnd"].includes(e))
-              resumetmp.push({
-                val: this.reduce(d, e).toString() + " " + this.resumeUnits[e],
-                label: this.displayedColumns[index],
-                labels: labels,
-                data:
-                  [
-                    {
-                      data: d.map((l) => { return l[e] }),
-                      label: this.displayedColumns[index]
-                    }
-                  ]    
-              })
-            })
-            var y = this.getValue(resumetmp)
-            this.resume = resumetmp
-            this.barChartLabels = labels
-            this.barChartData = y.map((l) => { return l.data[0] });
-            this.loading = false;
+            })      
+           this.loading = false;
           },
         })
     //  }
   };
 
-  reduce(v, e) {
-    if (v && v.length != 0) {
-      if (v.length > 1) {
-        return v.reduce((p, c) => {
-          if (["da", "dc"].includes(e)) {
-            var f = isNaN(p) ? p[e] + c[e] : p + c[e]
-            return f
-          } else
-            if (["t", "v"].includes(e)) {
-              if (isNaN(p)) return p[e] > c[e] ? p[e] : c[e]
-              else return p > c[e] ? p : c[e]
-            }
-          return isNaN(p) ? Math.round(p[e] + c[e]) : Math.round(p + c[e])
-        })
-      }
-      return v[0][e]
-    }
-    return 0
-  }
-
-  getValue(v) {
-    return JSON.parse(JSON.stringify(v))
-  }
-
-  getdetails() {
-    this.resetValidator()
-    if (this.selectedDevice.length == 0) {
-      this.onValidateDevice()
-    } else {
-      this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000) +"&all"
-    }
-    // this.dataService.getDetails(this.urldetails).subscribe({
-    //   next: (d: any) => {
-      
-    //     console.log(d);
-    //     this.reportDetails = d;
-    //     this.reportDetails.forEach((e) => {
-    //       e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toDateString();
-    //       e.odometerKM = Math.round(Number.parseInt(e.odometerKM));
-    //       // if (e.dc) e.dc = Math.round(Number.parseInt(e.dc));
-    //     })
-    //    // this.loading = false;
-    //   },
-    // })
-    
-  }
 
   getDev() {
     this.dataService.getVehicule().subscribe({
@@ -303,17 +169,31 @@ export class PlanComponent {
       }
     })
   }
-  
+
+
+  ajouter(){
+    
+   
+    // console.log(this.input1.nativeElement.value);
+    // console.log(this.input2.nativeElement.value);
+    // console.log(this.motif.nativeElement.value);
+    // console.log(this.type.nativeElement.value);
+    // console.log(this.modele.nativeElement.value);
+    
+  }
+
+ 
   reset() {
     this.selectedDevices = [],
     this.selectedDevicesModal = [],
-    this.selectedOperations = []
+    this.selectedOperations = [],
+    this.input1.nativeElement.value= ''
+    this.input2.nativeElement.value= ''
+    this.motif.nativeElement.value= ''
+    this.type.nativeElement.value= ''
+    this.modele.nativeElement.value= ''
   }
 
-
-  getParam(p: any) {
-    return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
-  }
 
 }
 

@@ -7,8 +7,9 @@ import { PlanComponent } from './plan.component';
 
 // Forms Component
 import { FormsComponent } from './forms.component';
+import { MyPlanentretienaTableComponent } from '../planentretien/my-planentretien-table/my-planentretien-table.component';
 
-import {MaterialsModule} from '../../materials.module';
+import { MaterialsModule } from '../../materials.module';
 // Components Routing
 import { PlanentretienRoutingModule } from './planentretien-routing.module';
 import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-daterangepicker.module';
@@ -35,6 +36,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
   declarations: [
     PlanComponent,
     FormsComponent,
+    MyPlanentretienaTableComponent
   ]
 })
 export class PlanentretienModule { }

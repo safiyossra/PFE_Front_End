@@ -3,7 +3,8 @@
     <div class="col-lg-12">
       <div class="card card-accent-info">
         <div class="card-header">
-            <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i class="fa fa-plus-circle"></i> Ajouter Plan Entretien </button>
+          <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
+              class="fa fa-plus-circle"></i> Ajouter Plan Entretien </button>
           <div class="card-header-actions">
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}"></i>
@@ -13,201 +14,195 @@
             </button>
           </div>
         </div>
-        <div bsModal #primaryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade"
+          tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-primary" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h4 class="modal-title">Ajouter Plan Entretien</h4>
+                <h5 class="modal-title">Ajouter Plan Entretien</h5>
                 <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
                 <div class="animated fadeIn">
-
                   <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-lg-6">
+                      <div class="card">
+                        <div class="card-header">
+                          * Champs Obligatoires
+                        </div>
+                        <div class="card-body1">
+                          <div class="form-group row">
+                            <label class=" col-md-4 col-form-label" for="select1">Device</label>
+                            <div class="col-8 input-group">
+                              <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection'"
+                                [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice"
+                                [showErrorMsg]="showErrorDevice" [options]="devices" [display]="'name'" [value]="'dID'"
+                                [multiple]="false" [labelCount]="0" [selectedOptions]="selectedDevicesModal"
+                                (selectionChange)="getSelectedDevicesModal($event)">
+                              </my-dropdown-select>
+                              <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-key fa-sm"
+                                    *ngIf="selectedDeviceModal.length == 0"></i><i
+                                    *ngIf="selectedDeviceModal != null">{{
+                                    selectedDeviceModal
+                                    }}</i></span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class=" col-md-4 col-form-label" for="text-input">Modèle</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #modele name="modele" class="form-control"
+                                placeholder="Saisir le modèle">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Type d'équipement</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #type name="typeequip" class="form-control"
+                                placeholder="Saisir type d'équipements">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                       <div class="card">
                         <div class="card-body">
-                          <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                            <div class="form-group row">
-                              <label class="col-md-3 col-form-label" for="select1">Device</label>
-                              <div class="col-md-6 input-group">
-                              <my-dropdown-select
-                              class="form-control"
-                              [placeholder]="'Vehicle Selection'"
-                              [selectPlaceholder]="'search...'"
-                              [errorMsg]="errorMessageDevice"
-                              [showErrorMsg]="showErrorDevice"
-                              [options]="devices"
-                              [display]="'name'"
-                              [value]="'dID'"
-                              [multiple]="false"
-                              [labelCount]="0"
-                              [selectedOptions]="selectedDevicesModal"
-                              (selectionChange)="getSelectedDevicesModal($event)"
-                            >
-                            </my-dropdown-select>
-                            <div class="input-group-append">
-                              <span class="input-group-text"
-                                ><i
-                                  class="fa fa-key fa-sm"
-                                  *ngIf="selectedDeviceModal.length == 0"
-                                ></i
-                                ><i *ngIf="selectedDeviceModal != null">{{
-                                  selectedDeviceModal
-                                }}</i></span
-                              >
+                          <div class="form-group row">
+                            <!-- <label class="col-md-3 col-form-label" for="text-input">Motif</label> -->
+                            <div class="col-md-12">
+                              <input type="textarea" id="text-input" #motif name="motif" class="form-control"
+                                placeholder="Saisir Votre Motif ..">
                             </div>
-                            </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-3 col-form-label" for="text-input">Modèle</label>
-                              <div class="col-md-6">
-                                <input type="text" id="text-input" name="text-input" class="form-control" placeholder="Saisir le modèle">
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-3 col-form-label" for="text-input">Type d'équipement</label>
-                              <div class="col-md-6">
-                                <input type="text" id="text-input" name="text-input" class="form-control" placeholder="Saisir type d'équipements">
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-3 col-form-label" for="select2">Opération</label>
-                              <div class="col-md-6 input-group">
-                                <my-dropdown-select
-                                      class="form-control"
-                                      [placeholder]="'Selectionner Operation'"
-                                      [selectPlaceholder]="'search...'"
-                                      [errorMsg]="errorMessageOperation"
-                                      [showErrorMsg]="showErrorOperation"
-                                      [options]="devices"
-                                      [display]="'name'"
-                                      [value]="'dID'"
-                                      [multiple]="false"
-                                      [labelCount]="0"
-                                      [selectedOptions]="selectedOperations"
-                                      (selectionChange)="getSelectedOperations($event)"
-                                    >
-                                    </my-dropdown-select>
-                                    <div class="input-group-append">
-                                      <span class="input-group-text"
-                                        ><i
-                                          class="fa fa-list fa-sm"
-                                          *ngIf="selectedOperation.length == 0"
-                                        ></i
-                                        ><i *ngIf="selectedOperation != null">{{
-                                          selectedOperation
-                                        }}</i></span
-                                      >
-                                    </div>
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-3 col-form-label" for="inline-radios">Pas de déclenchement</label>
-                              <div class="col-md-6 col-form-label">
-                                <div class="form-check form-check-inline mr-1" id="inline-radios">
-                                  <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio1" value="option1">
-                                  <label class="form-check-label" for="inlineRadio1">Compteur</label>
-                                </div>
-                                <div class="form-check form-check-inline mr-1">
-                                  <input class="form-check-input" type="radio" name="inline-radios" id="inlineRadio2" value="option2">
-                                  <label class="form-check-label" for="inlineRadio2">Mois</label>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-3 col-form-label" for="text-input">Compteur</label>
-                              <div class="col-md-6">
-                                <input type="text" id="text-input" name="text-input" class="form-control" placeholder="Saisir ..">
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-3 col-form-label" for="text-input">Motif</label>
-                              <div class="col-md-6">
-                                <input type="text" id="text-input" name="text-input" class="form-control" placeholder="Saisir Votre Motif ..">
-                              </div>
-                            </div>
-                          </form>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div><!--/.row-->
-                
+                    <div class="col-lg-6">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="form-group row">
+                            <label class=" col-md-4 col-form-label" for="select2">Opération</label>
+                            <div class="col-8 input-group">
+                              <my-dropdown-select class="form-control" [placeholder]="'Operation Selection'"
+                                [selectPlaceholder]="'search...'" [errorMsg]="errorMessageOperation"
+                                [showErrorMsg]="showErrorOperation" [options]="devices" [display]="'name'"
+                                [value]="'dID'" [multiple]="false" [labelCount]="0"
+                                [selectedOptions]="selectedOperations"
+                                (selectionChange)="getSelectedOperations($event)">
+                              </my-dropdown-select>
+                              <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-list fa-sm"
+                                    *ngIf="selectedOperation.length == 0"></i><i *ngIf="selectedOperation != null">{{
+                                    selectedOperation
+                                    }}</i></span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-header">
+                          pe de déclenchement
+                        </div>
+                        <div class="card-body">
+                          <label class="col-md-4 col-form-label" for="text-input"></label>
+
+                          <div class="form-check form-check-inline mr-1" id="inline-radios">
+                            <input class="form-check-input" type="radio" name="compteurradio" id="inlineRadio1"
+                              value="option1" #option1>
+                            <label class="form-check-label" for="inlineRadio1">Compteur</label>
+                          </div>
+                          <div class="form-check form-check-inline mr-1">
+                            <input class="form-check-input" type="radio" name="moisradio" id="inlineRadio2"
+                              value="option2" #option2>
+                            <label class="form-check-label" for="inlineRadio2">Mois</label>
+                          </div>
+
+
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Compteur</label>
+                            <div class="col-8">
+                              <input type="number" id="text-input" #compt1 name="compteurdecl" class="form-control"
+                                placeholder="Saisir un chiffre">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Compteur</label>
+                            <div class="col-8">
+                              <input type="number" id="compteur" #compt2 name="compteur" class="form-control"
+                                placeholder="Saisir un chiffre">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                
-                
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
-                <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-ban"></i> &nbsp; Annuler</button>
-                <button type="button" class="btn btn-primary">Ajouter</button>
+                <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"> &nbsp; Annuler</button>
+                <button type="button" class="btn btn-primary" *ngIf="isnotNum==false"
+                  (click)="ajouter()">Ajouter</button>
               </div>
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        <div [collapse]="isCollapsed" [isAnimated]="true"  class="card-body">
+        <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
           <form class="form-horizontal">
             <div class="form-group row">
               <div class="col-md-5">
-                <my-daterangepicker
-                  #calendar
-                  [ngModelOptions]="{ standalone: true }"
-                  [(ngModel)]="value"
-                  [options]="myDateRangePickerOptions"
-                ></my-daterangepicker>
+                <my-daterangepicker #calendar [ngModelOptions]="{ standalone: true }" [(ngModel)]="value"
+                  [options]="myDateRangePickerOptions"></my-daterangepicker>
               </div>
               <div class="col-md-5">
                 <div class="controls">
                   <div class="input-group">
                     <div class="input-group-prepend">
-                      <span class="input-group-text"
-                        ><i class="fa fa-car fa-sm"></i
-                      ></span>
+                      <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
                     </div>
-                    <my-dropdown-select
-                      class="form-control"
-                      [placeholder]="'Vehicle Selection'"
-                      [selectPlaceholder]="'search...'"
-                      [errorMsg]="errorMessageDevice"
-                      [showErrorMsg]="showErrorDevice"
-                      [options]="devices"
-                      [display]="'name'"
-                      [value]="'dID'"
-                      [multiple]="false"
-                      [labelCount]="0"
-                      [selectedOptions]="selectedDevices"
-                      (selectionChange)="getSelectedDevices($event)"
-                    >
+                    <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection'"
+                      [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
+                      [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
+                      [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"
-                        ><i
-                          class="fa fa-key fa-sm"
-                          *ngIf="selectedDevice.length == 0"
-                        ></i
-                        ><i *ngIf="selectedDevice != null">{{
+                      <span class="input-group-text"><i class="fa fa-key fa-sm"
+                          *ngIf="selectedDevice.length == 0"></i><i *ngIf="selectedDevice != null">{{
                           selectedDevice
-                        }}</i></span
-                      >
+                          }}</i></span>
                     </div>
                   </div>
                   <!--</div> -->
                 </div>
               </div>
               <div class="form-actions">
-                <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading">
+                <button type="submit" class="btn btn-sm btn-primary" [disabled]="loading">
                   <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
                   <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
                 </button>
               </div>
             </div>
-        
-        </form>
+
+          </form>
+        </div>
       </div>
     </div>
+    <!--/.col-->
   </div>
-  <!--/.col-->
+  <!--/.row-->
+
+
+  <div class="row">
+    <div class="col-lg-12">
+        <my-planentretien-table [data]="data">
+        </my-planentretien-table>
+    </div>
+  </div>
 </div>
-<!--/.row-->
