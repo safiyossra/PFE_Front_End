@@ -12,15 +12,15 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: 'my-planentretien-table.component.html',
 })
 export class MyPlanentretienaTableComponent implements OnChanges {
-  @Input() data: any;
+  @Input() data=[];
   // @Input() columnNames?: any[]
-  public displayedColumns?: any[]
+  public displayedColumns =  ["id","v","date","type","decl", "anti"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  columnNames: any=["Sélectionner","Véhicule","Date de Création","Type Opération","Déclenchement", "Anticipant"]
+  columnNames =["Sélectionner","Véhicule","Date de Création","Type Opération","Déclenchement", "Anticipant"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;

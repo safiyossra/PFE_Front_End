@@ -24,9 +24,9 @@ export class PlanComponent {
   isCollapsed: boolean = false;
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
-  reportData: any;
+  data = [];
   public isnotNum: boolean = false
-  displayedColumns: any= []//["Sélectionner","Véhicule","Date de Création","Type Opération","Déclenchement", "Anticipant"]
+  displayedColumns: any= ["Sélectionner","Véhicule","Date de Création","Type Opération","Déclenchement", "Anticipant"]
 
   
   public devices: any = [];
@@ -143,8 +143,8 @@ export class PlanComponent {
         this.dataService.getPlanEntretien(urlParams).subscribe({
           next: (d: any) => {          
             console.log(d);
-            this.reportData = d;
-            this.reportData.forEach((e) => {
+            this.data = d;
+            this.data.forEach((e) => {
               e.timeStart = this.datePipe.transform( new Date(Number.parseInt(e.timeStart) * 1000),'yyyy-MM-dd  h:mm:ss');
               e.timeEnd = this.datePipe.transform( new Date(Number.parseInt(e.timeEnd) * 1000),'yyyy-MM-dd  h:mm:ss');
              // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();

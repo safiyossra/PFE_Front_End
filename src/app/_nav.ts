@@ -92,11 +92,7 @@ export const navItems: INavData[] = [
     url: '/maintenance',
     icon: 'cil-recycle'
   },
-  {
-    name: 'Alert Plan Entretien',
-    url: '/planentretien/alert',
-    icon: 'icon-note' 
-  },
+ 
 
   // {
   //   name: 'Map',
