@@ -140,7 +140,7 @@
                             <label class="col-md-4 col-form-label" for="text-input">Compteur</label>
                             <div class="col-8">
                               <input type="number" id="text-input" #compt1 name="compteurdecl" class="form-control"
-                                placeholder="Saisir .." >
+                                placeholder="Saisir un chiffre" >
                             </div>
                           </div>
                         </div>
@@ -151,7 +151,7 @@
                             <label class="col-md-4 col-form-label" for="text-input">Compteur</label>
                             <div class="col-8">
                               <input type="number" id="compteur" #compt2 name="compteur" class="form-control"
-                                placeholder="Saisir .." >
+                                placeholder="Saisir un chiffre" >
                             </div>
                           </div>
                         </div>
@@ -215,11 +215,12 @@
   
   <div class="row">
     <div class="col-lg-12">
-  <!-- <tabset> 
-     <tab style="min-height: 660px">
-    
-    </tab> 
-  </tabset> -->
+  <tabset>     
+      <my-planentretien-table  [columns]="displayedColumns">
+
+            
+      </my-planentretien-table>
+  </tabset>
   </div>
   </div>
   </div>

@@ -55,7 +55,7 @@ export class DataService {
 
 
   getAllTrajets(urlParams) {
-    let SERVER_URL = environment.apiUrl + "trajet-jour" + urlParams+"&k&na&da&dc&c&t&v&cr";
+    let SERVER_URL = environment.apiUrl + "trajet-jour" + urlParams+"&k&na&da&dc&c&t&v&cr&addi&addf";
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,

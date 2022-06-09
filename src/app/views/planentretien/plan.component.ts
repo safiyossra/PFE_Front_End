@@ -26,9 +26,8 @@ export class PlanComponent {
   iconCollapse: string = 'icon-arrow-up';
   reportData: any;
   public isnotNum: boolean = false
-  //displayedColumns: any=["Sélectionner","Véhicule","Date de Création","Type Opération","Déclenchement", "Anticipant"]
+  displayedColumns: any= []//["Sélectionner","Véhicule","Date de Création","Type Opération","Déclenchement", "Anticipant"]
 
-  urldetails = "";
   
   public devices: any = [];
   selectedDevices = null;
@@ -171,24 +170,15 @@ export class PlanComponent {
     })
   }
 
-  verifyCompteur(){
-    if(isNaN(this.input1.nativeElement.value)){
-     this.isnotNum=true
-      console.log('is not a number');
-      return 'You must enter a number';
-      
-    }
-   this.isnotNum=false
-    return this.input1.nativeElement.value
-  }
+
   ajouter(){
     
    
-    console.log(this.input1.nativeElement.value);
-    console.log(this.input2.nativeElement.value);
-    console.log(this.motif.nativeElement.value);
-    console.log(this.type.nativeElement.value);
-    console.log(this.modele.nativeElement.value);
+    // console.log(this.input1.nativeElement.value);
+    // console.log(this.input2.nativeElement.value);
+    // console.log(this.motif.nativeElement.value);
+    // console.log(this.type.nativeElement.value);
+    // console.log(this.modele.nativeElement.value);
     
   }
 

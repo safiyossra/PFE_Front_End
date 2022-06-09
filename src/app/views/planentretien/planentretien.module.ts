@@ -7,6 +7,7 @@ import { PlanComponent } from './plan.component';
 
 // Forms Component
 import { FormsComponent } from './forms.component';
+import { MyPlanentretienaTableComponent } from '../planentretien/my-planentretien-table/my-planentretien-table.component';
 
 import {MaterialsModule} from '../../materials.module';
 // Components Routing
@@ -16,6 +17,7 @@ import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 @NgModule({
   imports: [
@@ -28,11 +30,13 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     MyDateRangePickerModule,
     MyDropdownModule,
     ReactiveFormsModule,
+    TabsModule,
     ModalModule.forRoot()
   ],
   declarations: [
     PlanComponent,
     FormsComponent,
+    MyPlanentretienaTableComponent
   ]
 })
 export class PlanentretienModule { }

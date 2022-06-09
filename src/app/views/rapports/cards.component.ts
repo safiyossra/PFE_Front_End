@@ -21,8 +21,8 @@ export class CardsComponent {
   iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
   reportDetails: any;
-  displayedColumns: any=["Depart","Arrivé","Km Parcourue","Duree de conduite (min)","Max Vitesse (km/h)", "# Arrets", "Duree arrets (min)", "Consom Fuel (L)", "Fuel moyenne (L)", "Max Temperature(°C)"]
-  columns : any = ["timeStart","timeEnd","k","dc", "v", "na", "da", "c", "cr", "t"];
+  displayedColumns: any=["Depart","Arrivé","Adresse Depart","Adresse Arivée","Km Parcourue","Duree de conduite (min)","Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Fuel moyenne (L)"]
+  columns : any = ["timeStart","timeEnd","addi","addf","k","dc", "v", "na","c", "cr"];
 
   resume = [];
   urldetails = "";
@@ -86,7 +86,7 @@ export class CardsComponent {
     }
   ];
   public resumeColors: Array<any> = [
-    "twitter", "google-plus", "gray" , "green" , "red","purple","yellow","pink"
+    "twitter", "google-plus", "green" , "purple","yellow","pink"
   ];
   public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cr": "L", "v": "KM/H", "t": "°C", "na": " " };
   public brandBoxChartLegend = false;
@@ -196,7 +196,7 @@ export class CardsComponent {
             let resumetmp = [];
             let labels = this.reportData.map((l) => { return l.timeStart })
             this.columns.forEach((e,index) => {
-              if(!["timeStart","timeEnd"].includes(e))
+              if(!["timeStart","timeEnd","addi","addf"].includes(e))
               resumetmp.push({
                 val: this.reduce(d, e).toString() + " " + this.resumeUnits[e],
                 label: this.displayedColumns[index],
