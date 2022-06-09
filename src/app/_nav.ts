@@ -38,6 +38,11 @@ export const navItems: INavData[] = [
         name: 'Rapports Détaillés',
         url: '/rapports/detaille',
         icon: 'icon-book-open'
+      },
+      {
+        name: 'Rapports Synthétiques',
+        url: '/rapports/synthetiques',
+        icon: 'icon-pie-chart'
       }
     ]
   },

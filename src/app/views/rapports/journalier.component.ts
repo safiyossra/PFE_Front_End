@@ -3,9 +3,9 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 
 @Component({
-  templateUrl: 'tabs.component.html',
+  templateUrl: 'journalier.component.html',
 })
-export class TabsComponent {
+export class JournalierComponent {
   loading: boolean = false;
 
   constructor(private dataService: DataService) { }

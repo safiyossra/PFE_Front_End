@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { CardsComponent } from './cards.component';
-// import { TablesComponent } from './tables.component';
-import { TabsComponent } from './tabs.component';
-// import { CollapsesComponent } from './collapses.component';
+import { DetailleComponent } from './detaille.component';
+import { JournalierComponent } from './journalier.component';
+import { SynthetiquesComponent } from './synthetiques.component';
 
 const routes: Routes = [
   {
@@ -19,23 +18,23 @@ const routes: Routes = [
       },
       {
         path: 'detaille',
-        component: CardsComponent,
+        component: DetailleComponent,
         data: {
           title: 'Détaillés'
         }
       },
       {
         path: 'journalier',
-        component: TabsComponent,
+        component: JournalierComponent,
         data: {
           title: 'Journalier'
         }
       },
       {
-        path: 'tabs',
-        component: TabsComponent,
+        path: 'synthetiques',
+        component: SynthetiquesComponent,
         data: {
-          title: 'Tabs'
+          title: 'Synthétiques'
         }
       },
     ]

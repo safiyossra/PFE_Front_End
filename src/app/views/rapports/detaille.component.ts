@@ -4,14 +4,14 @@ import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
 
 @Component({
-  templateUrl: 'cards.component.html',
+  templateUrl: 'detaille.component.html',
   providers: [DatePipe]
 })
-export class CardsComponent {
+export class DetailleComponent {
 
   loading: boolean = false;
 
-  constructor(private dataService: DataService, private datePipe:DatePipe) { }
+  constructor(private dataService: DataService, private datePipe: DatePipe) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -21,12 +21,12 @@ export class CardsComponent {
   iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
   reportDetails: any;
-  displayedColumns: any=["Depart","Arrivé","Adresse Depart","Adresse Arivée","Km Parcourue","Duree de conduite (min)","Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Fuel moyenne (L)"]
-  columns : any = ["timeStart","timeEnd","addi","addf","k","dc", "v", "na","c", "cr"];
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Fuel moyenne (L)"]
+  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cr"];
 
   resume = [];
   urldetails = "";
-  
+
   public devices: any = [];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
@@ -42,7 +42,7 @@ export class CardsComponent {
   public barChartType = 'bar';
   public barChartLegend = true;
   public barChartData: any[] = [];
-  
+
   public brandBoxChartOptions: any = {
 
     responsive: true,
@@ -86,7 +86,7 @@ export class CardsComponent {
     }
   ];
   public resumeColors: Array<any> = [
-    "twitter", "google-plus", "green" , "purple","yellow","pink"
+    "twitter", "google-plus", "green", "purple", "yellow", "pink"
   ];
   public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cr": "L", "v": "KM/H", "t": "°C", "na": " " };
   public brandBoxChartLegend = false;
@@ -143,7 +143,7 @@ export class CardsComponent {
       }
     };
 
-    this.getDev(); 
+    this.getDev();
   }
 
   toggleCollapse(): void {
@@ -179,24 +179,24 @@ export class CardsComponent {
     } else {
       this.loading = true;
       this.resume = []
-        var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000 
-        this.dataService.getAllTrajets(urlParams).subscribe({
-          next: (d: any) => {
-          
-            console.log(d);
-            this.reportData = d;
-            this.reportData.forEach((e) => {
-              e.timeStart = this.datePipe.transform( new Date(Number.parseInt(e.timeStart) * 1000),'yyyy-MM-dd  h:mm:ss');
-              e.timeEnd = this.datePipe.transform( new Date(Number.parseInt(e.timeEnd) * 1000),'yyyy-MM-dd  h:mm:ss');
-             // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
-              //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
-              if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
-              if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
-            })
-            let resumetmp = [];
-            let labels = this.reportData.map((l) => { return l.timeStart })
-            this.columns.forEach((e,index) => {
-              if(!["timeStart","timeEnd","addi","addf"].includes(e))
+      var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000
+      this.dataService.getAllTrajets(urlParams).subscribe({
+        next: (d: any) => {
+
+          console.log(d);
+          this.reportData = d;
+          this.reportData.forEach((e) => {
+            e.timeStart = this.datePipe.transform(new Date(Number.parseInt(e.timeStart) * 1000), 'yyyy-MM-dd  h:mm:ss');
+            e.timeEnd = this.datePipe.transform(new Date(Number.parseInt(e.timeEnd) * 1000), 'yyyy-MM-dd  h:mm:ss');
+            // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
+            //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
+            if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
+            if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
+          })
+          let resumetmp = [];
+          let labels = this.reportData.map((l) => { return l.timeStart })
+          this.columns.forEach((e, index) => {
+            if (!["timeStart", "timeEnd", "addi", "addf"].includes(e))
               resumetmp.push({
                 val: this.reduce(d, e).toString() + " " + this.resumeUnits[e],
                 label: this.displayedColumns[index],
@@ -207,17 +207,17 @@ export class CardsComponent {
                       data: d.map((l) => { return l[e] }),
                       label: this.displayedColumns[index]
                     }
-                  ]    
+                  ]
               })
-            })
-            var y = this.getValue(resumetmp)
-            this.resume = resumetmp
-            this.barChartLabels = labels
-            this.barChartData = y.map((l) => { return l.data[0] });
-            this.loading = false;
-          },
-        })
-      
+          })
+          var y = this.getValue(resumetmp)
+          this.resume = resumetmp
+          this.barChartLabels = labels
+          this.barChartData = y.map((l) => { return l.data[0] });
+          this.loading = false;
+        },
+      })
+
     }
   };
 
@@ -250,11 +250,11 @@ export class CardsComponent {
     if (this.selectedDevice.length == 0) {
       this.onValidateDevice()
     } else {
-      this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000) +"&all"
+      this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000) + "&all"
     }
     // this.dataService.getDetails(this.urldetails).subscribe({
     //   next: (d: any) => {
-      
+
     //     console.log(d);
     //     this.reportDetails = d;
     //     this.reportDetails.forEach((e) => {
@@ -265,7 +265,7 @@ export class CardsComponent {
     //    // this.loading = false;
     //   },
     // })
-    
+
   }
 
   getDev() {
@@ -278,7 +278,7 @@ export class CardsComponent {
       }
     })
   }
-  
+
   reset() {
     this.selectedDevices = []
   }

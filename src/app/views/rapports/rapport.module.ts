@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
-import { CardsComponent } from './cards.component';
+import { DetailleComponent } from './detaille.component';
 
 // Forms Component
 import { FormsComponent } from './forms.component';
@@ -13,7 +13,7 @@ import { TablesComponent } from './tables.component';
 
 // Tabs Component
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { TabsComponent } from './tabs.component';
+import { JournalierComponent } from './journalier.component';
 
 
 // Collapse Component
@@ -44,6 +44,8 @@ import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
 import { MyDataTableComponent } from './my-data-table/my-data-table.component';
+import { MySynthetiquesTableComponent } from './my-synthetiques-table/my-synthetiques-table.component';
+import { SynthetiquesComponent } from './synthetiques.component';
 
 @NgModule({
   imports: [
@@ -64,16 +66,18 @@ import { MyDataTableComponent } from './my-data-table/my-data-table.component';
     MyDropdownModule,
   ],
   declarations: [
-    CardsComponent,
+    DetailleComponent,
     FormsComponent,
     SwitchesComponent,
     TablesComponent,
-    TabsComponent,
+    JournalierComponent,
     CollapsesComponent,
     PaginationsComponent,
     PopoversComponent,
     ProgressComponent,
     MyDataTableComponent,
+    MySynthetiquesTableComponent,
+    SynthetiquesComponent,
     DetailsTableComponent
   ]
 })
