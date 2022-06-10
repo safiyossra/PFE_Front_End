@@ -86,12 +86,12 @@ export const navItems: INavData[] = [
     name: 'Notifications',
     url: '/notifications/alerts',
     icon: 'icon-bell',
+  },
+  {
+    name: 'Gestion Driver',
+    url: '/gestiondriver/cruddriver',
+    icon: 'icon-book-open'
   }
-  // {
-  //   name: 'Gestion Vehicule',
-  //   url: '/gestionvehicule/crudvehicule',
-  //   icon: 'icon-book-open'
-  // }
   // {
   //   name: 'Map',
   //   url: '/map',

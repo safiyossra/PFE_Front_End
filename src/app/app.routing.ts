@@ -88,6 +88,10 @@ export const routes: Routes = [
         path: 'gestionvehicule',
         loadChildren: () => import('./views/gestionvehicule/gestionvehicule.module').then(m => m.GestionvehiculeModule)
       },
+      {
+        path: 'gestiondriver',
+        loadChildren: () => import('./views/gestiondriver/gestiondriver.module').then(m => m.GestiondriverModule)
+      },
     ]
   },
   { path: '**', component: P404Component }

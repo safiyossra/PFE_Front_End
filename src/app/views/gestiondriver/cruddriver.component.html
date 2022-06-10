@@ -1,0 +1,242 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card card-accent-info">
+        <div class="card-header">
+          <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
+              class="fa fa-plus-circle"></i> Ajouter Conducteur </button>
+          <div class="card-header-actions">
+            <a href="#">
+              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
+            </a>
+            <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
+              <i class="{{ iconCollapse }}  transition"></i>
+            </button>
+            <button type="button" class="card-header-action btn btn-link btn-close" (click)="reset()">
+              <i class="icon-close"></i>
+            </button>
+          </div>
+        </div>
+        <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade"
+          tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-primary" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Ajouter Vehicule</h5>
+                <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="animated fadeIn">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      
+                        <div class="card-body">
+                          <div class="form-group row">
+                            <label class=" col-md-4 col-form-label" for="select1">Conducteur ID</label>
+                            <div class="col-8">
+                            <input type="text" id="text-input" #iddriver name="iddriver" class="form-control">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Nom</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #nom name="nom" class="form-control"
+                                placeholder="Saisir le nom">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Numéro de téléphone</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #numtel name="numtel" class="form-control"
+                                placeholder="Saisir num de tel">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Email</label>
+                            <div class="col-8">
+                              <input type="email" id="text-input" #email name="email" class="form-control"
+                                placeholder="xxxxxxxx@gmail.com">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Identifiant du badge</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #idbadge name="idbadge" class="form-control"
+                                placeholder="Saisir Identifiant du Badge">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class=" col-md-4 col-form-label" for="text-input">Date de naissance</label>
+                            <div class="col-8">
+                              <input type="date" id="text-input" #naissance name="datenaissance" class="form-control">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Type de licence</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #typelic name="typelic" class="form-control"
+                                placeholder="Saisir Type de Licence">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Numéro de licence</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #numlic name="numlic" class="form-control"
+                                placeholder="Saisir Num de Licence">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class=" col-md-4 col-form-label" for="text-input">Expiration de le licence</label>
+                            <div class="col-8">
+                              <input type="date" id="text-input" #dateexplic name="dateexplic" class="form-control">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Expiration de le licence(J)</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #explic name="explic" class="form-control"
+                                placeholder="Saisir le jour">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Titre de voiture</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #titlevehicule name="titrevehicule" class="form-control"
+                                placeholder="Saisir le Titre de Vehicule">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Description</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #description name="description" class="form-control"
+                                placeholder="Saisir une Description">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Numéro de licence</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #num name="numlic" class="form-control"
+                                placeholder="Saisir Num de Licence">
+                            </div>
+                          </div>
+                        </div>                     
+                        </div>
+                    <div class="col-lg-6">                     
+                        <div class="card-body">
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Plaque d'immatriculation</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #matricul name="matricul" class="form-control"
+                                placeholder="Saisir la plaque immatriculation">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class=" col-md-4 col-form-label" for="text-input">Date d'expiration de l'assurance</label>
+                            <div class="col-8">
+                              <input type="date" id="text-input" #dateexp name="dateexp" class="form-control"
+                                placeholder="Choisir la Date">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Addresse</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #address name="address" class="form-control"
+                                placeholder="Saisir l'Addresse'">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Expiration de l'assurance(J)</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #dayexp name="dayexp" class="form-control"
+                                placeholder="Saisir le Jour">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Restrictions</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #restriction name="restriction" class="form-control"
+                                placeholder="Saisir les restrictions">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Notes Générales</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #note name="note" class="form-control"
+                                placeholder="Saisir notes générales">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Vehicule ID</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #vehiculeid name="vehiculeid" class="form-control"
+                                placeholder="Saisir ID de Vehicule">
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
+                <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"> &nbsp; Annuler</button>
+                <button type="button" class="btn btn-primary" *ngIf="isnotNum==false"
+                  (click)="ajouter()">Ajouter</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
+          <form class="form-horizontal">
+            <div class="form-group row">
+              <div class="col-md-5">
+                <my-daterangepicker #calendar [ngModelOptions]="{ standalone: true }" [(ngModel)]="value"
+                  [options]="myDateRangePickerOptions"></my-daterangepicker>
+              </div>
+              <div class="col-md-5">
+                <div class="controls">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
+                    </div>
+                    <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection'"
+                      [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
+                      [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
+                      [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
+                    </my-dropdown-select>
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-key fa-sm"
+                          *ngIf="selectedDevice.length == 0"></i><i *ngIf="selectedDevice != null">{{
+                          selectedDevice
+                          }}</i></span>
+                    </div>
+                  </div>
+                  <!--</div> -->
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-sm btn-primary" [disabled]="loading">
+                  <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
+                </button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+
+
+  <div class="row">
+    <div class="col-lg-12">
+        <my-gestiondriver-table [data]="data">
+        </my-gestiondriver-table>
+    </div>
+  </div>
+</div>
