@@ -10,7 +10,7 @@ import { DatePipe } from '@angular/common';
 export class DetailleComponent {
 
   loading: boolean = false;
-
+ 
   constructor(private dataService: DataService, private datePipe: DatePipe) { }
 
   value: string | Object;
@@ -23,6 +23,8 @@ export class DetailleComponent {
   reportDetails: any;
   displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Fuel moyenne (L)"]
   columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cr"];
+  displayedColumnsA: any = ["Debut Arret", "Fin Arret", "Adresse Arret"]
+  columnsA: any = ["timeEnd", "timeEndArret", "addf"];
 
   resume = [];
   urldetails = "";
@@ -179,7 +181,7 @@ export class DetailleComponent {
     } else {
       this.loading = true;
       this.resume = []
-      var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000
+      var urlParams = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000)  + "&et=" +  Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
 
@@ -188,6 +190,9 @@ export class DetailleComponent {
           this.reportData.forEach((e) => {
             e.timeStart = this.datePipe.transform(new Date(Number.parseInt(e.timeStart) * 1000), 'yyyy-MM-dd  h:mm:ss');
             e.timeEnd = this.datePipe.transform(new Date(Number.parseInt(e.timeEnd) * 1000), 'yyyy-MM-dd  h:mm:ss');
+            // e.timeEndArret = this.datePipe.transform(new Date(Number.parseInt(e.timeEndArret) * 1000), 'yyyy-MM-dd  h:mm:ss');
+            // e.timeEndArret =;
+            
             // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
             //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
             if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);

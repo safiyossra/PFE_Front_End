@@ -1,0 +1,227 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card card-accent-info">
+        <div class="card-header">
+          <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
+              class="fa fa-plus-circle"></i> Ajouter Vehicule </button>
+          <div class="card-header-actions">
+            <a href="#">
+              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
+            </a>
+            <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
+              <i class="{{ iconCollapse }}  transition"></i>
+            </button>
+            <button type="button" class="card-header-action btn btn-link btn-close" (click)="reset()">
+              <i class="icon-close"></i>
+            </button>
+          </div>
+        </div>
+        <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade"
+          tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-primary" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Ajouter Vehicule</h5>
+                <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="animated fadeIn">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      
+                        <div class="card-body">
+                          <div class="form-group row">
+                            <label class=" col-md-4 col-form-label" for="select1">Identifiant</label>
+                            <div class="col-8 input-group">
+                              <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection (A MODIFIER)'"
+                                [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice"
+                                [showErrorMsg]="showErrorDevice" [options]="devices" [display]="'name'" [value]="'dID'"
+                                [multiple]="false" [labelCount]="0" [selectedOptions]="selectedDevicesModal"
+                                (selectionChange)="getSelectedDevicesModal($event)">
+                              </my-dropdown-select>
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class=" col-md-4 col-form-label" for="text-input">Date de Création</label>
+                            <div class="col-8">
+                              <input type="date" id="text-input" #modele name="datecreation" class="form-control"
+                                placeholder="Choisir la date">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Identifiant Unique</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #type name="idunique" class="form-control"
+                                placeholder="Saisir Identifiant Unique">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Description</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #type name="description" class="form-control"
+                                placeholder="Saisir une Description">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">VehiculeID</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #type name="idvehicule" class="form-control"
+                                placeholder="Saisir Vehicule ID">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Marque</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #type name="marque" class="form-control"
+                                placeholder="Saisir la marque de vehicule">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Modèle</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #type name="modele" class="form-control"
+                                placeholder="Saisir le modèle d vehicule">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Châssis</label>
+                            <div class="col-8">
+                              <input type="text" id="text-input" #type name="chassis" class="form-control"
+                                placeholder="Saisir chassis">
+                            </div>
+                          </div>
+                        </div>                     
+                        </div>
+                    <div class="col-lg-6">                     
+                        <div class="card-body">
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Série Number</label>
+                            <div class="col-8">
+                              <input type="number" id="text-input" #compt1 name="serienum" class="form-control"
+                                placeholder="0,00">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Numéro de téléphone</label>
+                            <div class="col-8">
+                              <input type="number" id="text-input" #compt1 name="numtel" class="form-control"
+                                placeholder="0,00">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Maximum Speed</label>
+                            <div class="col-7">
+                              <input type="number" id="text-input" #compt1 name="maxspeed" class="form-control"
+                                placeholder="0,00">
+                            </div>
+                            <label class="col-form-label" for="text-input">Km/H</label>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Carburant Economie</label>
+                            <div class="col-7">
+                              <input type="number" id="text-input" #compt1 name="carbeco" class="form-control"
+                                placeholder="0,00">
+                            </div>
+                            <label class="col-form-label" for="text-input">mg</label>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Carburant Cout</label>
+                            <div class="col-7">
+                              <input type="number" id="text-input" #compt1 name="carbcout" class="form-control"
+                                placeholder="0,00">
+                            </div>
+                            <label class="col-form-label" for="text-input">MAD/L</label>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Carburant Capacite (#1)</label>
+                            <div class="col-7">
+                              <input type="number" id="text-input" #compt1 name="carcap1" class="form-control"
+                                placeholder="0,00">
+                            </div>
+                            <label class="col-form-label" for="text-input">Litre</label>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Carburant Capacite (#2)</label>
+                            <div class="col-7">
+                              <input type="number" id="text-input" #compt1 name="carcap2" class="form-control"
+                                placeholder="0,00">
+                            </div>
+                            <label class="col-form-label" for="text-input">Litre</label>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Reporterd Odometer</label>
+                            <div class="col-7">
+                              <input type="number" id="text-input" #compt1 name="repoodm" class="form-control"
+                                placeholder="0,00">
+                            </div>
+                            <label class="col-form-label" for="text-input">Km</label>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
+                <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"> &nbsp; Annuler</button>
+                <button type="button" class="btn btn-primary" *ngIf="isnotNum==false"
+                  (click)="ajouter()">Ajouter</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
+          <form class="form-horizontal">
+            <div class="form-group row">
+              <div class="col-md-5">
+                <my-daterangepicker #calendar [ngModelOptions]="{ standalone: true }" [(ngModel)]="value"
+                  [options]="myDateRangePickerOptions"></my-daterangepicker>
+              </div>
+              <div class="col-md-5">
+                <div class="controls">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
+                    </div>
+                    <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection'"
+                      [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
+                      [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
+                      [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
+                    </my-dropdown-select>
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-key fa-sm"
+                          *ngIf="selectedDevice.length == 0"></i><i *ngIf="selectedDevice != null">{{
+                          selectedDevice
+                          }}</i></span>
+                    </div>
+                  </div>
+                  <!--</div> -->
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-sm btn-primary" [disabled]="loading">
+                  <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
+                </button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+
+
+  <div class="row">
+    <div class="col-lg-12">
+        <my-gestionvehicule-table [data]="data">
+        </my-gestionvehicule-table>
+    </div>
+  </div>
+</div>

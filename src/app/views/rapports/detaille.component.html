@@ -106,6 +106,14 @@
         </tab>
         <tab style="min-height: 660px">
           <ng-template tabHeading>
+            <i class="icon-list"></i>
+            Arrets &nbsp;
+          </ng-template>
+          <my-data-table class="detailtable" [data]="reportData" [columnNames]="displayedColumnsA" [columns]="columnsA">
+          </my-data-table>
+        </tab>
+        <tab style="min-height: 660px">
+          <ng-template tabHeading>
             <i class="icon-pie-chart"></i>
             Graphes
           </ng-template>
