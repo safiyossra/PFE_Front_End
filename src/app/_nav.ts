@@ -87,11 +87,11 @@ export const navItems: INavData[] = [
     url: '/notifications/alerts',
     icon: 'icon-bell',
   },
-  {
-    name: 'Gestion Driver',
-    url: '/gestiondriver/cruddriver',
-    icon: 'icon-book-open'
-  }
+  // {
+  //   name: 'Gestion Driver',
+  //   url: '/gestiondriver/cruddriver',
+  //   icon: 'icon-book-open'
+  // }
   // {
   //   name: 'Map',
   //   url: '/map',

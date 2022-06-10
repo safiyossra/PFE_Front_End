@@ -30,18 +30,18 @@
               <div class="modal-body">
                 <div class="animated fadeIn">
                   <div class="row">
-                    <div class="col-lg-6">
-                      
+                    <div class="col-lg-6">  
                         <div class="card-body">
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="select1">Identifiant</label>
                             <div class="col-8 input-group">
-                              <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection (A MODIFIER)'"
+                              <!-- <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection (A MODIFIER)'"
                                 [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice"
                                 [showErrorMsg]="showErrorDevice" [options]="devices" [display]="'name'" [value]="'dID'"
                                 [multiple]="false" [labelCount]="0" [selectedOptions]="selectedDevicesModal"
                                 (selectionChange)="getSelectedDevicesModal($event)">
-                              </my-dropdown-select>
+                              </my-dropdown-select> -->
+                              <input type="date" id="text-input" #modele name="id" class="form-control">
                             </div>
                           </div>
                           <div class="form-group row">
