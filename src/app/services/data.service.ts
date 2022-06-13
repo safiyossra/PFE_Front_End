@@ -89,4 +89,17 @@ export class DataService {
     })
   }
 
+  // fonction de notifications
+  getNotifications(urlNotif) {
+    let SERVER_URL = environment.apiUrl + "notif" + urlNotif;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
 }
