@@ -6,8 +6,15 @@
             <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
                 class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
 
-            <div class="card-header px-2 py-2">
-                <div class="h4 text-dark">Trajets</div>
+            <div class="card-header d-flex justify-content-between px-2 py-2 ">
+                <div class="h4 text-dark my-auto">Trajets</div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Select an option</mat-label>
+                    <mat-select [(value)]="selectedDate" (selectionChange)="dateChange($event)">
+                        <mat-option *ngFor="let date of dates" [value]="date">{{date | date: 'd MMMM'}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
             <div class="card-body pb-0 pt-2 px-2">
                 <div class="row">

@@ -187,45 +187,6 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
         }),
       ]),
     })
-    this.circle = fb.group({
-      latitude: new FormControl(this.default.latitude),
-      longitude: new FormControl(this.default.longitude),
-      radius: new FormControl(this.default.radius),
-      description: new FormControl(this.default.description),
-      color: new FormControl('#4dbd74'),
-    })
-
-    this.point = fb.group({
-      latitude: new FormControl(this.default.latitude),
-      longitude: new FormControl(this.default.longitude),
-      description: new FormControl(this.default.description),
-      color: new FormControl('#63c2de'),
-    })
-
-    this.polygon = fb.group({
-      points: fb.array([
-        this.fb.group({
-          latitude: [this.default.latitude],
-          longitude: [this.default.longitude]
-        }),
-        this.fb.group({
-          latitude: [this.default.latitude + 1],
-          longitude: [this.default.longitude]
-        }),
-        this.fb.group({
-          latitude: [this.default.latitude],
-          longitude: [this.default.longitude - 1]
-        }),
-
-      ]),
-      description: new FormControl(this.default.description),
-      color: new FormControl('#ffc107')
-
-    })
-  }
-
-  get polygonPoints() {
-    return this.polygon.controls['points'] as FormArray
   }
 
   get zonePoints() {
@@ -300,12 +261,6 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     this.zoneChanges()
   }
 
-  initShapes() {
-    this.myCircle = L.circle([this.circle.value.latitude, this.circle.value.longitude], { radius: this.circle.value.radius, color: this.circle.value.color })
-    this.myPoint = L.marker([this.point.value.latitude, this.point.value.longitude], { icon: L.icon({ iconUrl: 'assets/img/markers/pin_n.png', iconSize: [50, 50], iconAnchor: [25, 50] }) })
-    this.myPolygon = L.polygon(this.polygonPoints.value.map(point => [point.latitude, point.longitude]))
-  }
-
   onTypeChange(event: any) {
     switch (event.value) {
       case 'point':
@@ -367,6 +322,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
       this.zone.reset({
         color: '#4dbd74'
       })
+      this.clearZoneFromMap()
     } else {
       this.zone.reset({
         description: this.zone.value.description,
@@ -375,69 +331,34 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-
-  pointOnChanges(): void {
-    this.point.valueChanges.subscribe(val => {
-      if (val.latitude != null && val.longitude != null) {
-        console.log('not Null');
-        this.myPoint.setLatLng([val.latitude, val.longitude])
-        this.map.setView(this.myPoint.getLatLng())
-      } else {
-        console.log('Null');
-      }
-    });
-  }
-
-  circleOnChanges(): void {
-    this.circle.valueChanges.subscribe(val => {
-      if (val.latitude != null && val.longitude != null && val.radius != null) {
-        console.log('not Null');
-        this.myCircle.setLatLng([val.latitude, val.longitude])
-        this.myCircle.setRadius(val.radius)
-        this.myCircle.setStyle({ color: val.color })
-        this.map.fitBounds(this.myCircle.getBounds())
-      } else {
-        console.log('Null');
-      }
-
-    });
-
-  }
-
-
-  polygonPointOnchanges(): void {
-    this.polygonPoints.valueChanges.subscribe(val => {
-      var latlngs = []
-      val.forEach((point: any, index) => {
-        if (point.latitude != null && point.longitude != null) {
-          latlngs.push(new L.LatLng(point.latitude, point.longitude))
-        }
-      });
-
-      this.myPolygon.setLatLngs(latlngs)
-      this.myCircle.setStyle({ color: this.polygon.value.color })
-      this.map.fitBounds(this.myPolygon.getBounds())
-
-    })
-  }
-
   zoneChanges(): void {
     this.zone.valueChanges.subscribe(val => {
       var points = val.points
 
-      points.forEach((p, i) => {
-        console.log(p);
+      // points.forEach((p, i) => {
+      //   if (p.latitude != null && p.longitude != null) {
+      //     this.myMarkers[i].setLatLng(L.latLng(p.latitude, p.longitude))
+      //     console.log(this.myMarkers[i].getLatLng());
+      //     if (this.myMarkers[i].getLatLng() != null) {
+      //       this.myMarkers[i].addTo(this.map)
+      //     }
+      //   } else {
+      //     if (this.map.hasLayer(this.myMarkers[i])) {
+      //       this.myMarkers[i].removeFrom(this.map)
+      //     }
 
-        this.myMarkers[i].setLatLng(L.latLng(p.latitude, p.longitude))
-        console.log(this.myMarkers[i].getLatLng());
-        if (this.myMarkers[i].getLatLng() != null) {
-          this.myMarkers[i].addTo(this.map)
-        }
-      });
+      //   }
+      // });
+
+      this.clearZoneFromMap()
 
       switch (this.selectedType) {
         case 'circle':
           let centerCircle = L.latLng(points[0].latitude, points[0].longitude)
+
+          if (!this.myZone) {
+            this.myZone = L.circle(centerCircle, { color: this.zone.value.color })
+          }
 
           if (centerCircle != null && centerCircle.lat != null && centerCircle.lng != null && val.radius != null) {
             console.log('not Null');
@@ -445,7 +366,6 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
             this.myZone.setRadius(val.radius)
             this.myZone.setStyle({ color: val.color })
 
-            // this.myZone.addTo(this.map)
             if (this.map.hasLayer(this.myZone)) {
               this.map.fitBounds(this.myZone.getBounds())
             } else {
@@ -462,10 +382,22 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
         case 'point':
           let centerPoint = L.latLng(points[0].latitude, points[0].longitude)
+
+          if (!this.myZone) {
+            this.myZone = L.marker(centerPoint, { icon: L.icon({ iconUrl: 'assets/img/markers/pin_n.png', iconSize: [50, 50], iconAnchor: [25, 50] }) })
+          }
+
+
           if (centerPoint != null && centerPoint.lat != null && centerPoint.lng != null && val.radius != null) {
             console.log('not Null');
             this.myZone.setLatLng(centerPoint)
             this.map.setView(this.myZone.getLatLng())
+            if (this.map.hasLayer(this.myZone)) {
+              this.map.setView(this.myZone.getLatLng())
+            } else {
+              this.myZone.addTo(this.map)
+              this.map.setView(this.myZone.getLatLng())
+            }
           } else {
             if (this.myZone && this.map.hasLayer(this.myZone)) {
               this.myZone.removeFrom(this.map)
@@ -481,11 +413,26 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
             }
           });
 
+          if (!this.myZone) {
+            this.myZone = L.polygon(latlngs, { color: this.zone.value.color })
+          }
+
           if (this.myZone && latlngs.length > 0) {
             this.myZone.setLatLngs(latlngs)
             this.myZone.setStyle({ color: val.color })
-            this.map.fitBounds(this.myZone.getBounds())
+            if (this.map.hasLayer(this.myZone)) {
+              this.map.fitBounds(this.myZone.getBounds())
+            } else {
+              this.myZone.addTo(this.map)
+              this.map.fitBounds(this.myZone.getBounds())
+            }
           }
+          else {
+            if (this.myZone && this.map.hasLayer(this.myZone)) {
+              this.myZone.removeFrom(this.map)
+            }
+          }
+
           break;
 
         default:
@@ -493,70 +440,6 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
       }
 
     })
-  }
-
-  resetPoint() {
-    this.point.reset({
-      latitude: this.default.latitude,
-      longitude: this.default.longitude,
-      description: this.default.description,
-      color: '#63c2de',
-    })
-  }
-
-  resetCircle() {
-    this.circle.reset({
-      latitude: this.default.latitude,
-      longitude: this.default.longitude,
-      radius: this.default.radius,
-      description: this.default.description,
-      color: '#4dbd74',
-    })
-  }
-
-  resetPolygon() {
-    this.polygon.reset({
-      points: [
-        {
-          latitude: [this.default.latitude],
-          longitude: [this.default.longitude]
-        },
-        {
-          latitude: [this.default.latitude + 1],
-          longitude: [this.default.longitude]
-        },
-        {
-          latitude: [this.default.latitude],
-          longitude: [this.default.longitude - 1]
-        },
-      ],
-      description: this.default.description,
-      color: '#ffc107'
-    })
-  }
-
-  resetZone() {
-    this.resetZoneForm(true)
-    switch (this.selectedType) {
-      case 'point':
-        console.log('reset point');
-        this.resetPoint()
-        break;
-
-      case 'circle':
-        console.log('reset circle');
-        this.resetCircle()
-        break;
-
-      case 'polygon':
-        console.log('reset polygon');
-        this.resetPolygon()
-        break;
-
-      default:
-        console.log('default type');
-        break;
-    }
   }
 
   addZone() {
@@ -567,32 +450,12 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-  addPoint() {
-    console.log('addPoint');
-    if (this.polygonPoints.length < 10) {
-      const pointForm = this.fb.group({
-        latitude: [0],
-        longitude: [0]
-      });
-
-      this.polygonPoints.push(pointForm);
-    }
-  }
 
   resetZonePoint(pointIndex: number) {
-    console.log('reset : ' + pointIndex);
-    console.log(this.zonePoints.controls[pointIndex]);
     this.zonePoints.controls[pointIndex].patchValue({
       latitude: null,
       longitude: null,
     })
-  }
-
-  deletePoint(pointIndex: number) {
-    console.log('delete : ' + pointIndex);
-    if (this.polygonPoints.length > 3) {
-      this.polygonPoints.removeAt(pointIndex);
-    }
   }
 
   createMap() {
@@ -662,8 +525,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
     L.control.scale().addTo(this.map);
 
-    this.initMarkers()
-    // this.initShapes()
+    // this.initMarkers()
 
     this.map.doubleClickZoom.disable();
     this.map.on('dblclick', (event) => {
@@ -694,7 +556,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     let radiusMts = 5500;
     let bounds = L.latLng(center.lat, center.lng).toBounds(radiusMts);
 
-    let rectanlePoints = L.rectangle(bounds, { color: "#ff7800", weight: 1 }).getLatLngs()[0];
+    let rectanlePoints = L.rectangle(bounds, { color: "#4dbd74", weight: 1 }).getLatLngs()[0];
 
     let points = []
 
@@ -712,19 +574,6 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     points.push([startPoint[0] + 1 * dist, startPoint[1] + 3 * dist])
     points.push([startPoint[0] - 1 * dist, startPoint[1] + 3 * dist])
 
-
-    // let startPoint = [center.lat, center.lng]
-    // points.push([startPoint[0] - 3 * dist, startPoint[1] + dist])
-    // points.push([startPoint[0] - 3 * dist, startPoint[1]])
-    // points.push([startPoint[0] - 3 * dist, startPoint[1] - 1 * dist])
-    // points.push([startPoint[0] - 1 * dist, startPoint[1] - 3 * dist])
-    // points.push([startPoint[0] + 1 * dist, startPoint[1] - 3 * dist])
-    // points.push([startPoint[0] + 3 * dist, startPoint[1] - 1 * dist])
-    // points.push([startPoint[0] + 3 * dist, startPoint[1]])
-    // points.push([startPoint[0] + 3 * dist, startPoint[1] + 1 * dist])
-    // points.push([startPoint[0] + 1 * dist, startPoint[1] + 3 * dist])
-    // points.push([startPoint[0] - 1 * dist, startPoint[1] + 3 * dist])
-
     this.clearZoneFromMap()
     this.zone.patchValue({
       points: points.map(p => {
@@ -739,8 +588,6 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     this.myZone.setStyle({ color: this.zone.value.color })
     this.map.fitBounds(this.myZone.getBounds())
     this.myZone.addTo(this.map)
-    // this.myPolygon.setLatLngs(points.map(p => L.latLng(p[0], p[1])))
-    // this.myPolygon.addTo(this.map);
   }
 
   generateCircle(center) {
@@ -812,12 +659,8 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
   search(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    // this.filterValues['name'] = filterValue
 
     this.dataSource.filter = filterValue
-    // this.dataSource.filter = JSON.stringify(this.filterValues)
-
-    // this.applyFilter()
   }
 
   selectTab(tab) {
@@ -825,6 +668,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     this.mode = tab
     switch (tab) {
       case 'list':
+        this.clearZoneFromMap()
         this.selectedType = ''
         break;
 
@@ -837,6 +681,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   editZone(zone: Zone) {
     this.mode = 'edit'
 
+    this.clearZoneFromMap()
     this.selectedType = ZoneType[zone.zoneType]
     this.zone.patchValue({
       description: zone.description,
@@ -892,8 +737,14 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     var points = this.zone.value.points
 
     points.forEach(p => {
-      this.myMarkers.push(L.marker(L.latLng(p.latitude, p.longitude)))
-    });
+      let marker = L.marker(L.latLng(p.latitude, p.longitude), { draggable: true })
+      marker.on('dragend', function (event) {
+        var marker = event.target;
+        var position = marker.getLatLng();
+        marker.setLatLng(new L.LatLng(position.lat, position.lng), { draggable: 'true' });
+      });
+      this.myMarkers.push(marker)
+    })
 
     console.log(this.myMarkers);
 

@@ -63,9 +63,12 @@
     // left: -25px;
     height: 20%;
     bottom: 0;
-    font-size: 11px;
-    color: darkblue;
-    font-weight: bold;
+    font-size: 14px;
+    color: rgb(15, 15, 15);
+    font-weight: 900;
+    text-shadow: -.8px -.8px 0 rgb(187, 30, 30), -.8px .8px 0 rgb(187, 30, 30), .8px .8px 0 rgb(187, 30, 30), .8px -.8px 0 rgb(187, 30, 30);
+    font-variant: small-caps;
+    letter-spacing: .8px;
 }
 
 .zones-tabs {

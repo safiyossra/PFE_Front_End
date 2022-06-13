@@ -40,6 +40,9 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   fullScreenControl: L.Control;
   positionControl: L.Control;
 
+  dates = []
+  selectedDate: any
+
   //DATATABLE Attributes
   @ViewChild(MatPaginator) paginator: MatPaginator
   @ViewChild(MatSort) sort: MatSort
@@ -114,6 +117,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   constructor(private activatedRoute: ActivatedRoute, private vehiculeService: VehiculeService, private router: Router, private tools: util) {
     this.vehiculeID = this.activatedRoute.snapshot.paramMap.get('id')
+
+    this.generateDates()
   }
 
   async vehiculeExist(id: any): Promise<boolean> {
@@ -136,32 +141,74 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   async ngOnInit(): Promise<any> {
     if (await this.vehiculeExist(this.vehiculeID)) {
-      await this.vehiculeService.getVehiculeEvents(this.vehiculeID).toPromise()
-        .then((res) => {
-          this.events = res
-
-          this.lineChartData1[0].data = (this.events.map((event) => {
-            return { x: new Date(event.timestamp * 1000), y: event.speedKPH }
-          }))
-
-          this.lineChartData2[0].data = (this.events.map((event) => event.fuelTotal))
-
-          this.lineChartLabels = this.events.map((event: { timestamp: any; }) => new Date(event.timestamp * 1000))
-
-          this.getTrajets()
-          this.paintPolyline()
-
-          this.dataSource = new MatTableDataSource(this.trajets)
-          this.totalItems = this.dataSource.data.length
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-        },
-        )
+      this.loadVehiculeEvents()
     } else {
       console.log('Vehicule Does not exist');
       this.router.navigate(['/404'])
     }
+  }
 
+  async loadVehiculeEvents() {
+    await this.vehiculeService.getVehiculeEvents(this.vehiculeID, this.selectedDate.getTime() / 1000).toPromise()
+      .then((res) => {
+        this.events = res
+
+        this.lineChartData1[0].data = (this.events.map((event) => {
+          return { x: new Date(event.timestamp * 1000), y: event.speedKPH }
+        }))
+
+        this.lineChartData2[0].data = (this.events.map((event) => event.fuelTotal))
+
+        this.lineChartLabels = this.events.map((event: { timestamp: any; }) => new Date(event.timestamp * 1000))
+
+        this.getTrajets()
+
+        this.map.eachLayer((layer) => {
+          if (!(layer instanceof L.TileLayer)) {
+            this.map.removeLayer(layer);
+          }
+        });
+
+        this.paintPolyline()
+
+        this.dataSource = new MatTableDataSource(this.trajets)
+        this.totalItems = this.dataSource.data.length
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      },
+      )
+  }
+
+  dateChange(event: any) {
+    console.log('date changed');
+    console.log(this.selectedDate);
+    console.log(Math.floor(this.selectedDate.getTime() / 1000));
+
+    this.loadVehiculeEvents()
+  }
+
+  generateDates() {
+    const startDate = new Date();
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date();
+    endDate.setHours(0, 0, 0, 0);
+    endDate.setMonth(endDate.getMonth() - 1)
+
+
+    const date = new Date(startDate.getTime());
+
+
+    const dates = [];
+
+    while (date > endDate) {
+      dates.push(new Date(date));
+      date.setDate(date.getDate() - 1);
+    }
+
+    this.dates = dates
+    this.selectedDate = this.dates[0]
+    // return dates;
 
   }
 
@@ -433,7 +480,6 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   // ----------------------- Getting info for the table --------------------------// 
 
   getTrajets() {
-
     let trajets = []
 
     let carStat = 0

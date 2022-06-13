@@ -29,8 +29,8 @@ export class VehiculeService {
     // }
   }
 
-  getVehiculeEvents(id) {
-    let SERVER_URL = environment.apiUrl + "map-events?d=" + id;
+  getVehiculeEvents(id, startDate) {
+    let SERVER_URL = environment.apiUrl + "map-events?d=" + id + "&st=" + startDate;
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
