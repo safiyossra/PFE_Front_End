@@ -63,12 +63,16 @@
     // left: -25px;
     height: 20%;
     bottom: 0;
-    font-size: 14px;
-    color: rgb(15, 15, 15);
-    font-weight: 900;
-    text-shadow: -.8px -.8px 0 rgb(187, 30, 30), -.8px .8px 0 rgb(187, 30, 30), .8px .8px 0 rgb(187, 30, 30), .8px -.8px 0 rgb(187, 30, 30);
+    font-size: 12px;
+    color: red;
+    font-weight: 700;
+    text-shadow: -1px -1px 0 #d0cecf, -1px 1px 0 #d0cecf, 1px 1px 0 #d0cecf, 1px -1px 0 #d0cecf;
     font-variant: small-caps;
-    letter-spacing: .8px;
+    letter-spacing: 1.5px;
+    font-family: Verdana,
+        Arial,
+        Tahoma,
+        sans-serif;
 }
 
 .zones-tabs {
