@@ -111,6 +111,12 @@
     .nav-tabs {
         justify-content: space-between;
     }
+}
 
 
+#leftCard {
+    .mat-form-field-wrapper {
+        padding-bottom: 12px;
+        margin-bottom: -8px;
+    }
 }

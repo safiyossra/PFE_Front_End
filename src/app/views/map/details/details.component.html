@@ -9,13 +9,15 @@
             <div class="card-header d-flex justify-content-between px-2 py-2 ">
                 <div class="h4 text-dark my-auto">Trajets</div>
                 <mat-form-field appearance="fill">
-                    <mat-label>Select an option</mat-label>
+                    <mat-label>Selectioner une journée</mat-label>
                     <mat-select [(value)]="selectedDate" (selectionChange)="dateChange($event)">
                         <mat-option *ngFor="let date of dates" [value]="date">{{date | date: 'd MMMM'}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
+            <mat-progress-bar mode="indeterminate" *ngIf="loadingEvents" class="bg-primary"></mat-progress-bar>
+
             <div class="card-body pb-0 pt-2 px-2">
                 <div class="row">
                     <div class="col">
@@ -60,7 +62,7 @@
                 <div class="h3 text-dark">Vitesse</div>
                 <div class="chart-wrapper">
                     <canvas baseChart class="chart" [datasets]="lineChartData1" [labels]="lineChartLabels"
-                        [options]="lineChartOptions" [colors]="lineChartColours" [legend]="lineChartLegend"
+                        [options]="lineChartOptions" [colors]="lineChartColours1" [legend]="lineChartLegend"
                         [chartType]="lineChartType" (chartHover)="chartHovered($event)"
                         (chartClick)="chartClicked($event)"></canvas>
                 </div>
@@ -70,9 +72,8 @@
                 <div class="h3 text-dark">Carburant</div>
                 <div class="chart-wrapper">
                     <canvas baseChart class="chart" [datasets]="lineChartData2" [labels]="lineChartLabels"
-                        [options]="lineChartOptions" [colors]="lineChartColours" [legend]="lineChartLegend"
-                        [chartType]="lineChartType" (chartHover)="chartHovered($event)"
-                        (chartClick)="chartClicked($event)"></canvas>
+                        [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType"
+                        (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
                 </div>
             </div>
         </div>

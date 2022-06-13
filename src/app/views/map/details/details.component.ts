@@ -75,32 +75,53 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     responsive: true,
     scales: {
       xAxes: [{
-        // scaleLabel: {
-        //   display: true,
-        //   labelString: 'Time ( UTC )'
-        // },
         type: 'time',
-        // time: {
-        //   tooltipFormat: "hh:mm",
-        //   displayFormats: {
-        //     hour: 'MMM D, hh:mm:ss'
-        //   }
-        // },
         ticks: {
-          maxRotation: 0,
-          minRotation: 0
+          // maxRotation: 0,
+          // minRotation: 0,
+          // callback: function (value: any) {
+          //   return value.substring(7);
+          // },
+          maxTicksLimit: 24,
         }
       }],
       yAxes: [{
-        scaleLabel: {
-          display: true,
-          labelString: 'Temperature ( Celcius )'
+        ticks: {
+          beginAtZero: true,
+          // maxTicksLimit: 5,
+          // stepSize: Math.ceil(250 / 5),
+          // max: 250
         },
-        // min: 0
-      }]
+
+      }],
+    },
+    elements: {
+      line: {
+        borderWidth: 2
+      },
+      point: {
+        radius: 0,
+        hitRadius: 10,
+        hoverRadius: 4,
+        hoverBorderWidth: 3,
+      }
+    },
+    legend: {
+      display: true
     }
   };
-  public lineChartColours: Array<any> = [
+  public lineChartColours1: Array<any> = [
+    {
+      backgroundColor: 'rgba(32,168,216,0.5)',
+      borderColor: 'rgba(32,168,216,1)',
+      // pointBackgroundColor: 'rgba(32,168,216,1)',
+      // pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(0,84,0,0.8)'
+    },
+  ];
+
+  public lineChartColours2: Array<any> = [
     {
       backgroundColor: 'rgba(32,168,216,0.5)',
       borderColor: 'rgba(32,168,216,1)',
@@ -114,6 +135,9 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   public lineChartLegend = true;
   public lineChartType = 'line';
+
+
+  loadingEvents = false
 
   constructor(private activatedRoute: ActivatedRoute, private vehiculeService: VehiculeService, private router: Router, private tools: util) {
     this.vehiculeID = this.activatedRoute.snapshot.paramMap.get('id')
@@ -149,6 +173,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   }
 
   async loadVehiculeEvents() {
+    this.loadingEvents = true
     await this.vehiculeService.getVehiculeEvents("map-events?d=" + this.vehiculeID + "&st=" + Math.round(this.selectedDate.getTime() / 1000)).toPromise()
       .then((res) => {
         this.events = res
@@ -175,7 +200,10 @@ export class DetailsComponent implements OnInit, AfterViewInit {
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+
+        this.loadingEvents = false
       },
+
       )
   }
 

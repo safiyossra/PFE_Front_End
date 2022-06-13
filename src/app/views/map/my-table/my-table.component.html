@@ -9,15 +9,15 @@
                 </div>
             </div>
             <div class="col-md-4 d-flex justify-content-end p-1">
-                <my-dropdown-checkbox *ngIf="showColumnsControle" title="Show Columns" class="mx-auto"
-                    id="list-columns" [options]="displayedColumns" [selected]="displayedColumns"
+                <my-dropdown-checkbox *ngIf="showColumnsControle" title="Show Columns" class="mx-auto" id="list-columns"
+                    [options]="displayedColumns" [selected]="displayedColumns"
                     (changeDisplayedColumn)="changeDisplayedColumn($event)">
                 </my-dropdown-checkbox>
 
                 <button *ngIf="showFullScreenControle" title="Enter FullScreen"
-                    class="mcontrol control-fullscreen-button mx-auto" id="list-fullscreenControl"
+                    class="mcontrol control-fullscreen-button mx-auto" id="list-vehiculesfullScreenControl"
                     (click)="toggleListFullscreen($event)"></button>
-                    
+
                 <button *ngIf="showCollapsControle" title="Collapse list" class="mcontrol icon-arrow-left"
                     id="list-collapse" (click)="collapseClicked()"></button>
             </div>

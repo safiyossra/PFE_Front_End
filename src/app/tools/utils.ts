@@ -50,7 +50,11 @@ export class util {
 
     chkScreenMode(id) {
         // var idElem = (id == 'map') || (id == 'mapDetail') ? id+'fullScreenControl' : 'list-fullscreenControl'
+        console.log(id);
+
         var idElem = id + 'fullScreenControl'
+        console.log(idElem);
+
         var fullScreenCtl = document.getElementById(idElem)
         if (document.fullscreenElement) {
             //fullscreen
