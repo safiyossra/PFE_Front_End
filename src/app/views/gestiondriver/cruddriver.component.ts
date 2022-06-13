@@ -90,15 +90,12 @@ export class CruddriverComponent {
         { alias: 'lw', text: 'Last Week', operation: '-1w' },
         { alias: 'ty', text: 'This Year', operation: '0y' },
         { alias: 'ly', text: 'Last Year', operation: '-1y' },
-        { alias: 'ny', text: 'Next Year', operation: '+1y' },
         { alias: 'ln', text: 'Last 90 days', operation: '-90d' },
         { alias: 'l2m', text: 'Last 2 months', operation: '-2m' },
 
         { alias: 'pmt', text: 'Past Month from Today', operation: '-1mt' },
-        { alias: 'nmt', text: 'Next Month from Today', operation: '1mt' },
         { alias: 'pwt', text: 'Past Week from Today', operation: '-1wt' },
         { alias: 'pyt', text: 'Past Year from Today', operation: '-1yt' },
-        { alias: 'nyt', text: 'Next Year from Today', operation: '+2yt' },
         { alias: 'pdt', text: 'Past 90 days from Today', operation: '-90dt' },
         { alias: 'pl2mt', text: 'Past 2 months from Today', operation: '-2mt' }
       ],

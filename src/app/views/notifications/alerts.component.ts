@@ -19,12 +19,8 @@ export class AlertsComponent {
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
   isCollapsed: boolean = true;
-  isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-down';
-  reportData: any;
-  // displayedColumns: any = ["Date","Vehicule","Sujet","Message"]
-  // columns: any = ["timestamp","description","subject","message"];
-
+  data: any;
   public devices: any = [];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
@@ -48,15 +44,12 @@ export class AlertsComponent {
         { alias: 'lw', text: 'Last Week', operation: '-1w' },
         { alias: 'ty', text: 'This Year', operation: '0y' },
         { alias: 'ly', text: 'Last Year', operation: '-1y' },
-        { alias: 'ny', text: 'Next Year', operation: '+1y' },
         { alias: 'ln', text: 'Last 90 days', operation: '-90d' },
         { alias: 'l2m', text: 'Last 2 months', operation: '-2m' },
 
         { alias: 'pmt', text: 'Past Month from Today', operation: '-1mt' },
-        { alias: 'nmt', text: 'Next Month from Today', operation: '1mt' },
         { alias: 'pwt', text: 'Past Week from Today', operation: '-1wt' },
         { alias: 'pyt', text: 'Past Year from Today', operation: '-1yt' },
-        { alias: 'nyt', text: 'Next Year from Today', operation: '+2yt' },
         { alias: 'pdt', text: 'Past 90 days from Today', operation: '-90dt' },
         { alias: 'pl2mt', text: 'Past 2 months from Today', operation: '-2mt' }
       ],
@@ -80,8 +73,8 @@ export class AlertsComponent {
         to: tomorrow
       }
     };
-
     this.getDev();
+    setTimeout(() => this.submit(), 100)
   }
 
   toggleCollapse(): void {
@@ -95,36 +88,25 @@ export class AlertsComponent {
     this.selectedDevice = selected;
   }
 
-  onValidateDevice() {
-    this.showErrorDevice = !this.showErrorDevice;
-    this.errorMessageDevice = "This field is required";
-  }
-
-  resetValidator() {
-    this.showErrorDevice = false;
-    this.errorMessageDevice = "";
-  }
   //////////////////////
   submit() {
-    this.resetValidator()
-    if (this.selectedDevice.length == 0) {
-      this.onValidateDevice()
-    } else {
-      this.loading = true;
-      var urlNotif = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000)  + "&et=" +  Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
-      this.dataService.getNotifications(urlNotif).subscribe({
+    this.loading = true;
+    var urlNotif = "?st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
+    if (!(this.selectedDevice.length == 0)) {
+      urlNotif += "&d=" + this.selectedDevice
+    }
+    this.dataService.getNotifications(urlNotif).subscribe({
         next: (d: any) => {
           console.log("d");
           console.log(d);
-          this.reportData = d;
-          this.reportData.forEach((e) => {
-            e.timestamp = this.datePipe.transform(new Date(Number.parseInt(e.timestamp) * 1000), 'yyyy-MM-dd  h:mm:ss');
+        d.forEach((e) => {
+          e.timestamp = this.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
           })
+        this.data = d;
           this.loading = false;
         },
       })
 
-    }
   };
 
 
@@ -141,5 +123,9 @@ export class AlertsComponent {
 
   reset() {
     this.selectedDevices = []
+  }
+
+  formatDate(date: Date) {
+    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
   }
 }

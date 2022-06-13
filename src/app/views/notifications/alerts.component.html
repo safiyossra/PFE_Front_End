@@ -2,11 +2,11 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="card card-accent-info">
-        <div class="card-header">
+        <div class="card-header" (click)="toggleCollapse()">
           <i class="fa fa-edit"></i> Filtrer
           <div class="card-header-actions">
             <a href="#">
-              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
+              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
             </a>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
@@ -47,7 +47,7 @@
               <div class="form-actions">
                 <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading">
                   <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
-                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
+                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Filtrer
                 </button>
               </div>
             </div>
@@ -62,7 +62,8 @@
 
   <div class="row">
     <div class="col-lg-12">
-        <my-notification-table [data]="reportData">
+      <mat-progress-bar mode="indeterminate" *ngIf="loading" class="bg-primary"></mat-progress-bar>
+      <my-notification-table [data]="data">
         </my-notification-table>
     </div>
   </div>

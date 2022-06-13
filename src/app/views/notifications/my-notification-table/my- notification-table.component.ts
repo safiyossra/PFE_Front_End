@@ -50,9 +50,7 @@ export class MyNotificationTableComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
     let d = changes['data'].currentValue
-    if (d && d.length>0) {
-      console.log("data");
-      console.log(d);
+      if (d) {
     this.dataSource = new MatTableDataSource(d)
     // this.displayedColumns = this.columns
     this.totalItems = this.dataSource.data.length
