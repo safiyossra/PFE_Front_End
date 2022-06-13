@@ -149,7 +149,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   }
 
   async loadVehiculeEvents() {
-    await this.vehiculeService.getVehiculeEvents(this.vehiculeID, this.selectedDate.getTime() / 1000).toPromise()
+    await this.vehiculeService.getVehiculeEvents("map-events?d=" + this.vehiculeID + "&st=" + Math.round(this.selectedDate.getTime() / 1000)).toPromise()
       .then((res) => {
         this.events = res
 
@@ -264,7 +264,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     if (this.showFullScreenControle) {
       let FullScreenControl = L.Control.extend({
         onAdd(map: L.Map) {
-          return L.DomUtil.get('fullScreenControl');
+          return L.DomUtil.get('mapDetailfullScreenControl');
         },
         onRemove(map: L.Map) { }
       });

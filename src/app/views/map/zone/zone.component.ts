@@ -143,7 +143,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     this.zone = fb.group({
       description: new FormControl(),
       radius: new FormControl(),
-      color: new FormControl('#4dbd74'),
+      color: new FormControl('#63c2de'),
       points: fb.array([
         this.fb.group({
           latitude: null,
@@ -502,7 +502,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.showFullScreenControle) {
       let FullScreenControl = L.Control.extend({
         onAdd(map: L.Map) {
-          return L.DomUtil.get('fullScreenControl');
+          return L.DomUtil.get('mapfullScreenControl');
         },
         onRemove(map: L.Map) { }
       });
@@ -556,7 +556,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     let radiusMts = 5500;
     let bounds = L.latLng(center.lat, center.lng).toBounds(radiusMts);
 
-    let rectanlePoints = L.rectangle(bounds, { color: "#4dbd74", weight: 1 }).getLatLngs()[0];
+    let rectanlePoints = L.rectangle(bounds).getLatLngs()[0];
 
     let points = []
 
@@ -686,7 +686,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     this.zone.patchValue({
       description: zone.description,
       radius: zone.radius,
-      color: zone.shapeColor == null || zone.shapeColor == '' ? '#4dbd74' : zone.shapeColor,
+      color: zone.shapeColor == null || zone.shapeColor == '' ? '#63c2de' : zone.shapeColor,
       points: [
         {
           latitude: zone.latitude1,

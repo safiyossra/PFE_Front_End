@@ -6,7 +6,7 @@
           <i class="fa fa-edit"></i> Rapports Détaillés
           <div class="card-header-actions">
             <a href="#">
-              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
+              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
             </a>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
@@ -19,11 +19,11 @@
         <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
           <form class="form-horizontal">
             <div class="form-group row">
-              <div class="col-md-5">
+              <div class="col-md-4">
                 <my-daterangepicker #calendar [ngModelOptions]="{ standalone: true }" [(ngModel)]="value"
                   [options]="myDateRangePickerOptions"></my-daterangepicker>
               </div>
-              <div class="col-md-5">
+              <div class="col-md-4">
                 <div class="controls">
                   <div class="input-group">
                     <div class="input-group-prepend">
@@ -65,13 +65,8 @@
     <div class="col-lg-12">
       <!-- Nav tabs -->
       <div class="card-header-actions">
-        <!--      
-        <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
-          <i class="{{ iconCollapse }}"></i>
-        </button>    
-        -->
       </div>
-      <tabset>
+      <tabset class="">
         <tab style="min-height: 600px">
           <ng-template tabHeading><i class="icon-calculator"></i> Resume &nbsp;</ng-template>
           <div class="row">
@@ -79,15 +74,15 @@
               <div class="brand-card">
                 <div class="brand-card-header bg-{{resumeColors[index]}}">
                   <div class="chart-wrapper">
-                    <canvas baseChart class="chart" [datasets]="el.data" [labels]="el.labels" height="100"
-                      [options]="brandBoxChartOptions" [colors]="brandBoxChartColours" [legend]="brandBoxChartLegend"
-                      [chartType]="brandBoxChartType">
+                    <canvas baseChart class="chart" [datasets]="el.data" [labels]="el.labels" height="70"
+                      [options]="brandBoxChartOptions" [colors]="brandBoxChartColours" [legend]="resumeChartLegend"
+                      [chartType]="chartType">
                     </canvas>
                   </div>
                 </div>
                 <div class="brand-card-body">
                   <div>
-                    <div class="text-value">{{el.val}}</div>
+                    <div class="text-value">{{el.val +' '+ resumeUnits[el.key]}}</div>
                     <div class="text-uppercase text-muted small">{{ el.label}}</div>
                   </div>
                 </div>
@@ -96,53 +91,65 @@
             <!--/.col-->
           </div>
         </tab>
-        <tab style="min-height: 660px">
+        <tab style="min-height: 600px">
           <ng-template tabHeading>
             <i class="icon-list"></i>
             Trajet &nbsp;
           </ng-template>
-          <my-data-table class="detailtable" [data]="reportData" [columnNames]="displayedColumns" [columns]="columns">
+          <my-data-table class="detailtable" (positionClick)="openMap($event)" [selectedMapDevice]="selectedMapDevice"
+            [data]="reportData" [columnNames]="displayedColumns" [columns]="columns">
           </my-data-table>
         </tab>
-        <tab style="min-height: 660px">
+        <tab style="min-height: 600px" (selectTab)="getEvolution()">
           <ng-template tabHeading>
-            <i class="icon-list"></i>
-            Arrets &nbsp;
+            <i class="icon-pie-chart"></i> Evolution &nbsp;<i class="fa fa-refresh" (click)="getEvolution(true)"></i>
           </ng-template>
-          <my-data-table class="detailtable" [data]="reportData" [columnNames]="displayedColumnsA" [columns]="columnsA">
-          </my-data-table>
-        </tab>
-        <tab style="min-height: 660px">
-          <ng-template tabHeading>
-            <i class="icon-pie-chart"></i>
-            Graphes
-          </ng-template>
-
+          <mat-progress-bar mode="indeterminate" *ngIf="loadingcharts" class="bg-primary"></mat-progress-bar>
           <div class="card">
             <div class="card-header">
-              Graphe des trajets
-              <!-- <div class="card-header-actions">
-              <a href="http://google.com">
-                <small class="text-muted">Download</small>
-              </a>
-            </div> -->
+              Graphes des evolutions <span class="text-danger"> &nbsp;[Seuls les enregistrements des 3 derniers jours au
+                maximum
+                de la période sélectionnée sont affichés]</span>
             </div>
             <div class="card-body">
-              <div class="chart-wrapper">
-                <canvas baseChart class="chart" height="100" [datasets]="barChartData" [labels]="barChartLabels"
-                  [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"></canvas>
+              <div class="chart-wrapper" style="height:300px;margin-top:40px; overflow-x: scroll;">
+                <canvas baseChart class="chart" [datasets]="vitesseChartData" [labels]="chartLabels"
+                  [options]="chartOptions" [colors]="vitesseChartColours" [legend]="chartLegend"
+                  [chartType]="chartType"></canvas>
+              </div>
+              <div class="chart-wrapper" style="height:300px;margin-top:40px; overflow-x: scroll;">
+                <canvas baseChart class="chart" [datasets]="fuelChartData" [labels]="chartLabels"
+                  [options]="chartOptions" [colors]="fuelChartColours" [legend]="chartLegend"
+                  [chartType]="chartType"></canvas>
+              </div>
+              <div class="chart-wrapper" style="height:300px;margin-top:40px; overflow-x: scroll;">
+                <canvas baseChart class="chart" [datasets]="tempChartData" [labels]="chartLabels"
+                  [options]="chartOptions" [colors]="tempChartColours" [legend]="chartLegend"
+                  [chartType]="chartType"></canvas>
               </div>
             </div>
           </div>
         </tab>
-        <tab style="min-height: 660px" (selectTab)="getdetails()">
+        <tab style="min-height: 600px">
           <ng-template tabHeading class="card-header-action btn-secondary">
             <i class="fa fa-list-alt"></i> Evenements Détaillés &nbsp;
-            <i class="fa fa-refresh" (click)="getdetails()"></i>
+            <!-- <i class="fa fa-refresh" (click)="getdetails()"></i>-->
           </ng-template>
-          <details-table [url]="urldetails">
+          <details-table [url]="urldetails" (positionClick)="openMap($event)" [selectedMapDevice]="selectedMapDevice">
 
           </details-table>
+        </tab>
+        <tab style="min-height: 600px" (selectTab)="showTrajet()">
+          <ng-template tabHeading class="card-header-action btn-secondary">
+            <i class="fa fa-map"></i> Afficher Trajet &nbsp;
+            <i class="fa fa-refresh" (click)="showTrajet()"></i>
+          </ng-template>
+          <div class="text-danger mb-2"> &nbsp;[Seuls les enregistrements des 3 derniers jours au
+            maximum
+            de la période sélectionnée sont affichés]</div>
+          <modal-map [mapID]="'mapTrajet'" [vehiculeID]="trajetSelectedDevice" [startTime]="trajetStartTime"
+            [endTime]="trajetEndTime" [ToInvalidate]="ToInvalidate">
+          </modal-map>
         </tab>
       </tabset>
 
@@ -150,4 +157,28 @@
     <!--/.col-->
   </div>
   <!--/.row-->
+  <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade"
+    tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-primary" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Map : {{selectedMapDeviceName}} | {{interval}}</h5>
+          <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="padding: 4px;">
+          <div class="animated fadeIn">
+            <modal-map [mapID]="'mapDetails'" [vehiculeID]="selectedMapDevice" [startTime]="startTime"
+              [endTime]="endTime">
+            </modal-map>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
 </div>

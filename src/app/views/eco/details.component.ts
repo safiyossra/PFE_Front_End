@@ -14,29 +14,15 @@ export class DetailsComponent {
 
   constructor(private dataService: DataService, private datePipe: DatePipe) { }
 
-  public mainChartElements = 27;
-  public mainChartData1: Array<number> = [];
-  public mainChartData2: Array<number> = [];
-  public mainChartData3: Array<number> = [];
-  public mainChartData4: Array<number> = [];
-
   public mainChartData: Array<any> = [
     {
-      data: this.mainChartData1,
+      data: [],
       label: 'Vitesse'
     },
     {
-      data: this.mainChartData2,
+      data: [],
       label: 'Consommation'
     },
-    // {
-    //   data: this.mainChartData3,
-    //   label: 'Max Vitesse'
-    // },
-    // {
-    //   data: this.mainChartData4,
-    //   label: 'Max Consommation'
-    // }
   ];
   /* tslint:disable:max-line-length */
   public mainChartLabels: Array<any> = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Thursday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];

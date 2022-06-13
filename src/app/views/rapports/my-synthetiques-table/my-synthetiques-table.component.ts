@@ -18,7 +18,7 @@ export class MySynthetiquesTableComponent implements OnChanges {
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   public displayedColumns = ["d", "km", "v", "c", "cm", "cd", "ct"];
-  columnNames = ["Véhicule", "KM Parcourue", "Vitesse Maximale (Km/h)", "Consommation (L)", "Consommation (L/Km)", "Consommation (MAD)", "Consommation Theorique"];
+  columnNames = ["Véhicule", "KM Parcourue", "Vitesse Maximale (Km/h)", "Consommation (L)", "Consommation (%)", "Consommation (MAD)", "Consommation Theorique (%)"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -41,9 +41,9 @@ export class MySynthetiquesTableComponent implements OnChanges {
     }
   }
 
-  onRowClicked(row: any) {
-    console.log('Row clicked: ', row);
-  }
+  // onRowClicked(row: any) {
+  //   console.log('Row clicked: ', row);
+  // }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {

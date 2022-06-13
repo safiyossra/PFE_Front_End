@@ -15,6 +15,7 @@ export class MapComponent implements AfterViewInit, OnInit {
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
   @Input() showCollapsControle?: Boolean = true
+  isFirstTime = true
   public position_left: string = "0%"
   public size = [25, 75]
   isMyPositionVisible: Boolean = false
@@ -117,7 +118,7 @@ export class MapComponent implements AfterViewInit, OnInit {
     if (this.showFullScreenControle) {
       let FullScreenControl = L.Control.extend({
         onAdd(map: L.Map) {
-          return L.DomUtil.get('fullScreenControl');
+          return L.DomUtil.get('mapfullScreenControl');
         },
         onRemove(map: L.Map) { }
       });
@@ -191,8 +192,8 @@ export class MapComponent implements AfterViewInit, OnInit {
         }
       }, 100)
     }
-
-
+    this.isFirstTime = false
+    this.invalidate()
   }
 
   updateMarkers() {
@@ -252,11 +253,11 @@ export class MapComponent implements AfterViewInit, OnInit {
             )
           }
         });
-        const isFirstTime = this.vehicules.length == 0
+        this.isFirstTime = this.vehicules.length == 0
         this.vehicules = vehicules
         // console.log(this.vehicules)
         vehicules = []
-        if (isFirstTime) {
+        if (this.isFirstTime) {
           this.initMarkers()
         } else {
           this.updateMarkers()

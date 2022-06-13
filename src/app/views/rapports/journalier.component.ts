@@ -18,12 +18,48 @@ export class JournalierComponent {
   iconCollapse: string = 'icon-arrow-up';
   iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
-  displayedColumns: any[];
-  columns: any[];
+  displayedColumns = ["Date",]
+  columns = ["timestamp",];
   reportDetails: any;
   paramstab = [];
   resume = [];
   urldetails = "";
+
+
+  public chartColours: Array<any> = [//primary,warning,danger,dark
+    { // grey['#12ff00de', '#00daffcc', '#ff0056de', '#006fffde' ]
+      backgroundColor: '#0077c2',
+      borderColor: '#0077c2',
+      pointBackgroundColor: '#0077c2',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // dark grey
+      backgroundColor: '#ffc107',
+      borderColor: '#ffc107',
+      pointBackgroundColor: '#ffc107',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(77,83,96,1)'
+    },
+    { // grey
+      backgroundColor: '#f86c6b',
+      borderColor: '#f86c6b',
+      pointBackgroundColor: '#f86c6b',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(255,0,0,0.8)'
+    },
+    { // grey
+      backgroundColor: '#2f353a',
+      borderColor: '#2f353a',
+      pointBackgroundColor: '#2f353a',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(0,0,0,0.8)'
+    }
+  ];
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;

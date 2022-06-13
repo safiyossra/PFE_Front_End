@@ -1,5 +1,6 @@
-<div class="animated fadeIn" id="container" style="width: 100%; height: 82vh;">
-  <button id="fullScreenControl" *ngIf="showFullScreenControle" title="Enter FullScreen"
+<div [ngClass]="!isFirstTime? '': 'invisible'" class="animated fadeIn" id="container"
+  style="width: 100%; height: 82vh;">
+  <button id="mapfullScreenControl" *ngIf="showFullScreenControle" title="Enter FullScreen"
     class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
   <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
     class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
@@ -20,3 +21,4 @@
     </as-split-area>
   </as-split>
 </div>
+<img src="assets/gif/loading.gif" alt="Loading" *ngIf="isFirstTime" class="loadinger" />

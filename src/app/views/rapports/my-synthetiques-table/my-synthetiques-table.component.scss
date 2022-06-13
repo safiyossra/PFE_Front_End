@@ -24,7 +24,7 @@ table {
 th.mat-header-cell,
 td.mat-cell,
 td.mat-footer-cell {
-    border: 0 solid #ebebeb;
+    border: 0 solid silver;
     border-width: 0px 0px 0px 1px;
     padding: inherit;
     padding-left: 15px;
@@ -38,8 +38,19 @@ td.mat-footer-cell:first-child {
 
 .mat-header-row {
     height: auto;
-    line-height: 2;
-    background-image: -webkit-linear-gradient(top, #fff, #e3e3e3);
+    line-height: 2.8;
+        background-color: #f6f6f6;
+        background-image: -webkit-gradient(linear, 50% 0, 50% 100%, color-stop(0%, #fff), color-stop(100%, #f6f6f6));
+        background-image: -moz-linear-gradient(top, #fff, #f6f6f6);
+        background-image: -o-linear-gradient(top, #fff, #f6f6f6);
+        background-image: -webkit-linear-gradient(top, #fff, #f6f6f6);
+        border: 1px solid silver;
+        border-right-color: transparent !important;
+        border-right-width: 1px !important;
+        border-left-color: transparent !important;
+        border-left-width: 1px !important;
+        font-size: .875rem;
+        font-family: "ProximaNova-Regular", Helvetica, Arial, sans-serif;
 }
 
 .mat-row {

@@ -83,16 +83,14 @@ export class SynthetiquesComponent implements OnInit, AfterViewInit {
     var urlParams = "?&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000
     this.dataService.getRapportSynthetiques(urlParams).subscribe({
       next: (d: any) => {
-        console.log(d);
         this.data = d.sort(
           (a, b) => b.km - a.km
         )
         this.data.forEach((e) => {
-          e.cd = Math.round(e.c * 15);
-          e.ct = Math.round(e.c * 1.2);
-          e.cm = (e.c / (e.km != 0 ? e.km : 1)).toFixed(4);
+          e.cd = Math.round(e.c * e.fc);
+          e.ct = e.fe != 0 ? (e.km / (e.fe != 0 ? e.fe : 1)).toFixed(1) : "0";
+          e.cm = (100 * (e.c / (e.km != 0 ? e.km : 1))).toFixed(1);
         })
-
         this.loading = false;
       },
     })
