@@ -22,9 +22,8 @@ export class AlertsComponent {
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-down';
   reportData: any;
-  data=[]
-  // displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Fuel moyenne (L)"]
-  // columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cr"];
+  // displayedColumns: any = ["Date","Vehicule","Sujet","Message"]
+  // columns: any = ["timestamp","description","subject","message"];
 
   public devices: any = [];
   selectedDevices = null;
@@ -112,14 +111,14 @@ export class AlertsComponent {
       this.onValidateDevice()
     } else {
       this.loading = true;
-      var urlParams = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000)  + "&et=" +  Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
-      this.dataService.getAllTrajets(urlParams).subscribe({
+      var urlNotif = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000)  + "&et=" +  Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
+      this.dataService.getNotifications(urlNotif).subscribe({
         next: (d: any) => {
-
+          console.log("d");
           console.log(d);
           this.reportData = d;
           this.reportData.forEach((e) => {
-            e.timeStart = this.datePipe.transform(new Date(Number.parseInt(e.timeStart) * 1000), 'yyyy-MM-dd  h:mm:ss');
+            e.timestamp = this.datePipe.transform(new Date(Number.parseInt(e.timestamp) * 1000), 'yyyy-MM-dd  h:mm:ss');
           })
           this.loading = false;
         },

@@ -14,13 +14,13 @@ import { MatTableDataSource } from '@angular/material/table';
 export class MyNotificationTableComponent implements OnChanges {
   @Input() data=[];
   // @Input() columnNames?: any[]
-  public displayedColumns =  ["id","v","date","timestamp"]
+  public displayedColumns =  ["timestamp","description","subject","message"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  columnNames =["Date","Vehicule","Subject","message"];
+  columnNames =["Date","Vehicule","Sujet","Message"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -54,7 +54,7 @@ export class MyNotificationTableComponent implements OnChanges {
       console.log("data");
       console.log(d);
     this.dataSource = new MatTableDataSource(d)
-    this.displayedColumns = this.columns
+    // this.displayedColumns = this.columns
     this.totalItems = this.dataSource.data.length
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
