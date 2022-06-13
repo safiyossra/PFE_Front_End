@@ -29,19 +29,14 @@ export class VehiculeService {
     // }
   }
 
-  getVehiculeEvents(id) {
-    let SERVER_URL = environment.apiUrl + "map-events?d=" + id;
+  getVehiculeEvents(api) {
+    // + "map-events?d=" + id;
+    let SERVER_URL = environment.apiUrl + api
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
       'Accept': 'application/json'
     });
-    let params = new HttpParams({
-      fromObject: {
-        d: id
-      }
-    })
-
     return this.http.get(SERVER_URL, {
       headers: headers,
     })

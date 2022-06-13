@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -12,14 +12,17 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: 'my-data-table.component.html',
 })
 export class MyDataTableComponent implements OnChanges {
-  @Input() data: any;
-  @Input() columnNames?: any[]
-  @Input() columns?: any[]
+  @Output() positionClick?: EventEmitter<any> = new EventEmitter();
+  @Input() data: any = [];
+  @Input() selectedMapDevice: any; //displayColumns,
+  @Input() columnNames?= ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Theorique (%)"]
+  @Input() columns?= ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct"]
+
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  public displayedColumns: any = []
+  public displayedColumns = this.columns
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -42,19 +45,12 @@ export class MyDataTableComponent implements OnChanges {
     }
   }
 
-  onRowClicked(row: any) {
-    console.log('Row clicked: ', row);
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
       let d = changes['data'].currentValue
       if (d && d.length > 0) {
-        console.log("data");
-
+        console.log("ngOnChanges data");
         console.log(d);
-        console.log(changes['columnNames']);
-
         this.dataSource = new MatTableDataSource(d)
         this.displayedColumns = this.columns
         this.totalItems = this.dataSource.data.length
@@ -62,6 +58,12 @@ export class MyDataTableComponent implements OnChanges {
         this.dataSource.sort = this.sort;
       }
     }
+  }
+
+  openLocation(timeStart, timeEnd) {
+    console.log(timeStart, timeEnd);
+    let out = { "timeStart": timeStart, "timeEnd": timeEnd, "selectedMapDevice": this.selectedMapDevice }
+    this.positionClick.emit(out)
   }
 }
 

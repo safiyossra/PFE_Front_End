@@ -2,6 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 
 @Component({
   templateUrl: 'detaille.component.html',
@@ -10,7 +12,9 @@ import { DatePipe } from '@angular/common';
 export class DetailleComponent {
 
   loading: boolean = false;
+  loadingcharts: boolean = false;
 
+  @ViewChild('primaryModal') public primaryModal: ModalDirective;
   constructor(private dataService: DataService, private datePipe: DatePipe) { }
 
   value: string | Object;
@@ -21,28 +25,30 @@ export class DetailleComponent {
   iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
   reportDetails: any;
-  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Fuel moyenne (L)"]
-  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cr"];
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Theorique (%)"]
+  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct"];
 
   resume = [];
-  urldetails = "";
 
+  urldetails = "";
+  urlEvolution = "";
   public devices: any = [];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
+  ToInvalidate = "0"
+  interval = ""
+  startTime = "";
+  endTime = "";
+  trajetStartTime = "";
+  trajetEndTime = "";
+  selectedMapDevice = ""
+  selectedMapDeviceName = ""
+  trajetSelectedDevice = ""
   showErrorDevice = false;
   errorMessageDevice = "";
   // barChart
 
-  public barChartOptions: any = {
-    scaleShowVerticalLines: false,
-    responsive: true
-  };
-  public barChartLabels: string[] = [];
-  public barChartType = 'bar';
-  public barChartLegend = true;
-  public barChartData: any[] = [];
-
+  /////////////////////////////////////////////////////////////////
   public brandBoxChartOptions: any = {
 
     responsive: true,
@@ -85,16 +91,114 @@ export class DetailleComponent {
       pointHoverBackgroundColor: '#fff'
     }
   ];
-  public resumeColors: Array<any> = [
-    "twitter", "google-plus", "green", "purple", "yellow", "pink"
-  ];
-  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cr": "L", "v": "KM/H", "t": "°C", "na": " " };
-  public brandBoxChartLegend = false;
-  public brandBoxChartType = 'line';
 
+  public vitesseChartData: Array<any> = [
+    {
+      data: [],
+      label: 'Vitesse'
+    },
+  ];
+  public fuelChartData: Array<any> = [
+    {
+      data: [],
+      label: 'Carburant'
+    },
+  ];
+  public tempChartData: Array<any> = [
+    {
+      data: [],
+      label: 'Temperature'
+    },
+  ];
+  /* tslint:disable:max-line-length */
+  public chartLabels: Array<any> = [];
+  /* tslint:enable:max-line-length */
+  public chartOptions: any = {
+    tooltips: {
+      enabled: false,
+      custom: CustomTooltips,
+      intersect: true,
+      mode: 'index',
+      position: 'nearest',
+      callbacks: {
+        labelColor: function (tooltipItem, chart) {
+          return { backgroundColor: chart.data.datasets[tooltipItem.datasetIndex].borderColor };
+        }
+      }
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      xAxes: [{
+        gridLines: {
+          drawOnChartArea: false,
+        },
+        ticks: {
+          // callback: function (value: any) {
+          //   return value.substring(7);
+          // },
+          maxTicksLimit: 24,
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+          // maxTicksLimit: 5,
+          // stepSize: Math.ceil(250 / 5),
+          // max: 250
+        }
+      }]
+    },
+    elements: {
+      line: {
+        borderWidth: 2
+      },
+      point: {
+        radius: 0,
+        hitRadius: 10,
+        hoverRadius: 4,
+        hoverBorderWidth: 3,
+      }
+    },
+    legend: {
+      display: true
+    }
+  };
+  public vitesseChartColours: Array<any> = [
+    { // brandInfo
+      backgroundColor: '#21c1ff',
+      borderColor: '#4dcdff',
+      pointHoverBackgroundColor: '#fff'
+    },
+  ];
+  public fuelChartColours: Array<any> = [
+    { // brandSuccess
+      backgroundColor: '#ffc107',
+      borderColor: '#03ff48',
+      pointHoverBackgroundColor: '#fff'
+    },
+  ];
+  public tempChartColours: Array<any> = [
+    { // brandDanger
+      backgroundColor: 'transparent',
+      borderColor: 'blue',
+      pointHoverBackgroundColor: '#fff',
+    },
+  ];
+  public chartLegend = true;
+  public resumeChartLegend = false;
+  public chartType = 'line';
+
+
+  ////////////////////////////////////////////////////////////////
+
+  public resumeColors: Array<any> = [
+    "twitter", "google-plus", "green", "purple", "yellow", "pink", "primary", "cyan"];
+  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cd": "MAD", "ct": "%", "cm": "%", "v": "Km/h", "t": "°C", "na": " " };
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
+
   ngOnInit() {
     const today = new Date();
     const tomorrow = new Date();
@@ -142,7 +246,21 @@ export class DetailleComponent {
         to: tomorrow
       }
     };
-
+    for (let index = 4; index < 12; index++) {
+      this.resume.push({
+        val: 0,
+        label: this.displayedColumns[index],
+        labels: [],
+        key: this.columns[index],
+        data:
+          [
+            {
+              data: [],
+              label: this.displayedColumns[index]
+            }
+          ]
+      })
+    }
     this.getDev();
   }
 
@@ -151,6 +269,7 @@ export class DetailleComponent {
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
 
   }
+
   toggleCollapseData(): void {
     this.isCollapsedData = !this.isCollapsedData;
     this.iconCollapseD = this.isCollapsedData ? 'icon-arrow-down' : 'icon-arrow-up';
@@ -178,42 +297,59 @@ export class DetailleComponent {
       this.onValidateDevice()
     } else {
       this.loading = true;
+      this.selectedMapDevice = this.selectedDevice
+      let extra = this.getVehiculeExtraById(this.selectedDevice)
+      console.log(extra);
+      this.getdetails()
       this.resume = []
       var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
-
-          console.log(d);
+          // console.log(d);
           this.reportData = d;
           this.reportData.forEach((e) => {
-            e.timeStart = this.datePipe.transform(new Date(Number.parseInt(e.timeStart) * 1000), 'yyyy-MM-dd  h:mm:ss');
-            e.timeEnd = this.datePipe.transform(new Date(Number.parseInt(e.timeEnd) * 1000), 'yyyy-MM-dd  h:mm:ss');
-            // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
-            //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
+            e.st = e.timeStart;
+            e.et = e.timeEnd;
+            e.timeStart = this.formatDate(new Date(Number.parseInt(e.timeStart) * 1000));
+            e.timeEnd = this.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000));
             if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
             if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
+            e.cd = Math.round(e.c * extra.fc);
+            e.ct = extra.fe != 0 ? (e.k / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
+            e.cm = (100 * (e.c / (e.k != 0 ? e.k : 1))).toFixed(1);
+
           })
+          console.log("this.reportData");
+          console.log(this.reportData);
+
+          this.selectedMapDevice = this.selectedDevice
           let resumetmp = [];
           let labels = this.reportData.map((l) => { return l.timeStart })
           this.columns.forEach((e, index) => {
             if (!["timeStart", "timeEnd", "addi", "addf"].includes(e))
               resumetmp.push({
-                val: this.reduce(d, e).toString() + " " + this.resumeUnits[e],
+                val: !["cm", "cd", "ct"].includes(e) ? this.reduce(this.reportData, e) : 0,//.toString() + " " + this.resumeUnits[e]
                 label: this.displayedColumns[index],
                 labels: labels,
+                key: e,
                 data:
                   [
                     {
-                      data: d.map((l) => { return l[e] }),
+                      data: this.reportData.map((l) => { return l[e] }),
                       label: this.displayedColumns[index]
                     }
                   ]
               })
-          })
-          var y = this.getValue(resumetmp)
+          });
+          var length = resumetmp.length - 1;
+          resumetmp[length].val = extra.fe != 0 ? (resumetmp[0].val / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
+          resumetmp[length - 1].val = Math.round(resumetmp[length - 3].val * extra.fc);
+          resumetmp[length - 2].val = (100 * (resumetmp[length - 3].val / (resumetmp[0].val != 0 ? resumetmp[0].val : 1))).toFixed(1);
+          // console.log("resumetmp");
+          // console.log(resumetmp);
+
+          // var y = this.getValue(resumetmp)
           this.resume = resumetmp
-          this.barChartLabels = labels
-          this.barChartData = y.map((l) => { return l.data[0] });
           this.loading = false;
         },
       })
@@ -229,7 +365,7 @@ export class DetailleComponent {
             var f = isNaN(p) ? p[e] + c[e] : p + c[e]
             return f
           } else
-            if (["t", "v"].includes(e)) {
+            if (["v"].includes(e)) {
               if (isNaN(p)) return p[e] > c[e] ? p[e] : c[e]
               else return p > c[e] ? p : c[e]
             }
@@ -245,31 +381,61 @@ export class DetailleComponent {
     return JSON.parse(JSON.stringify(v))
   }
 
+  getEvolution(force = false) {
+    this.resetValidator()
+    if (this.selectedDevice.length == 0) {
+      this.onValidateDevice()
+    } else {
+      let urlEvolution = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
+      if (urlEvolution != this.urlEvolution || force) {
+        this.urlEvolution = urlEvolution
+        this.loadEvolution(urlEvolution)
+      }
+
+    }
+  }
+
+  loadEvolution(url) {
+    this.loadingcharts = true;
+    this.dataService.getEvolution(url).subscribe({
+      next: (d: any) => {
+        // console.log(d);
+        this.chartLabels = d.map((l) => { return this.formatDate(new Date(l.t * 1000)) })
+        this.vitesseChartData = [
+          {
+            data: d.map((l) => { return l.v }),
+            label: 'Vitesse'
+          },
+        ];
+        this.fuelChartData = [
+          {
+            data: d.map((l) => { return l.f }),
+            label: 'Carburant'
+          },
+        ];
+        this.tempChartData = [
+          {
+            data: d.map((l) => { return l.tmp }),
+            label: 'Temperature'
+          },
+        ];
+        this.loadingcharts = false;
+      },
+    })
+  }
+
   getdetails() {
     this.resetValidator()
     if (this.selectedDevice.length == 0) {
       this.onValidateDevice()
     } else {
+      this.selectedMapDevice = this.selectedDevice
       this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000) + "&all"
     }
-    // this.dataService.getDetails(this.urldetails).subscribe({
-    //   next: (d: any) => {
-
-    //     console.log(d);
-    //     this.reportDetails = d;
-    //     this.reportDetails.forEach((e) => {
-    //       e.timestamp = new Date(Number.parseInt(e.timestamp) * 1000).toDateString();
-    //       e.odometerKM = Math.round(Number.parseInt(e.odometerKM));
-    //       // if (e.dc) e.dc = Math.round(Number.parseInt(e.dc));
-    //     })
-    //    // this.loading = false;
-    //   },
-    // })
-
   }
 
   getDev() {
-    this.dataService.getVehicule().subscribe({
+    this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
         this.devices = res;
       },
@@ -283,11 +449,55 @@ export class DetailleComponent {
     this.selectedDevices = []
   }
 
+  openMap(v: any) {
+    // console.log("openMap");
+    // console.log(v);
+    this.startTime = v.timeStart ? v.timeStart : "";
+    this.endTime = v.timeEnd ? v.timeEnd : "";
+    this.selectedMapDevice = v.selectedMapDevice ? v.selectedMapDevice : "";
+    // console.log(this.startTime, this.endTime);
+    if (this.startTime != "" && this.selectedMapDevice != "") {
 
-  getParam(p: any) {
-    return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
+      // console.log(this.getVehiculeById(this.selectedMapDevice));
+      this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
+      this.interval = this.formatDate(new Date(Number.parseInt(this.startTime) * 1000))
+      if (this.endTime != "") {
+        this.interval += " - " + this.formatDate(new Date(Number.parseInt(this.endTime) * 1000))
+      }
+      this.primaryModal.show()
+    }
+
   }
 
+  showTrajet() {
+    this.resetValidator()
+    this.ToInvalidate = Math.random().toString();
+    if (this.selectedDevice.length == 0) {
+      this.onValidateDevice()
+    } else {
+      this.trajetStartTime = Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000).toString();
+      this.trajetEndTime = Math.round(this.myDateRangePicker.dateTo.getTime() / 1000).toString();
+      this.trajetSelectedDevice = this.selectedDevice;
+    }
+  }
+
+  getVehiculeNameById(id) {
+    for (let i = 0; i < this.devices.length; i++) {
+      if (this.devices[i].dID == id) return this.devices[i].name
+    }
+    return ""
+  }
+
+  getVehiculeExtraById(id) {
+    for (let i = 0; i < this.devices.length; i++) {
+      if (this.devices[i].dID == id) return { "fe": this.devices[i].fe, "fc": this.devices[i].fc }
+    }
+    return { "fe": 0, "fc": 0 }
+  }
+
+  formatDate(date: Date) {
+    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
+  }
 }
 
 

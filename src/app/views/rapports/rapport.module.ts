@@ -45,6 +45,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
 import { MyDataTableComponent } from './my-data-table/my-data-table.component';
 import { MySynthetiquesTableComponent } from './my-synthetiques-table/my-synthetiques-table.component';
+import { ModalMapComponent } from './modal-map/map.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
 import { SynthetiquesComponent } from './synthetiques.component';
 
 @NgModule({
@@ -64,6 +66,7 @@ import { SynthetiquesComponent } from './synthetiques.component';
     ReactiveFormsModule, 
     MyDateRangePickerModule,
     MyDropdownModule,
+    ModalModule.forRoot(),
   ],
   declarations: [
     DetailleComponent,
@@ -78,7 +81,8 @@ import { SynthetiquesComponent } from './synthetiques.component';
     MyDataTableComponent,
     MySynthetiquesTableComponent,
     SynthetiquesComponent,
-    DetailsTableComponent
+    DetailsTableComponent,
+    ModalMapComponent
   ]
 })
 export class RapportModule { }

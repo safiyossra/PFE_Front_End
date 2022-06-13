@@ -136,7 +136,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   async ngOnInit(): Promise<any> {
     if (await this.vehiculeExist(this.vehiculeID)) {
-      await this.vehiculeService.getVehiculeEvents(this.vehiculeID).toPromise()
+      await this.vehiculeService.getVehiculeEvents("map-events?id=" + this.vehiculeID).toPromise()
         .then((res) => {
           this.events = res
 
@@ -217,7 +217,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     if (this.showFullScreenControle) {
       let FullScreenControl = L.Control.extend({
         onAdd(map: L.Map) {
-          return L.DomUtil.get('fullScreenControl');
+          return L.DomUtil.get('mapDetailfullScreenControl');
         },
         onRemove(map: L.Map) { }
       });

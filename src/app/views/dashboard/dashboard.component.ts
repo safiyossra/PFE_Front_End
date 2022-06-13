@@ -9,7 +9,10 @@ export class DashboardComponent implements OnInit {
   public constructor(private vehiculeService: VehiculeService) { }
   // lineChart
   public dashboardData: any[] = []
-
+  isFirstTime1 = true
+  isFirstTime2 = true
+  isFirstTime3 = true
+  isFirstTime4 = true
   public lineChartData: Array<any> = [
     { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
     { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' },
@@ -20,27 +23,27 @@ export class DashboardComponent implements OnInit {
     animation: false,
     responsive: true
   };
-  public lineChartColours: Array<any> = [
-    { // grey
-      backgroundColor: 'rgba(148,159,177,0.2)',
-      borderColor: 'rgba(148,159,177,1)',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
+  public chartColours: Array<any> = [
+    { // grey['#12ff00de', '#00daffcc', '#ff0056de', '#006fffde' ]
+      backgroundColor: '#00ed02',
+      borderColor: '#00ed02',
+      pointBackgroundColor: '#00ed02',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     },
     { // dark grey
-      backgroundColor: 'rgba(77,83,96,0.2)',
-      borderColor: 'rgba(77,83,96,1)',
-      pointBackgroundColor: 'rgba(77,83,96,1)',
+      backgroundColor: '#00daffcc',
+      borderColor: '#00daffcc',
+      pointBackgroundColor: '#00daffcc',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(77,83,96,1)'
     },
     { // grey
-      backgroundColor: 'rgba(148,159,177,0.2)',
-      borderColor: 'rgba(148,159,177,1)',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
+      backgroundColor: '#ff0056de',
+      borderColor: '#ff0056de',
+      pointBackgroundColor: '#ff0056de',
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
@@ -82,18 +85,21 @@ export class DashboardComponent implements OnInit {
         { data: res.map((e: any) => { return Math.round(e["km"]) }), label: 'Distance parcourue' }
       ]
       this.KMLabels = res.map((e) => { return e["description"] })
+      this.isFirstTime2 = false
     })
     this.vehiculeService.getDashboardStats("v").subscribe((res: any) => {
       this.VitesseData = [
         { data: res.map((e: any) => { return Math.round(e["maxSpeed"]) }), label: 'Max Vitesse' }
       ]
       this.VitesseLabels = res.map((e: any) => { return e["description"] })
+      this.isFirstTime3 = false
     })
     this.vehiculeService.getDashboardStats("c").subscribe((res: any) => {
       this.ConsommationData = [
         { data: res.map((e: any) => { return Math.round(e["consumption"]) }), label: 'Max Consommation' }
       ]
       this.ConsommationLabels = res.map((e) => { return e["description"] })
+      // this.isFirstTime4 = false
     })
   }
 
@@ -120,6 +126,8 @@ export class DashboardComponent implements OnInit {
                   }
           }
         });
+
+        this.isFirstTime1 = false
       }
     })
   }

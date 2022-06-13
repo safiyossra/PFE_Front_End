@@ -6,7 +6,7 @@
           <i class="fa fa-edit"></i> Rapports Journalier
           <div class="card-header-actions">
             <a href="#">
-              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
+              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
             </a>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
@@ -213,7 +213,7 @@
               <div class="brand-card">
                 <div class="brand-card-header bg-{{resumeColors[index]}}">
                   <div class="chart-wrapper">
-                    <canvas baseChart class="chart" [datasets]="el.data" [labels]="el.labels" height="100"
+                    <canvas baseChart class="chart" [datasets]="el.data" [labels]="el.labels" height="70"
                       [options]="brandBoxChartOptions" [colors]="brandBoxChartColours" [legend]="brandBoxChartLegend"
                       [chartType]="brandBoxChartType">
                     </canvas>
@@ -250,15 +250,15 @@
             <div class="card-header">
               Graphe des trajets
               <div class="card-header-actions">
-                <a href="http://google.com">
-                  <small class="text-muted">Download</small>
+                <a href="#">
+                  <small class="text-muted">Exporter</small>
                 </a>
               </div>
             </div>
             <div class="card-body">
               <div class="chart-wrapper">
                 <canvas baseChart class="chart" height="100" [datasets]="barChartData" [labels]="barChartLabels"
-                  [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
+                  [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"  [colors]="chartColours"
                   (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
               </div>
             </div>
