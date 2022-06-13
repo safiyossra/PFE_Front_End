@@ -12,7 +12,7 @@ const routes: Routes = [
         redirectTo: 'list'
       },
       {
-        path: 'cruddriver',
+        path: 'list',
         component: CruddriverComponent,
         data: {
           title: 'List des Conducteurs'

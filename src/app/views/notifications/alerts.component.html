@@ -1,182 +1,69 @@
 <div class="animated fadeIn">
   <div class="row">
-    <div class="col-md-6">
-      <div class="card">
+    <div class="col-lg-12">
+      <div class="card card-accent-info">
         <div class="card-header">
-          <strong>Bootstrap Alerts</strong>
+          <i class="fa fa-edit"></i> Filtrer
           <div class="card-header-actions">
-            <a href="https://valor-software.com/ngx-bootstrap/#/alerts" target="_blank">
-              <small className="text-muted">docs</small>
+            <a href="#">
+              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
             </a>
+            <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
+              <i class="{{ iconCollapse }}  transition"></i>
+            </button>
+            <button type="button" class="card-header-action btn btn-link btn-close" (click)="reset()">
+              <i class="icon-close"></i>
+            </button>
           </div>
         </div>
-        <div class="card-body">
-          <alert type="success">
-            <strong>Well done!</strong> You successfully read this important alert message.
-          </alert>
-          <alert type="info">
-            <strong>Heads up!</strong> This alert needs your attention, but it's not super important.
-          </alert>
-          <alert type="warning">
-            <strong>Warning!</strong> Better check yourself, you're not looking too good.
-          </alert>
-          <alert type="danger">
-            <strong>Oh snap!</strong> Change a few things up and try submitting again.
-          </alert>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <strong>Alerts</strong>
-          <small>link</small>
-        </div>
-        <div class="card-body">
-          <alert type="success">
-            <strong>Well done!</strong> You successfully read <a href="#" class="alert-link">this important alert message</a>.
-          </alert>
-          <alert type="info">
-            <strong>Heads up!</strong> This <a href="#" class="alert-link">alert needs your attention</a>, but it's not super important.
-          </alert>
-          <alert type="warning">
-            <strong>Warning!</strong> Better check yourself, you're <a href="#" class="alert-link">not looking too good</a>.
-          </alert>
-          <alert type="danger">
-            <strong>Oh snap!</strong> <a href="#" class="alert-link">Change a few things up</a> and try submitting again.
-          </alert>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <strong>Alerts</strong> <small>additional content</small>
-        </div>
-        <div class="card-body">
-          <alert type="success">
-            <h4 class="alert-heading">Well done!</h4>
-            <p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
-            <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
-          </alert>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <strong>Alerts</strong> <small>dismissing</small>
-        </div>
-        <div class="card-body">
-          <div *ngFor="let alert of alerts">
-            <alert [type]="alert.type" [dismissible]="dismissible">{{ alert.msg }}</alert>
-          </div>
-          <button type="button" class="btn btn-primary" (click)="dismissible = !dismissible">Toggle dismissible</button>
-          <button type="button" class="btn btn-primary" (click)="reset()">Reset</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <strong>Alerts</strong> <small>dynamic html</small>
-        </div>
-        <div class="card-body">
-          <div *ngFor="let alert of alertsHtml">
-            <alert [type]="alert.type"><span [innerHtml]="alert.msg"></span></alert>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <strong>Alerts</strong> <small>dynamic content</small>
-        </div>
-        <div class="card-body">
-          <alert type="success">{{messages[index]}}</alert>
+        <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
+          <form class="form-horizontal">
+            <div class="form-group row">
+              <div class="col-md-5">
+                <my-daterangepicker #calendar [ngModelOptions]="{ standalone: true }" [(ngModel)]="value"
+                  [options]="myDateRangePickerOptions"></my-daterangepicker>
+              </div>
+              <div class="col-md-5">
+                <div class="controls">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
+                    </div>
+                    <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection'"
+                      [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
+                      [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
+                      [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
+                    </my-dropdown-select>
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-key fa-sm"
+                          *ngIf="selectedDevice.length == 0"></i><i *ngIf="selectedDevice != null">{{
+                          selectedDevice
+                          }}</i></span>
+                    </div>
+                  </div>
+                  <!--</div> -->
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading">
+                  <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
+                </button>
+              </div>
+            </div>
 
-          <div *ngIf="index !== messages.length -1; else elseBlock">
-            <button class="btn btn-primary" (click)="changeText()">Change text</button>
-          </div>
-          <ng-template #elseBlock>
-            <button class="btn btn-primary" (click)="index = 0">Reset</button>
-          </ng-template>
+          </form>
         </div>
       </div>
     </div>
+    <!--/.col-->
   </div>
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <strong>Alerts</strong> <small>dismiss on timeout</small>
-        </div>
-        <div class="card-body">
-          <alert type="success" dismissOnTimeout="5000">
-            <strong>Well done!</strong> You successfully read this important alert message.
-          </alert>
+  <!--/.row-->
 
-          <p>If you missed alert on top of me, just press <code>Add more</code> button</p>
-          <div *ngFor="let alert of alertsDismiss">
-            <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout">{{ alert.msg }}</alert>
-          </div>
-          <button type="button" class="btn btn-primary" (click)="add()">Add more</button>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <strong>Alerts</strong> <small>global styling</small>
-        </div>
-        <div class="card-body">
-          <style>
-            .alert-md-color {
-              background-color: #7B1FA2;
-              border-color: #4A148C;
-              color: #fff;
-            }
-          </style>
-          <alert type="md-color">
-            <strong>Well done!</strong> You successfully read this important alert message.
-          </alert>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <strong>Alerts</strong> <small>component level styling</small>
-        </div>
-        <div class="card-body">
-          <alert type="md-local">
-            <strong>Well done!</strong> You successfully read this important alert message.
-          </alert>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <strong>Alerts</strong> <small>configuring defaults</small>
-        </div>
-        <div class="card-body">
-          <alert>
-            <strong>Well done!</strong> You successfully read this important alert message.
-          </alert>
-          <alert type="info">
-            <strong>Heads up!</strong> This alert needs your attention, but it's not super important.
-          </alert>
-
-        </div>
-      </div>
+    <div class="col-lg-12">
+        <my-notification-table [data]="data">
+        </my-notification-table>
     </div>
   </div>
 </div>

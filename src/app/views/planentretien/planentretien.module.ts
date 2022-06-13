@@ -6,7 +6,6 @@ import { NgModule } from '@angular/core';
 import { PlanComponent } from './plan.component';
 
 // Forms Component
-import { FormsComponent } from './forms.component';
 import { MyPlanentretienaTableComponent } from '../planentretien/my-planentretien-table/my-planentretien-table.component';
 
 import { MaterialsModule } from '../../materials.module';
@@ -35,7 +34,6 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
   ],
   declarations: [
     PlanComponent,
-    FormsComponent,
     MyPlanentretienaTableComponent
   ]
 })

@@ -88,11 +88,6 @@ export const navItems: INavData[] = [
     icon: 'icon-bell',
   },
   // {
-  //   name: 'Gestion Driver',
-  //   url: '/gestiondriver/cruddriver',
-  //   icon: 'icon-book-open'
-  // }
-  // {
   //   name: 'Map',
   //   url: '/map',
   //   icon: 'cil-location-pin',

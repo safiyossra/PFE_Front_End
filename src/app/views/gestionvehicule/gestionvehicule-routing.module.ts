@@ -12,7 +12,7 @@ const routes: Routes = [
         redirectTo: 'list'
       },
       {
-        path: 'crudvehicule',
+        path: 'list',
         component: CrudvehiculeComponent,
         data: {
           title: 'List Vehicule'
