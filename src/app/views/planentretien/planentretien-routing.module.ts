@@ -1,32 +1,21 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PlanComponent } from './plan.component';
-import { FormsComponent } from './forms.component';
 
 
 const routes: Routes = [
   {
     path: '',
-    data: {
-      title: 'Plan-Entretien'
-    },
     children: [
       {
         path: '',
-        redirectTo: 'alert'
+        redirectTo: 'list'
       },
       {
-        path: 'alert',
+        path: 'list',
         component: PlanComponent,
         data: {
-          title: 'Alert'
-        }
-      },
-      {
-        path: 'form',
-        component: FormsComponent,
-        data: {
-          title: 'AddPlanEntretien'
+          title: 'List Plan Entretien'
         }
       },
     ]

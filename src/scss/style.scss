@@ -105,3 +105,31 @@ body {
 .btn-sm{
     line-height: 2;
 }
+
+.modal-content{
+    width: calc(100% - 200px);
+    margin: 50px 100px 50px 100px;
+}
+.cdk-overlay-container{    z-index: 9999999999999 !important;}
+
+@media (min-width: 576px){
+    .modal-dialog {
+    max-width: initial;
+    margin: 0;
+}
+}
+.form-check-inline {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 0;
+    margin-bottom: 10px;
+    margin-left: 20px;
+}
+
+.card-body1 {
+    flex: 1 1 auto;
+    padding: 43px;
+}
+.transition {
+    transition: all .5s;
+}

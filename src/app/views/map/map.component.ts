@@ -252,10 +252,9 @@ export class MapComponent implements AfterViewInit, OnInit {
             )
           }
         });
-
-
         const isFirstTime = this.vehicules.length == 0
         this.vehicules = vehicules
+        // console.log(this.vehicules)
         vehicules = []
         if (isFirstTime) {
           this.initMarkers()

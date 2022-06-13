@@ -38,7 +38,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     ChartsModule,
     FormsModule,
     ReactiveFormsModule,
-    BsDropdownModule,
+    // BsDropdownModule,
+    BsDropdownModule.forRoot(),
     MatIconModule,
     AngularSplitModule,
     TabsModule

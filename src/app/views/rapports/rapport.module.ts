@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
-import { CardsComponent } from './cards.component';
+import { DetailleComponent } from './detaille.component';
 
 // Forms Component
 import { FormsComponent } from './forms.component';
@@ -13,7 +13,7 @@ import { TablesComponent } from './tables.component';
 
 // Tabs Component
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { TabsComponent } from './tabs.component';
+import { JournalierComponent } from './journalier.component';
 
 
 // Collapse Component
@@ -38,13 +38,14 @@ import { ProgressComponent } from './progress.component';
 import {MaterialsModule} from 'src/app/materials.module';
 // Components Routing
 import { RapportRoutingModule } from './rapport-routing.module';
-import { MyDataTableComponent } from '../components/my-data-table/my-data-table.component';
 import { DetailsTableComponent } from '../components/details-table/details-table.component';
 import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-daterangepicker.module';
 import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
-// import { SharedModule } from '../components/shared.module';
+import { MyDataTableComponent } from './my-data-table/my-data-table.component';
+import { MySynthetiquesTableComponent } from './my-synthetiques-table/my-synthetiques-table.component';
+import { SynthetiquesComponent } from './synthetiques.component';
 
 @NgModule({
   imports: [
@@ -60,22 +61,23 @@ import { ChartsModule } from 'ng2-charts';
     MatSelectModule,
     ChartsModule,
     MaterialsModule,
+    ReactiveFormsModule, 
     MyDateRangePickerModule,
     MyDropdownModule,
-    ReactiveFormsModule,
-    // SharedModule,
   ],
   declarations: [
-    CardsComponent,
+    DetailleComponent,
     FormsComponent,
     SwitchesComponent,
     TablesComponent,
-    TabsComponent,
+    JournalierComponent,
     CollapsesComponent,
     PaginationsComponent,
     PopoversComponent,
     ProgressComponent,
     MyDataTableComponent,
+    MySynthetiquesTableComponent,
+    SynthetiquesComponent,
     DetailsTableComponent
   ]
 })
