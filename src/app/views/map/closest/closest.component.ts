@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { util } from '../../../tools/utils'
-import * as L from 'leaflet'
 import { ZoneService } from '../../../services/zone.service'
-import { marker } from '../../../models/Response'
+import * as L from 'leaflet'
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 @Component({
   selector: 'app-closest',
   templateUrl: './closest.component.html',
@@ -10,6 +10,7 @@ import { marker } from '../../../models/Response'
 })
 export class ClosestComponent implements OnInit, AfterViewInit {
 
+  provider = new OpenStreetMapProvider();
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
   // ---------------- MAP -----------------
@@ -33,7 +34,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       val: 'poi'
     }
   ]
-  radius = 10000
+  radius = 1000
   selectedType = 'poc'
   POIs = []
   selectedPoi = []
@@ -53,13 +54,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   endPosition: any = "";
   distanceItineraire: string = "";
   dureeItineraire: string = "";
-
-  options = {
-    componentRestrictions: {
-      country: ["MA"]
-    }
-  }
-
+  marker;
   clearZoneFromMap() {
     // if (this.myZone && this.map.hasLayer(this.myZone)) {
     //   this.myZone.removeFrom(this.map)
@@ -210,7 +205,32 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       }).addTo(this.map);
     }
 
+    ////////////////////////////////////////////////////////////
+    const searchControl = GeoSearchControl({
+      provider: this.provider,
+      // position: "topleft",
+      // retainZoomLevel: false, // optional: true|false  - default false
+      // animateZoom: true, // optional: true|false  - default true
+      autoClose: true, // optional: true|false  - default false
+      searchLabel: 'Entrer address', // optional: string      - default 'Enter address'
+      // keepResult: false, // optional: true|false  - default false
+      // updateMap: true, // optional: true|false  - default true
+    });
+
+    // const searchControl2 = GeoSearchControl({
+    //   provider: provider,
+    //   retainZoomLevel: false, // optional: true|false  - default false
+    //   animateZoom: true, // optional: true|false  - default true
+    //   autoClose: false, // optional: true|false  - default false
+    //   searchLabel: 'Entrer address', // optional: string      - default 'Enter address'
+    //   keepResult: false, // optional: true|false  - default false
+    //   updateMap: true, // optional: true|false  - default true
+    // });
+    this.map.addControl(searchControl);
+
+    ////////////////////////////////////////////////////////////
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
+
     L.control.scale().addTo(this.map);
 
     // this.initMarkers()
@@ -318,8 +338,13 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   // }
 
-  public AddressChange(address: any) {
+  public onAddresseChange(address: any) {
     //setting address from API to local variable
-    console.log(address.formatted_address);
+    console.log(address);
+    this.provider.search({ query: address }).then(function (result) {
+      // do something with result;
+      console.log("result");
+      console.log(result);
+    });
   }
 }

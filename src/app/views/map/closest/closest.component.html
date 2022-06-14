@@ -21,9 +21,10 @@
                 <!--  -->
                 <mat-form-field class="w-100" appearance="fill" *ngIf="selectedType == 'poc'">
                     <mat-label>Entrez l'addresse voulue</mat-label>
-                    <input matInput formControlName="address" type="text" (keydown.enter)="$event.preventDefault()"
-                        autocorrect="off" autocapitalize="off" spellcheck="off" #search
+                    <input matInput formControlName="address" type="text" (ngModelChange)="onAddresseChange($event)"
+                        (keydown.enter)="$event.preventDefault()" autocorrect="off" autocapitalize="off" spellcheck="off"
                         [(ngModel)]="searchedPosition.address" />
+
                 </mat-form-field>
                 <!--  -->
                 <mat-form-field class="w-100" appearance="fill" *ngIf="selectedType == 'poi'">
