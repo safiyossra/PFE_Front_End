@@ -76,7 +76,7 @@ export class MyDropdownComponent {
     } else {
       const filteredValues = this.getFilteredOptionsValues();
       this.selectedValue = this.selectedValue.filter(
-        item => !filteredValues.includes(item)
+        item => filteredValues.includes(item)
       );
     }
     this.selectionChange.emit(this.selectedValue);
@@ -121,7 +121,10 @@ export class MyDropdownComponent {
             option => option[this.value] === this.selectedValue[i]
           )[0];
         }
+        
+    console.log("tedtdt ", displayOption);
         if (displayOption.length) {
+
           for (let i = 0; i < displayOption.length; i++) {
             if (displayOption[i] && displayOption[i][this.display]) {
               this.displayString += displayOption[i][this.display] + ",";
@@ -146,6 +149,7 @@ export class MyDropdownComponent {
         }
       }
     }
+    
     return this.displayString;
   }
 
