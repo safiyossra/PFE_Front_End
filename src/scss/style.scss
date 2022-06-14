@@ -130,6 +130,7 @@ table {
     width: calc(100% - 200px);
     margin: 50px 100px 50px 100px;
 }
+
 .cdk-overlay-container {
     z-index: 9999999999999 !important;
 }
@@ -178,4 +179,12 @@ table {
 .nav-tabs {
     font-weight: 600;
     font-size: medium;
+}
+.cdk-overlay-container {
+    .box-select-all{
+        line-height: 12px;
+    }
+     .mat-checkbox-layout {
+        padding: 10px 6px;
+    }
 }

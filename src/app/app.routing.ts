@@ -92,6 +92,10 @@ export const routes: Routes = [
         path: 'gestiondriver',
         loadChildren: () => import('./views/gestiondriver/gestiondriver.module').then(m => m.GestiondriverModule)
       },
+      {
+        path: 'groupevehicules',
+        loadChildren: () => import('./views/groupevehicules/groupevehicules.module').then(m => m.GroupevehiculesModule)
+      },
     ]
   },
   { path: '**', component: P404Component }
