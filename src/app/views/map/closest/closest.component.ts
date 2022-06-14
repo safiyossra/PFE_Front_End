@@ -4,6 +4,8 @@ import { ZoneService } from '../../../services/zone.service'
 import * as L from 'leaflet'
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { VehiculeService } from 'src/app/services/vehicule.service';
+import { Vehicule } from 'src/app/models/vehicule';
 
 @Component({
   selector: 'app-closest',
@@ -31,10 +33,10 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       name: 'Position sur la carte',
       val: 'poc'
     },
-    // {
-    //   name: 'Point d\'intérêt',
-    //   val: 'poi'
-    // }
+    {
+      name: 'Point d\'intérêt',
+      val: 'poi'
+    }
   ]
   radius = 1000
   selectedType = 'poc'
@@ -42,10 +44,13 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   selectedPoi = []
   myMarkers = []
   selectedVehicleIndex: -1;
-  searchedPosition: FormGroup
+  POIForm: FormGroup
+  searchedPosition = { address: "", lat: "", lng: "" }
 
-  // myZone: any
+  myZone: any
+  layerMarkers: any
   isTrajetDrew = false
+  loading = false
 
   startAddress: any = "";
   endAddress: any = "";
@@ -53,40 +58,16 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   endPosition: any = "";
   distanceItineraire: string = "";
   dureeItineraire: string = "";
-  marker;
-  clearZoneFromMap() {
-    // if (this.myZone && this.map.hasLayer(this.myZone)) {
-    //   this.myZone.removeFrom(this.map)
-    // }
-  }
-
-  onPoiChange(ev: any) {
-    this.clearZoneFromMap()
-
-    console.log('this is a poi', ev)
-    if (this.selectedType == 'poi') {
-      // this.myZone.setLatLng(ev.latLngs[0])
-      // this.myZone.setRadius(ev.radius)
-      // this.myZone.addTo(this.map)
-      // this.map.fitBounds(this.myZone)
-    }
-  }
   // ---------------- Zones ------------------
-  constructor(private tools: util, private zoneService: ZoneService, private fb: FormBuilder) {
-    this.searchedPosition = fb.group({
-      address: new FormControl(),
-      lat: new FormControl(35.75),
-      lng: new FormControl(-5.83),
-      radius: new FormControl()
-      // address:'',
-      // lat: 35.75,
-      // lng: -5.83,
+  constructor(private tools: util, private zoneService: ZoneService, private vehiculeService: VehiculeService, private fb: FormBuilder) {
+    this.POIForm = fb.group({
+      radius: new FormControl(this.radius)
     })
   }
 
   ngOnInit(): void {
     this.loadPOIs()
-    this.onAddresseChange()
+    this.radiusChange()
   }
 
   loadPOIs() {
@@ -111,43 +92,19 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   }
 
   onTypeChange(event: any) {
-    // this.resetZoneForm()
-    switch (event.value) {
-      case 'poi':
-        // if (this.myZone && this.map.hasLayer(this.myZone)) {
-        //   this.myZone.removeFrom(this.map)
-        // }
-        // let centerPoint = L.latLng(this.zone.value.points[0][0], this.zone.value.points[0][0])
-        // this.myZone = L.marker(centerPoint, { icon: L.icon({ iconUrl: 'assets/img/markers/pin_n.png', iconSize: [50, 50], iconAnchor: [25, 50] }) })
-        break;
+    this.clearZoneFromMap()
+    this.searchedPosition = { address: "", lat: "", lng: "" }
+    // switch (event.value) {
+    //   case 'poi':
 
-      case 'poc':
-        // if (this.myZone && this.map.hasLayer(this.myZone)) {
-        //   this.myZone.removeFrom(this.map)
-        // }
+    //     break;
 
-        // this.zone.patchValue({
-        //   radius: 500
-        // })
+    //   case 'poc':
 
-        // let centerCircle = L.latLng(this.zone.value.points[0][0], this.zone.value.points[0][0])
-        // this.myZone = L.circle(centerCircle, { color: this.zone.value.color })
-        break;
-      default:
-        // console.log('default selected');
-        // if (this.myZone && this.map.hasLayer(this.myZone)) {
-        //   this.myZone.removeFrom(this.map)
-        // }
-
-        break;
-    }
-  }
-
-  resetZonePoint(pointIndex: number) {
-    // this.zonePoints.controls[pointIndex].patchValue({
-    //   latitude: null,
-    //   longitude: null,
-    // })
+    //     break;
+    //   default:
+    //     break;
+    // }
   }
 
   createMap() {
@@ -217,27 +174,16 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     ////////////////////////////////////////////////////////////
     const searchControl = GeoSearchControl({
       provider: this.provider,
-      showMarker: true,
-      style: 'bar',
+      // showMarker: true,
+      // style: 'bar',
       // position: "topleft",
       // retainZoomLevel: false, // optional: true|false  - default false
       // animateZoom: true, // optional: true|false  - default true
-      autoClose: true, // optional: true|false  - default false
+      // autoClose: true, // optional: true|false  - default false
       searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
       // keepResult: false, // optional: true|false  - default false
-      // updateMap: true, // optional: true|false  - default true
+      updateMap: false, // optional: true|false  - default true
     });
-
-    // const searchControl2 = GeoSearchControl({
-    //   provider: provider,
-    //   retainZoomLevel: false, // optional: true|false  - default false
-    //   animateZoom: true, // optional: true|false  - default true
-    //   autoClose: false, // optional: true|false  - default false
-    //   searchLabel: 'Entrer address', // optional: string      - default 'Enter address'
-    //   keepResult: false, // optional: true|false  - default false
-    //   updateMap: true, // optional: true|false  - default true
-    // });
-
     searchControl.addTo(this.map)
 
     ////////////////////////////////////////////////////////////
@@ -283,7 +229,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       } else {
         this.isTrajetDrew = true;
         this.endPosition = { lat: lat, lng: lng };
-        this.startAddress = this.searchedPosition.value.address;
+        // this.startAddress = this.searchedPosition.address;
       }
     }
   }
@@ -333,41 +279,166 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // initMarkers() {
-  //   var points = this.zone.value.points
+  paintZone(position: any) {
+    this.clearZoneFromMap()
+    let centerPoint = L.latLng(position.lat, position.lng)
+    let m = L.marker(centerPoint, { icon: L.icon({ iconUrl: 'assets/img/markers/pin_n.png', iconSize: [50, 50], iconAnchor: [25, 50] }) }).
+      bindPopup(`<div><strong>Addresse</strong>: ${position.address}</div>`, { closeButton: false, offset: L.point(0, -20) })
+    var circle = L.circle(centerPoint, { radius: this.radius, color: '#20a8d8', opacity: .8, weight: 2 })
+    this.myZone = L.layerGroup([circle, m])
+    this.myZone.addTo(this.map)
+    this.map.fitBounds(circle.getBounds())
+  }
 
-  //   points.forEach(p => {
-  //     let marker = L.marker(L.latLng(p.latitude, p.longitude), { draggable: true })
-  //     marker.on('dragend', function (event) {
-  //       var marker = event.target;
-  //       var position = marker.getLatLng();
-  //       marker.setLatLng(new L.LatLng(position.lat, position.lng), { draggable: 'true' });
-  //     });
-  //     this.myMarkers.push(marker)
-  //   })
+  onAddresseChange(e: any) {
+    console.log(e);
+    if (e != null) {
+      this.searchedPosition = { address: e.label, lat: e.y, lng: e.x }
+      this.paintZone(this.searchedPosition)
+    } else {
+      this.searchedPosition = { address: "", lat: "", lng: "" }
+    }
+  }
 
-  //   console.log(this.myMarkers);
+  radiusChange() {
+    this.POIForm.controls['radius'].valueChanges.subscribe(val => {
+      this.radius = val
+      if (this.searchedPosition.lat != "" && this.searchedPosition.lng != "") {
+        this.paintZone(this.searchedPosition)
+      }
+    })
+  }
 
-  // }
+  clearZoneFromMap() {
+    if (this.myZone && this.map.hasLayer(this.myZone)) {
+      this.myZone.removeFrom(this.map)
+    }
+  }
 
-  public onAddresseChange() {
-    // //setting address from API to local variable
-    // console.log(address);
-    // this.provider.search({ query: address }).then(function (result) {
-    //   // do something with result;
-    //   console.log("result");
-    //   console.log(result);
-    // });
+  clearMarkersFromMap() {
+    this.myMarkers = []
+    if (this.layerMarkers && this.map.hasLayer(this.layerMarkers)) {
+      this.layerMarkers.removeFrom(this.map)
+    }
+  }
 
-    this.searchedPosition.controls['address'].valueChanges.subscribe(val => {
-      console.log(val);
+  onPoiChange(ev: any) {
+    console.log('this is a poi', ev)
+    if (this.selectedType == 'poi') {
+      if (ev.val != null) {
+        this.searchedPosition = { address: "", lat: ev.val.lat, lng: ev.val.lng }
+        this.paintZone(this.searchedPosition)
+      } else {
+        this.searchedPosition = { address: "", lat: "", lng: "" }
+      }
+    }
+  }
 
-      this.provider.search({ query: val }).then((result) => {
-        console.log('results');
-        console.log(result);
-
+  showClosest() {
+    this.loading = true
+    if (this.searchedPosition.lat != "" && this.searchedPosition.lng != "" && this.radius > 2) {
+      this.vehiculeService.getData().subscribe({
+        next: (res) => {
+          const data = res['DeviceList']
+          let vehicules = []
+          data.forEach(e => {
+            let l = e['EventData'].length - 1 ?? 0
+            if (l > 0) {
+              const vData = e['EventData'][1]
+              vehicules.push(
+                new Vehicule(
+                  {
+                    id: e["Device"] ?? "",
+                    name: e["Device_desc"] ?? "",
+                    timestamp: vData['Timestamp'] ?? 0,
+                    statusCode: vData["StatusCode"]?.toString(),
+                    lat: vData["GPSPoint_lat"] ?? 0,
+                    lng: vData["GPSPoint_lon"] ?? 0,
+                    heading: vData['Heading'] ?? 0,
+                    speed: vData['Speed'] ?? 0,
+                    fuelLevel: e['FuelLevel'] ?? 0,
+                  }
+                )
+              )
+            }
+          });
+          console.log(vehicules)
+          this.createMarkers(vehicules)
+        }
       })
+    }
+  }
+
+  createMarkers(vehicules: any) {
+    this.clearMarkersFromMap()
+    vehicules.forEach((veh, index) => {
+      if (this.isClose(veh.lat, veh.lng)) {
+        this.myMarkers.push(
+          L.marker([veh.lat, veh.lng], {
+            icon: this.myIcon(veh, veh.statusCode, 'car'),
+          })
+            .bindPopup(`` +
+              `<div>Device: ${veh.name}</div>` +
+              `<div>Speed: ${veh.speed} Km/h</div>` +
+              `<div>Status: ${veh.statusCode} </div>` +
+              `<div>Heading: ${veh.heading} </div>` +
+              `<div>Fuel Level: ${veh.fuelLevel * 100}%</div>`, {
+              closeButton: false,
+              offset: L.point(0, -20)
+
+            }).on('click', (event) => {
+              this.markerClicked([veh.lat, veh.lng])
+            }))
+      }
+    });
+
+    if (this.map) {
+      // this.centerMap()
+      this.layerMarkers = L.layerGroup(this.myMarkers)
+      this.layerMarkers.addTo(this.map)
+    } else {
+      let inter = setInterval(() => {
+        if (this.map) {
+          // this.centerMap()
+          this.layerMarkers = L.layerGroup(this.myMarkers)
+          this.layerMarkers.addTo(this.map)
+          clearInterval(inter)
+        }
+      }, 100)
+    }
+    this.invalidate()
+    this.loading = false
+  }
+
+  centerMap() {
+    let bounds = this.myMarkers.map((e) => {
+      return e.getLatLng()
+    })
+    this.map.fitBounds(bounds)
+  }
+
+  myIcon(vehicule: any, status: number, vehiculeType: string, isSelected: boolean = false) {
+    let icon = status == 61714 ? `assets/img/vehicules/${vehiculeType}/blue_final.png` : `assets/img/vehicules/${vehiculeType}/red_final.png`
+    return L.divIcon({
+      html: `<div class="center-marker"></div>` +
+        `<img class="my-icon-img rotate-${Math.round(vehicule.heading)}" src="${icon}">` +
+        `<span class="my-icon-title">${vehicule.name}</span>`,
+      iconSize: [50, 50],
+      // iconAnchor: [25, 20],
+      className: 'marker-transition my-div-icon' + (isSelected ? ' marker-selected' : ''),
 
     })
+  }
+
+  invalidate() {
+    this.map.invalidateSize(true)
+  }
+
+  markerClicked(p: any) {
+    console.log(p);
+  }
+
+  isClose(lat, lng) {
+    return true
   }
 }

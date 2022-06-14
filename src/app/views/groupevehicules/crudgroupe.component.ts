@@ -2,8 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
-import {ModalDirective} from 'ngx-bootstrap/modal';
-import { IDropdownSettings, } from 'ng-multiselect-dropdown';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   templateUrl: 'crudgroupe.component.html',
@@ -43,7 +42,6 @@ export class CrudgroupeComponent {
   }
 
   dropdownList = [];
-  dropdownSettings:IDropdownSettings={};
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
   ngOnInit() {
@@ -92,28 +90,6 @@ export class CrudgroupeComponent {
     };
 
     this.getDev();
-
-    this.dropdownList = [
-      //this.getDev()
-
-      { item_id: 1, item_text: 'Item1' },
-      { item_id: 2, item_text: 'Item2' },
-      { item_id: 3, item_text: 'Item3' },
-      { item_id: 4, item_text: 'Item4' },
-      { item_id: 5, item_text: 'Item5' }
-      
-    ];
-    this.dropdownSettings = {
-      idField: 'item_id',
-      textField: 'item_text',
-      // idField: 'dID',
-      // textField: 'name',
-      selectAllText: "Select All Devices",
-      unSelectAllText: "UnSelect All Devices",
-      noDataAvailablePlaceholderText: "There is no devices availabale to show",
-      allowSearchFilter: true
-      
-    };
   }
 
   toggleCollapse(): void {

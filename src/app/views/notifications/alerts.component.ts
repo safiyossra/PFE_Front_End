@@ -77,10 +77,11 @@ export class AlertsComponent {
     setTimeout(() => this.submit(), 100)
   }
 
-  toggleCollapse(): void {
+  toggleCollapse($event): void {
+    $event.preventDefault();
+    $event.stopPropagation();
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
-
   }
 
   getSelectedDevices(selected) {

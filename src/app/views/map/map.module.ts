@@ -20,6 +20,7 @@ import { PointFormComponent } from './zone/point-form/point-form.component';
 import { AngularSplitModule } from "angular-split";
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
+import { MyPlacesDropdownModule } from './my-places-dropdown/my-places-dropdown.module';
 
  
 @NgModule({
@@ -47,6 +48,7 @@ import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
     MatIconModule,
     AngularSplitModule,
     TabsModule,
+    MyPlacesDropdownModule,
 
   ]
 })
