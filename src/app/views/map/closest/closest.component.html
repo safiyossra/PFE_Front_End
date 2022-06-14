@@ -5,7 +5,7 @@
         class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
     <div class="row">
         <div class="col-lg-3 card card-accent-info">
-            <form class="card-body p-2">
+            <form class="card-body p-2" [formGroup]="searchedPosition">
                 <mat-form-field class="w-100" appearance="fill">
                     <mat-label>Mode de Recherche</mat-label>
                     <mat-select [(value)]="selectedType" (selectionChange)="onTypeChange($event)">
@@ -21,31 +21,31 @@
                 <!--  -->
                 <mat-form-field class="w-100" appearance="fill" *ngIf="selectedType == 'poc'">
                     <mat-label>Entrez l'addresse voulue</mat-label>
-                    <input matInput formControlName="address" type="text" (ngModelChange)="onAddresseChange($event)"
-                        (keydown.enter)="$event.preventDefault()" autocorrect="off" autocapitalize="off" spellcheck="off"
-                        [(ngModel)]="searchedPosition.address" />
+                    <input matInput formControlName="address" type="text" autocorrect="off" autocapitalize="off"
+                        (keydown.enter)="$event.preventDefault()" spellcheck="off" />
 
                 </mat-form-field>
                 <!--  -->
-                <mat-form-field class="w-100" appearance="fill" *ngIf="selectedType == 'poi'">
+                <!-- <mat-form-field class="w-100" appearance="fill" *ngIf="selectedType == 'poi'">
                     <my-dropdown-select class="form-control" [selectPlaceholder]="'Chercher...'" [options]="POIs"
                         [display]="'name'" [value]="'val'" [multiple]="false" [labelCount]="0"
                         [selectedOptions]="selectedPoi" (selectionChange)="onPoiChange($event)">
                     </my-dropdown-select>
-                </mat-form-field>
+                </mat-form-field> -->
+
                 <mat-form-field class="w-100" appearance="fill">
                     <mat-label>Rayon (en mètres)</mat-label>
-                    <input matInput formControlName="radius" type="number" [(ngModel)]="radius" />
+                    <input matInput formControlName="radius" type="number" />
                 </mat-form-field>
                 <div class="card mb-4 rounded-3 shadow-sm">
                     <div class="card-header py-3">
                         <h6 class="my-0 fw-normal">Position Actuelle</h6>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-title">{{ searchedPosition.address }}</h6>
+                        <h6 class="card-title">{{ searchedPosition.value.address }}</h6>
                         <ul class="mt-3 mb-4">
-                            <li>Latitude: {{ searchedPosition.lat }}</li>
-                            <li>Longitude: {{ searchedPosition.lng }}</li>
+                            <li>Latitude: {{ searchedPosition.value.lat }}</li>
+                            <li>Longitude: {{ searchedPosition.value.lng }}</li>
                         </ul>
                     </div>
                 </div>

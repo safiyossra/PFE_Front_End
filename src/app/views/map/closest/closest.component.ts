@@ -3,6 +3,8 @@ import { util } from '../../../tools/utils'
 import { ZoneService } from '../../../services/zone.service'
 import * as L from 'leaflet'
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+
 @Component({
   selector: 'app-closest',
   templateUrl: './closest.component.html',
@@ -29,10 +31,10 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       name: 'Position sur la carte',
       val: 'poc'
     },
-    {
-      name: 'Point d\'intérêt',
-      val: 'poi'
-    }
+    // {
+    //   name: 'Point d\'intérêt',
+    //   val: 'poi'
+    // }
   ]
   radius = 1000
   selectedType = 'poc'
@@ -40,11 +42,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   selectedPoi = []
   myMarkers = []
   selectedVehicleIndex: -1;
-  searchedPosition = {
-    address: "",
-    lat: 35.75,
-    lng: -5.83,
-  }
+  searchedPosition: FormGroup
+
   // myZone: any
   isTrajetDrew = false
 
@@ -73,11 +72,21 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     }
   }
   // ---------------- Zones ------------------
-  constructor(private tools: util, private zoneService: ZoneService) {
+  constructor(private tools: util, private zoneService: ZoneService, private fb: FormBuilder) {
+    this.searchedPosition = fb.group({
+      address: new FormControl(),
+      lat: new FormControl(35.75),
+      lng: new FormControl(-5.83),
+      radius: new FormControl()
+      // address:'',
+      // lat: 35.75,
+      // lng: -5.83,
+    })
   }
 
   ngOnInit(): void {
     this.loadPOIs()
+    this.onAddresseChange()
   }
 
   loadPOIs() {
@@ -208,11 +217,13 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     ////////////////////////////////////////////////////////////
     const searchControl = GeoSearchControl({
       provider: this.provider,
+      showMarker: true,
+      style: 'bar',
       // position: "topleft",
       // retainZoomLevel: false, // optional: true|false  - default false
       // animateZoom: true, // optional: true|false  - default true
       autoClose: true, // optional: true|false  - default false
-      searchLabel: 'Entrer address', // optional: string      - default 'Enter address'
+      searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
       // keepResult: false, // optional: true|false  - default false
       // updateMap: true, // optional: true|false  - default true
     });
@@ -226,7 +237,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     //   keepResult: false, // optional: true|false  - default false
     //   updateMap: true, // optional: true|false  - default true
     // });
-    this.map.addControl(searchControl);
+
+    searchControl.addTo(this.map)
 
     ////////////////////////////////////////////////////////////
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
@@ -271,7 +283,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       } else {
         this.isTrajetDrew = true;
         this.endPosition = { lat: lat, lng: lng };
-        this.startAddress = this.searchedPosition.address;
+        this.startAddress = this.searchedPosition.value.address;
       }
     }
   }
@@ -338,13 +350,24 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   // }
 
-  public onAddresseChange(address: any) {
-    //setting address from API to local variable
-    console.log(address);
-    this.provider.search({ query: address }).then(function (result) {
-      // do something with result;
-      console.log("result");
-      console.log(result);
-    });
+  public onAddresseChange() {
+    // //setting address from API to local variable
+    // console.log(address);
+    // this.provider.search({ query: address }).then(function (result) {
+    //   // do something with result;
+    //   console.log("result");
+    //   console.log(result);
+    // });
+
+    this.searchedPosition.controls['address'].valueChanges.subscribe(val => {
+      console.log(val);
+
+      this.provider.search({ query: val }).then((result) => {
+        console.log('results');
+        console.log(result);
+
+      })
+
+    })
   }
 }
