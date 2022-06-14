@@ -25,6 +25,11 @@ export const navItems: INavData[] = [
     icon: 'cil-map'
   },
   {
+    name: 'Vehicules Plus Proches',
+    url: '/map/closest',
+    icon: 'cil-map'
+  },
+  {
     name: 'Rapports',
     url: '/rapport/menu',
     icon: 'icon-docs',

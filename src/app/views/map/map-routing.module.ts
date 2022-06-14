@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DetailsComponent } from './details/details.component';
 import { MapComponent } from './map.component';
 import { ZoneComponent } from './zone/zone.component';
+import { ClosestComponent } from './closest/closest.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,13 @@ const routes: Routes = [
         component: ZoneComponent,
         data: {
           title: 'Zones'
+        }
+      },
+      {
+        path: 'closest',
+        component: ClosestComponent,
+        data: {
+          title: 'Les vehicules les plus proches'
         }
       },
       {

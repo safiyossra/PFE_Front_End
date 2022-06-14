@@ -67,7 +67,7 @@
       <div class="card-header-actions">
       </div>
       <tabset class="">
-        <tab style="min-height: 600px">
+        <tab style="min-height: 600px" (selectTab)="selectTab(0)">
           <ng-template tabHeading><i class="icon-calculator"></i> Resume &nbsp;</ng-template>
           <div class="row">
             <div class="col-sm-6 col-lg-3" *ngFor="let el of resume; let index=index">
@@ -91,7 +91,7 @@
             <!--/.col-->
           </div>
         </tab>
-        <tab style="min-height: 600px">
+        <tab style="min-height: 600px" (selectTab)="selectTab(1)">
           <ng-template tabHeading>
             <i class="icon-list"></i>
             Trajet &nbsp;
@@ -130,7 +130,7 @@
             </div>
           </div>
         </tab>
-        <tab style="min-height: 600px">
+        <tab style="min-height: 600px" (selectTab)="selectTab(3)">
           <ng-template tabHeading class="card-header-action btn-secondary">
             <i class="fa fa-list-alt"></i> Evenements Détaillés &nbsp;
             <!-- <i class="fa fa-refresh" (click)="getdetails()"></i>-->
