@@ -47,7 +47,7 @@
                               </my-dropdown-select>
                               <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-key fa-sm"
-                                    *ngIf="selectedDeviceModal.length == 0"></i><i
+                                    *ngIf="selectedDeviceModal?.length == 0"></i><i
                                     *ngIf="selectedDeviceModal != null">{{
                                     selectedDeviceModal
                                     }}</i></span>
@@ -97,7 +97,7 @@
                               </my-dropdown-select>
                               <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-list fa-sm"
-                                    *ngIf="selectedOperation.length == 0"></i><i *ngIf="selectedOperation != null">{{
+                                    *ngIf="selectedOperation?.length == 0"></i><i *ngIf="selectedOperation != null">{{
                                     selectedOperation
                                     }}</i></span>
                               </div>
