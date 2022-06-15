@@ -2,8 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
-import {ModalDirective} from 'ngx-bootstrap/modal';
-import { IDropdownSettings, } from 'ng-multiselect-dropdown';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   templateUrl: 'crudgroupe.component.html',

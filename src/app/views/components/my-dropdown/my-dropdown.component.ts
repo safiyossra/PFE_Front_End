@@ -26,7 +26,7 @@ export class MyDropdownComponent {
   @Input() showErrorMsg = false;
   @Input() selectedOptions;
   @Input() multiple = true;
-  
+
   // New Options
   @Input() labelCount: number = 1;
   @Input() appearance: "standard" | "fill" | "outline" = "outline";
@@ -40,7 +40,7 @@ export class MyDropdownComponent {
   selectedValue: Array<any> = [];
   selectAllChecked = false;
   displayString = "";
-  constructor() {}
+  constructor() { }
 
   ngOnChanges() {
     if (this.disabled) {
@@ -56,17 +56,17 @@ export class MyDropdownComponent {
     }
   }
 
-  ngDoCheck() {
-    if (!this.selectedValue.length) {
-      this.selectionChange.emit(this.selectedValue);
-    }
-  }
+  // ngDoCheck() {
+  //   if (!this.selectedValue.length) {
+  //     this.selectionChange.emit(this.selectedValue);
+  //   }
+  // }
 
-  toggleDropdown() {
-    this.selectElem.toggle();
-  }
+  // toggleDropdown() {
+  //   this.selectElem.toggle();
+  // }
 
-  toggleSelectAll(val:any) {
+  toggleSelectAll(val: any) {
     if (val.checked) {
       this.filteredOptions.forEach(option => {
         if (!this.selectedValue.includes(option[this.value])) {
@@ -82,7 +82,7 @@ export class MyDropdownComponent {
     this.selectionChange.emit(this.selectedValue);
   }
 
-  filterItem(value:any) {
+  filterItem(value: any) {
     this.filteredOptions = this.options.filter(
       item => item[this.display].toLowerCase().indexOf(value.toLowerCase()) > -1
     );
@@ -121,8 +121,8 @@ export class MyDropdownComponent {
             option => option[this.value] === this.selectedValue[i]
           )[0];
         }
-        
-    console.log("tedtdt ", displayOption);
+
+        console.log("tedtdt ", displayOption);
         if (displayOption.length) {
 
           for (let i = 0; i < displayOption.length; i++) {
@@ -149,7 +149,7 @@ export class MyDropdownComponent {
         }
       }
     }
-    
+
     return this.displayString;
   }
 

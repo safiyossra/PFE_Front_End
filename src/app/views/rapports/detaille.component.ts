@@ -25,7 +25,7 @@ export class DetailleComponent {
   iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
   reportDetails: any;
-  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Theorique (%)"]
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Theorique (L)"]
   columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct"];
 
   resume = [];
@@ -46,6 +46,7 @@ export class DetailleComponent {
   trajetSelectedDevice = ""
   showErrorDevice = false;
   errorMessageDevice = "";
+  selectedTab = 0
   // barChart
 
   /////////////////////////////////////////////////////////////////
@@ -95,19 +96,19 @@ export class DetailleComponent {
   public vitesseChartData: Array<any> = [
     {
       data: [],
-      label: 'Vitesse'
+      label: 'Vitesse (Km/h)'
     },
   ];
   public fuelChartData: Array<any> = [
     {
       data: [],
-      label: 'Carburant'
+      label: 'Carburant (L)'
     },
   ];
   public tempChartData: Array<any> = [
     {
       data: [],
-      label: 'Temperature'
+      label: 'Température °C'
     },
   ];
   /* tslint:disable:max-line-length */
@@ -194,7 +195,7 @@ export class DetailleComponent {
 
   public resumeColors: Array<any> = [
     "twitter", "google-plus", "green", "purple", "yellow", "pink", "primary", "cyan"];
-  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cd": "MAD", "ct": "%", "cm": "%", "v": "Km/h", "t": "°C", "na": " " };
+  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cd": "MAD", "ct": "L", "cm": "%", "v": "Km/h", "t": "°C", "na": " " };
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -296,9 +297,10 @@ export class DetailleComponent {
       this.loading = true;
       this.selectedMapDevice = this.selectedDevice
       let extra = this.getVehiculeExtraById(this.selectedDevice)
-      console.log(extra);
       this.getdetails()
-      this.resume = []
+      if (this.selectedTab == 2) this.getEvolution(true)
+      if (this.selectedTab == 4) this.showTrajet()
+      // this.resume = []
       var urlParams = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
@@ -316,9 +318,6 @@ export class DetailleComponent {
             e.cm = (100 * (e.c / (e.k != 0 ? e.k : 1))).toFixed(1);
 
           })
-          console.log("this.reportData");
-          console.log(this.reportData);
-
           this.selectedMapDevice = this.selectedDevice
           let resumetmp = [];
           let labels = this.reportData.map((l) => { return l.timeStart })
@@ -342,15 +341,10 @@ export class DetailleComponent {
           resumetmp[length].val = extra.fe != 0 ? (resumetmp[0].val / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
           resumetmp[length - 1].val = Math.round(resumetmp[length - 3].val * extra.fc);
           resumetmp[length - 2].val = (100 * (resumetmp[length - 3].val / (resumetmp[0].val != 0 ? resumetmp[0].val : 1))).toFixed(1);
-          // console.log("resumetmp");
-          // console.log(resumetmp);
-
-          // var y = this.getValue(resumetmp)
           this.resume = resumetmp
           this.loading = false;
         },
       })
-
     }
   };
 
@@ -379,6 +373,7 @@ export class DetailleComponent {
   }
 
   getEvolution(force = false) {
+    this.selectedTab = 2
     this.resetValidator()
     if (this.selectedDevice.length == 0) {
       this.onValidateDevice()
@@ -401,24 +396,28 @@ export class DetailleComponent {
         this.vitesseChartData = [
           {
             data: d.map((l) => { return l.v }),
-            label: 'Vitesse'
+            label: 'Vitesse (Km/h)'
           },
         ];
         this.fuelChartData = [
           {
             data: d.map((l) => { return l.f }),
-            label: 'Carburant'
+            label: 'Carburant (L)'
           },
         ];
         this.tempChartData = [
           {
             data: d.map((l) => { return l.tmp }),
-            label: 'Temperature'
+            label: 'Température °C'
           },
         ];
         this.loadingcharts = false;
       },
     })
+  }
+
+  selectTab(i) {
+    this.selectedTab = i
   }
 
   getdetails() {
@@ -467,6 +466,7 @@ export class DetailleComponent {
   }
 
   showTrajet() {
+    this.selectedTab = 4
     this.resetValidator()
     this.ToInvalidate = Math.random().toString();
     if (this.selectedDevice.length == 0) {

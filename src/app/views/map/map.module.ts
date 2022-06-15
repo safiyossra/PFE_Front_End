@@ -14,10 +14,13 @@ import { DropdownCheckboxComponent } from './../components/dropdown-checkbox/dro
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { EventsTableComponent } from './events-table/events-table.component';
 import { ZoneComponent } from './zone/zone.component';
+import { ClosestComponent } from './closest/closest.component';
 import { MatIconModule } from '@angular/material/icon';
 import { PointFormComponent } from './zone/point-form/point-form.component';
 import { AngularSplitModule } from "angular-split";
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
+import { MyPlacesDropdownModule } from './my-places-dropdown/my-places-dropdown.module';
 
  
 @NgModule({
@@ -28,6 +31,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     DropdownCheckboxComponent,
     EventsTableComponent,
     ZoneComponent,
+    ClosestComponent,
     PointFormComponent,
   ],
   imports: [
@@ -38,11 +42,13 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     ChartsModule,
     FormsModule,
     ReactiveFormsModule,
+    MyDropdownModule,
     // BsDropdownModule,
     BsDropdownModule.forRoot(),
     MatIconModule,
     AngularSplitModule,
-    TabsModule
+    TabsModule,
+    MyPlacesDropdownModule,
 
   ]
 })

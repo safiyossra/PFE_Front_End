@@ -6,7 +6,6 @@ import { ZoneService } from './../../../services/zone.service'
 import { Zone, ZoneType } from './../../../models/zone'
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { TileStyler } from '@angular/material/grid-list/tile-styler';
 
 @Component({
   selector: 'app-zone',
@@ -203,7 +202,6 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
         var zones = []
         res.map((element: any) => {
           var zone = new Zone()
-          zone.accountID = element.accountID
           zone.clientID = element.clientID
           zone.groupID = element.groupID
           zone.description = element.description

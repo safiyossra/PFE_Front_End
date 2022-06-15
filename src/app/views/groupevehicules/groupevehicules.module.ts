@@ -17,7 +17,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   imports: [
@@ -32,7 +31,6 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     ReactiveFormsModule,
     ModalModule.forRoot(),
     CollapseModule.forRoot(),
-    NgMultiSelectDropDownModule.forRoot()
   ],
   declarations: [
     CrudgroupeComponent,
