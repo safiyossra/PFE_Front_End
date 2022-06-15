@@ -291,7 +291,7 @@ export class DetailleComponent {
   //////////////////////
   submit() {
     this.resetValidator()
-    if (this.selectedDevice.length == 0) {
+    if (this.selectedDevice?.length == 0) {
       this.onValidateDevice()
     } else {
       this.loading = true;
@@ -375,7 +375,7 @@ export class DetailleComponent {
   getEvolution(force = false) {
     this.selectedTab = 2
     this.resetValidator()
-    if (this.selectedDevice.length == 0) {
+    if (this.selectedDevice?.length == 0) {
       this.onValidateDevice()
     } else {
       let urlEvolution = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
@@ -422,7 +422,7 @@ export class DetailleComponent {
 
   getdetails() {
     this.resetValidator()
-    if (this.selectedDevice.length == 0) {
+    if (this.selectedDevice?.length == 0) {
       this.onValidateDevice()
     } else {
       this.selectedMapDevice = this.selectedDevice
@@ -469,7 +469,7 @@ export class DetailleComponent {
     this.selectedTab = 4
     this.resetValidator()
     this.ToInvalidate = Math.random().toString();
-    if (this.selectedDevice.length == 0) {
+    if (this.selectedDevice?.length == 0) {
       this.onValidateDevice()
     } else {
       this.trajetStartTime = Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000).toString();
