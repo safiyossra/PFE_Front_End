@@ -76,8 +76,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
         var POIs = []
         res.map((e: any) => {
           var poi = { name: e.description, val: e.latitude1 + ';' + e.longitude1 }
-          console.log(poi);
-
           POIs.push(poi)
         });
         this.POIs = POIs
@@ -198,9 +196,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
     this.map.doubleClickZoom.disable();
     this.map.on('dblclick', (ev) => {
-      console.log(ev);
-
       if (this.selectedType == 'poc') {
+        this.clearZoneFromMap()
         if (ev.latlng.lat != null) {
           this.searchedPosition = { address: "", lat: ev.latlng.lat, lng: ev.latlng.lng }
           this.paintZone(this.searchedPosition)
@@ -277,8 +274,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   }
 
   paintZone(position: any) {
-    this.clearZoneFromMap()
-    this.clearMarkersFromMap()
     let centerPoint = L.latLng(position.lat, position.lng)
     let m = L.marker(centerPoint, { icon: L.icon({ iconUrl: 'assets/img/markers/pin_n.png', iconSize: [50, 50], iconAnchor: [25, 50] }) }).
       bindPopup(`<div><strong>Addresse</strong>: ${position.address}</div>`, { closeButton: false, offset: L.point(0, -20) })
@@ -289,7 +284,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   }
 
   onAddresseChange(e: any) {
-    console.log(e);
+    this.clearZoneFromMap()
     if (e != null) {
       this.searchedPosition = { address: e.label, lat: e.y, lng: e.x }
       this.paintZone(this.searchedPosition)
@@ -301,6 +296,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   radiusChange() {
     this.POIForm.controls['radius'].valueChanges.subscribe(val => {
       this.radius = val
+      this.clearZoneFromMap()
       if (this.searchedPosition.lat != "" && this.searchedPosition.lng != "") {
         this.paintZone(this.searchedPosition)
       }
@@ -311,6 +307,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     if (this.myZone && this.map.hasLayer(this.myZone)) {
       this.myZone.removeFrom(this.map)
     }
+    this.clearMarkersFromMap()
   }
 
   clearMarkersFromMap() {
@@ -321,8 +318,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   }
 
   onPoiChange(ev: any) {
-    console.log('this is a poi', ev)
     if (this.selectedType == 'poi') {
+      this.clearZoneFromMap()
       if (ev != []) {
         let latlng = ev.split(';')
         this.searchedPosition = { address: "", lat: Number.parseFloat(latlng[0]), lng: Number.parseFloat(latlng[1]) }
@@ -330,16 +327,11 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       } else {
         this.searchedPosition = { address: "", lat: null, lng: null }
       }
-      // if (ev.lat != null) {
-      //   this.searchedPosition = { address: "", lat: ev.lat, lng: ev.lng }
-      //   this.paintZone(this.searchedPosition)
-      // } else {
-      //   this.searchedPosition = { address: "", lat: null, lng: null }
-      // }
     }
   }
 
   showClosest() {
+    this.clearMarkersFromMap()
     this.loading = true
     if (this.searchedPosition.lat != null && this.searchedPosition.lng != null && this.radius > 2) {
       this.vehiculeService.getData().subscribe({
@@ -367,7 +359,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
               )
             }
           });
-          console.log(vehicules)
           this.createMarkers(vehicules)
         }
       })
@@ -375,7 +366,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   }
 
   createMarkers(vehicules: any) {
-    this.clearMarkersFromMap()
     vehicules.forEach((veh, index) => {
       if (this.isClose(veh.lat, veh.lng)) {
         this.myMarkers.push(
@@ -445,7 +435,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   isClose(lat: any, lng: any) {
     let distance = this.getDistanceBetweenPoints({ lat: lat, lng: lng }, { lat: this.searchedPosition.lat, lng: this.searchedPosition.lng })
-    console.log(lat, lng, this.searchedPosition, distance);
     if (distance <= this.radius) {
       return true
     }
