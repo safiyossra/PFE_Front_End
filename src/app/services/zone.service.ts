@@ -24,7 +24,7 @@ export class ZoneService {
     })
   }
   getPoi() {
-    let SERVER_URL = environment.apiUrl + "zones?zoneType=4";
+    let SERVER_URL = environment.apiUrl + "zones"; //?zoneType=4
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,

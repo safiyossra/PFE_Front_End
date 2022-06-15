@@ -19,7 +19,8 @@
                     </mat-select>
                 </mat-form-field>
                 <!--  -->
-                <my-places-search [provider]="provider" *ngIf="selectedType == 'poc'" (selectionChange)="onAddresseChange($event)">
+                <my-places-search [provider]="provider" *ngIf="selectedType == 'poc'"
+                    (selectionChange)="onAddresseChange($event)">
                 </my-places-search>
                 <!--  -->
                 <div class="controls" class="w-100 mb-2" *ngIf="selectedType == 'poi'">
@@ -27,13 +28,13 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-map-pin fa-sm"></i></span>
                         </div>
-                        <my-dropdown-select class="form-control" [selectPlaceholder]="'Chercher...'" [options]="POIs" [display]="'name'"
-                            [value]="'val'" [multiple]="false" [labelCount]="0" [selectedOptions]="selectedPoi"
-                            (selectionChange)="onPoiChange($event)">
+                        <my-dropdown-select class="form-control" [selectPlaceholder]="'Chercher...'" [options]="POIs"
+                            [display]="'name'" [value]="'val'" [multiple]="false" [labelCount]="1"
+                            [selectedOptions]="selectedPoi" (selectionChange)="onPoiChange($event)">
                         </my-dropdown-select>
                     </div>
                     <!--</div> -->
-                    </div>
+                </div>
 
                 <mat-form-field class="w-100" appearance="fill">
                     <mat-label>Rayon (en mètres)</mat-label>
@@ -43,7 +44,8 @@
                     <div class="card-header p-1">
                         <span class="my-0 fw-normal">Position Choisi</span>
                         <button class="btn btn-sm btn-primary card-header-actions mr-1 py-0"
-                            [disabled]="searchedPosition.lat  != '' ? false : true" type="button" (click)="showClosest()">
+                            [disabled]="searchedPosition.lat  != '' ? false : true" type="button"
+                            (click)="showClosest()">
                             <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
                             <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> Plus proches
                         </button>
@@ -61,7 +63,8 @@
                     <div class="card-header p-1">
                         <span class="my-0 fw-normal">Sélectionner un véhicule pour calculer l'itinéraire</span>
                         <button class="btn btn-sm btn-primary card-header-actions mr-1 py-0"
-                            [disabled]="searchedPosition.lat  != '' ? false : true" type="button" (click)="drawDirection()">
+                            [disabled]="searchedPosition.lat  != '' ? false : true" type="button"
+                            (click)="drawDirection()">
                             <i class="fa fa-road"></i> Calculer
                         </button>
                     </div>

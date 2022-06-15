@@ -45,7 +45,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   myMarkers = []
   selectedVehicleIndex: -1;
   POIForm: FormGroup
-  searchedPosition = { address: "", lat: "", lng: "" }
+  searchedPosition = { address: "", lat: null, lng: null }
 
   myZone: any
   layerMarkers: any
@@ -75,7 +75,9 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       next: (res: any) => {
         var POIs = []
         res.map((e: any) => {
-          var poi = { name: e.description, val: { lat: e.latitude1, lng: e.longitude1 } }
+          var poi = { name: e.description, val: e.latitude1 + ';' + e.longitude1 }
+          console.log(poi);
+
           POIs.push(poi)
         });
         this.POIs = POIs
@@ -93,7 +95,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   onTypeChange(event: any) {
     this.clearZoneFromMap()
-    this.searchedPosition = { address: "", lat: "", lng: "" }
+    this.searchedPosition = { address: "", lat: null, lng: null }
     // switch (event.value) {
     //   case 'poi':
 
@@ -203,7 +205,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
           this.searchedPosition = { address: "", lat: ev.latlng.lat, lng: ev.latlng.lng }
           this.paintZone(this.searchedPosition)
         } else {
-          this.searchedPosition = { address: "", lat: "", lng: "" }
+          this.searchedPosition = { address: "", lat: null, lng: null }
         }
       }
     })
@@ -292,7 +294,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       this.searchedPosition = { address: e.label, lat: e.y, lng: e.x }
       this.paintZone(this.searchedPosition)
     } else {
-      this.searchedPosition = { address: "", lat: "", lng: "" }
+      this.searchedPosition = { address: "", lat: null, lng: null }
     }
   }
 
@@ -321,18 +323,25 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   onPoiChange(ev: any) {
     console.log('this is a poi', ev)
     if (this.selectedType == 'poi') {
-      if (ev.val != null) {
-        this.searchedPosition = { address: "", lat: ev.val.lat, lng: ev.val.lng }
+      if (ev != []) {
+        let latlng = ev.split(';')
+        this.searchedPosition = { address: "", lat: Number.parseFloat(latlng[0]), lng: Number.parseFloat(latlng[1]) }
         this.paintZone(this.searchedPosition)
       } else {
-        this.searchedPosition = { address: "", lat: "", lng: "" }
+        this.searchedPosition = { address: "", lat: null, lng: null }
       }
+      // if (ev.lat != null) {
+      //   this.searchedPosition = { address: "", lat: ev.lat, lng: ev.lng }
+      //   this.paintZone(this.searchedPosition)
+      // } else {
+      //   this.searchedPosition = { address: "", lat: null, lng: null }
+      // }
     }
   }
 
   showClosest() {
     this.loading = true
-    if (this.searchedPosition.lat != "" && this.searchedPosition.lng != "" && this.radius > 2) {
+    if (this.searchedPosition.lat != null && this.searchedPosition.lng != null && this.radius > 2) {
       this.vehiculeService.getData().subscribe({
         next: (res) => {
           const data = res['DeviceList']
