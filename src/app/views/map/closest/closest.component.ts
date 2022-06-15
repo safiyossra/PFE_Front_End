@@ -216,41 +216,46 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     // -------------------------------------------- ROUTING ---------------------------------------
     this.directionControl = L.Routing.control({
       router: L.Routing.osrmv1({
-        serviceUrl: `http://router.project-osrm.org/route/v1/`
+        serviceUrl: `http://router.project-osrm.org/route/v1/`,
+        language: 'fr'
       }),
       showAlternatives: true,
-      // lineOptions: { styles: [{ color: '#242c81', weight: 7 }] },
-      fitSelectedRoutes: false,
-      // altLineOptions: { styles: [{ color: '#ed6852', weight: 7 }] },
+      lineOptions: { styles: [{ color: 'black', weight: 9, stroke: true, opacity: .15 }, { color: 'white', weight: 6, stroke: true, opacity: .8 }, { color: 'blue', weight: 3, stroke: true, opacity: 1 }], extendToWaypoints: true, missingRouteTolerance: 0 },
+      altLineOptions: { styles: [{ color: 'black', weight: 9, stroke: true, opacity: .15 }, { color: 'white', weight: 6, stroke: true, opacity: .8 }, { color: 'red', weight: 2, stroke: true, opacity: 1 }], extendToWaypoints: true, missingRouteTolerance: 0 },
       show: true,
-      routeWhileDragging: true,
-      // waypoints: [
-      //   L.latLng(57.74, 11.94),
-      //   L.latLng(57.6792, 11.949)
-      // ]
-    }).addTo(this.map);
+      addWaypoints: false,
+      routeWhileDragging: false,
+
+      plan: L.Routing.plan([], {
+        draggableWaypoints: false,
+        routeWhileDragging: false,
+        createMarker: function () { return null; },
+      }),
+    })
+
 
   }
 
-  drawDirection() {
-    if (this.selectedVehicleIndex != -1) {
-      let lat = this.myMarkers[this.selectedVehicleIndex].lat;
-      let lng = this.myMarkers[this.selectedVehicleIndex].lng;
-      if (
-        this.endPosition &&
-        lat == this.endPosition.lat &&
-        lng == this.endPosition.lng &&
-        this.isTrajetDrew
-      ) {
-        this.isTrajetDrew = !this.isTrajetDrew;
-      } else {
-        this.isTrajetDrew = true;
-        this.endPosition = { lat: lat, lng: lng };
-        this.startAddress = this.searchedPosition.address;
-        // this.directionControl.set
 
-      }
+  clearRoutesFromMap() {
+
+    this.directionControl?.remove()
+    // if (this.directionControl && this.map.hasCustomControl(this.directionControl)) {
+    //   this.directionControl.removeFrom(this.map)
+    // }
+  }
+
+  drawDirection(lat, lng) {
+    this.clearRoutesFromMap()
+
+    if (this.searchedPosition.lat != null && this.searchedPosition.lng != null) {
+      this.directionControl.setWaypoints([
+        L.latLng(this.searchedPosition.lat, this.searchedPosition.lng),
+        L.latLng(lat, lng)
+      ])
     }
+
+    this.directionControl.addTo(this.map)
   }
 
   clearDirection() {
@@ -322,7 +327,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     this.POIForm.controls['radius'].valueChanges.subscribe(val => {
       this.radius = val
       this.clearZoneFromMap()
-      if (this.searchedPosition.lat != "" && this.searchedPosition.lng != "") {
+      if (this.searchedPosition.lat != null && this.searchedPosition.lng != null) {
         this.paintZone(this.searchedPosition)
       }
     })
@@ -332,6 +337,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     if (this.myZone && this.map.hasLayer(this.myZone)) {
       this.myZone.removeFrom(this.map)
     }
+    this.clearRoutesFromMap()
     this.clearMarkersFromMap()
   }
 
@@ -407,7 +413,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
               offset: L.point(0, -20)
 
             }).on('click', (event) => {
-              this.markerClicked([veh.lat, veh.lng])
+              this.drawDirection(veh.lat, veh.lng)
+              // this.markerClicked([veh.lat, veh.lng])
             }))
       }
     });
