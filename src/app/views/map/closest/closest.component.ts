@@ -76,8 +76,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
         var POIs = []
         res.map((e: any) => {
           var poi = { name: e.description, val: e.latitude1 + ';' + e.longitude1 }
-          console.log(poi);
-
           POIs.push(poi)
         });
         this.POIs = POIs
@@ -286,7 +284,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   }
 
   onAddresseChange(e: any) {
-    console.log(e);
     this.clearZoneFromMap()
     if (e != null) {
       this.searchedPosition = { address: e.label, lat: e.y, lng: e.x }
@@ -321,7 +318,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   }
 
   onPoiChange(ev: any) {
-    console.log('this is a poi', ev)
     if (this.selectedType == 'poi') {
       this.clearZoneFromMap()
       if (ev != []) {
@@ -363,7 +359,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
               )
             }
           });
-          console.log(vehicules)
           this.createMarkers(vehicules)
         }
       })
@@ -440,7 +435,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   isClose(lat: any, lng: any) {
     let distance = this.getDistanceBetweenPoints({ lat: lat, lng: lng }, { lat: this.searchedPosition.lat, lng: this.searchedPosition.lng })
-    console.log(lat, lng, this.searchedPosition, distance);
     if (distance <= this.radius) {
       return true
     }
