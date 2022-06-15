@@ -2,6 +2,8 @@ import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '
 import { util } from '../../../tools/utils'
 import { ZoneService } from '../../../services/zone.service'
 import * as L from 'leaflet'
+import 'leaflet-routing-machine';
+
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { VehiculeService } from 'src/app/services/vehicule.service';
@@ -58,6 +60,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   endPosition: any = "";
   distanceItineraire: string = "";
   dureeItineraire: string = "";
+  directionControl: any
+
   // ---------------- Zones ------------------
   constructor(private tools: util, private zoneService: ZoneService, private vehiculeService: VehiculeService, private fb: FormBuilder) {
     this.POIForm = fb.group({
@@ -210,6 +214,25 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       }
     })
 
+
+
+    // -------------------------------------------- ROUTING ---------------------------------------
+    this.directionControl = L.Routing.control({
+      router: L.Routing.osrmv1({
+        serviceUrl: `http://router.project-osrm.org/route/v1/`
+      }),
+      showAlternatives: true,
+      // lineOptions: { styles: [{ color: '#242c81', weight: 7 }] },
+      fitSelectedRoutes: false,
+      // altLineOptions: { styles: [{ color: '#ed6852', weight: 7 }] },
+      show: true,
+      routeWhileDragging: true,
+      // waypoints: [
+      //   L.latLng(57.74, 11.94),
+      //   L.latLng(57.6792, 11.949)
+      // ]
+    }).addTo(this.map);
+
   }
 
   drawDirection() {
@@ -226,7 +249,9 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       } else {
         this.isTrajetDrew = true;
         this.endPosition = { lat: lat, lng: lng };
-        // this.startAddress = this.searchedPosition.address;
+        this.startAddress = this.searchedPosition.address;
+        // this.directionControl.set
+
       }
     }
   }
