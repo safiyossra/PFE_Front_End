@@ -132,7 +132,7 @@ export class PlanComponent {
   //////////////////////
   submit() {
     // this.resetValidator()
-    // if (this.selectedDevice.length == 0) {
+    // if (this.selectedDevice?.length == 0) {
     //   this.onValidateDevice()
     // } else {
       this.loading = true;

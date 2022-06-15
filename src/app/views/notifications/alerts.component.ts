@@ -93,7 +93,7 @@ export class AlertsComponent {
   submit() {
     this.loading = true;
     var urlNotif = "?st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
-    if (!(this.selectedDevice.length == 0)) {
+    if (!(this.selectedDevice?.length == 0)) {
       urlNotif += "&d=" + this.selectedDevice
     }
     this.dataService.getNotifications(urlNotif).subscribe({
