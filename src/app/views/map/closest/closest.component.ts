@@ -109,8 +109,10 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   createMap() {
     const zoomLevel = 12
-    this.map = L.map('map', { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
-      .setView([this.default.latitude, this.default.longitude], zoomLevel)
+    this.map = L.map('map', {
+      center: [this.default.latitude, this.default.longitude], zoom: zoomLevel, attributionControl: false, zoomControl: false,
+      markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true
+    })
 
     // dark map 
     const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -127,7 +129,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
-
     //google satellite
     const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
       maxZoom: 20,
@@ -194,23 +195,17 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     // this.initMarkers()
 
     this.map.doubleClickZoom.disable();
-    this.map.on('dblclick', (event) => {
-      // this.selectedPoi = -1
-      // switch (this.selectedType) {
-      //   case 'point':
-      //     this.generatePoint(event.latlng)
+    this.map.on('dblclick', (ev) => {
+      console.log(ev);
 
-      //     break;
-      //   case 'circle':
-      //     this.generateCircle(event.latlng)
-      //     break;
-      //   case 'polygon':
-      //     this.generatePolygon(event.latlng)
-      //     break;
-
-      //   default:
-      //     break;
-      // }
+      if (this.selectedType == 'poc') {
+        if (ev.latlng.lat != null) {
+          this.searchedPosition = { address: "", lat: ev.latlng.lat, lng: ev.latlng.lng }
+          this.paintZone(this.searchedPosition)
+        } else {
+          this.searchedPosition = { address: "", lat: "", lng: "" }
+        }
+      }
     })
 
   }
@@ -281,6 +276,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   paintZone(position: any) {
     this.clearZoneFromMap()
+    this.clearMarkersFromMap()
     let centerPoint = L.latLng(position.lat, position.lng)
     let m = L.marker(centerPoint, { icon: L.icon({ iconUrl: 'assets/img/markers/pin_n.png', iconSize: [50, 50], iconAnchor: [25, 50] }) }).
       bindPopup(`<div><strong>Addresse</strong>: ${position.address}</div>`, { closeButton: false, offset: L.point(0, -20) })
@@ -438,7 +434,23 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     console.log(p);
   }
 
-  isClose(lat, lng) {
-    return true
+  isClose(lat: any, lng: any) {
+    let distance = this.getDistanceBetweenPoints({ lat: lat, lng: lng }, { lat: this.searchedPosition.lat, lng: this.searchedPosition.lng })
+    console.log(lat, lng, this.searchedPosition, distance);
+    if (distance <= this.radius) {
+      return true
+    }
+    return false
+  }
+
+  getDistanceBetweenPoints(l1: any, l2: any) {
+    var p = 0.017453292519943295;
+    var a = 0.5 -
+      Math.cos((l2.lat - l1.lat) * p) / 2 +
+      Math.cos(l1.lat * p) *
+      Math.cos(l2.lat * p) *
+      (1 - Math.cos((l2.lng - l1.lng) * p)) /
+      2;
+    return 1000 * 12742 * Math.asin(Math.sqrt(a));
   }
 }
