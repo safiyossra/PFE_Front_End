@@ -41,9 +41,6 @@ export class CrudgroupeComponent {
     this.showErrorDevice = false;
     this.errorMessageDevice = "";
   }
-
-  dropdownList = [];
-  dropdownSettings:IDropdownSettings={};
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
   ngOnInit() {
@@ -92,28 +89,6 @@ export class CrudgroupeComponent {
     };
 
     this.getDev();
-
-    this.dropdownList = [
-      //this.getDev()
-
-      { item_id: 1, item_text: 'Item1' },
-      { item_id: 2, item_text: 'Item2' },
-      { item_id: 3, item_text: 'Item3' },
-      { item_id: 4, item_text: 'Item4' },
-      { item_id: 5, item_text: 'Item5' }
-      
-    ];
-    this.dropdownSettings = {
-      idField: 'item_id',
-      textField: 'item_text',
-      // idField: 'dID',
-      // textField: 'name',
-      selectAllText: "Select All Devices",
-      unSelectAllText: "UnSelect All Devices",
-      noDataAvailablePlaceholderText: "There is no devices availabale to show",
-      allowSearchFilter: true
-      
-    };
   }
 
   toggleCollapse(): void {
@@ -167,19 +142,6 @@ export class CrudgroupeComponent {
     this.pushpin.nativeElement.value= '' 
     
   }
-
-onItemSelect(item: any) {
-    console.log('onItemSelect', item);
-}
-onItemDeSelect(item: any) {
-    console.log('onItemDeSelect', item);
-}
-onSelectAll(items: any) {
-    console.log('onSelectAll', items);
-}
-onUnSelectAll() {
-    console.log('onUnSelectAll fires');
-}
 
 }
 
