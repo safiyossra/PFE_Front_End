@@ -18,7 +18,7 @@ export class AlertsComponent {
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
-  isCollapsed: boolean = true;
+  isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-down';
   data: any;
   public devices: any = [];
@@ -78,8 +78,8 @@ export class AlertsComponent {
   }
 
   toggleCollapse($event): void {
-    $event.preventDefault();
-    $event.stopPropagation();
+    // $event.preventDefault();
+    // $event.stopPropagation();
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
   }
@@ -93,13 +93,16 @@ export class AlertsComponent {
   submit() {
     this.loading = true;
     var urlNotif = "?st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
-    if (!(this.selectedDevice?.length == 0)) {
+    // console.log(this.selectedDevice);
+    if (this.selectedDevice != null) {
       urlNotif += "&d=" + this.selectedDevice
     }
+    // console.log(urlNotif);
+
     this.dataService.getNotifications(urlNotif).subscribe({
         next: (d: any) => {
-          console.log("d");
-          console.log(d);
+        // console.log("data");
+        //   console.log(d);
         d.forEach((e) => {
           e.timestamp = this.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
           })

@@ -13,12 +13,12 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class MySynthetiquesTableComponent implements OnChanges {
   @Input() data = [];
-  @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
+  @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   public displayedColumns = ["d", "km", "v", "c", "cm", "cd", "ct"];
-  columnNames = ["Véhicule", "KM Parcourue", "Vitesse Maximale (Km/h)", "Consommation (L)", "Consommation (%)", "Consommation (MAD)", "Consommation Theorique (%)"];
+  columnNames = ["Véhicule", "KM Parcourue", "Vitesse Maximale (Km/h)", "Consommation (L)", "Consommation (%)", "Consommation (MAD)", "Consommation Théorique (L)"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;

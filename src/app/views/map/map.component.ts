@@ -3,6 +3,7 @@ import { VehiculeService } from 'src/app/services/vehicule.service'
 import { util } from '../../tools/utils'
 import * as L from 'leaflet'
 import { Vehicule } from '../../models/vehicule'
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 
 @Component({
   selector: 'app-map',
@@ -15,6 +16,8 @@ export class MapComponent implements AfterViewInit, OnInit {
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
   @Input() showCollapsControle?: Boolean = true
+
+  provider = new OpenStreetMapProvider();
   isFirstTime = true
   public position_left: string = "0%"
   public size = [25, 75]
@@ -138,6 +141,22 @@ export class MapComponent implements AfterViewInit, OnInit {
       }).addTo(this.map);
     }
 
+
+    ////////////////////////////////////////////////////////////
+    GeoSearchControl({
+      provider: this.provider,
+      showMarker: false,
+      // style: 'bar',
+      position: "topleft",
+      retainZoomLevel: false, // optional: true|false  - default false
+      animateZoom: true, // optional: true|false  - default true
+      autoClose: true, // optional: true|false  - default false
+      searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
+      // keepResult: false, // optional: true|false  - default false
+      updateMap: true, // optional: true|false  - default true
+    }).addTo(this.map)
+
+    ////////////////////////////////////////////////////////////
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
     L.control.scale().addTo(this.map);
   }
@@ -233,9 +252,9 @@ export class MapComponent implements AfterViewInit, OnInit {
         const data = res['DeviceList']
         let vehicules = []
         data.forEach(e => {
-          let l = e['EventData'].length - 1 ?? 0
-          if (l > 0) {
-            const vData = e['EventData'][1]
+          let l = e['EventData'].length - 1 ?? -1
+          if (l > -1) {
+            const vData = e['EventData'][l]
             vehicules.push(
               new Vehicule(
                 {

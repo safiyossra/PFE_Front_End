@@ -25,7 +25,7 @@ export class DetailleComponent {
   iconCollapseD: string = 'icon-arrow-up';
   reportData: any;
   reportDetails: any;
-  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Theorique (L)"]
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)"]
   columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct"];
 
   resume = [];
@@ -291,7 +291,7 @@ export class DetailleComponent {
   //////////////////////
   submit() {
     this.resetValidator()
-    if (this.selectedDevice?.length == 0) {
+    if (this.selectedDevice == null) {
       this.onValidateDevice()
     } else {
       this.loading = true;
@@ -375,7 +375,7 @@ export class DetailleComponent {
   getEvolution(force = false) {
     this.selectedTab = 2
     this.resetValidator()
-    if (this.selectedDevice?.length == 0) {
+    if (this.selectedDevice == null) {
       this.onValidateDevice()
     } else {
       let urlEvolution = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
@@ -422,7 +422,7 @@ export class DetailleComponent {
 
   getdetails() {
     this.resetValidator()
-    if (this.selectedDevice?.length == 0) {
+    if (this.selectedDevice == null) {
       this.onValidateDevice()
     } else {
       this.selectedMapDevice = this.selectedDevice
@@ -469,7 +469,7 @@ export class DetailleComponent {
     this.selectedTab = 4
     this.resetValidator()
     this.ToInvalidate = Math.random().toString();
-    if (this.selectedDevice?.length == 0) {
+    if (this.selectedDevice == null) {
       this.onValidateDevice()
     } else {
       this.trajetStartTime = Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000).toString();

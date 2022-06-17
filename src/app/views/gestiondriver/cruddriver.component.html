@@ -22,7 +22,7 @@
           <div class="modal-dialog modal-primary" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Ajouter Vehicule</h5>
+                <h5 class="modal-title">Ajouter Véhicule</h5>
                 <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -104,7 +104,7 @@
                             <label class="col-md-4 col-form-label" for="text-input">Titre de voiture</label>
                             <div class="col-8">
                               <input type="text" id="text-input" #titlevehicule name="titrevehicule" class="form-control"
-                                placeholder="Saisir le Titre de Vehicule">
+                                placeholder="Saisir le Titre de véhicule">
                             </div>
                           </div>
                           <div class="form-group row">
@@ -161,10 +161,10 @@
                             </div>
                           </div>
                           <div class="form-group row">
-                            <label class="col-md-4 col-form-label" for="text-input">Vehicule ID</label>
+                            <label class="col-md-4 col-form-label" for="text-input">Véhicule ID</label>
                             <div class="col-8">
                               <input type="text" id="text-input" #vehiculeid name="vehiculeid" class="form-control"
-                                placeholder="Saisir ID de Vehicule">
+                                placeholder="Saisir ID de Véhicule">
                             </div>
                           </div>
                         </div>
@@ -173,8 +173,8 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
-                <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"> &nbsp; Annuler</button>
+                <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Fermer</button>
+                <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"> &nbsp; Réinitialiser</button>
                 <button type="button" class="btn btn-primary" *ngIf="isnotNum==false"
                   (click)="ajouter()">Ajouter</button>
               </div>
@@ -194,14 +194,14 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
                     </div>
-                    <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection'"
+                    <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule'"
                       [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
                       [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
                       [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
                     </my-dropdown-select>
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-key fa-sm"
-                          *ngIf="selectedDevice?.length == 0"></i><i *ngIf="selectedDevice != null">{{
+                          *ngIf="selectedDevice == null"></i><i *ngIf="selectedDevice != null">{{
                           selectedDevice
                           }}</i></span>
                     </div>
@@ -212,7 +212,7 @@
               <div class="form-actions">
                 <button type="submit" class="btn btn-sm btn-primary" [disabled]="loading">
                   <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
-                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
+                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
                 </button>
               </div>
             </div>

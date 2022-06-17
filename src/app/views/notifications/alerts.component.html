@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="card card-accent-info">
-        <div class="card-header" (click)="toggleCollapse($event)">
+        <div class="card-header">
           <i class="fa fa-edit"></i> Filtrer
           <div class="card-header-actions">
             <a href="#">
@@ -29,14 +29,14 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
                     </div>
-                    <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection'"
+                    <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule'"
                       [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
                       [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
                       [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
                     </my-dropdown-select>
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-key fa-sm"
-                          *ngIf="selectedDevice?.length == 0"></i><i *ngIf="selectedDevice != null">{{
+                          *ngIf="selectedDevice == null"></i><i *ngIf="selectedDevice != null">{{
                           selectedDevice
                           }}</i></span>
                     </div>

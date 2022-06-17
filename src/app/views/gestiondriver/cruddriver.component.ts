@@ -147,7 +147,7 @@ export class CruddriverComponent {
   //////////////////////
   submit() {
     // this.resetValidator()
-    // if (this.selectedDevice?.length == 0) {
+    // if (this.selectedDevice == null) {
     //   this.onValidateDevice()
     // } else {
       this.loading = true;

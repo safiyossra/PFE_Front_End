@@ -21,7 +21,7 @@ export class DetailsTableComponent implements OnChanges {
   // public columnNames = ["Date","Status","Pushpin Code","Lat/Lon","Vitesse(km/h)","Distance en kilométrage","Carburant %","Fuel Vol(L)","Carburant Total(L)","Adresse","Insert Date"]
   // Pushpin Code , Carburant %, 
   public columnNames = ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
-  public pageSizeOptions = [10, 15, 20, 30, 50, 100];
+  public pageSizeOptions = [10, 15, 20, 30, 50, 100, 200, 500, 1000];
   public data: any;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   public isLoading: boolean = false

@@ -5,11 +5,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { util } from '../../../tools/utils'
-
 import * as L from 'leaflet'
 import { VehiculeService } from 'src/app/services/vehicule.service';
-
-import { Vehicule } from '../../../models/vehicule'
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 
 
 @Component({
@@ -19,6 +17,7 @@ import { Vehicule } from '../../../models/vehicule'
 })
 export class DetailsComponent implements OnInit, AfterViewInit {
 
+  provider = new OpenStreetMapProvider();
   vehiculeID: string
   map: any
   car = {
@@ -312,6 +311,22 @@ export class DetailsComponent implements OnInit, AfterViewInit {
       }).addTo(this.map);
     }
 
+
+    ////////////////////////////////////////////////////////////
+    GeoSearchControl({
+      provider: this.provider,
+      showMarker: false,
+      // style: 'bar',
+      position: "topleft",
+      retainZoomLevel: false, // optional: true|false  - default false
+      animateZoom: true, // optional: true|false  - default true
+      autoClose: true, // optional: true|false  - default false
+      searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
+      // keepResult: false, // optional: true|false  - default false
+      updateMap: true, // optional: true|false  - default true
+    }).addTo(this.map)
+
+    ////////////////////////////////////////////////////////////
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
     L.control.scale().addTo(this.map);
   }

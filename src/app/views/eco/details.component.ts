@@ -42,26 +42,22 @@ export class DetailsComponent {
     },
     responsive: true,
     maintainAspectRatio: false,
-    // scales: {
-    // xAxes: [{
-    //   gridLines: {
-    //     drawOnChartArea: false,
-    //   },
-    // ticks: {
-    //   callback: function (value: any) {
-    //     return value.charAt(0);
-    //   }
-    // }
-    // }],
-    // yAxes: [{
-    //   ticks: {
-    //     beginAtZero: true,
-    //     maxTicksLimit: 5,
-    //     stepSize: Math.ceil(250 / 5),
-    //     max: 250
-    //   }
-    // }]
-    // },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          drawOnChartArea: false,
+        },
+        ticks: {
+          beginAtZero: true,
+          maxTicksLimit: 50,
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+        }
+      }]
+    },
     elements: {
       line: {
         borderWidth: 2
@@ -74,7 +70,7 @@ export class DetailsComponent {
       }
     },
     legend: {
-      display: false
+      display: true
     }
   };
   public mainChartColours: Array<any> = [
@@ -103,7 +99,7 @@ export class DetailsComponent {
       borderDash: [8, 5]
     }
   ];
-  public mainChartLegend = false;
+  public mainChartLegend = true;
   public mainChartType = 'line';
 
   value: string | Object;
@@ -236,7 +232,7 @@ export class DetailsComponent {
   //////////////////////
   submit() {
     this.resetValidator()
-    if (this.selectedDevice?.length == 0) {
+    if (this.selectedDevice == null) {
       this.onValidateDevice()
     } else {
       this.loading = true;
@@ -247,8 +243,8 @@ export class DetailsComponent {
           // console.log(d);
           this.reportData = d;
           this.reportData.forEach((e) => {
-            e.timeStart = this.datePipe.transform(new Date(Number.parseInt(e.timeStart) * 1000), 'yyyy-MM-dd  h:mm:ss');
-            e.timeEnd = this.datePipe.transform(new Date(Number.parseInt(e.timeEnd) * 1000), 'yyyy-MM-dd  h:mm:ss');
+            e.timeStart = this.formatDate(new Date(Number.parseInt(e.timeStart) * 1000))
+            e.timeEnd = this.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000))
             if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
             if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
           })
@@ -337,6 +333,9 @@ export class DetailsComponent {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
   }
 
+  formatDate(date: Date) {
+    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
+  }
 }
 
 

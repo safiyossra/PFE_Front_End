@@ -29,14 +29,14 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
                     </div>
-                    <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection'"
+                    <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule'"
                       [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
                       [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
                       [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
                     </my-dropdown-select>
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-key fa-sm"
-                          *ngIf="selectedDevice?.length == 0"></i><i *ngIf="selectedDevice != null">{{
+                          *ngIf="selectedDevice == null"></i><i *ngIf="selectedDevice != null">{{
                           selectedDevice
                           }}</i></span>
                     </div>
@@ -47,7 +47,7 @@
               <div class="form-actions">
                 <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading">
                   <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
-                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
+                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
                 </button>
               </div>
             </div>
@@ -175,7 +175,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
+          <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Fermer</button>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
