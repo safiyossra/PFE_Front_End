@@ -4,7 +4,7 @@
       <div class="card card-accent-info">
         <div class="card-header">
           <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
-              class="fa fa-plus-circle"></i> Ajouter Vehicule </button>
+              class="fa fa-plus-circle"></i> Modifier Vehicule </button>
           <div class="card-header-actions">
             <a href="#">
               <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
@@ -22,7 +22,7 @@
           <div class="modal-dialog modal-primary" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Ajouter Vehicule</h5>
+                <h5 class="modal-title">Modifier Vehicule</h5>
                 <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -41,20 +41,20 @@
                                 [multiple]="false" [labelCount]="0" [selectedOptions]="selectedDevicesModal"
                                 (selectionChange)="getSelectedDevicesModal($event)">
                               </my-dropdown-select> -->
-                              <input type="date" id="text-input" #modele name="id" class="form-control">
+                              <input type="text" id="text-input" #modele  [disabled]="true" name="id" class="form-control">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="text-input">Date de Création</label>
                             <div class="col-8">
-                              <input type="date" id="text-input" #modele name="datecreation" class="form-control"
+                              <input type="date" id="text-input" #modele [disabled]="true" name="datecreation" class="form-control"
                                 placeholder="Choisir la date">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Identifiant Unique</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #type name="idunique" class="form-control"
+                              <input type="text" id="text-input" #type [disabled]="true" name="idunique" class="form-control"
                                 placeholder="Saisir Identifiant Unique">
                             </div>
                           </div>
@@ -166,9 +166,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
-                <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"> &nbsp; Annuler</button>
-                <button type="button" class="btn btn-primary" *ngIf="isnotNum==false"
-                  (click)="ajouter()">Ajouter</button>
+                <button type="button" class="btn btn-primary" (click)="ajouter()">Modifier</button>
               </div>
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->

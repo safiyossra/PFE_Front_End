@@ -29,7 +29,7 @@
                         <div class="form-group row">
                           <label class=" col-md-5 col-form-label" for="select1">Identifiant</label>
                           <div class="col-6">
-                            <input type="text" id="text-input" #id name="iddriver" class="form-control">
+                            <input type="text" id="text-input" #id [disabled]="true" name="iddriver" class="form-control">
                           </div>
                         </div>
                         <div class="form-group row">
@@ -39,7 +39,7 @@
                               placeholder="Saisir une Description">
                           </div>
                         </div>
-                        <div class="form-group row">
+                        <!-- <div class="form-group row">
                           <label class="col-md-5 col-form-label" for="text-input">Pushpin Limit (Groupe de
                             véhicules)</label>
                           <div class="col-6">
@@ -54,22 +54,30 @@
                             <input type="number" id="text-input" #report name="numtel" class="form-control"
                               placeholder="0">
                           </div>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
                     <div class="col-lg-5">
-                      <div class="card-body p-0">
+                      <div class="card-body ">
                         <div class="form-group row">
-                          <label class=" col-md-3 col-form-label" for="select1">Véhicules</label>
-                          <div class="col-9 input-group">
-                          <my-dropdown-select class="form-control" [placeholder]="'Device Selection'"
-                            [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice"
-                            [showErrorMsg]="showErrorDevice" [options]="devices" [display]="'name'"
-                            [value]="'dID'" [multiple]="true" [labelCount]="2"
-                            [selectedOptions]="selectedDevices"
-                            (selectionChange)="getSelectedDevices($event)">
-                          </my-dropdown-select>
+                          <label class=" col-md-4 col-form-label" for="select1">Véhicules</label>
+                          <div class="col-8 input-group">
+                            <my-dropdown-select class="form-control" [placeholder]="'Device Selection'"
+                              [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice"
+                              [showErrorMsg]="showErrorDevice" [options]="devices" [display]="'name'" [value]="'dID'"
+                              [multiple]="true" [labelCount]="2" [selectedOptions]="selectedDevices"
+                              (selectionChange)="getSelectedDevices($event)">
+                            </my-dropdown-select>
+                          </div>
                         </div>
+                        <div class="form-group row">
+                          <label class=" col-md-4 col-form-label">Séléctionnées</label>
+                          <div class="col-8 input-group">
+                            <select size="6" class="form-control" placeholder="Véhicules Séléctionnées" >
+                              <option *ngFor="let e of selectedDevice">{{getDeviceByName(e)}}</option>
+                            
+                          </select>
+                          </div>
                         </div>
                       </div>
                     </div>

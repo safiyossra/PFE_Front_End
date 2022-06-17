@@ -5,10 +5,10 @@ import { DatePipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
-  templateUrl: 'crudgroupe.component.html',
+  templateUrl: 'consommcarburant.component.html',
   providers: [DatePipe]
 })
-export class CrudgroupeComponent {
+export class ConsommcarburantComponent {
 
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
@@ -17,7 +17,7 @@ export class CrudgroupeComponent {
   @ViewChild('report') report: ElementRef;
   @ViewChild('description') description: ElementRef;
 
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService, private datePipe:DatePipe) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -25,16 +25,25 @@ export class CrudgroupeComponent {
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   data = [];
+  datatrajet = [];
   public isnotNum: boolean = false
-  displayedColumns: any = ["Véhicule", "Device", "Num de Tel"]
 
-
+  
   public devices: any = [];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
   showErrorDevice = false;
   errorMessageDevice = "";
 
+  selectedDevicesModal = null;
+  selectedDeviceModal = this.selectedDevicesModal;
+  showErrorDeviceModal = false;
+  errorMessageDeviceModal = "";
+
+  getSelectedDevicesModal(selected) {
+    // console.log(selected);
+    this.selectedDeviceModal = selected;
+  }
 
   resetValidator() {
     this.showErrorDevice = false;
@@ -90,7 +99,6 @@ export class CrudgroupeComponent {
     this.getDev();
   }
 
-
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
@@ -98,9 +106,8 @@ export class CrudgroupeComponent {
   }
 
   getSelectedDevices(selected) {
+    // console.log(selected);
     this.selectedDevice = selected;
-    console.log(this.selectedDevice?.join(" , ").trim());
-
   }
 
   onValidateDevice() {
@@ -121,30 +128,27 @@ export class CrudgroupeComponent {
     })
   }
 
-  getDeviceByName(e) {
-    return this.devices.filter((v) => { return v.dID == e })[0].name
-  }
 
-  ajouter() {
-
-
+  ajouter(){
+    
+   
     // console.log(this.input1.nativeElement.value);
     // console.log(this.input2.nativeElement.value);
     // console.log(this.motif.nativeElement.value);
     // console.log(this.type.nativeElement.value);
     // console.log(this.modele.nativeElement.value);
-
+    
   }
 
-
+ 
   reset() {
-    this.selectedDevice = []
-    this.selectedDevices = []
-    this.report.nativeElement.value = ''
-    this.id.nativeElement.value = ''
-    this.description.nativeElement.value = ''
-    this.pushpin.nativeElement.value = ''
+    this.selectedDevices = [],
 
+    this.report.nativeElement.value= ''
+    this.id.nativeElement.value= ''
+    this.description.nativeElement.value= ''
+    this.pushpin.nativeElement.value= '' 
+    
   }
 
 }
