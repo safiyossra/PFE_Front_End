@@ -1,13 +1,10 @@
-<div class="ngx-daterangepicker" [ngClass]="{ 'is-active': !!opened,
-                  'theme-green': options.theme === 'green',
-                  'theme-teal': options.theme === 'teal',
-                  'theme-cyan': options.theme === 'cyan',
-                  'theme-grape': options.theme === 'grape',
-                  'theme-red': options.theme === 'red',
-                  'theme-gray': options.theme === 'gray' }">
+<div class="ngx-daterangepicker" [ngClass]="{ 'is-active': !!opened }">
 
   <div #fromInput class="input-section" (click)="toggleCalendar($event, 'from')">
     <span class="label-txt">{{options.labels[0]}}  : &nbsp;&nbsp;&nbsp;</span>
+    <input type="time" (click)="$event.preventDefault();$event.stopPropagation();" [(ngModel)]="time_1"
+      [ngModelOptions]="{standalone: true}" min="00:00" max="23:59" id="time-1" aria-invalid="false" aria-required="false"
+      class="timeCss">
     <span class="value-txt">{{ dateFrom | myFormat: options.dateFormat }}</span>
     <span class="cal-icon">
       <svg width="94px" height="94px" viewBox="3 3 94 94" version="1.1">
@@ -21,6 +18,9 @@
 
   <div class="input-section" (click)="toggleCalendar($event, 'to')">
     <span class="label-txt">{{options.labels[1]}}  : &nbsp;&nbsp;&nbsp;</span>
+    <input type="time" (click)="$event.preventDefault();$event.stopPropagation();" [(ngModel)]="time_2"
+      [ngModelOptions]="{standalone: true}" min="00:00" max="23:59" id="time-2" aria-invalid="false" aria-required="false"
+      class="timeCss">
     <span class="value-txt">{{ dateTo | myFormat: options.dateFormat }}</span>
     <span class="cal-icon">
       <svg width="94px" height="94px" viewBox="3 3 94 94" version="1.1">

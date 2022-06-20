@@ -35,8 +35,8 @@
                       [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"><i class="fa fa-key fa-sm"
-                          *ngIf="selectedDevice == null"></i><i *ngIf="selectedDevice != null">{{
+                      <span class="input-group-text"><i class="fa fa-key fa-sm" *ngIf="selectedDevice == null"></i><i
+                          *ngIf="selectedDevice != null">{{
                           selectedDevice
                           }}</i></span>
                     </div>
@@ -93,16 +93,26 @@
         </tab>
         <tab style="min-height: 600px" (selectTab)="selectTab(1)">
           <ng-template tabHeading>
-            <i class="icon-list"></i>
-            Trajet &nbsp;
+            <i class="icon-list mr-1"></i>
+            <input type="checkbox" [ngModelOptions]="{standalone: true}" [(ngModel)]="isArret"
+              (click)="$event.preventDefault();$event.stopPropagation();" class="ml-2"> Trajet
+            {{!isArret?'sans':'avec'}} Parking &nbsp;
           </ng-template>
           <my-data-table class="detailtable" (positionClick)="openMap($event)" [selectedMapDevice]="selectedMapDevice"
             [data]="reportData" [columnNames]="displayedColumns" [columns]="columns">
           </my-data-table>
         </tab>
+        <tab style="min-height: 600px" (selectTab)="selectTab(5)">
+          <ng-template tabHeading>
+            <i class="icon-list mr-2"></i>Parking &nbsp;
+          </ng-template>
+          <my-data-table class="detailtable" (positionClick)="openMap($event)" [selectedMapDevice]="selectedMapDevice"
+            [data]="reportDataArrets" [columnNames]="displayedColumnsArrets" [columns]="columnsArrets">
+          </my-data-table>
+        </tab>
         <tab style="min-height: 600px" (selectTab)="getEvolution()">
           <ng-template tabHeading>
-            <i class="icon-pie-chart"></i> Evolution &nbsp;<i class="fa fa-refresh" (click)="getEvolution(true)"></i>
+            <i class="icon-pie-chart mr-1"></i> Evolution &nbsp;<i class="fa fa-refresh" (click)="getEvolution(true)"></i>
           </ng-template>
           <mat-progress-bar mode="indeterminate" *ngIf="loadingcharts" class="bg-primary"></mat-progress-bar>
           <div class="card">
@@ -132,7 +142,7 @@
         </tab>
         <tab style="min-height: 600px" (selectTab)="selectTab(3)">
           <ng-template tabHeading class="card-header-action btn-secondary">
-            <i class="fa fa-list-alt"></i> Evenements Détaillés &nbsp;
+            <i class="fa fa-list-alt mr-1"></i> Evenements Détaillés &nbsp;
             <!-- <i class="fa fa-refresh" (click)="getdetails()"></i>-->
           </ng-template>
           <details-table [url]="urldetails" (positionClick)="openMap($event)" [selectedMapDevice]="selectedMapDevice">
@@ -141,7 +151,7 @@
         </tab>
         <tab style="min-height: 600px" (selectTab)="showTrajet()">
           <ng-template tabHeading class="card-header-action btn-secondary">
-            <i class="fa fa-map"></i> Afficher Trajet &nbsp;
+            <i class="fa fa-map mr-1"></i> Afficher Trajet &nbsp;
             <i class="fa fa-refresh" (click)="showTrajet()"></i>
           </ng-template>
           <div class="text-danger mb-2"> &nbsp;[Seuls les enregistrements des 3 derniers jours au
