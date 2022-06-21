@@ -3,6 +3,7 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
 import {ModalDirective, ModalOptions} from 'ngx-bootstrap/modal';
+import { MyGestionvehiculeTableComponent } from './my-gestionvehicule-table/my-gestionvehicule-table.component';
 
 @Component({
   templateUrl: 'crudvehicule.component.html',
@@ -17,7 +18,8 @@ export class CrudvehiculeComponent {
   @ViewChild('motif') motif: ElementRef;
   @ViewChild('type') type: ElementRef;
   @ViewChild('modele') modele: ElementRef;
-  constructor(private dataService: DataService, private datePipe:DatePipe) { }
+  @ViewChild('descrip') descrip: ElementRef;
+  constructor(private dataService: DataService, private datePipe:DatePipe , private gestvehicule: MyGestionvehiculeTableComponent) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -105,7 +107,7 @@ export class CrudvehiculeComponent {
       }
     };
 
-    this.getDev();
+    this.loadData();
   }
 
   toggleCollapse(): void {
@@ -130,29 +132,20 @@ export class CrudvehiculeComponent {
   }
 
   //////////////////////
-  submit() {
-    // this.resetValidator()
-    // if (this.selectedDevice?.length == 0) {
-    //   this.onValidateDevice()
-    // } else {
-      this.loading = true;
-        var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000 
-        this.dataService.getPlanEntretien(urlParams).subscribe({ // modifier============================
-          next: (d: any) => {          
+  loadData() {
+    this.loading = true;
+    var urldev = "";
+    if (this.selectedDevice != null) {
+      urldev += "?d=" + this.selectedDevice
+    }
+    this.dataService.getDeviceData(urldev).subscribe({ 
+          next: (d: any) => {  
+            console.log(urldev);        
             console.log(d);
             this.data = d;
-            this.data.forEach((e) => {
-              e.timeStart = this.datePipe.transform( new Date(Number.parseInt(e.timeStart) * 1000),'yyyy-MM-dd  h:mm:ss');
-              e.timeEnd = this.datePipe.transform( new Date(Number.parseInt(e.timeEnd) * 1000),'yyyy-MM-dd  h:mm:ss');
-             // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
-              //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
-              if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
-              if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
-            })      
            this.loading = false;
           },
         })
-    //  }
   };
 
 
@@ -167,7 +160,12 @@ export class CrudvehiculeComponent {
     })
   }
 
-
+  modify(ev){
+    this.primaryModal.show()
+    
+    //this.descrip.nativeElement.value= 
+    //this.loadData()
+  }
   ajouter(){
     
    

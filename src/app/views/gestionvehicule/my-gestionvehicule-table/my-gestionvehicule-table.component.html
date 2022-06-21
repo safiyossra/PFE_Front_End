@@ -27,7 +27,14 @@
 					{{ columnNames[index] | uppercase }}
 				</th>
 				<td mat-cell *matCellDef="let salle">
-					{{ salle[column] }}
+          <button *ngIf="column=='actions'" type="button" (click)="modif(salle['deviceID'])"
+            class="btn btn-link p-1 pt-2 m-0"><i
+              class="cil-pen"></i> Modifier</button>
+              <!-- +decodeURIComponent('%3Fd%3D') --> <!-- pour decoder ? et = -->
+          <a *ngIf="column=='actions'" [routerLink]="['/rapports/detaille'+salle['deviceID']]"
+          class="btn btn-link p-1 pt-2 m-0" ><i
+            class="cil-list"></i> Rapport</a>
+					{{ column!='actions'?salle[column]:'' }}
 				</td>
 			</ng-container>
 

@@ -98,7 +98,7 @@ export class AlertsComponent {
     }
     this.dataService.getNotifications(urlNotif).subscribe({
         next: (d: any) => {
-          console.log("d");
+          console.log(urlNotif);
           console.log(d);
         d.forEach((e) => {
           e.timestamp = this.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));

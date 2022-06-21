@@ -3,17 +3,19 @@
     <div class="col-lg-12">
       <div class="card card-accent-info">
         <div class="card-header">
-          <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
-              class="fa fa-plus-circle"></i> Modifier Vehicule </button>
+          <!-- <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
+              class="fa fa-plus-circle"></i> Modifier Vehicule </button> -->
           <div class="card-header-actions">
-            <a href="#">
-              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
-            </a>
-            <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
+            
+            <!-- <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
+            </button> -->
+            <button class="btn text-primary mr-2" (click)="loadData()" [disabled]="loading">
+              <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+              <i class="fa fa-circle-o-notch fa-lg mr-1 fa-spin" *ngIf="loading"></i> &nbsp;Actualiser
             </button>
-            <button type="button" class="card-header-action btn btn-link btn-close" (click)="reset()">
-              <i class="icon-close"></i>
+            <button class="btn text-primary mr-2">
+              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
             </button>
           </div>
         </div>
@@ -35,12 +37,6 @@
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="select1">Identifiant</label>
                             <div class="col-8 input-group">
-                              <!-- <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection (A MODIFIER)'"
-                                [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice"
-                                [showErrorMsg]="showErrorDevice" [options]="devices" [display]="'name'" [value]="'dID'"
-                                [multiple]="false" [labelCount]="0" [selectedOptions]="selectedDevicesModal"
-                                (selectionChange)="getSelectedDevicesModal($event)">
-                              </my-dropdown-select> -->
                               <input type="text" id="text-input" #modele  [disabled]="true" name="id" class="form-control">
                             </div>
                           </div>
@@ -61,7 +57,7 @@
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Description</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #type name="description" class="form-control"
+                              <input type="text" id="text-input" #descrip name="descrip" class="form-control"
                                 placeholder="Saisir une Description">
                             </div>
                           </div>
@@ -171,7 +167,7 @@
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
+        <!-- <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
           <form class="form-horizontal">
             <div class="form-group row">
               <div class="col-md-5">
@@ -196,11 +192,10 @@
                           }}</i></span>
                     </div>
                   </div>
-                  <!--</div> -->
                 </div>
               </div>
               <div class="form-actions">
-                <button type="submit" class="btn btn-sm btn-primary" [disabled]="loading">
+                <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading">
                   <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
                   <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
                 </button>
@@ -208,7 +203,7 @@
             </div>
 
           </form>
-        </div>
+        </div> -->
       </div>
     </div>
     <!--/.col-->
@@ -218,7 +213,7 @@
 
   <div class="row">
     <div class="col-lg-12">
-        <my-gestionvehicule-table [data]="data">
+        <my-gestionvehicule-table (modify)="modify($event)" [data]="data">
         </my-gestionvehicule-table>
     </div>
   </div>
