@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
@@ -7,6 +7,7 @@ import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 
 @Component({
   templateUrl: 'detaille.component.html',
+  styleUrls: ['./style.scss'],
   providers: [DatePipe]
 })
 export class DetailleComponent {
@@ -24,6 +25,7 @@ export class DetailleComponent {
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   iconCollapseD: string = 'icon-arrow-up';
+  reportDataTrajet: any;
   reportData: any;
   reportDataArrets: any;
   reportDetails: any;
@@ -264,8 +266,16 @@ export class DetailleComponent {
           ]
       })
     }
+
+
     this.getDev();
   }
+
+  // ngAfterViewInit() {
+  //   document.getElementById("ddx").addEventListener("onclick", (e) => {
+  //     console.log(e);
+  //   })
+  // }
 
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
@@ -321,10 +331,10 @@ export class DetailleComponent {
             e.ct = extra.fe != 0 ? (e.k / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
             e.cm = (100 * (e.c / (e.k != 0 ? e.k : 1))).toFixed(1);
           })
-          if (!this.isArret)
-            this.reportData = d.filter((e) => { return e.trajet == 1 });
-          else
-            this.reportData = d;
+          // if (!this.isArret)
+          this.reportDataTrajet = d.filter((e) => { return e.trajet == 1 });
+          // else
+          this.reportData = d;
           this.reportDataArrets = d.filter((e) => { return e.trajet == 0 });
           this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), } });
           this.selectedMapDevice = this.selectedDevice
