@@ -118,6 +118,6 @@ export class DetailsTableComponent implements OnChanges {
 
   formatDate(date: Date) {
     return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
-  }
+  } 
 }
 

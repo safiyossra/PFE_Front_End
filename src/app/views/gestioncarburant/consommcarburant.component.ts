@@ -5,10 +5,10 @@ import { DatePipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
-  templateUrl: 'crudgroupe.component.html',
+  templateUrl: 'consommcarburant.component.html',
   providers: [DatePipe]
 })
-export class CrudgroupeComponent {
+export class ConsommcarburantComponent {
 
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
@@ -17,7 +17,7 @@ export class CrudgroupeComponent {
   @ViewChild('report') report: ElementRef;
   @ViewChild('description') description: ElementRef;
 
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService, private datePipe:DatePipe) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -25,16 +25,25 @@ export class CrudgroupeComponent {
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   data = [];
+  datatrajet = [];
   public isnotNum: boolean = false
-  displayedColumns: any = ["Véhicule", "Device", "Num de Tel"]
 
-
+  
   public devices: any = [];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
   showErrorDevice = false;
   errorMessageDevice = "";
 
+  selectedDevicesModal = null;
+  selectedDeviceModal = this.selectedDevicesModal;
+  showErrorDeviceModal = false;
+  errorMessageDeviceModal = "";
+
+  getSelectedDevicesModal(selected) {
+    // console.log(selected);
+    this.selectedDeviceModal = selected;
+  }
 
   resetValidator() {
     this.showErrorDevice = false;
@@ -48,29 +57,29 @@ export class CrudgroupeComponent {
     tomorrow.setDate(today.getDate() + 1);
     this.myDateRangePickerOptions = {
       theme: 'default',
-      labels: ['Début', 'Fin'],
+      labels: ['Start', 'End'],
       menu: [
-        { alias: 'td', text: 'Aujourd\'hui', operation: '0d' },
-        { alias: 'tm', text: 'Ce mois-ci', operation: '0m' },
-        { alias: 'lm', text: 'Le mois dernier', operation: '-1m' },
-        { alias: 'tw', text: 'Cette semaine', operation: '0w' },
-        { alias: 'lw', text: 'La semaine dernière', operation: '-1w' },
-        { alias: 'ty', text: 'Cette année', operation: '0y' },
-        { alias: 'ly', text: 'L\'année dernière', operation: '-1y' },
-        { alias: 'ln', text: '90 derniers jours', operation: '-90d' },
-        { alias: 'l2m', text: '2 derniers mois', operation: '-2m' },
+        { alias: 'td', text: 'Today', operation: '0d' },
+        { alias: 'tm', text: 'This Month', operation: '0m' },
+        { alias: 'lm', text: 'Last Month', operation: '-1m' },
+        { alias: 'tw', text: 'This Week', operation: '0w' },
+        { alias: 'lw', text: 'Last Week', operation: '-1w' },
+        { alias: 'ty', text: 'This Year', operation: '0y' },
+        { alias: 'ly', text: 'Last Year', operation: '-1y' },
+        { alias: 'ln', text: 'Last 90 days', operation: '-90d' },
+        { alias: 'l2m', text: 'Last 2 months', operation: '-2m' },
 
-        { alias: 'pmt', text: 'Mois passé à partir d\'aujourd\'hui', operation: '-1mt' },
-        { alias: 'pwt', text: 'Semaine passée à partir d\'aujourd\'hui', operation: '-1wt' },
-        { alias: 'pyt', text: 'Année passée à partir d\'aujourd\'hui', operation: '-1yt' },
-        { alias: 'pdt', text: '90 derniers jours à partir d\'aujourd\'hui', operation: '-90dt' },
-        { alias: 'pl2mt', text: '2 derniers mois à partir d\'aujourd\'hui', operation: '-2mt' }
+        { alias: 'pmt', text: 'Past Month from Today', operation: '-1mt' },
+        { alias: 'pwt', text: 'Past Week from Today', operation: '-1wt' },
+        { alias: 'pyt', text: 'Past Year from Today', operation: '-1yt' },
+        { alias: 'pdt', text: 'Past 90 days from Today', operation: '-90dt' },
+        { alias: 'pl2mt', text: 'Past 2 months from Today', operation: '-2mt' }
       ],
       dateFormat: 'yyyy-MM-dd',
       outputFormat: 'dd-MM-yyyy',
       startOfWeek: 1,
       outputType: 'object',
-      locale: 'fr-US',
+      locale: 'en-US',
       minDate: {
         day: null,
         month: null,
@@ -90,7 +99,6 @@ export class CrudgroupeComponent {
     this.getDev();
   }
 
-
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
@@ -98,9 +106,8 @@ export class CrudgroupeComponent {
   }
 
   getSelectedDevices(selected) {
+    // console.log(selected);
     this.selectedDevice = selected;
-    console.log(this.selectedDevice?.join(" , ").trim());
-
   }
 
   onValidateDevice() {
@@ -121,30 +128,27 @@ export class CrudgroupeComponent {
     })
   }
 
-  getDeviceByName(e) {
-    return this.devices.filter((v) => { return v.dID == e })[0].name
-  }
 
-  ajouter() {
-
-
+  ajouter(){
+    
+   
     // console.log(this.input1.nativeElement.value);
     // console.log(this.input2.nativeElement.value);
     // console.log(this.motif.nativeElement.value);
     // console.log(this.type.nativeElement.value);
     // console.log(this.modele.nativeElement.value);
-
+    
   }
 
-
+ 
   reset() {
-    this.selectedDevice = []
-    this.selectedDevices = []
-    this.report.nativeElement.value = ''
-    this.id.nativeElement.value = ''
-    this.description.nativeElement.value = ''
-    this.pushpin.nativeElement.value = ''
+    this.selectedDevices = [],
 
+    this.report.nativeElement.value= ''
+    this.id.nativeElement.value= ''
+    this.description.nativeElement.value= ''
+    this.pushpin.nativeElement.value= '' 
+    
   }
 
 }

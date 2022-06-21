@@ -3,17 +3,18 @@
     <div class="col-lg-12">
       <div class="card card-accent-info">
         <div class="card-header">
-          <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
-              class="fa fa-plus-circle"></i> Ajouter Véhicule </button>
+          <!-- <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
+              class="fa fa-plus-circle"></i> Modifier Vehicule </button> -->
           <div class="card-header-actions">
-            <a href="#">
-              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
-            </a>
-            <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
+            <!-- <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
+            </button> -->
+            <button class="btn text-primary mr-2" (click)="loadData()" [disabled]="loading">
+              <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+              <i class="fa fa-circle-o-notch fa-lg mr-1 fa-spin" *ngIf="loading"></i> &nbsp;Actualiser
             </button>
-            <button type="button" class="card-header-action btn btn-link btn-close" (click)="reset()">
-              <i class="icon-close"></i>
+            <button class="btn text-primary mr-2">
+              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
             </button>
           </div>
         </div>
@@ -22,7 +23,11 @@
           <div class="modal-dialog modal-primary" role="document">
             <div class="modal-content">
               <div class="modal-header">
+<<<<<<< HEAD
                 <h5 class="modal-title">Ajouter Véhicule</h5>
+=======
+                <h5 class="modal-title">Modifier Vehicule</h5>
+>>>>>>> e5bcba0fec6bdb5ee46b9f495db88ca0281f6c22
                 <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -35,6 +40,7 @@
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="select1">Identifiant</label>
                             <div class="col-8 input-group">
+<<<<<<< HEAD
                               <!-- <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule (A MODIFIER)'"
                                 [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice"
                                 [showErrorMsg]="showErrorDevice" [options]="devices" [display]="'name'" [value]="'dID'"
@@ -42,26 +48,29 @@
                                 (selectionChange)="getSelectedDevicesModal($event)">
                               </my-dropdown-select> -->
                               <input type="date" id="text-input" #modele name="id" class="form-control">
+=======
+                              <input type="text" id="text-input" #modele  [disabled]="true" name="id" class="form-control">
+>>>>>>> e5bcba0fec6bdb5ee46b9f495db88ca0281f6c22
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="text-input">Date de Création</label>
                             <div class="col-8">
-                              <input type="date" id="text-input" #modele name="datecreation" class="form-control"
+                              <input type="date" id="text-input" #modele [disabled]="true" name="datecreation" class="form-control"
                                 placeholder="Choisir la date">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Identifiant Unique</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #type name="idunique" class="form-control"
+                              <input type="text" id="text-input" #type [disabled]="true" name="idunique" class="form-control"
                                 placeholder="Saisir Identifiant Unique">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Description</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #type name="description" class="form-control"
+                              <input type="text" id="text-input" #descrip name="descrip" class="form-control"
                                 placeholder="Saisir une Description">
                             </div>
                           </div>
@@ -165,15 +174,20 @@
                 </div>
               </div>
               <div class="modal-footer">
+<<<<<<< HEAD
                 <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Fermer</button>
                 <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"> &nbsp; Réinitialiser</button>
                 <button type="button" class="btn btn-primary" *ngIf="isnotNum==false"
                   (click)="ajouter()">Ajouter</button>
+=======
+                <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
+                <button type="button" class="btn btn-primary" (click)="ajouter()">Modifier</button>
+>>>>>>> e5bcba0fec6bdb5ee46b9f495db88ca0281f6c22
               </div>
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
+        <!-- <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
           <form class="form-horizontal">
             <div class="form-group row">
               <div class="col-md-5">
@@ -198,11 +212,10 @@
                           }}</i></span>
                     </div>
                   </div>
-                  <!--</div> -->
                 </div>
               </div>
               <div class="form-actions">
-                <button type="submit" class="btn btn-sm btn-primary" [disabled]="loading">
+                <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading">
                   <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
                   <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
                 </button>
@@ -210,7 +223,7 @@
             </div>
 
           </form>
-        </div>
+        </div> -->
       </div>
     </div>
     <!--/.col-->
@@ -220,7 +233,7 @@
 
   <div class="row">
     <div class="col-lg-12">
-        <my-gestionvehicule-table [data]="data">
+        <my-gestionvehicule-table (modify)="modify($event)" [data]="data">
         </my-gestionvehicule-table>
     </div>
   </div>

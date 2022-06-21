@@ -113,4 +113,16 @@ export class DataService {
     })
   }
 
+  getDeviceData(urld) {
+    let SERVER_URL = environment.apiUrl + "gestionvehicules" + urld;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
 }
