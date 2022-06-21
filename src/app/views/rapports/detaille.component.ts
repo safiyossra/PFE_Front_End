@@ -4,20 +4,31 @@ import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   templateUrl: 'detaille.component.html',
   styleUrls: ['./style.scss'],
   providers: [DatePipe]
 })
-export class DetailleComponent {
-
+export class DetailleComponent implements AfterViewInit {
+  sub: any
+  vehiculeID: any
   loading: boolean = false
   isArret: boolean = false
   loadingcharts: boolean = false
 
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService, private datePipe: DatePipe, private activatedRoute: ActivatedRoute,) {
+  }
+  ngAfterViewInit(): void {
+    if (this.vehiculeID) {
+      this.selectedTab = 3
+      this.selectedDevices = this.vehiculeID;
+      this.selectedDevice = this.selectedDevices;
+      this.submit()
+    }
+  }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -266,16 +277,12 @@ export class DetailleComponent {
           ]
       })
     }
-
-
+    this.sub = this.activatedRoute.queryParams.subscribe(params => {
+      // Defaults to 0 if no query param provided.
+      this.vehiculeID = params['id'] || null;
+    });
     this.getDev();
   }
-
-  // ngAfterViewInit() {
-  //   document.getElementById("ddx").addEventListener("onclick", (e) => {
-  //     console.log(e);
-  //   })
-  // }
 
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;

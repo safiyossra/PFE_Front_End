@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter ,  ElementRef } from '@angular/core';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter, ElementRef } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -14,17 +14,16 @@ import { DataService } from 'src/app/services/data.service';
   templateUrl: 'my-gestionvehicule-table.component.html',
 })
 export class MyGestionvehiculeTableComponent implements OnChanges {
-  @Input() data=[];
+  @Input() data = [];
   // @Input() columnNames?: any[]
-  public displayedColumns =  ["actions","deviceID","description","simPhoneNumber"]
+  public displayedColumns = ["actions", "deviceID", "description", "uniqueID", "lastOdometerKM", "fuel", "deviceCode", "simPhoneNumber"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   @Output() modify?: EventEmitter<any> = new EventEmitter();
   @ViewChild('descrip') descrip: ElementRef;
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
-
-  columnNames =["Actions","Véhicule","Device","Num de Tel"];
+  columnNames = ["Actions", "Device", "Véhicule", "ID unique", "Odomètre (km)", "Total Carburant (L)", "device Code", "Tel"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -36,7 +35,7 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
   @ViewChild(MatSort) sort: MatSort;
   constructor(private dataService: DataService, private datePipe: DatePipe) { }
 
-  
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -46,48 +45,50 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
     }
   }
 
-  modif(ev){
-    console.log("modif");
-    console.log(ev);
+  modif(ev) {
     this.modify.emit(ev)
-
-   // this.isLoading = true;
-    var url = "?d="+ev
-    this.dataService.getDeviceData(url).subscribe({
-      next: (d: any) => {
-        this.loadDonnee = d;
-        this.loadDonnee.forEach((e) => {
-          e.creationTime = this.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
-          
-        })
-        console.log(this.loadDonnee);
-      // this.descrip.nativeElement.value= d.description
-        //this.isLoading = false;
-      },
-    })
-
-
-  }
-  
-  onRowClicked(row: any) {
-    console.log('Row clicked: ', row);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
-    let d = changes['data'].currentValue
-    if (d && d.length>0) {   
-    this.dataSource = new MatTableDataSource(d)
-    this.totalItems = this.dataSource.data.length
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+      let d = changes['data'].currentValue
+      if (d && d.length > 0) {
+        this.dataSource = new MatTableDataSource(d)
+        this.totalItems = this.dataSource.data.length
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      }
     }
   }
-}
 
-formatDate(date: Date) {
-  return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
-}
+  formatDate(date: Date) {
+    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
+  }
 
+  getClassByAge(age) {
+    if (age != undefined) {
+      if (age < 0) return "cil-warning bg-warning"
+      if (age <= 180) return "cil-check bg-success"
+      if (age <= 3600) return "cil-loop bg-primary"
+      if (age > 3600) return "cil-history bg-secondary"
+    }
+    return "cil-report-slash bg-danger";
+  }
+
+  formatAge(seconds) {
+    if (isNaN(seconds)) return "Jamais"
+    // return age
+    //days 
+    let days = Math.floor(seconds / (24 * 3600));
+    seconds -= days * 24 * 3600;
+    //hours 
+    let hours = Math.floor(seconds / 3600);
+    seconds -= hours * 3600;
+    //minutes 
+    let minutes = Math.floor(seconds / 60);
+    seconds -= minutes * 60;
+    //output 
+    return `${days > 0 ? days + " Jours, " : ''}${hours > 0 ? hours + " Heurs, " : ''}${minutes > 0 ? minutes + " minutes, " : ''}${seconds > 0 ? seconds + " seconds" : ''}`;
+  }
 }
 

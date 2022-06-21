@@ -56,16 +56,6 @@ export class MyDropdownComponent {
     }
   }
 
-  // ngDoCheck() {
-  //   if (!this.selectedValue.length) {
-  //     this.selectionChange.emit(this.selectedValue);
-  //   }
-  // }
-
-  // toggleDropdown() {
-  //   this.selectElem.toggle();
-  // }
-
   toggleSelectAll(val: any) {
     if (val.checked) {
       this.filteredOptions.forEach(option => {
@@ -121,10 +111,7 @@ export class MyDropdownComponent {
             option => option[this.value] === this.selectedValue[i]
           )[0];
         }
-
-        console.log("tedtdt ", displayOption);
         if (displayOption.length) {
-
           for (let i = 0; i < displayOption.length; i++) {
             if (displayOption[i] && displayOption[i][this.display]) {
               this.displayString += displayOption[i][this.display] + ",";
@@ -136,7 +123,7 @@ export class MyDropdownComponent {
             this.selectedValue.length > this.labelCount
           ) {
             this.displayString += ` (+${this.selectedValue.length -
-              this.labelCount} others)`;
+              this.labelCount} autres)`;
           }
         }
       } else {
