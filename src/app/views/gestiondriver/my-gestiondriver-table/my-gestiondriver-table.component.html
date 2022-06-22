@@ -26,8 +26,14 @@
 				<th mat-header-cell *matHeaderCellDef mat-sort-header>
 					{{ columnNames[index] | uppercase }}
 				</th>
-				<td mat-cell *matCellDef="let salle">
-					{{ salle[column] }}
+				<td mat-cell *matCellDef="let salle"> 
+          <div *ngIf="column=='actions'">
+            <button type="button" title="Modifier" (click)="modif(salle['driverID'])" class="btn rounded m-1 btn-primary"><i
+                class="cil-pen"></i></button>
+            <button type="button" title="Supprimer" (click)="supp(salle['driverID'])" class="btn rounded m-1 btn-danger"><i
+                  class="cil-trash"></i></button>
+          </div>
+          {{ column!='actions'?salle[column]:'' }}
 				</td>
 			</ng-container>
 

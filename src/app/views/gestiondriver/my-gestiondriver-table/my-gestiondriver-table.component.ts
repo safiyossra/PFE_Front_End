@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -14,13 +14,13 @@ import { MatTableDataSource } from '@angular/material/table';
 export class MyGestiondriverTableComponent implements OnChanges {
   @Input() data=[];
   // @Input() columnNames?: any[]
-  public displayedColumns =  ["id","v","date","nom"]
+  public displayedColumns =  ["actions","driverID","contactPhone","description","displayName"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  columnNames =["ConducteursID","Numéro de Téléphone","Description","Nom"];
+  columnNames =["Actions","ConducteursID","Numéro de Téléphone","Description","Nom"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -30,6 +30,8 @@ export class MyGestiondriverTableComponent implements OnChanges {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @Output() modify?: EventEmitter<any> = new EventEmitter();
+  @Output() delete?: EventEmitter<any> = new EventEmitter();
 
   constructor() {
   }
@@ -42,27 +44,34 @@ export class MyGestiondriverTableComponent implements OnChanges {
       this.dataSource.paginator.firstPage();
     }
   }
-
   onRowClicked(row: any) {
     console.log('Row clicked: ', row);
   }
+  modif(ev) {
+    this.modify.emit(ev)
+  }
+  supp(ev) {
+    this.delete.emit(ev)
+    if(confirm("Are you sure to delete "+ev)) { console.log("Implement delete functionality here"); }
+  }
+
 
   ngOnChanges(changes: SimpleChanges): void {
-  //   if (changes['data']) {
-  //   let d = changes['data'].currentValue
-  //   if (d && d.length>0) {
-  //     console.log("data");
+    if (changes['data']) {
+    let d = changes['data'].currentValue
+    if (d && d.length>0) {
+      console.log("data");
       
-  //     console.log(d);
-  //     console.log(changes['columnNames']);
+      console.log(d);
+      console.log(changes['columnNames']);
       
-  //   this.dataSource = new MatTableDataSource(d)
-  //   this.displayedColumns = this.columns
-  //   this.totalItems = this.dataSource.data.length
-  //   this.dataSource.paginator = this.paginator;
-  //   this.dataSource.sort = this.sort;
-  //   }
-  // }
+    this.dataSource = new MatTableDataSource(d)
+   // this.displayedColumns = this.columns
+    this.totalItems = this.dataSource.data.length
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    }
+  }
 }
 }
 

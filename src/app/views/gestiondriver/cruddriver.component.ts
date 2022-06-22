@@ -3,6 +3,7 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
 import {ModalDirective, ModalOptions} from 'ngx-bootstrap/modal';
+import { Driver } from '../../models/driver';
 
 @Component({
   templateUrl: 'cruddriver.component.html',
@@ -11,27 +12,29 @@ import {ModalDirective, ModalOptions} from 'ngx-bootstrap/modal';
 export class CruddriverComponent {
 
   loading: boolean = false;
+  modalLoading: boolean = false;
+  selectedDriver: Driver = new Driver();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  @ViewChild('dateexp') dateexp: ElementRef;
-  @ViewChild('address') address: ElementRef;
-  @ViewChild('dayexp') dayexp: ElementRef;
-  @ViewChild('note') note: ElementRef;
-  @ViewChild('restriction') restriction: ElementRef;
-  @ViewChild('vehiculeid') vehiculeid: ElementRef;
-  @ViewChild('matricul') matricul: ElementRef;
-  @ViewChild('description') description: ElementRef;
-  @ViewChild('num') num: ElementRef;
-  @ViewChild('titlevehicule') titlevehicule: ElementRef;
-  @ViewChild('explic') explic: ElementRef;
-  @ViewChild('dateexplic') dateexplic: ElementRef;
-  @ViewChild('numlic') numlic: ElementRef;
-  @ViewChild('typelic') typelic: ElementRef;
-  @ViewChild('naissance') naissance: ElementRef;
-  @ViewChild('numtel') numtel: ElementRef;
-  @ViewChild('nom') nom: ElementRef;
-  @ViewChild('email') email: ElementRef;
-  @ViewChild('iddriver') iddriver: ElementRef;
-  @ViewChild('idbadge') idbadge: ElementRef;
+  // @ViewChild('dateexp') dateexp: ElementRef;
+  // @ViewChild('address') address: ElementRef;
+  // @ViewChild('dayexp') dayexp: ElementRef;
+  // @ViewChild('note') note: ElementRef;
+  // @ViewChild('restriction') restriction: ElementRef;
+  // @ViewChild('vehiculeid') vehiculeid: ElementRef;
+  // @ViewChild('matricul') matricul: ElementRef;
+  // @ViewChild('description') description: ElementRef;
+  // @ViewChild('num') num: ElementRef;
+  // @ViewChild('titlevehicule') titlevehicule: ElementRef;
+  // @ViewChild('explic') explic: ElementRef;
+  // @ViewChild('dateexplic') dateexplic: ElementRef;
+  // @ViewChild('numlic') numlic: ElementRef;
+  // @ViewChild('typelic') typelic: ElementRef;
+  // @ViewChild('naissance') naissance: ElementRef;
+  // @ViewChild('numtel') numtel: ElementRef;
+  // @ViewChild('nom') nom: ElementRef;
+  // @ViewChild('email') email: ElementRef;
+  // @ViewChild('iddriver') iddriver: ElementRef;
+  // @ViewChild('idbadge') idbadge: ElementRef;
   constructor(private dataService: DataService, private datePipe:DatePipe) { }
 
   value: string | Object;
@@ -121,6 +124,8 @@ export class CruddriverComponent {
     };
 
     this.getDev();
+    this.loadData();
+
   }
 
   toggleCollapse(): void {
@@ -145,31 +150,76 @@ export class CruddriverComponent {
   }
 
   //////////////////////
-  submit() {
-    // this.resetValidator()
-    // if (this.selectedDevice == null) {
-    //   this.onValidateDevice()
-    // } else {
-      this.loading = true;
-    var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
-        this.dataService.getPlanEntretien(urlParams).subscribe({ // modifier============================
-          next: (d: any) => {          
-            console.log(d);
-            this.data = d;
-            this.data.forEach((e) => {
-              e.timeStart = this.datePipe.transform( new Date(Number.parseInt(e.timeStart) * 1000),'yyyy-MM-dd  h:mm:ss');
-              e.timeEnd = this.datePipe.transform( new Date(Number.parseInt(e.timeEnd) * 1000),'yyyy-MM-dd  h:mm:ss');
-             // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
-              //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
-              if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
-              if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
-            })      
-           this.loading = false;
-          },
-        })
-    //  }
+  // submit() {
+  //   // this.resetValidator()
+  //   // if (this.selectedDevice == null) {
+  //   //   this.onValidateDevice()
+  //   // } else {
+  //     this.loading = true;
+  //   var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
+  //       this.dataService.getPlanEntretien(urlParams).subscribe({ // modifier============================
+  //         next: (d: any) => {          
+  //           console.log(d);
+  //           this.data = d;
+  //           this.data.forEach((e) => {
+  //             e.timeStart = this.datePipe.transform( new Date(Number.parseInt(e.timeStart) * 1000),'yyyy-MM-dd  h:mm:ss');
+  //             e.timeEnd = this.datePipe.transform( new Date(Number.parseInt(e.timeEnd) * 1000),'yyyy-MM-dd  h:mm:ss');
+  //            // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
+  //             //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
+  //             if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
+  //             if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
+  //           })      
+  //          this.loading = false;
+  //         },
+  //       })
+  //   //  }
+  // };
+
+  loadData() {
+    this.loading = true;
+    var urlParams = "";
+    if (this.selectedDevice != null) {
+      urlParams += "?device=" + this.selectedDevice
+    }
+    this.dataService.getDriverData(urlParams).subscribe({
+      next: (d: any) => {          
+        console.log(d);
+        this.data = d;     
+       this.loading = false;
+      }, error(err) {
+        this.loading = false;
+      },
+    })
   };
 
+  loadModify(ev) {
+    this.selectedDriver = new Driver();
+    if (ev) {
+      var url = "?d=" + ev
+      this.modalLoading = true;
+      this.primaryModal.show()
+      this.dataService.getDriverData(url).subscribe({
+        next: (d: any) => {
+          console.log(d);
+          
+          if (d && d.length) {
+            d.forEach(e => {
+              e.birthdate = this.formatDate(new Date(Number.parseInt(e.birthdate) * 1000));
+              e.licenseExpire = this.formatDate(new Date(Number.parseInt(e.licenseExpire) * 1000));
+              e.insuranceExpire = this.formatDate(new Date(Number.parseInt(e.insuranceExpire) * 1000));
+            });
+            this.selectedDriver = d[0];
+          }
+          this.modalLoading = false;
+        }, error(err) {
+          this.modalLoading = false;
+        },
+    })
+    }
+  }
+  delete(ev){
+
+  }
 
   getDev() {
     this.dataService.getVehicule().subscribe({
@@ -181,7 +231,9 @@ export class CruddriverComponent {
       }
     })
   }
-
+  formatDate(date: Date) {
+    return this.datePipe.transform(date, 'yyyy-MM-dd');
+  }
 
   ajouter(){
     
@@ -197,30 +249,7 @@ export class CruddriverComponent {
  
   reset() {
     this.selectedDevices = [],
-    this.selectedDevicesModal = [],
-    this.selectedOperations = [],
-    this.address.nativeElement.value= ''
-    this.dayexp.nativeElement.value= ''
-    this.note.nativeElement.value= ''
-    this.restriction.nativeElement.value= ''
-    this.vehiculeid.nativeElement.value= ''
-    this.dateexp.nativeElement.value= ''
-    this.matricul.nativeElement.value= ''
-    this.description.nativeElement.value= ''
-    this.num.nativeElement.value= ''
-    this.titlevehicule.nativeElement.value= ''
-    this.explic.nativeElement.value= ''
-    this.dateexplic.nativeElement.value= ''
-    this.numlic.nativeElement.value= ''
-    this.typelic.nativeElement.value= ''
-    this.naissance.nativeElement.value= ''
-    this.numtel.nativeElement.value= ''
-    this.email.nativeElement.value= ''
-    this.iddriver.nativeElement.value= ''
-    this.nom.nativeElement.value= ''
-    this.idbadge.nativeElement.value= ''
-    
-    
+    this.selectedDevice = []
   }
 
 

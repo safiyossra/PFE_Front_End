@@ -40,9 +40,33 @@ export class ConsommcarburantComponent {
   showErrorDeviceModal = false;
   errorMessageDeviceModal = "";
 
+  
+  selectedCiternes = null;
+  selectedCiterne = this.selectedCiternes;
+
+  public citernes = [
+    {
+      label: "Tout",
+      data: "0"
+    },
+    {
+      label: "Citerne 1",
+      data: "1"
+    },
+    {
+      label: "Citerne 2",
+      data: "2"
+    },
+ 
+  ];
   getSelectedDevicesModal(selected) {
     // console.log(selected);
     this.selectedDeviceModal = selected;
+  }
+
+  getSelectedCiternes(selected) {
+    // console.log(selected);
+    this.selectedCiterne = selected;
   }
 
   resetValidator() {
