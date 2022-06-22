@@ -109,9 +109,9 @@ export class DashboardComponent implements OnInit {
         const data = res['DeviceList']
         this.pieChartData = [0, 0, 0, 0]
         data.forEach(e => {
-          let l = e['EventData'].length - 1 ?? 0
-          if (l > 0) {
-            const StatusCode = e['EventData'][1]["StatusCode"]
+          let l = e['EventData'].length - 1 ?? -1
+          if (l > -1) {
+            const StatusCode = e['EventData'][l]["StatusCode"]
             if (StatusCode == 61714) { //Moving
               this.pieChartData[0] += 1;
             } else

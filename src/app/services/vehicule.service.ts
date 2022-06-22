@@ -12,10 +12,9 @@ export class VehiculeService {
 
   constructor(private http: HttpClient, private route: Router, private JWT: JwtService) { }
 
-  getData() {
-    let SERVER_URL = environment.apiUrl + "list";
+  getData(extra = "") {
+    let SERVER_URL = environment.apiUrl + "list?" + extra;
     let jwt = this.JWT.get();
-    // if (jwt) {
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
       'Accept': 'application/json'
@@ -24,9 +23,6 @@ export class VehiculeService {
     return this.http.get(SERVER_URL, {
       headers: headers
     })
-    // } else {
-    //   return this.route.navigate(['login']);
-    // }
   }
 
   getVehiculeEvents(api) {

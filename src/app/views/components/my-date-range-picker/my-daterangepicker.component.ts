@@ -83,13 +83,15 @@ export class MyDateRangePickerComponent implements ControlValueAccessor, OnInit,
     date: Date;
     dateFrom: Date;
     dateTo: Date;
+    time_1 = "00:00";
+    time_2 = "23:59";
     dayNames: string[];
     days: IDay[];
     range: string;
     defaultOptions: MyDateRangePickerOptions = {
         theme: 'default',
-        labels: ['Start', 'End'],
-        locale: 'en-US',
+        labels: ['Début', 'Fin'],
+        locale: 'fr-FR',
         menu: [],
         dateFormat: 'dd-MM-yyyy',
         outputFormat: 'dd-MM-yyyy',
@@ -487,5 +489,19 @@ export class MyDateRangePickerComponent implements ControlValueAccessor, OnInit,
         }
 
         return null;
+    }
+    public get getDateFrom() { return Math.round(this.dateFrom.getTime() / 1000) + this.convertToTimestamp(this.time_1); }
+    public get getDateTo() { return Math.round(this.dateTo.getTime() / 1000) + (this.convertToTimestamp(this.time_2)); }
+
+    convertToTimestamp(val: any) {
+        var res = 0
+        let values = val.split(':')
+        if (values && values.length == 2) {
+            let hr = Number.parseInt(values[0])
+            let min = Number.parseInt(values[1])
+            res += (!hr || isNaN(hr)) ? 0 : hr * 60 * 60;
+            res += (!min || isNaN(min)) ? 0 : min * 60;
+        }
+        return res;
     }
 }

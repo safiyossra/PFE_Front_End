@@ -1,7 +1,9 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { util } from '../../../tools/utils'
 import { ZoneService } from '../../../services/zone.service'
 import * as L from 'leaflet'
+import 'leaflet-routing-machine';
+
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { VehiculeService } from 'src/app/services/vehicule.service';
@@ -58,6 +60,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   endPosition: any = "";
   distanceItineraire: string = "";
   dureeItineraire: string = "";
+  directionControl: any
+
   // ---------------- Zones ------------------
   constructor(private tools: util, private zoneService: ZoneService, private vehiculeService: VehiculeService, private fb: FormBuilder) {
     this.POIForm = fb.group({
@@ -88,23 +92,11 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.createMap()
     }, 100)
-    // this.zoneChanges()
   }
 
   onTypeChange(event: any) {
     this.clearZoneFromMap()
     this.searchedPosition = { address: "", lat: null, lng: null }
-    // switch (event.value) {
-    //   case 'poi':
-
-    //     break;
-
-    //   case 'poc':
-
-    //     break;
-    //   default:
-    //     break;
-    // }
   }
 
   createMap() {
@@ -173,19 +165,18 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     }
 
     ////////////////////////////////////////////////////////////
-    const searchControl = GeoSearchControl({
+    GeoSearchControl({
       provider: this.provider,
-      // showMarker: true,
+      showMarker: false,
       // style: 'bar',
-      // position: "topleft",
-      // retainZoomLevel: false, // optional: true|false  - default false
-      // animateZoom: true, // optional: true|false  - default true
-      // autoClose: true, // optional: true|false  - default false
+      position: "topleft",
+      retainZoomLevel: false, // optional: true|false  - default false
+      animateZoom: true, // optional: true|false  - default true
+      autoClose: true, // optional: true|false  - default false
       searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
       // keepResult: false, // optional: true|false  - default false
-      updateMap: false, // optional: true|false  - default true
-    });
-    searchControl.addTo(this.map)
+      updateMap: true, // optional: true|false  - default true
+    }).addTo(this.map)
 
     ////////////////////////////////////////////////////////////
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
@@ -207,25 +198,48 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       }
     })
 
+    // -------------------------------------------- ROUTING ---------------------------------------
+    this.directionControl = L.Routing.control({
+      router: L.Routing.osrmv1({
+        serviceUrl: `http://router.project-osrm.org/route/v1/`,
+        language: 'fr'
+      }),
+      showAlternatives: true,
+      lineOptions: { styles: [{ color: 'black', weight: 9, stroke: true, opacity: .15 }, { color: 'white', weight: 6, stroke: true, opacity: .8 }, { color: 'blue', weight: 3, stroke: true, opacity: 1 }], extendToWaypoints: true, missingRouteTolerance: 0 },
+      altLineOptions: { styles: [{ color: 'black', weight: 9, stroke: true, opacity: .15 }, { color: 'white', weight: 6, stroke: true, opacity: .8 }, { color: 'red', weight: 2, stroke: true, opacity: 1 }], extendToWaypoints: true, missingRouteTolerance: 0 },
+      show: true,
+      addWaypoints: false,
+      routeWhileDragging: false,
+      plan: L.Routing.plan([], {
+        draggableWaypoints: false,
+        routeWhileDragging: false,
+        createMarker: function () { return null; },
+      }),
+    })
+
+
   }
 
-  drawDirection() {
-    if (this.selectedVehicleIndex != -1) {
-      let lat = this.myMarkers[this.selectedVehicleIndex].lat;
-      let lng = this.myMarkers[this.selectedVehicleIndex].lng;
-      if (
-        this.endPosition &&
-        lat == this.endPosition.lat &&
-        lng == this.endPosition.lng &&
-        this.isTrajetDrew
-      ) {
-        this.isTrajetDrew = !this.isTrajetDrew;
-      } else {
-        this.isTrajetDrew = true;
-        this.endPosition = { lat: lat, lng: lng };
-        // this.startAddress = this.searchedPosition.address;
-      }
+
+  clearRoutesFromMap() {
+
+    this.directionControl?.remove()
+    // if (this.directionControl && this.map.hasCustomControl(this.directionControl)) {
+    //   this.directionControl.removeFrom(this.map)
+    // }
+  }
+
+  drawDirection(lat, lng) {
+    this.clearRoutesFromMap()
+
+    if (this.searchedPosition.lat != null && this.searchedPosition.lng != null) {
+      this.directionControl.setWaypoints([
+        L.latLng(this.searchedPosition.lat, this.searchedPosition.lng),
+        L.latLng(lat, lng)
+      ])
     }
+
+    this.directionControl.addTo(this.map)
   }
 
   clearDirection() {
@@ -297,7 +311,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     this.POIForm.controls['radius'].valueChanges.subscribe(val => {
       this.radius = val
       this.clearZoneFromMap()
-      if (this.searchedPosition.lat != "" && this.searchedPosition.lng != "") {
+      if (this.searchedPosition.lat != null && this.searchedPosition.lng != null) {
         this.paintZone(this.searchedPosition)
       }
     })
@@ -307,6 +321,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     if (this.myZone && this.map.hasLayer(this.myZone)) {
       this.myZone.removeFrom(this.map)
     }
+    this.clearRoutesFromMap()
     this.clearMarkersFromMap()
   }
 
@@ -339,9 +354,9 @@ export class ClosestComponent implements OnInit, AfterViewInit {
           const data = res['DeviceList']
           let vehicules = []
           data.forEach(e => {
-            let l = e['EventData'].length - 1 ?? 0
-            if (l > 0) {
-              const vData = e['EventData'][1]
+            let l = e['EventData'].length - 1 ?? -1
+            if (l > -1) {
+              const vData = e['EventData'][l]
               vehicules.push(
                 new Vehicule(
                   {
@@ -382,7 +397,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
               offset: L.point(0, -20)
 
             }).on('click', (event) => {
-              this.markerClicked([veh.lat, veh.lng])
+              this.drawDirection(veh.lat, veh.lng)
+              // this.markerClicked([veh.lat, veh.lng])
             }))
       }
     });

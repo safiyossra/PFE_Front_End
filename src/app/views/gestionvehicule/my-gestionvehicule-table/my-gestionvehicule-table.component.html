@@ -1,52 +1,40 @@
 <div class="card card-accent-info" style="min-height: 660px">
-  <!--secondary--> 
+  <!--secondary-->
   <div class="card-body">
     <div class="form-horizontal col-md-5 mb-2">
-        <div class="input-group">
-          <input
-            type="text"
-            id="input3-group3"
-            name="input3-group3"
-            class="form-control"
-            placeholder="..."
-            (keyup)="applyFilter($event)"
-            #input
-          />
-          <div class="input-group-append">
-            <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
-          </div>
+      <div class="input-group">
+        <input type="text" id="input3-group3" name="input3-group3" class="form-control" placeholder="..."
+          (keyup)="applyFilter($event)" #input />
+        <div class="input-group-append">
+          <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
         </div>
-      </div>
-      <table mat-table [dataSource]="dataSource" matSort>
+        </div>
+        </div>
+        <table mat-table [dataSource]="dataSource" matSort>
 
-        <ng-container
-				*ngFor="let column of displayedColumns; let index = index"
-				[matColumnDef]="column"
-			>
-				<th mat-header-cell *matHeaderCellDef mat-sort-header>
-					{{ columnNames[index] | uppercase }}
-				</th>
-				<td mat-cell *matCellDef="let salle">
-          <button *ngIf="column=='actions'" type="button" (click)="modif(salle['deviceID'])"
-            class="btn btn-link p-1 pt-2 m-0"><i
-              class="cil-pen"></i> Modifier</button>
-              <!--+decodeURIComponent('%3Fd%3D')-->
-          <a *ngIf="column=='actions'" [routerLink]="['/rapports/detaille'+salle['deviceID']]"
-          class="btn btn-link p-1 pt-2 m-0" ><i
-            class="cil-list"></i> Rapport</a>
-					{{ column!='actions'?salle[column]:'' }}
-				</td>
-			</ng-container>
+      <ng-container *ngFor="let column of displayedColumns; let index = index" [matColumnDef]="column">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ columnNames[index] | uppercase }}
+        </th>
+        <td mat-cell *matCellDef="let salle" [ngClass]="salle['isActive']==0 ? 'bg-danger':''">
+          <div *ngIf="column=='actions'">
+            <button type="button" title="Modifier" (click)="modif(salle['deviceID'])" class="btn rounded m-1 btn-primary"><i
+                class="cil-pen"></i></button>
+            <a title="Rapport" [routerLink]="['/rapports/detaille']" target="_blank" [queryParams]="{ id: salle['deviceID']}"
+              class="btn rounded btn-secondary"><i class="cil-list"></i> </a>
+            <i [ngClass]="getClassByAge(salle['age'])" class="rounded-circle p-2 h5 m-1 ml-4 align-middle"
+              [title]="formatAge(salle['age'])"></i>
+          </div>
+          {{ column!='actions'?salle[column]:'' }}
+        </td>
+        </ng-container>
 
-			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-			<tr
-				mat-row
-				*matRowDef="let row; columns: displayedColumns"
-				(click)="onRowClicked(row)"
-			></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
   </div>
-  <div class="card-footer"> 
-      <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [pageSize]="selectedPageSize"> </mat-paginator>
+  <div class="card-footer">
+    <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [pageSize]="selectedPageSize">
+    </mat-paginator>
   </div>
 </div>

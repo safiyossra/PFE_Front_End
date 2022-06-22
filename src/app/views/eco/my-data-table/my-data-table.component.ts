@@ -15,8 +15,7 @@ export class MyDataTableComponent implements OnChanges {
   @Input() data: any;
   @Input() columnNames?: any[]
   @Input() columns?: any[]
-  @Input() title?: any[]
-  @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
+  @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
@@ -26,7 +25,6 @@ export class MyDataTableComponent implements OnChanges {
   public totalItems: number = 0;
   public currentPage: number = 0;
   public numPages: number = 0;
-
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;

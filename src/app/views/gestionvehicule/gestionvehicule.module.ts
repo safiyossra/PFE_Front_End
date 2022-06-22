@@ -11,10 +11,7 @@ import { MyGestionvehiculeTableComponent } from './my-gestionvehicule-table/my-g
 import { MaterialsModule } from '../../materials.module';
 // Components Routing
 import { GestionvehiculeRoutingModule } from './gestionvehicule-routing.module';
-import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-daterangepicker.module';
 import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
-import { MatSelectModule } from '@angular/material/select';
-import { ChartsModule } from 'ng2-charts';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 
@@ -23,12 +20,10 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     CommonModule,
     GestionvehiculeRoutingModule,
     FormsModule,
-    MatSelectModule,
-    ChartsModule,
-    MaterialsModule,
-    MyDateRangePickerModule,
-    MyDropdownModule,
     ReactiveFormsModule,
+    MaterialsModule,
+    // MyDateRangePickerModule,
+    MyDropdownModule,
     ModalModule.forRoot(),
     CollapseModule.forRoot(),
   ],

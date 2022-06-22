@@ -42,26 +42,22 @@ export class DetailsComponent {
     },
     responsive: true,
     maintainAspectRatio: false,
-    // scales: {
-    // xAxes: [{
-    //   gridLines: {
-    //     drawOnChartArea: false,
-    //   },
-    // ticks: {
-    //   callback: function (value: any) {
-    //     return value.charAt(0);
-    //   }
-    // }
-    // }],
-    // yAxes: [{
-    //   ticks: {
-    //     beginAtZero: true,
-    //     maxTicksLimit: 5,
-    //     stepSize: Math.ceil(250 / 5),
-    //     max: 250
-    //   }
-    // }]
-    // },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          drawOnChartArea: false,
+        },
+        ticks: {
+          beginAtZero: true,
+          maxTicksLimit: 50,
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+        }
+      }]
+    },
     elements: {
       line: {
         borderWidth: 2
@@ -74,7 +70,7 @@ export class DetailsComponent {
       }
     },
     legend: {
-      display: false
+      display: true
     }
   };
   public mainChartColours: Array<any> = [
@@ -103,7 +99,7 @@ export class DetailsComponent {
       borderDash: [8, 5]
     }
   ];
-  public mainChartLegend = false;
+  public mainChartLegend = true;
   public mainChartType = 'line';
 
   value: string | Object;
@@ -162,29 +158,29 @@ export class DetailsComponent {
     yesterday.setDate(today.getDate() - 10);
     this.myDateRangePickerOptions = {
       theme: 'default',
-      labels: ['Start', 'End'],
+      labels: ['Début', 'Fin'],
       menu: [
-        { alias: 'td', text: 'Today', operation: '0d' },
-        { alias: 'tm', text: 'This Month', operation: '0m' },
-        { alias: 'lm', text: 'Last Month', operation: '-1m' },
-        { alias: 'tw', text: 'This Week', operation: '0w' },
-        { alias: 'lw', text: 'Last Week', operation: '-1w' },
-        { alias: 'ty', text: 'This Year', operation: '0y' },
-        { alias: 'ly', text: 'Last Year', operation: '-1y' },
-        { alias: 'ln', text: 'Last 90 days', operation: '-90d' },
-        { alias: 'l2m', text: 'Last 2 months', operation: '-2m' },
+        { alias: 'td', text: 'Aujourd\'hui', operation: '0d' },
+        { alias: 'tm', text: 'Ce mois-ci', operation: '0m' },
+        { alias: 'lm', text: 'Le mois dernier', operation: '-1m' },
+        { alias: 'tw', text: 'Cette semaine', operation: '0w' },
+        { alias: 'lw', text: 'La semaine dernière', operation: '-1w' },
+        { alias: 'ty', text: 'Cette année', operation: '0y' },
+        { alias: 'ly', text: 'L\'année dernière', operation: '-1y' },
+        { alias: 'ln', text: '90 derniers jours', operation: '-90d' },
+        { alias: 'l2m', text: '2 derniers mois', operation: '-2m' },
 
-        { alias: 'pmt', text: 'Past Month from Today', operation: '-1mt' },
-        { alias: 'pwt', text: 'Past Week from Today', operation: '-1wt' },
-        { alias: 'pyt', text: 'Past Year from Today', operation: '-1yt' },
-        { alias: 'pdt', text: 'Past 90 days from Today', operation: '-90dt' },
-        { alias: 'pl2mt', text: 'Past 2 months from Today', operation: '-2mt' }
+        { alias: 'pmt', text: 'Mois passé à partir d\'aujourd\'hui', operation: '-1mt' },
+        { alias: 'pwt', text: 'Semaine passée à partir d\'aujourd\'hui', operation: '-1wt' },
+        { alias: 'pyt', text: 'Année passée à partir d\'aujourd\'hui', operation: '-1yt' },
+        { alias: 'pdt', text: '90 derniers jours à partir d\'aujourd\'hui', operation: '-90dt' },
+        { alias: 'pl2mt', text: '2 derniers mois à partir d\'aujourd\'hui', operation: '-2mt' }
       ],
       dateFormat: 'yyyy-MM-dd',
       outputFormat: 'dd-MM-yyyy',
       startOfWeek: 1,
       outputType: 'object',
-      locale: 'en-US',
+      locale: 'fr-US',
       minDate: {
         day: null,
         month: null,
@@ -236,19 +232,19 @@ export class DetailsComponent {
   //////////////////////
   submit() {
     this.resetValidator()
-    if (this.selectedDevice?.length == 0) {
+    if (this.selectedDevice == null) {
       this.onValidateDevice()
     } else {
       this.loading = true;
       this.resume = []
-      var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.dateFrom.getTime() / 1000 + "&et=" + this.myDateRangePicker.dateTo.getTime() / 1000 + "&eco"
+      var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo + "&eco"
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
           // console.log(d);
           this.reportData = d;
           this.reportData.forEach((e) => {
-            e.timeStart = this.datePipe.transform(new Date(Number.parseInt(e.timeStart) * 1000), 'yyyy-MM-dd  h:mm:ss');
-            e.timeEnd = this.datePipe.transform(new Date(Number.parseInt(e.timeEnd) * 1000), 'yyyy-MM-dd  h:mm:ss');
+            e.timeStart = this.formatDate(new Date(Number.parseInt(e.timeStart) * 1000))
+            e.timeEnd = this.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000))
             if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
             if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
           })
@@ -337,6 +333,9 @@ export class DetailsComponent {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
   }
 
+  formatDate(date: Date) {
+    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
+  }
 }
 
 

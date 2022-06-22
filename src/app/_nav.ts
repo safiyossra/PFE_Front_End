@@ -27,22 +27,21 @@ export const navItems: INavData[] = [
   {
     name: 'Vehicules Plus Proches',
     url: '/map/closest',
-    icon: 'cil-map'
+    icon: 'cil-vector'
   },
   {
     name: 'Rapports',
-    url: '/rapport/menu',
     icon: 'icon-docs',
     children: [
-      {
-        name: 'Rapports journalier',
-        url: '/rapports/journalier',
-        icon: 'icon-graph'
-      },
       {
         name: 'Rapports Détaillés',
         url: '/rapports/detaille',
         icon: 'icon-book-open'
+      },
+      {
+        name: 'Rapports journalier',
+        url: '/rapports/journalier',
+        icon: 'icon-graph'
       },
       {
         name: 'Rapports Synthétiques',
@@ -68,12 +67,6 @@ export const navItems: INavData[] = [
         icon: 'icon-book-open'
       }
     ]
-  },
-
-
-  {
-    title: true,
-    name: ''
   },
 
   {

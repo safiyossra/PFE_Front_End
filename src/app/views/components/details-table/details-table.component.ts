@@ -21,11 +21,11 @@ export class DetailsTableComponent implements OnChanges {
   // public columnNames = ["Date","Status","Pushpin Code","Lat/Lon","Vitesse(km/h)","Distance en kilométrage","Carburant %","Fuel Vol(L)","Carburant Total(L)","Adresse","Insert Date"]
   // Pushpin Code , Carburant %, 
   public columnNames = ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
-  public pageSizeOptions = [10, 15, 20, 30, 50, 100];
+  public pageSizeOptions = [10, 15, 20, 30, 50, 100, 200, 500, 1000];
   public data: any;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   public isLoading: boolean = false
-  public displayedColumns: any = ["timestamp", "statusCode", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
+  public displayedColumns: any = ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
   public selectedPageSize = 10;
   public maxSize: number = 5;
   public totalRows: number = 0;
@@ -75,9 +75,7 @@ export class DetailsTableComponent implements OnChanges {
         this.loadDonnee.forEach((e) => {
           e.timestamp = this.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
           e.creationTime = this.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
-          if (e.statusCode == 61714) { e.statusCode = "En Route"; } else
-            if (e.statusCode == 62465) { e.statusCode = "Moteur ON"; } else
-              if (e.statusCode == 62467) { e.statusCode = "Moteur OFF"; }
+          e.status = this.getStatusName(e.statusCode)
         })
         console.log(this.loadDonnee);
         setTimeout(() => {
@@ -106,6 +104,17 @@ export class DetailsTableComponent implements OnChanges {
     this.positionClick.emit(out)
   }
 
+  getStatusName(status: any) {
+    if (status == 61714) { return "En Route"; } else
+      if (status == 62465) { return "Moteur ON"; } else
+        return "Moteur OFF";
+  }
+
+  getStatusColor(status: any) {
+    if (status == 61714) { return "text-success"; } else
+      if (status == 62465) { return "text-primary"; } else
+        return "text-danger";
+  }
 
   formatDate(date: Date) {
     return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');

@@ -2,12 +2,11 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   Output,
   ViewChild,
-  DoCheck
 } from "@angular/core";
 import { FormControl } from "@angular/forms";
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 @Component({
   selector: 'my-places-search',
@@ -15,7 +14,7 @@ import { FormControl } from "@angular/forms";
   styleUrls: ['./my-places-dropdown.component.scss']
 })
 export class MyPlacesDropdownComponent {
-  @Input() provider: any;
+  provider = new OpenStreetMapProvider();
   @Input() display = "label";
   @Input() formControl: FormControl = new FormControl();
 

@@ -29,14 +29,14 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
                     </div>
-                    <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection'"
+                    <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule'"
                       [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
                       [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
                       [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
                     </my-dropdown-select>
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-key fa-sm"
-                          *ngIf="selectedDevice?.length == 0"></i><i *ngIf="selectedDevice != null">{{
+                          *ngIf="selectedDevice == null"></i><i *ngIf="selectedDevice != null">{{
                           selectedDevice
                           }}</i></span>
                     </div>
@@ -88,7 +88,7 @@
                       [selectedOptions]="selectedparams[0]" (selectionChange)="getSelectedparams($event,0)">
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <button *ngIf="selectedparams[0].length != 0" type="button" class="input-group-text"
+                      <button *ngIf="selectedparams[0] != null" type="button" class="input-group-text"
                         (click)="resetparam(0)">
                         <i>x</i>
                       </button>
@@ -117,7 +117,7 @@
                       [selectedOptions]="selectedparams[1]" (selectionChange)="getSelectedparams($event,1)">
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <button *ngIf="selectedparams[1].length != 0" type="button" class="input-group-text"
+                      <button *ngIf="selectedparams[1] != null" type="button" class="input-group-text"
                         (click)="resetparam(1)">
                         <i>x</i>
                       </button>
@@ -147,7 +147,7 @@
                       [selectedOptions]="selectedparams[2]" (selectionChange)="getSelectedparams($event,2)">
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <button *ngIf="selectedparams[2].length != 0" type="button" class="input-group-text"
+                      <button *ngIf="selectedparams[2] != null" type="button" class="input-group-text"
                         (click)="resetparam(2)">
                         <i>x</i>
                       </button>
@@ -177,7 +177,7 @@
                       [selectedOptions]="selectedparams[3]" (selectionChange)="getSelectedparams($event,3)">
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <button *ngIf="selectedparams[3].length != 0" type="button" class="input-group-text"
+                      <button *ngIf="selectedparams[3] != null" type="button" class="input-group-text"
                         (click)="resetparam(3)">
                         <i>x</i>
                       </button>
@@ -191,7 +191,7 @@
               <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading"
                 (click)="toggleCollapseData()">
                 <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
-                <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
+                <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
               </button>
             </div>
           </form>
@@ -236,8 +236,6 @@
             Trajet &nbsp;
           </ng-template>
           <my-data-table [data]="reportData" [columnNames]="displayedColumns" [columns]="columns">
-
-
           </my-data-table>
         </tab>
         <tab style="min-height: 660px">

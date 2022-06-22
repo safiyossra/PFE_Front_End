@@ -29,14 +29,14 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
                     </div>
-                    <my-dropdown-select class="form-control" [placeholder]="'Vehicle Selection'"
+                    <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule'"
                       [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
                       [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
                       [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
                     </my-dropdown-select>
                     <div class="input-group-append">
-                      <span class="input-group-text"><i class="fa fa-key fa-sm"
-                          *ngIf="selectedDevice?.length == 0"></i><i *ngIf="selectedDevice != null">{{
+                      <span class="input-group-text"><i class="fa fa-key fa-sm" *ngIf="selectedDevice == null"></i><i
+                          *ngIf="selectedDevice != null">{{
                           selectedDevice
                           }}</i></span>
                     </div>
@@ -47,7 +47,7 @@
               <div class="form-actions">
                 <button type="submit" class="btn btn-sm btn-primary" (click)="submit()" [disabled]="loading">
                   <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
-                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
+                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
                 </button>
               </div>
             </div>
@@ -55,14 +55,19 @@
           </form>
         </div>
       </div>
-      <div [collapse]="loading" [isAnimated]="true" class="card">
-        <my-data-table class="detailtable" [title]="'Trajet et Eco-Index &nbsp;'" [data]="reportData"
-          [columnNames]="displayedColumns" [columns]="columns">
-        </my-data-table>
-        <div class="chart-wrapper" style="height:300px;margin-top:40px; overflow-x: scroll;">
-          <canvas baseChart class="chart" [datasets]="mainChartData" [labels]="mainChartLabels"
-            [options]="mainChartOptions" [colors]="mainChartColours" [legend]="mainChartLegend"
-            [chartType]="mainChartType"></canvas>
+      <div class="card">
+        <div class="card-header">
+          <!-- <h6 class="text-muted mb-2 mt-2 pl-2">{{title}}</h6> -->
+          Trajet et Eco-Index
+        </div>
+        <div class="card-body">
+          <my-data-table class="detailtable" [data]="reportData" [columnNames]="displayedColumns" [columns]="columns">
+          </my-data-table>
+          <div class="chart-wrapper" style="height:300px;margin-top:40px; overflow-x: scroll;">
+            <canvas baseChart class="chart" [datasets]="mainChartData" [labels]="mainChartLabels" [options]="mainChartOptions"
+              [colors]="mainChartColours" [legend]="mainChartLegend" [chartType]="mainChartType"></canvas>
+          </div>
+
         </div>
       </div>
       <!--/.col-->

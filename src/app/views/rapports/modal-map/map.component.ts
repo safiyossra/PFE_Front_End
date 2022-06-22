@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { util } from '../../../tools/utils'
 import * as L from 'leaflet'
 import { VehiculeService } from 'src/app/services/vehicule.service';
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 
 @Component({
   selector: 'modal-map',
@@ -18,6 +19,7 @@ export class ModalMapComponent implements AfterViewInit {
     lng: -5.83
   }
 
+  provider = new OpenStreetMapProvider();
   trajets: any[] = []
   loadingTrajet = false
   @Input() mapID: string
@@ -145,6 +147,21 @@ export class ModalMapComponent implements AfterViewInit {
         position: "topleft"
       }).addTo(this.map);
     }
+    ////////////////////////////////////////////////////////////
+    GeoSearchControl({
+      provider: this.provider,
+      showMarker: false,
+      // style: 'bar',
+      position: "topleft",
+      retainZoomLevel: false, // optional: true|false  - default false
+      animateZoom: true, // optional: true|false  - default true
+      autoClose: true, // optional: true|false  - default false
+      searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
+      // keepResult: false, // optional: true|false  - default false
+      updateMap: true, // optional: true|false  - default true
+    }).addTo(this.map)
+
+    ////////////////////////////////////////////////////////////
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
     L.control.scale().addTo(this.map);
     this.invalidate()

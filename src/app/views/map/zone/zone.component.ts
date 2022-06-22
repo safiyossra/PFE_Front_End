@@ -6,6 +6,7 @@ import { ZoneService } from './../../../services/zone.service'
 import { Zone, ZoneType } from './../../../models/zone'
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 
 @Component({
   selector: 'app-zone',
@@ -14,6 +15,7 @@ import { MatSort } from '@angular/material/sort';
 })
 export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
+  provider = new OpenStreetMapProvider();
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
   // ---------------- MAP -----------------
@@ -519,7 +521,21 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
         position: "topleft"
       }).addTo(this.map);
     }
+    ////////////////////////////////////////////////////////////
+    GeoSearchControl({
+      provider: this.provider,
+      showMarker: false,
+      // style: 'bar',
+      position: "topleft",
+      retainZoomLevel: false, // optional: true|false  - default false
+      animateZoom: true, // optional: true|false  - default true
+      autoClose: true, // optional: true|false  - default false
+      searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
+      // keepResult: false, // optional: true|false  - default false
+      updateMap: true, // optional: true|false  - default true
+    }).addTo(this.map)
 
+    ////////////////////////////////////////////////////////////
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
     L.control.scale().addTo(this.map);
 

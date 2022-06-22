@@ -16,7 +16,7 @@ export class MyPlanentretienaTableComponent implements OnChanges {
   // @Input() columnNames?: any[]
   public displayedColumns =  ["id","v","date","type","decl", "anti"]
   @Input() columns?: any[]
-  @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
+  @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 

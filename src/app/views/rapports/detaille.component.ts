@@ -1,21 +1,34 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   templateUrl: 'detaille.component.html',
+  styleUrls: ['./style.scss'],
   providers: [DatePipe]
 })
-export class DetailleComponent {
-
-  loading: boolean = false;
-  loadingcharts: boolean = false;
+export class DetailleComponent implements AfterViewInit {
+  sub: any
+  vehiculeID: any
+  loading: boolean = false
+  isArret: boolean = false
+  loadingcharts: boolean = false
 
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService, private datePipe: DatePipe, private activatedRoute: ActivatedRoute,) {
+  }
+  ngAfterViewInit(): void {
+    if (this.vehiculeID) {
+      this.selectedTab = 3
+      this.selectedDevices = this.vehiculeID;
+      this.selectedDevice = this.selectedDevices;
+      this.submit()
+    }
+  }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -23,10 +36,15 @@ export class DetailleComponent {
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   iconCollapseD: string = 'icon-arrow-up';
+  reportDataTrajet: any;
   reportData: any;
+  reportDataArrets: any;
   reportDetails: any;
-  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Theorique (L)"]
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)"]
   columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct"];
+
+  displayedColumnsArrets: any = ["Depart", "Arrivé", "Adresse", "Durée (min)"]
+  columnsArrets: any = ["timeStart", "timeEnd", "addi", "da"];
 
   resume = [];
 
@@ -206,29 +224,29 @@ export class DetailleComponent {
     tomorrow.setDate(today.getDate() + 1);
     this.myDateRangePickerOptions = {
       theme: 'default',
-      labels: ['Start', 'End'],
+      labels: ['Début', 'Fin'],
       menu: [
-        { alias: 'td', text: 'Today', operation: '0d' },
-        { alias: 'tm', text: 'This Month', operation: '0m' },
-        { alias: 'lm', text: 'Last Month', operation: '-1m' },
-        { alias: 'tw', text: 'This Week', operation: '0w' },
-        { alias: 'lw', text: 'Last Week', operation: '-1w' },
-        { alias: 'ty', text: 'This Year', operation: '0y' },
-        { alias: 'ly', text: 'Last Year', operation: '-1y' },
-        { alias: 'ln', text: 'Last 90 days', operation: '-90d' },
-        { alias: 'l2m', text: 'Last 2 months', operation: '-2m' },
+        { alias: 'td', text: 'Aujourd\'hui', operation: '0d' },
+        { alias: 'tm', text: 'Ce mois-ci', operation: '0m' },
+        { alias: 'lm', text: 'Le mois dernier', operation: '-1m' },
+        { alias: 'tw', text: 'Cette semaine', operation: '0w' },
+        { alias: 'lw', text: 'La semaine dernière', operation: '-1w' },
+        { alias: 'ty', text: 'Cette année', operation: '0y' },
+        { alias: 'ly', text: 'L\'année dernière', operation: '-1y' },
+        { alias: 'ln', text: '90 derniers jours', operation: '-90d' },
+        { alias: 'l2m', text: '2 derniers mois', operation: '-2m' },
 
-        { alias: 'pmt', text: 'Past Month from Today', operation: '-1mt' },
-        { alias: 'pwt', text: 'Past Week from Today', operation: '-1wt' },
-        { alias: 'pyt', text: 'Past Year from Today', operation: '-1yt' },
-        { alias: 'pdt', text: 'Past 90 days from Today', operation: '-90dt' },
-        { alias: 'pl2mt', text: 'Past 2 months from Today', operation: '-2mt' }
+        { alias: 'pmt', text: 'Mois passé à partir d\'aujourd\'hui', operation: '-1mt' },
+        { alias: 'pwt', text: 'Semaine passée à partir d\'aujourd\'hui', operation: '-1wt' },
+        { alias: 'pyt', text: 'Année passée à partir d\'aujourd\'hui', operation: '-1yt' },
+        { alias: 'pdt', text: '90 derniers jours à partir d\'aujourd\'hui', operation: '-90dt' },
+        { alias: 'pl2mt', text: '2 derniers mois à partir d\'aujourd\'hui', operation: '-2mt' }
       ],
       dateFormat: 'yyyy-MM-dd',
       outputFormat: 'dd-MM-yyyy',
       startOfWeek: 1,
       outputType: 'object',
-      locale: 'en-US',
+      locale: 'fr-US',
       minDate: {
         day: null,
         month: null,
@@ -259,6 +277,10 @@ export class DetailleComponent {
           ]
       })
     }
+    this.sub = this.activatedRoute.queryParams.subscribe(params => {
+      // Defaults to 0 if no query param provided.
+      this.vehiculeID = params['id'] || null;
+    });
     this.getDev();
   }
 
@@ -291,7 +313,7 @@ export class DetailleComponent {
   //////////////////////
   submit() {
     this.resetValidator()
-    if (this.selectedDevice?.length == 0) {
+    if (this.selectedDevice == null) {
       this.onValidateDevice()
     } else {
       this.loading = true;
@@ -301,12 +323,11 @@ export class DetailleComponent {
       if (this.selectedTab == 2) this.getEvolution(true)
       if (this.selectedTab == 4) this.showTrajet()
       // this.resume = []
-      var urlParams = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
+      var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
           // console.log(d);
-          this.reportData = d;
-          this.reportData.forEach((e) => {
+          d.forEach((e) => {
             e.st = e.timeStart;
             e.et = e.timeEnd;
             e.timeStart = this.formatDate(new Date(Number.parseInt(e.timeStart) * 1000));
@@ -316,8 +337,13 @@ export class DetailleComponent {
             e.cd = Math.round(e.c * extra.fc);
             e.ct = extra.fe != 0 ? (e.k / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
             e.cm = (100 * (e.c / (e.k != 0 ? e.k : 1))).toFixed(1);
-
           })
+          // if (!this.isArret)
+          this.reportDataTrajet = d.filter((e) => { return e.trajet == 1 });
+          // else
+          this.reportData = d;
+          this.reportDataArrets = d.filter((e) => { return e.trajet == 0 });
+          this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), } });
           this.selectedMapDevice = this.selectedDevice
           let resumetmp = [];
           let labels = this.reportData.map((l) => { return l.timeStart })
@@ -375,15 +401,14 @@ export class DetailleComponent {
   getEvolution(force = false) {
     this.selectedTab = 2
     this.resetValidator()
-    if (this.selectedDevice?.length == 0) {
+    if (this.selectedDevice == null) {
       this.onValidateDevice()
     } else {
-      let urlEvolution = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000)
+      let urlEvolution = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
       if (urlEvolution != this.urlEvolution || force) {
         this.urlEvolution = urlEvolution
         this.loadEvolution(urlEvolution)
       }
-
     }
   }
 
@@ -422,11 +447,11 @@ export class DetailleComponent {
 
   getdetails() {
     this.resetValidator()
-    if (this.selectedDevice?.length == 0) {
+    if (this.selectedDevice == null) {
       this.onValidateDevice()
     } else {
       this.selectedMapDevice = this.selectedDevice
-      this.urldetails = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000) + "&all"
+      this.urldetails = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo + "&all"
     }
   }
 
@@ -446,15 +471,10 @@ export class DetailleComponent {
   }
 
   openMap(v: any) {
-    // console.log("openMap");
-    // console.log(v);
     this.startTime = v.timeStart ? v.timeStart : "";
     this.endTime = v.timeEnd ? v.timeEnd : "";
     this.selectedMapDevice = v.selectedMapDevice ? v.selectedMapDevice : "";
-    // console.log(this.startTime, this.endTime);
     if (this.startTime != "" && this.selectedMapDevice != "") {
-
-      // console.log(this.getVehiculeById(this.selectedMapDevice));
       this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
       this.interval = this.formatDate(new Date(Number.parseInt(this.startTime) * 1000))
       if (this.endTime != "") {
@@ -469,11 +489,11 @@ export class DetailleComponent {
     this.selectedTab = 4
     this.resetValidator()
     this.ToInvalidate = Math.random().toString();
-    if (this.selectedDevice?.length == 0) {
+    if (this.selectedDevice == null) {
       this.onValidateDevice()
     } else {
-      this.trajetStartTime = Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000).toString();
-      this.trajetEndTime = Math.round(this.myDateRangePicker.dateTo.getTime() / 1000).toString();
+      this.trajetStartTime = this.myDateRangePicker.getDateFrom.toString();
+      this.trajetEndTime = this.myDateRangePicker.getDateTo.toString();
       this.trajetSelectedDevice = this.selectedDevice;
     }
   }
