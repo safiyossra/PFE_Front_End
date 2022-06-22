@@ -3,7 +3,6 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
 import {ModalDirective, ModalOptions} from 'ngx-bootstrap/modal';
-import { MyGestionvehiculeTableComponent } from './my-gestionvehicule-table/my-gestionvehicule-table.component';
 
 @Component({
   templateUrl: 'crudvehicule.component.html',
@@ -19,7 +18,7 @@ export class CrudvehiculeComponent {
   @ViewChild('type') type: ElementRef;
   @ViewChild('modele') modele: ElementRef;
   @ViewChild('descrip') descrip: ElementRef;
-  constructor(private dataService: DataService, private datePipe:DatePipe , private gestvehicule: MyGestionvehiculeTableComponent) { }
+  constructor(private dataService: DataService, private datePipe:DatePipe) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -162,8 +161,7 @@ export class CrudvehiculeComponent {
 
   modify(ev){
     this.primaryModal.show()
-    
-    //this.descrip.nativeElement.value= 
+    this.descrip.nativeElement.value= 'this.data.description'
     //this.loadData()
   }
   ajouter(){

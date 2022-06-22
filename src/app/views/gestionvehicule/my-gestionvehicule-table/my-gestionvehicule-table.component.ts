@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter ,  ElementRef } from '@angular/core';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -20,7 +20,6 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
   @Output() modify?: EventEmitter<any> = new EventEmitter();
-  @ViewChild('descrip') descrip: ElementRef;
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
@@ -58,10 +57,9 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
         this.loadDonnee = d;
         this.loadDonnee.forEach((e) => {
           e.creationTime = this.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
-          
         })
         console.log(this.loadDonnee);
-      // this.descrip.nativeElement.value= d.description
+       
         //this.isLoading = false;
       },
     })
