@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card card-accent-info">
         <div class="card-header">
-          <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
+          <button type="button" data-toggle="modal" (click)="showAddModal()" class="btn btn-outline-primary"><i
               class="fa fa-plus-circle"></i> Ajouter Conducteur </button>
           <div class="card-header-actions">
             <a href="#">
@@ -175,7 +175,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Fermer</button>
-                <button type="submit" class="btn btn-primary" *ngIf="isnotNum==false"
+                <button type="submit" class="btn btn-primary" 
                   (click)="ajouter()">Ajouter</button>
               </div>
             </div><!-- /.modal-content -->
@@ -184,10 +184,6 @@
         <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
           <form class="form-horizontal">
             <div class="form-group row">
-              <div class="col-md-5">
-                <my-daterangepicker #calendar [ngModelOptions]="{ standalone: true }" [(ngModel)]="value"
-                  [options]="myDateRangePickerOptions"></my-daterangepicker>
-              </div>
               <div class="col-md-5">
                 <div class="controls">
                   <div class="input-group">

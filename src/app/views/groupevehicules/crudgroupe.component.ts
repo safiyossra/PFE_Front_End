@@ -12,10 +12,6 @@ export class CrudgroupeComponent {
 
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  @ViewChild('id') id: ElementRef;
-  @ViewChild('pushpin') pushpin: ElementRef;
-  @ViewChild('report') report: ElementRef;
-  @ViewChild('description') description: ElementRef;
 
   constructor(private dataService: DataService, private datePipe: DatePipe) { }
 
@@ -88,6 +84,7 @@ export class CrudgroupeComponent {
     };
 
     this.getDev();
+    this.loadData();
   }
 
 
@@ -108,6 +105,21 @@ export class CrudgroupeComponent {
     this.errorMessageDevice = "This field is required";
   }
 
+  loadData() {
+    this.loading = true;
+    this.dataService.getGroupeVehicules("").subscribe({
+      next: (d: any) => {          
+        console.log(d);
+        this.data = d;  
+           
+       this.loading = false;
+      }, error(err) {
+        this.loading = false;
+      },
+    })
+  };
+
+
 
   getDev() {
     this.dataService.getVehicule().subscribe({
@@ -126,24 +138,12 @@ export class CrudgroupeComponent {
   }
 
   ajouter() {
-
-
-    // console.log(this.input1.nativeElement.value);
-    // console.log(this.input2.nativeElement.value);
-    // console.log(this.motif.nativeElement.value);
-    // console.log(this.type.nativeElement.value);
-    // console.log(this.modele.nativeElement.value);
-
   }
 
 
   reset() {
     this.selectedDevice = []
     this.selectedDevices = []
-    this.report.nativeElement.value = ''
-    this.id.nativeElement.value = ''
-    this.description.nativeElement.value = ''
-    this.pushpin.nativeElement.value = ''
 
   }
 

@@ -59,9 +59,8 @@ export class MyGestiondriverTableComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
     let d = changes['data'].currentValue
-    if (d && d.length>0) {
-      console.log("data");
-      
+    if (d) {
+
       console.log(d);
       console.log(changes['columnNames']);
       

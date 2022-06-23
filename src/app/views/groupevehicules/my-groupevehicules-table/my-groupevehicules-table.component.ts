@@ -14,13 +14,13 @@ import { MatTableDataSource } from '@angular/material/table';
 export class MyGroupevehiculesTableComponent implements OnChanges {
   @Input() data=[];
   // @Input() columnNames?: any[]
-  public displayedColumns =  ["select","id","description","nom"]
+  public displayedColumns =  ["actions","groupID","description","nbrvehicules"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  columnNames =["Selectionner","Identifiant","Description","Nombre de Véhicules"];
+  columnNames =["Actions","Identifiant","Description","Nombre de Véhicules"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -48,21 +48,20 @@ export class MyGroupevehiculesTableComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-  //   if (changes['data']) {
-  //   let d = changes['data'].currentValue
-  //   if (d && d.length>0) {
-  //     console.log("data");
+    if (changes['data']) {
+    let d = changes['data'].currentValue
+    if (d && d.length>0) {
+      console.log("data");
       
-  //     console.log(d);
-  //     console.log(changes['columnNames']);
+      console.log(d);
+      console.log(changes['columnNames']);
       
-  //   this.dataSource = new MatTableDataSource(d)
-  //   this.displayedColumns = this.columns
-  //   this.totalItems = this.dataSource.data.length
-  //   this.dataSource.paginator = this.paginator;
-  //   this.dataSource.sort = this.sort;
-  //   }
-  // }
+    this.dataSource = new MatTableDataSource(d)
+    this.totalItems = this.dataSource.data.length
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    }
+  }
 }
 }
 

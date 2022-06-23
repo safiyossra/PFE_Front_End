@@ -6,9 +6,13 @@
           <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
               class="fa fa-plus-circle"></i> Ajouter un Groupe </button>
           <div class="card-header-actions">
-            <a href="#">
+            <button class="btn text-primary mr-2" (click)="loadData()" [disabled]="loading">
+              <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+              <i class="fa fa-circle-o-notch fa-lg mr-1 fa-spin" *ngIf="loading"></i> &nbsp;Actualiser
+            </button>
+            <button class="btn text-primary mr-2">
               <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
-            </a>
+            </button>
           </div>
         </div>
         <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade"
