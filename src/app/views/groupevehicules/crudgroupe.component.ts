@@ -3,6 +3,7 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { Groupevehicules } from '../../models/Groupevehicules';
 
 @Component({
   templateUrl: 'crudgroupe.component.html',
@@ -21,8 +22,12 @@ export class CrudgroupeComponent {
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   data = [];
+  mode = "Ajouter"
   public isnotNum: boolean = false
   displayedColumns: any = ["Véhicule", "Device", "Num de Tel"]
+  modalLoading: boolean = false;
+  selectedGroupevehicules: Groupevehicules = new Groupevehicules();
+  
 
 
   public devices: any = [];
@@ -39,50 +44,6 @@ export class CrudgroupeComponent {
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
   ngOnInit() {
-    const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1);
-    this.myDateRangePickerOptions = {
-      theme: 'default',
-      labels: ['Début', 'Fin'],
-      menu: [
-        { alias: 'td', text: 'Aujourd\'hui', operation: '0d' },
-        { alias: 'tm', text: 'Ce mois-ci', operation: '0m' },
-        { alias: 'lm', text: 'Le mois dernier', operation: '-1m' },
-        { alias: 'tw', text: 'Cette semaine', operation: '0w' },
-        { alias: 'lw', text: 'La semaine dernière', operation: '-1w' },
-        { alias: 'ty', text: 'Cette année', operation: '0y' },
-        { alias: 'ly', text: 'L\'année dernière', operation: '-1y' },
-        { alias: 'ln', text: '90 derniers jours', operation: '-90d' },
-        { alias: 'l2m', text: '2 derniers mois', operation: '-2m' },
-
-        { alias: 'pmt', text: 'Mois passé à partir d\'aujourd\'hui', operation: '-1mt' },
-        { alias: 'pwt', text: 'Semaine passée à partir d\'aujourd\'hui', operation: '-1wt' },
-        { alias: 'pyt', text: 'Année passée à partir d\'aujourd\'hui', operation: '-1yt' },
-        { alias: 'pdt', text: '90 derniers jours à partir d\'aujourd\'hui', operation: '-90dt' },
-        { alias: 'pl2mt', text: '2 derniers mois à partir d\'aujourd\'hui', operation: '-2mt' }
-      ],
-      dateFormat: 'yyyy-MM-dd',
-      outputFormat: 'dd-MM-yyyy',
-      startOfWeek: 1,
-      outputType: 'object',
-      locale: 'fr-US',
-      minDate: {
-        day: null,
-        month: null,
-        year: null
-      },
-      maxDate: {
-        day: null,
-        month: null,
-        year: null
-      },
-      date: {
-        from: today,
-        to: tomorrow
-      }
-    };
-
     this.getDev();
     this.loadData();
   }
@@ -111,7 +72,7 @@ export class CrudgroupeComponent {
       next: (d: any) => {          
         console.log(d);
         this.data = d;  
-           
+
        this.loading = false;
       }, error(err) {
         this.loading = false;
@@ -119,6 +80,35 @@ export class CrudgroupeComponent {
     })
   };
 
+  loadModify(ev) {
+    this.mode ="Modifier"
+    this.selectedGroupevehicules = new Groupevehicules(ev[0],ev[1],ev[2]);
+    if (ev) {
+      var url = "?g=" + ev[0]
+      this.modalLoading = true;
+      this.primaryModal.show()
+      this.dataService.getGroupeVehicules(url).subscribe({
+        next: (d: any) => {
+          console.log(d);
+             this.selectedGroupevehicules.vehiclues = d.map(e=> {return e.deviceID});
+             this.selectedDevices=this.selectedGroupevehicules.vehiclues
+             this.selectedDevice=this.selectedDevices
+          this.modalLoading = false;
+        }, error(err) {
+          this.modalLoading = false;
+        },
+    })
+    }
+  }
+
+  delete(ev){
+
+  }
+
+  showAddModal(){
+    this.selectedGroupevehicules = new Groupevehicules();
+    this.primaryModal.show()
+  }
 
 
   getDev() {
@@ -138,9 +128,12 @@ export class CrudgroupeComponent {
   }
 
   ajouter() {
+    this.mode ="Ajouter"
   }
 
-
+  formatDate(date: Date) {
+    return this.datePipe.transform(date, 'yyyy-MM-dd');
+  }
   reset() {
     this.selectedDevice = []
     this.selectedDevices = []

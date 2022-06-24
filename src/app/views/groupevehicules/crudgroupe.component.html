@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card card-accent-info">
         <div class="card-header">
-          <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
+          <button type="button" data-toggle="modal" (click)="showAddModal()" class="btn btn-outline-primary"><i
               class="fa fa-plus-circle"></i> Ajouter un Groupe </button>
           <div class="card-header-actions">
             <button class="btn text-primary mr-2" (click)="loadData()" [disabled]="loading">
@@ -15,35 +15,62 @@
             </button>
           </div>
         </div>
-        <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade"
-          tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-primary" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Ajouter Groupe</h5>
-                <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+        <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
+          <form class="form-horizontal">
+            <div class="row">
+              <div class="col-lg-12">
+                <my-groupevehicules-table (modify)="loadModify($event)" (delete)="delete($event)" [data]="data">
+                </my-groupevehicules-table>
               </div>
-              <div class="modal-body">
-                <div class="animated fadeIn">
-                  <div class="row">
-                    <div class="col-lg-7">
-                      <div class="card-body">
-                        <div class="form-group row">
-                          <label class=" col-md-5 col-form-label" for="select1">Identifiant</label>
-                          <div class="col-6">
-                            <input type="text" id="text-input" #id [disabled]="true" name="iddriver" class="form-control">
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-md-5 col-form-label" for="text-input">Description</label>
-                          <div class="col-6">
-                            <input type="text" id="text-input" #description name="description" class="form-control"
-                              placeholder="Saisir une Description">
-                          </div>
-                        </div>
-                        <!-- <div class="form-group row">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>
+
+
+<div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-primary" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{mode}} Groupe</h5>
+        <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
+        <div class="animated fadeIn">
+          <div class="row">
+            <div class="col-lg-7">
+              <div class="card-body">
+                <div class="form-group row">
+                  <label class=" col-md-5 col-form-label" for="select1">Identifiant</label>
+                  <div class="col-6">
+                    <input type="text" [(ngModel)]="selectedGroupevehicules.groupID"
+                      [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Saisir un identifiant">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-5 col-form-label" for="text-input">Nom</label>
+                  <div class="col-6">
+                    <input type="text" [(ngModel)]="selectedGroupevehicules.displayName"
+                      [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Saisir un nom">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-5 col-form-label" for="text-input">Description</label>
+                  <div class="col-6">
+                    <input type="text" [(ngModel)]="selectedGroupevehicules.description"
+                      [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Saisir une Description">
+                  </div>
+                </div>
+                <!-- <div class="form-group row">
                           <label class="col-md-5 col-form-label" for="text-input">Pushpin Limit (Groupe de
                             véhicules)</label>
                           <div class="col-6">
@@ -59,57 +86,38 @@
                               placeholder="0">
                           </div>
                         </div> -->
-                      </div>
-                    </div>
-                    <div class="col-lg-5">
-                      <div class="card-body ">
-                        <div class="form-group row">
-                          <label class=" col-md-4 col-form-label" for="select1">Véhicules</label>
-                          <div class="col-8 input-group">
-                            <my-dropdown-select class="form-control" [placeholder]="'Device Selection'"
-                              [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice"
-                              [showErrorMsg]="showErrorDevice" [options]="devices" [display]="'name'" [value]="'dID'"
-                              [multiple]="true" [labelCount]="2" [selectedOptions]="selectedDevices"
-                              (selectionChange)="getSelectedDevices($event)">
-                            </my-dropdown-select>
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class=" col-md-4 col-form-label">Séléctionnées</label>
-                          <div class="col-8 input-group">
-                            <select size="6" class="form-control" placeholder="Véhicules Séléctionnées" >
-                              <option *ngFor="let e of selectedDevice">{{getDeviceByName(e)}}</option>
-                            
-                          </select>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card-body ">
+                <div class="form-group row">
+                  <label class=" col-md-4 col-form-label" for="select1">Véhicules</label>
+                  <div class="col-8 input-group">
+                    <my-dropdown-select class="form-control" [placeholder]="'Device Selection'"
+                      [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
+                      [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="true" [labelCount]="2"
+                      [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
+                    </my-dropdown-select>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class=" col-md-4 col-form-label">Séléctionnées</label>
+                  <div class="col-8 input-group">
+                    <select size="6" class="form-control" placeholder="Véhicules Séléctionnées">
+                      <option *ngFor="let e of selectedDevice">{{getDeviceByName(e)}}</option>
+
+                    </select>
                   </div>
                 </div>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Fermer</button>
-                <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"> &nbsp; Réinitialiser</button>
-                <button type="button" class="btn btn-primary" *ngIf="isnotNum==false"
-                  (click)="ajouter()">Ajouter</button>
-              </div>
-            </div><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-        <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
-          <form class="form-horizontal">
-            <div class="row">
-              <div class="col-lg-12">
-                <my-groupevehicules-table [data]="data">
-                </my-groupevehicules-table>
-              </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
-    </div>
-    <!--/.col-->
-  </div>
-  <!--/.row-->
-</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="ajouter()">{{mode}}</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

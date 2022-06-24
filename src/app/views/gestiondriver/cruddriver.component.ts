@@ -15,26 +15,6 @@ export class CruddriverComponent {
   modalLoading: boolean = false;
   selectedDriver: Driver = new Driver();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  // @ViewChild('dateexp') dateexp: ElementRef;
-  // @ViewChild('address') address: ElementRef;
-  // @ViewChild('dayexp') dayexp: ElementRef;
-  // @ViewChild('note') note: ElementRef;
-  // @ViewChild('restriction') restriction: ElementRef;
-  // @ViewChild('vehiculeid') vehiculeid: ElementRef;
-  // @ViewChild('matricul') matricul: ElementRef;
-  // @ViewChild('description') description: ElementRef;
-  // @ViewChild('num') num: ElementRef;
-  // @ViewChild('titlevehicule') titlevehicule: ElementRef;
-  // @ViewChild('explic') explic: ElementRef;
-  // @ViewChild('dateexplic') dateexplic: ElementRef;
-  // @ViewChild('numlic') numlic: ElementRef;
-  // @ViewChild('typelic') typelic: ElementRef;
-  // @ViewChild('naissance') naissance: ElementRef;
-  // @ViewChild('numtel') numtel: ElementRef;
-  // @ViewChild('nom') nom: ElementRef;
-  // @ViewChild('email') email: ElementRef;
-  // @ViewChild('iddriver') iddriver: ElementRef;
-  // @ViewChild('idbadge') idbadge: ElementRef;
   constructor(private dataService: DataService, private datePipe:DatePipe) { }
 
   value: string | Object;
