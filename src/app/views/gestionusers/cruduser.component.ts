@@ -18,31 +18,33 @@ export class CruduserComponent {
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   constructor(private dataService: DataService, private datePipe: DatePipe) { }
   data = [];
-  public devices: any = [];
-  selectedDevices = null;
-  selectedDevice = this.selectedDevices;
-  showErrorDevice = false;
-  errorMessageDevice = "";
 
-  getSelectedDevices(selected) {
-    this.selectedDevice = selected;
-    console.log(this.selectedDevice?.join(" , ").trim());
+  public groups: any = [];
+  selectedGroups = null;
+  selectedGroup = this.selectedGroups;
+  showErrorGroup = false;
+  errorMessageGroup = "";
+
+  getSelectedGroups(selected) {
+    this.selectedGroup = selected;
+    console.log(this.selectedGroup?.join(" , ").trim());
 
   }
 
-  onValidateDevice() {
-    this.showErrorDevice = !this.showErrorDevice;
-    this.errorMessageDevice = "This field is required";
+  onValidateGroup() {
+    this.showErrorGroup = !this.showErrorGroup;
+    this.errorMessageGroup = "This field is required";
   }
 
   ngOnInit() {
-    this.getDev();
+    this.getGroup();
     this.loadData();
   }
-  getDev() {
-    this.dataService.getVehicule().subscribe({
+  
+  getGroup() {
+    this.dataService.getGroupeVehicules("").subscribe({
       next: (res) => {
-        this.devices = res;
+        this.groups = res;
         console.log(res)
       },
       error: (errors) => {
@@ -58,8 +60,7 @@ export class CruduserComponent {
         let now = Math.round(new Date().getTime() / 1000)
         d.forEach(e => {
           e.lastLoginTime = this.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
-          e.age = e.age > 0 ? (now - e.age) : "jamais"
-          
+          e.age = e.age > 0 ? (now - e.age) : "jamais"          
         });
         this.data = d;
         this.loading = false;
@@ -79,9 +80,6 @@ export class CruduserComponent {
       this.dataService.getUsers(url).subscribe({
         next: (d: any) => {
           if (d && d.length) {
-            // d.forEach(e => {
-            //   e.lastLoginTime = this.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
-            // });
             this.selectedUser = d[0];
           }
           this.modalLoading = false;

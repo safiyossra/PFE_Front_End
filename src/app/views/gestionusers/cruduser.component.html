@@ -102,12 +102,12 @@
                           </div>
                         </div>
                         <div class="form-group row">
-                          <label class=" col-md-4 col-form-label" for="select1">Véhicules</label>
+                          <label class=" col-md-4 col-form-label" for="select1">Groupe de véhicules</label>
                           <div class="col-8 input-group">
-                            <my-dropdown-select class="form-control" [placeholder]="'Device Selection'"
-                              [selectPlaceholder]="'Cherhcer...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
-                              [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="true" [labelCount]="2"
-                              [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
+                            <my-dropdown-select class="form-control" [placeholder]="'Selectionner un groupe'"
+                              [selectPlaceholder]="'Cherhcer...'" [errorMsg]="errorMessageGroup" [showErrorMsg]="showErrorGroup"
+                              [options]="groups" [display]="'description'" [value]="'groupID'" [multiple]="true" [labelCount]="2"
+                              [selectedOptions]="selectedGroups" (selectionChange)="getSelectedGroups($event)">
                             </my-dropdown-select>
                           </div>
                         </div> 
