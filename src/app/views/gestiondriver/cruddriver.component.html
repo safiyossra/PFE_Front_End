@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card card-accent-info">
         <div class="card-header">
-          <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
+          <button type="button" data-toggle="modal" (click)="showAddModal()" class="btn btn-outline-primary"><i
               class="fa fa-plus-circle"></i> Ajouter Conducteur </button>
           <div class="card-header-actions">
             <a href="#">
@@ -22,12 +22,13 @@
           <div class="modal-dialog modal-primary" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Ajouter Véhicule</h5>
+                <h5 class="modal-title">{{mode}} Conducteur</h5>
                 <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
+                <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
                 <div class="animated fadeIn">
                   <div class="row">
                     <div class="col-lg-6">
@@ -36,81 +37,82 @@
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="select1">Conducteur ID</label>
                             <div class="col-8">
-                            <input type="text" id="text-input" #iddriver name="iddriver" class="form-control">
+                            <input type="text" [disabled]="mode=='Modifier'?'true':'false'" [(ngModel)]="selectedDriver.driverID" [ngModelOptions]="{standalone: true}" 
+                            class="form-control"  placeholder="Saisir un identifiant">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Nom</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #nom name="nom" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.displayName" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir le nom">
                             </div>
                           </div>
                           <div class="form-group row">
-                            <label class="col-md-4 col-form-label" for="text-input">Numéro de téléphone</label>
+                            <label class="col-md-4 col-form-label" for="phone">Numéro de téléphone</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #numtel name="numtel" class="form-control"
-                                placeholder="Saisir num de tel">
+                              <input type="tel" pattern="[0-9]{10}"  [(ngModel)]="selectedDriver.contactPhone" [ngModelOptions]="{standalone: true}" class="form-control"
+                                placeholder="Saisir num de tel" required>
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Email</label>
                             <div class="col-8">
-                              <input type="email" id="text-input" #email name="email" class="form-control"
+                              <input type="email" [(ngModel)]="selectedDriver.contactEmail" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="xxxxxxxx@gmail.com">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Identifiant du badge</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #idbadge name="idbadge" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.badgeID" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir Identifiant du Badge">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="text-input">Date de naissance</label>
                             <div class="col-8">
-                              <input type="date" id="text-input" #naissance name="datenaissance" class="form-control">
+                              <input type="date" [(ngModel)]="selectedDriver.birthdate" [ngModelOptions]="{standalone: true}" class="form-control">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Type de licence</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #typelic name="typelic" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.licenseType" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir Type de Licence">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Numéro de licence</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #numlic name="numlic" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.licenseNumber" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir Num de Licence">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="text-input">Expiration de le licence</label>
                             <div class="col-8">
-                              <input type="date" id="text-input" #dateexplic name="dateexplic" class="form-control">
+                              <input type="date" [(ngModel)]="selectedDriver.licenseExpire" [ngModelOptions]="{standalone: true}" class="form-control">
                             </div>
                           </div>
-                          <div class="form-group row">
+                          <!-- <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Expiration de le licence(J)</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #explic name="explic" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.contactPhone" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir le jour">
                             </div>
-                          </div>
+                          </div> -->
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Titre de voiture</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #titlevehicule name="titrevehicule" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.carTitle" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir le Titre de véhicule">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Description</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #description name="description" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.description" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir une Description">
                             </div>
                           </div>
@@ -121,49 +123,49 @@
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Plaque d'immatriculation</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #matricul name="matricul" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.licensePlate" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir la plaque immatriculation">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="text-input">Date d'expiration de l'assurance</label>
                             <div class="col-8">
-                              <input type="date" id="text-input" #dateexp name="dateexp" class="form-control"
+                              <input type="date" [(ngModel)]="selectedDriver.insuranceExpire" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Choisir la Date">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Addresse</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #address name="address" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.address" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir l'Addresse'">
                             </div>
                           </div>
-                          <div class="form-group row">
+                          <!-- <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Expiration de l'assurance(J)</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #dayexp name="dayexp" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.contactPhone" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir le Jour">
                             </div>
-                          </div>
+                          </div> -->
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Restrictions</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #restriction name="restriction" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.restrictions" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir les restrictions">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Notes Générales</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #note name="note" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.notes" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir notes générales">
                             </div>
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Véhicule ID</label>
                             <div class="col-8">
-                              <input type="text" id="text-input" #vehiculeid name="vehiculeid" class="form-control"
+                              <input type="text" [(ngModel)]="selectedDriver.deviceID" [ngModelOptions]="{standalone: true}" class="form-control"
                                 placeholder="Saisir ID de Véhicule">
                             </div>
                           </div>
@@ -174,9 +176,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Fermer</button>
-                <button type="reset" class="btn btn-sm btn-danger" (click)="reset()"> &nbsp; Réinitialiser</button>
-                <button type="button" class="btn btn-primary" *ngIf="isnotNum==false"
-                  (click)="ajouter()">Ajouter</button>
+                <button type="button" class="btn btn-primary" (click)="ajouter()">{{mode}}</button>
               </div>
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
@@ -184,10 +184,6 @@
         <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
           <form class="form-horizontal">
             <div class="form-group row">
-              <div class="col-md-5">
-                <my-daterangepicker #calendar [ngModelOptions]="{ standalone: true }" [(ngModel)]="value"
-                  [options]="myDateRangePickerOptions"></my-daterangepicker>
-              </div>
               <div class="col-md-5">
                 <div class="controls">
                   <div class="input-group">
@@ -210,7 +206,7 @@
                 </div>
               </div>
               <div class="form-actions">
-                <button type="submit" class="btn btn-sm btn-primary" [disabled]="loading">
+                <button type="submit" class="btn btn-sm btn-primary"  (click) ="loadData()" [disabled]="loading">
                   <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
                   <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
                 </button>
@@ -228,7 +224,7 @@
 
   <div class="row">
     <div class="col-lg-12">
-        <my-gestiondriver-table [data]="data">
+        <my-gestiondriver-table (modify)="loadModify($event)" (delete)="delete($event)" [data]="data">
         </my-gestiondriver-table>
     </div>
   </div>

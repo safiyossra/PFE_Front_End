@@ -291,7 +291,7 @@
         <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
           <form class="form-horizontal">
             <div class="form-group row">
-              <div class="col-md-4">
+              <div class="col-md-5">
                 <my-daterangepicker #calendar [ngModelOptions]="{ standalone: true }" [(ngModel)]="value"
                   [options]="myDateRangePickerOptions"></my-daterangepicker>
               </div>
@@ -308,39 +308,31 @@
                     </my-dropdown-select>
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-key fa-sm"
-                          *ngIf="selectedDevice?.length == 0"></i><i *ngIf="selectedDevice != null">{{
+                          *ngIf="selectedDevice == null"></i><i *ngIf="selectedDevice != null">{{
                           selectedDevice
                           }}</i></span>
                     </div>
                   </div>
-                  <!--</div> -->
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <div class="controls">
                   <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">Citerne</span>
+                   <div class="input-group-append">
+                      <span class="input-group-text"><i class="fa fa-filter fa-sm"></i></span>
                     </div>
-                    <my-dropdown-select class="form-control" [placeholder]="'Citerne Selection'"
-                      [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
-                      [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
-                      [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
-                    </my-dropdown-select>
-                    <div class="input-group-append">
-                      <span class="input-group-text"><i class="fa fa-key fa-sm"
-                          *ngIf="selectedDevice?.length == 0"></i><i *ngIf="selectedDevice != null">{{
-                          selectedDevice
-                          }}</i></span>
-                    </div>
+                    <my-dropdown-select class="form-control" [placeholder]="'Citerne '"
+                      [selectPlaceholder]="'Chercher...'"
+                      [options]="citernes" [display]="'label'" [value]="'data'" [multiple]="false" [labelCount]="0"
+                      [selectedOptions]="selectedCiternes" (selectionChange)="getSelectedCiternes($event)">
+                    </my-dropdown-select>                    
                   </div>
-                  <!--</div> -->
                 </div>
               </div>
               <div class="form-actions">
                 <button type="submit" class="btn btn-sm btn-primary" [disabled]="loading">
                   <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
-                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Apply
+                  <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
                 </button>
               </div>
             </div>

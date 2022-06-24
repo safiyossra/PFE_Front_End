@@ -259,6 +259,9 @@ table.infoBoxTable th {
 table.infoBoxTable tr:last-child>td {
     border-bottom: none;
 }
+.form-control{
+    color: #000000;
+}
 
 table.infoBoxTable tr:nth-child(odd) {
     background-color: honeydew;

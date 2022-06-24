@@ -1,28 +1,29 @@
+import { DatePipe } from '@angular/common';
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter, ElementRef } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { DataService } from 'src/app/services/data.service';
-import { util } from 'src/app/tools/utils';
 
 /**
  * @title Table with pagination
  */
 @Component({
-  selector: 'my-gestionvehicule-table',
-  styleUrls: ['my-gestionvehicule-table.component.scss'],
-  templateUrl: 'my-gestionvehicule-table.component.html',
+  selector: 'my-gestionusers-table',
+  styleUrls: ['my-gestionusers-table.component.scss'],
+  templateUrl: 'my-gestionusers-table.component.html',
 })
-export class MyGestionvehiculeTableComponent implements OnChanges {
+export class MyGestionusersTableComponent implements OnChanges {
   @Input() data = [];
   // @Input() columnNames?: any[]
-  public displayedColumns = ["actions", "deviceID", "description", "uniqueID", "lastOdometerKM", "fuel", "deviceCode", "simPhoneNumber"]
+  public displayedColumns = ["actions", "userID", "description", "roleID", "contactName", "contactEmail", "timeZone", "lastLoginTime"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   @Output() modify?: EventEmitter<any> = new EventEmitter();
+  @Output() delete?: EventEmitter<any> = new EventEmitter();
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
-  columnNames = ["Actions", "Device", "Véhicule", "ID unique", "Odomètre (km)", "Total Carburant (L)", "device Code", "Tel"];
+  columnNames = ["Actions", "Identifiant", "Nom de l'utilisateur", "Role", "Nom du contact", "Adresse email", "Fuseau horaire", "Last Login"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -32,7 +33,7 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  constructor(private dataService: DataService, private tools: util) { }
+  constructor(private datePipe: DatePipe) { }
 
 
   applyFilter(event: Event) {
@@ -47,6 +48,10 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
   modif(ev) {
     this.modify.emit(ev)
   }
+  supp(ev) {
+    this.delete.emit(ev)
+    if(confirm("Are you sure to delete "+ev)) { console.log("Implement delete functionality here"); }
+  }
   
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
@@ -60,6 +65,10 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
     }
   }
 
+  formatDate(date: Date) {
+    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
+  }
+
   getClassByAge(age) {
     if (age != undefined) {
       if (age < 0) return "cil-warning bg-warning"
@@ -68,6 +77,22 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
       if (age > 3600) return "cil-history bg-secondary"
     }
     return "cil-report-slash bg-danger";
+  }
+
+  formatAge(seconds) {
+    if (isNaN(seconds)) return "Jamais"
+    // return age
+    //days 
+    let days = Math.floor(seconds / (24 * 3600));
+    seconds -= days * 24 * 3600;
+    //hours 
+    let hours = Math.floor(seconds / 3600);
+    seconds -= hours * 3600;
+    //minutes 
+    let minutes = Math.floor(seconds / 60);
+    seconds -= minutes * 60;
+    //output 
+    return `${days > 0 ? days + " Jours, " : ''}${hours > 0 ? hours + " Heurs, " : ''}${minutes > 0 ? minutes + " minutes, " : ''}${seconds > 0 ? seconds + " seconds" : ''}`;
   }
 }
 

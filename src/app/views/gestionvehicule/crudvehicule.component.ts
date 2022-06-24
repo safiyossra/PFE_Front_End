@@ -13,7 +13,7 @@ export class CrudvehiculeComponent {
 
   loading: boolean = false;
   modalLoading: boolean = false;
-  selectedDevice: Device = new Device(null);
+  selectedDevice: Device = new Device();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   constructor(private dataService: DataService, private vehiculeService: VehiculeService, private tools: util) { }
 
@@ -41,8 +41,8 @@ export class CrudvehiculeComponent {
   };
 
   loadModify(ev) {
-    // console.log(ev);
-    this.selectedDevice = new Device(null);
+    console.log(ev);
+    this.selectedDevice = new Device();
     if (ev) {
       var url = "?d=" + ev
       this.modalLoading = true;

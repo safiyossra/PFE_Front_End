@@ -125,4 +125,39 @@ export class DataService {
     })
   }
 
+  getDriverData(urldriver) {
+    let SERVER_URL = environment.apiUrl + "gestiondriver" + urldriver;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  getGroupeVehicules(urlgrp) {
+    let SERVER_URL = environment.apiUrl + "groupevehicules" + urlgrp;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+  getUsers(urluser) {
+    let SERVER_URL = environment.apiUrl + "gestionusers" + urluser;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
 }
