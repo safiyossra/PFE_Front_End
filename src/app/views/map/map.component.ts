@@ -13,15 +13,15 @@ import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 
 
 export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
-  @Input() showFullScreenControle?: Boolean = true
-  @Input() showPositionControle?: Boolean = true
-  @Input() showCollapsControle?: Boolean = true
+  @Input() showFullScreenControle?: boolean = true
+  @Input() showPositionControle?: boolean = true
+  @Input() showCollapsControle?: boolean = true
 
   provider = new OpenStreetMapProvider();
   isFirstTime = true
   public position_left: string = "0%"
   public size = [25, 75]
-  isMyPositionVisible: Boolean = false
+  isMyPositionVisible: boolean = false
   MyPositionMarker: L.Marker
   map: any
   car = {
@@ -31,11 +31,6 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   marker: any
   markers: L.Marker[] = []
   vehicules: Vehicule[] = []
-
-  fullScreenControl: L.Control;
-  resetControl: L.Control;
-  expandControl: L.Control;
-  positionControl: L.Control;
   typesCount = [0, 0, 0, 0]
 
   inter: any
@@ -49,117 +44,14 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngAfterViewInit() {
     setTimeout(() => {
-      this.createMap()
+      this.map = this.tools.createMap(this.map, 'map', this.car, this.provider, this.showCollapsControle, this.showFullScreenControle, this.showPositionControle)
       this.inter = setInterval(() => {
         this.loadData()
-      }, 5000)
+      }, 500000)
     }, 100);
   }
 
-  createMap() {
-    const zoomLevel = 12
-    this.map = L.map('map', { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
-      .setView([this.car.lat, this.car.lng], zoomLevel)
 
-    // dark map 
-    const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 19
-    });
-    const googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-    // google street 
-    const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-
-    //google satellite
-    const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-    const googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-    const baseMaps = {
-      "Google Hybrid": googleHybrid,
-      "Google Terrain": googleTerrain,
-      "Google Satellite": googleSat,
-      'Google Street': googleStreets,
-      'Dark': dark,
-    };
-    googleHybrid.addTo(this.map)
-
-    if (this.showCollapsControle) {
-      let ExpandControl = L.Control.extend({
-        onAdd(map: L.Map) {
-          return L.DomUtil.get('list-Expand');
-        },
-        onRemove(map: L.Map) { }
-      });
-      this.expandControl = new ExpandControl({
-        position: "topleft"
-      }).addTo(this.map);
-    }
-    let ResetControl = L.Control.extend({
-      onAdd(map: L.Map) {
-        return L.DomUtil.get('resetConrtol');
-      },
-      onRemove(map: L.Map) { }
-    });
-    this.resetControl = new ResetControl({
-      position: "topleft"
-    }).addTo(this.map);
-
-    L.control.zoom().addTo(this.map)
-
-    if (this.showFullScreenControle) {
-      let FullScreenControl = L.Control.extend({
-        onAdd(map: L.Map) {
-          return L.DomUtil.get('mapfullScreenControl');
-        },
-        onRemove(map: L.Map) { }
-      });
-      this.fullScreenControl = new FullScreenControl({
-        position: "topleft"
-      }).addTo(this.map);
-    }
-    if (this.showPositionControle) {
-      let PositionControl = L.Control.extend({
-        onAdd(map: L.Map) {
-          return L.DomUtil.get('positionControl');
-        },
-        onRemove(map: L.Map) { }
-      });
-      this.positionControl = new PositionControl({
-        position: "topleft"
-      }).addTo(this.map);
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    GeoSearchControl({
-      provider: this.provider,
-      showMarker: false,
-      // style: 'bar',
-      position: "topleft",
-      retainZoomLevel: false, // optional: true|false  - default false
-      animateZoom: true, // optional: true|false  - default true
-      autoClose: true, // optional: true|false  - default false
-      searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
-      // keepResult: false, // optional: true|false  - default false
-      updateMap: true, // optional: true|false  - default true
-    }).addTo(this.map)
-
-    ////////////////////////////////////////////////////////////
-    L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
-    L.control.scale().addTo(this.map);
-  }
 
   initMarkers() {
     this.vehicules.forEach((veh, index) => {
@@ -170,7 +62,6 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
           .bindPopup(this.tools.formatPopUpContent(veh), {
             closeButton: false,
             offset: L.point(0, -20)
-
           }).on('click', (event) => {
             this.rowClicked(index)
           })

@@ -13,17 +13,6 @@
             </button>
           </div>
         </div>
-        <div class="card-body">
-          <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
-          <my-gestionvehicule-table (modify)="loadModify($event)" [data]="data">
-          </my-gestionvehicule-table>
-        </div>
-        </div>
-        </div>
-        <!--/.col-->
-        </div>
-        <!--/.row-->
-        </div>
         <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
           role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-primary" role="document">
@@ -66,48 +55,59 @@
                               <div class="col-8">
                             <input type="text" [(ngModel)]="selectedDevice.description" [ngModelOptions]="{standalone: true}" class="form-control"
                               placeholder="Saisir une Description">
-                            </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Véhicule ID</label>
-                              <div class="col-8">
+                          </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Véhicule ID</label>
+                            <div class="col-8">
                             <input type="text" [(ngModel)]="selectedDevice.vehicleID" [ngModelOptions]="{standalone: true}" class="form-control"
                               placeholder="Saisir Véhicule ID">
-                            </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Marque</label>
-                              <div class="col-8">
+                          </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Marque</label>
+                            <div class="col-8">
                             <input type="text" [(ngModel)]="selectedDevice.vehicleMake" [ngModelOptions]="{standalone: true}" class="form-control"
                               placeholder="Saisir la marque de Véhicule">
-                            </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Modèle</label>
-                              <div class="col-8">
+                          </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Modèle</label>
+                            <div class="col-8">
                             <input type="text" [(ngModel)]="selectedDevice.vehicleModel" [ngModelOptions]="{standalone: true}" class="form-control"
                               placeholder="Saisir le modèle de Véhicule">
+                          </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Actif</label>
+                            <div class="col-8">
+                              <input id="s1" type="checkbox" class="switch" [(ngModel)]="selectedDevice.isActive"
+                                [ngModelOptions]="{standalone: true}">
+                              <label for="s1" class="ml-2">{{selectedDevice.isActive?'Activé':'Désactivé'}}
+                                &nbsp;</label>
                             </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Actif</label>
-                              <div class="col-8">
-                                <input id="s1" type="checkbox" class="switch" [(ngModel)]="selectedDevice.isActive"
-                                  [ngModelOptions]="{standalone: true}">
-                                <label for="s1" class="ml-2">{{selectedDevice.isActive?'Activé':'Désactivé'}}
-                                  &nbsp;</label>
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Numéro de téléphone</label>
-                              <div class="col-8">
+                          </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="card-body">
+                        <div class="form-group row">
+                          <label class="col-md-4 col-form-label" for="text-input">Série Number</label>
+                          <div class="col-8">
+                            <input type="number" [(ngModel)]="selectedDevice.serialNumber" [ngModelOptions]="{standalone: true}"
+                              class="form-control" placeholder="0,00">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label class="col-md-4 col-form-label" for="text-input">Numéro de téléphone</label>
+                          <div class="col-8">
                             <input type="tel" [(ngModel)]="selectedDevice.simPhoneNumber" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="Saisir num de tel">
-                            </div>
-                            </div>
-                            <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Maximum Speed</label>
-                              <div class="col-7">
+                          </div>
+                          </div>
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="text-input">Maximum Speed</label>
+                            <div class="col-7">
                             <input type="number" [(ngModel)]="selectedDevice.speedLimitKPH" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="0,00">
                             </div>
@@ -155,64 +155,28 @@
                             </div>
                             </div>
                     </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-form-label" for="text-input">Maximum Speed</label>
-                      <div class="col-7">
-                    <input type="number" [(ngModel)]="selectedDevice.speedLimitKPH" [ngModelOptions]="{standalone: true}"
-                      class="form-control" placeholder="0,00">
-                    </div>
-                    <label class="col-form-label" for="text-input">Km/H</label>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-form-label" for="text-input">Carburant Economie</label>
-                      <div class="col-7">
-                    <input type="number" [(ngModel)]="selectedDevice.fuelEconomy" [ngModelOptions]="{standalone: true}" class="form-control"
-                      placeholder="0,00">
-                    </div>
-                    <label class="col-form-label" for="text-input">mg</label>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-form-label" for="text-input">Carburant Cout</label>
-                      <div class="col-7">
-                    <input type="number" [(ngModel)]="selectedDevice.fuelCostPerLiter" [ngModelOptions]="{standalone: true}"
-                      class="form-control" placeholder="0,00">
-                    </div>
-                    <label class="col-form-label" for="text-input">MAD/L</label>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-form-label" for="text-input">Carburant Capacite (#1)</label>
-                      <div class="col-7">
-                        <input type="number" [(ngModel)]="selectedDevice.fuelCapacity" [ngModelOptions]="{standalone: true}"
-                          class="form-control" placeholder="0,00">
-                      </div>
-                      <label class="col-form-label" for="text-input">Litre</label>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-form-label" for="text-input">Carburant Capacite (#2)</label>
-                      <div class="col-7">
-                    <input type="number" [(ngModel)]="selectedDevice.fuelCapacity2" [ngModelOptions]="{standalone: true}"
-                      class="form-control" placeholder="0,00">
-                    </div>
-                    <label class="col-form-label" for="text-input">Litre</label>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-md-4 col-form-label" for="text-input">Reporterd Odometer</label>
-                      <div class="col-7">
-                    <input type="number" [(ngModel)]="selectedDevice.lastOdometerKM" [ngModelOptions]="{standalone: true}"
-                      class="form-control" placeholder="0,00">
-                    </div>
-                    <label class="col-form-label" for="text-input">Km</label>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
-                      <button type="button" class="btn btn-primary" (click)="modifier()">Modifier</button>
-                    </div>
-                    </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                    </div><!-- /.modal -->
+                  </div>
+                  </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
+                    <button type="button" class="btn btn-primary" (click)="modifier()">Modifier</button>
+                  </div>
+                  </div><!-- /.modal-content -->
+                  </div><!-- /.modal-dialog -->
+                  </div><!-- /.modal -->
+      </div>
+      </div>
+      <!--/.col-->
+      </div>
+      <!--/.row-->
+      
+      
+      <div class="row">
+        <div class="col-lg-12">
+          <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+          <my-gestionvehicule-table (modify)="loadModify($event)" [data]="data">
+          </my-gestionvehicule-table>
+        </div>
+      </div>
+      </div>

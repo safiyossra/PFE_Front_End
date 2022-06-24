@@ -26,23 +26,23 @@
         <div class="row justify-content-between">
             <div class="col d-flex justify-content-around align-items-center text-center border-right"
                 (click)="applySort('moving')" matTooltip="Véhicules en Mouvement">
-                <i class="fa fa-circle text-success"></i>
+                <i class="fa fa-circle text-green status-cercle"></i>
                 <span class="">{{ typesCount[0] }}</span>
             </div>
 
             <div class="col d-flex justify-content-around align-items-center text-center border-right"
                 (click)="applySort('on')" matTooltip="Véhicules Démarrées">
-                <i class="fa fa-circle-o text-success"></i>
+                <i class="fa fa-circle-o text-green status-cercle"></i>
                 <span class="">{{ typesCount[1] }}</span>
             </div>
             <div class="col d-flex justify-content-around align-items-center text-center border-right"
                 (click)="applySort('off')" matTooltip="Véhicules en Arrêt">
-                <i class="fa fa-circle text-danger"></i>
+                <i class="fa fa-circle text-red status-cercle"></i>
                 <span class="">{{ typesCount[2] }}</span>
             </div>
             <div class="col d-flex justify-content-around align-items-center text-center" (click)="applySort('other')"
                 matTooltip="Statut Inconnu">
-                <i class="fa fa-close text-dark"></i>
+                <i class="fa fa-close text-dark status-cercle"></i>
                 <span class="">{{ typesCount[3]}}</span>
             </div>
             <div class="col d-flex justify-content-around align-items-center text-center" (click)="applySort('all')"
@@ -68,11 +68,7 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Véhicule</th>
                 <td mat-cell *matCellDef="let vehicule">
                     <ng-container>
-                        <i *ngIf="vehicule.statusCode == 61714" class="fa fa-circle text-success status-cercle"></i>
-                        <i *ngIf="vehicule.statusCode == 62465" class="fa fa-circle-o text-success status-cercle"></i>
-                        <i *ngIf="vehicule.statusCode == 62467" class="fa fa-circle text-danger status-cercle"></i>
-                        <i *ngIf="vehicule.statusCode != 62465 && vehicule.statusCode != 61714 && vehicule.statusCode != 62467"
-                            class="fa fa-close text-dark status-cercle"></i>
+                        <i [ngClass]="(tools.getStatusClass(vehicule.statusCode))"></i>
                     </ng-container>
                     {{ vehicule.name }}
                 </td>
@@ -86,7 +82,7 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let vehicule" class="d-flex justify-content-around align-items-center">
-                    <a [routerLink]="['./details', vehicule.id]"><i class="fa fa-tripadvisor"></i></a>
+                    <a [routerLink]="['./details', vehicule.id]"><i class="icon-graph text-blue h2 align-middle"></i></a>
                 </td>
             </ng-container>
 

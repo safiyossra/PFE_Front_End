@@ -9,7 +9,7 @@
     <button *ngIf="showCollapsControle" title="Expande list" class="mcontrol icon-arrow-right"
                     id="list-Expand" (click)="expandClicked()"></button>
   <as-split #mySplit direction="horizontal" [useTransition]="true" (gutterClick)="resetSize($event)" (dragEnd)="onDragEnd($event)" (transitionEnd)="invalidate()">
-    <as-split-area [size]="size[0]" [order]="1">
+    <as-split-area [size]="size[0]" [order]="1" style="overflow: hidden;">
       <div class="list-vehicules">
       <my-table [vehicules]="vehicules" (rowClicked)="rowClicked($event)"  (collapse)="collapseClicked()"></my-table>
     </div>

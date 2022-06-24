@@ -130,9 +130,6 @@ export class CrudgroupeComponent {
     this.mode ="Ajouter"
   }
 
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'yyyy-MM-dd');
-  }
   reset() {
     this.selectedDevice = []
     this.selectedDevices = []

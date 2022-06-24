@@ -11,7 +11,7 @@
               <i class="fa fa-circle-o-notch fa-lg mr-1 fa-spin" *ngIf="loading"></i> &nbsp;Actualiser
             </button>
             <button class="btn text-primary mr-2">
-              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
+              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
             </button>
           </div>
         </div>
@@ -105,6 +105,7 @@
                   <div class="col-8 input-group">
                     <select size="6" class="form-control" placeholder="Véhicules Séléctionnées">
                       <option *ngFor="let e of selectedDevice">{{getDeviceByName(e)}}</option>
+
                     </select>
                   </div>
                 </div>

@@ -189,12 +189,13 @@ export class JournalierComponent {
       data: "t"
     },
   ];
-  selectedDevices = null;
-  selectedDevice = this.selectedDevices;
-  selectedkmConditions = [];
+  selectedDevices = [];
+  selectedDevice = null;
+  selectedkmConditions = null;
   selectedkm = this.selectedkmConditions;
 
   selectedparams = [[], [], [], []]
+  selectedparam = [null, null, null, null]
 
   showErrorDevice = false;
   errorMessageDevice = "";
@@ -214,7 +215,7 @@ export class JournalierComponent {
   }
 
   getSelectedparams(selected, i) {
-    this.selectedparams[i] = selected;
+    this.selectedparam[i] = selected;
   }
 
   onValidateDevice() {
@@ -309,16 +310,16 @@ export class JournalierComponent {
       this.loading = true;
       var paramstabtmp = []
       var iskm = ""
-      if (this.selectedkm.length != 0)
+      if (this.selectedkm != null)
         iskm = '&kilom=' + this.selectedkm
-      if (this.selectedparams[0].length != 0)
-        paramstabtmp.push(this.selectedparams[0])
-      if (this.selectedparams[1].length != 0)
-        paramstabtmp.push(this.selectedparams[1])
-      if (this.selectedparams[2].length != 0)
-        paramstabtmp.push(this.selectedparams[2])
-      if (this.selectedparams[3].length != 0)
-        paramstabtmp.push(this.selectedparams[3])
+      if (this.selectedparam[0] != null)
+        paramstabtmp.push(this.selectedparam[0])
+      if (this.selectedparam[1] != null)
+        paramstabtmp.push(this.selectedparam[1])
+      if (this.selectedparam[2] != null)
+        paramstabtmp.push(this.selectedparam[2])
+      if (this.selectedparam[3] != null)
+        paramstabtmp.push(this.selectedparam[3])
 
       this.paramstab = []
       this.resume = []
@@ -429,16 +430,21 @@ export class JournalierComponent {
   }
 
   reset() {
-    this.selectedDevices = [],
+    this.selectedDevices = []
+    this.selectedDevice = null
       this.selectedkmConditions = [],
-      this.selectedparams = [[], [], [], []]
+        this.selectedkm = null,
+        this.selectedparams = [[], [], [], []]
+    this.selectedparam = [null, null, null, null]
   }
 
   resetkm() {
     this.selectedkmConditions = []
+    this.selectedkm = null
   }
   resetparam(i) {
     this.selectedparams[i] = []
+    this.selectedparam[i] = null
   }
 
   getParam(p: any) {

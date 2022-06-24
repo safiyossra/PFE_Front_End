@@ -1,7 +1,8 @@
 import { formatDate, DOCUMENT } from '@angular/common';
-import { Inject, Injectable,LOCALE_ID } from '@angular/core'
-import {  } from '@angular/core';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core'
+import { } from '@angular/core';
 import * as L from 'leaflet';
+import { GeoSearchControl } from 'leaflet-geosearch';
 
 @Injectable({
     providedIn: 'root'
@@ -71,7 +72,7 @@ export class util {
             html: `<div class="center-marker"></div>` +
                 `<img class="my-icon-img rotate-${Math.round(vehicule.heading)}" src="${icon}">` +
                 `<span class="my-icon-title">${vehicule.name}</span>`,
-            iconSize: [50, 50],
+            iconSize: [60, 60],
             // iconAnchor: [25, 20],
             className: 'marker-transition my-div-icon' + (isSelected ? ' marker-selected' : ''),
         })
@@ -100,14 +101,14 @@ export class util {
         let img = this.getImage(v.icon)
         let time = this.formatDate(new Date(v.timestamp * 1000))
         let now = Math.round(new Date().getTime() / 1000)
-        let age = this.formatAge(v.timestamp > 0 ? (now - v.timestamp):"nan")
-        return `` +
-            `<table class="infoBoxTable">
+        let age = this.formatAge(v.timestamp > 0 ? (now - v.timestamp) : "nan")
+        return `<table class="infoBoxTable">
             <tbody>
               <tr class="infoBoxRow"
                 style="background-color: #3598dc !important;color: #FFFFFF !important;">
                 <td><img src="assets/img/vehicules/${img}-img.png">&nbsp; </td> 
-                <td class="infoBoxCell" style="vertical-align: middle;"><b>${v.name}</b>, <b  style="text-align: right;">${this.getStatusName(v.statusCode)}</b></td>
+                <td class="infoBoxCell" style="vertical-align: bottom;"><b style="vertical-align: sub;">${v.name}</b>, <b style="margin-right: 10px;float: right;">
+                <i class="${this.getStatusClass(v.statusCode)}" style="vertical-align: bottom;"></i>${(this.getStatusName(v.statusCode))}</b></td>
               </tr>
               <tr class="infoBoxRow">
                 <td class="infoBoxCellTitle">Age:</td>
@@ -137,21 +138,8 @@ export class util {
                 <td class="infoBoxCellTitle">Fuel Level:</td>
                 <td class="infoBoxCell"> ${v.fuelLevel} L</td>
               </tr>
-              <tr class="infoBoxRow">
-                <td class="infoBoxCellTitle">Type:</td>
-                <td class="infoBoxCell" >${v.deviceCode}</td>
-              </tr>
-              <tr class="infoBoxRow">
-                <td class="infoBoxCellTitle">ID:</td>
-                <td class="infoBoxCell">${v.id}</td>
-              </tr>
-              <tr class="infoBoxRow">
-                <td class="infoBoxCellTitle">Phone:</td>
-                <td class="infoBoxCell">${v.simCard}</td>
-              </tr>
             </tbody>
-          </table>` +
-            ``
+          </table>`
     }
     // // 👇️ format as "YYYY-MM-DD hh:mm:ss"
     formatDate(date: Date) {
@@ -160,6 +148,9 @@ export class util {
     // // 👇️ format as "hh:mm:ss"
     formatedTime(date: Date) {
         return formatDate(date, 'HH:mm:ss', this.locale);
+    }
+    formatDateForInput(date: Date) {
+        return formatDate(date, 'yyyy-MM-dd', this.locale);
     }
 
     formatAge(seconds) {
@@ -180,14 +171,137 @@ export class util {
 
     getStatusName(status: any) {
         if (status == 61714) { return "En Route"; } else
-          if (status == 62465) { return "Moteur ON"; } else
-            return "Moteur OFF";
-      }
-    
-      getStatusColor(status: any) {
-        if (status == 61714) { return "text-success"; } else
-          if (status == 62465) { return "text-primary"; } else
-            return "text-danger";
+            if (status == 62465) { return "Moteur ON"; } else
+                return "Moteur OFF";
+    }
+
+    getStatusColor(status: any) {
+        if (status == 61714) { return "text-green"; } else
+            if (status == 62465) { return "text-blue"; } else
+                return "text-red";
+    }
+
+    getStatusClass(status: any) {
+        if (status == 61714) { return "fa fa-circle text-green status-cercle"; } else
+            if (status == 62465) { return "fa fa-dot-circle-o text-green status-cercle"; } else
+                if (status == 62467) { return "fa fa-circle text-red status-cercle"; } else
+                    return "fa fa-close text-dark status-cercle";
+    }
+
+    createMap(map, mapId, car, provider, showCollapsControle = true, showFullScreenControle = true, showPositionControle = true) {
+        const zoomLevel = 12
+        map = L.map(mapId, { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
+            .setView([car.lat, car.lng], zoomLevel)
+
+        // dark map 
+        const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 19
+        });
+        const googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        });
+        // google street 
+        const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        });
+
+        //google satellite
+        const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        });
+        const googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        });
+        const baseMaps = {
+            'Google Street': googleStreets,
+            "Google Hybrid": googleHybrid,
+            "Google Terrain": googleTerrain,
+            "Google Satellite": googleSat,
+            'Dark': dark,
+        };
+        googleStreets.addTo(map)
+
+        if (showCollapsControle) {
+            let ExpandControl = L.Control.extend({
+                onAdd(map: L.Map) {
+                    return L.DomUtil.get('list-Expand');
+                },
+                onRemove(map: L.Map) { }
+            });
+            new ExpandControl({
+                position: "topleft"
+            }).addTo(map);
+        }
+        let ResetControl = L.Control.extend({
+            onAdd(map: L.Map) {
+                return L.DomUtil.get('resetConrtol');
+            },
+            onRemove(map: L.Map) { }
+        });
+        new ResetControl({
+            position: "topleft"
+        }).addTo(map);
+
+        L.control.zoom().addTo(map)
+
+        if (showFullScreenControle) {
+            let FullScreenControl = L.Control.extend({
+                onAdd(map: L.Map) {
+                    return L.DomUtil.get('mapfullScreenControl');
+                },
+                onRemove(map: L.Map) { }
+            });
+            new FullScreenControl({
+                position: "topleft"
+            }).addTo(map);
+        }
+        if (showPositionControle) {
+            let PositionControl = L.Control.extend({
+                onAdd(map: L.Map) {
+                    return L.DomUtil.get('positionControl');
+                },
+                onRemove(map: L.Map) { }
+            });
+            new PositionControl({
+                position: "topleft"
+            }).addTo(map);
+        }
+
+
+        ////////////////////////////////////////////////////////////
+        GeoSearchControl({
+            provider: provider,
+            showMarker: false,
+            // style: 'bar',
+            position: "topleft",
+            retainZoomLevel: false, // optional: true|false  - default false
+            animateZoom: true, // optional: true|false  - default true
+            autoClose: true, // optional: true|false  - default false
+            searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
+            // keepResult: false, // optional: true|false  - default false
+            updateMap: true, // optional: true|false  - default true
+        }).addTo(map)
+
+        ////////////////////////////////////////////////////////////
+        L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(map);
+        L.control.scale().addTo(map);
+        return map;
+    }
+
+    getClassByAge(age) {
+        if (age != undefined) {
+            if (age < 0) return "cil-warning bg-warning"
+            if (age <= 180) return "cil-check bg-success"
+            if (age <= 3600) return "cil-loop bg-primary"
+            if (age > 3600) return "cil-history bg-secondary"
+        }
+        return "cil-report-slash bg-danger";
       }
 
     getImage(vehiculeType) {
@@ -196,7 +310,7 @@ export class util {
     }
 
     motor = ["moto", "grnbike",]
-    camions = ['fleetGreen', 'fleet','ffight', 'yeltruck', 'blktruck', 'rgntruck', 'excav','grua', 'h100', 'mzcldr', 'pickup',]
+    camions = ['fleetGreen', 'fleet', 'ffight', 'yeltruck', 'blktruck', 'rgntruck', 'excav', 'grua', 'h100', 'mzcldr', 'pickup',]
     remorque = ["trailer"]
     sprinter = ['bus']
     truck = ["remolque", "volvo1",]

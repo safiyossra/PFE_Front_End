@@ -51,7 +51,7 @@ export class CrudvehiculeComponent {
         next: (d: any) => {
           if (d && d.length) {
             d.forEach(e => {
-              e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
+              e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime) * 1000));
             });
             this.selectedDevice = d[0];
           }

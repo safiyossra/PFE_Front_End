@@ -104,7 +104,7 @@ table {
     .mat-sort-header-content {
         color: black;
         font-weight: 700;
-        font-size: smaller;
+        // font-size: smaller;
         letter-spacing: 0.4px;
     }
 
@@ -265,4 +265,29 @@ table.infoBoxTable tr:last-child>td {
 
 table.infoBoxTable tr:nth-child(odd) {
     background-color: honeydew;
+}
+.status-cercle {
+    margin-right: 5px;
+    font-size: 22px;
+}
+
+.text-red {
+    color: #ff0000 !important;
+}
+
+.text-green {
+    color: #00e04e !important;
+}
+
+.text-blue {
+    color: #009cff !important;
+}
+
+.as-horizontal>.as-split-gutter>.as-split-gutter-icon {
+    height: 55px !important;
+    background-color: #0077c2 !important;
+}
+
+.as-horizontal>.as-split-gutter {
+    background-color: transparent !important;
 }

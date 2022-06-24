@@ -60,14 +60,6 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
     }
   }
 
-  getClassByAge(age) {
-    if (age != undefined) {
-      if (age < 0) return "cil-warning bg-warning"
-      if (age <= 180) return "cil-check bg-success"
-      if (age <= 3600) return "cil-loop bg-primary"
-      if (age > 3600) return "cil-history bg-secondary"
-    }
-    return "cil-report-slash bg-danger";
-  }
+
 }
 

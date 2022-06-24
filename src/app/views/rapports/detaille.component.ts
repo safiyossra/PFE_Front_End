@@ -50,8 +50,8 @@ export class DetailleComponent implements AfterViewInit {
   urldetails = "";
   urlEvolution = "";
   public devices: any = [];
-  selectedDevices = null;
-  selectedDevice = this.selectedDevices;
+  selectedDevices = [];
+  selectedDevice = null;
   ToInvalidate = "0"
   interval = ""
   startTime = "";
@@ -467,6 +467,7 @@ export class DetailleComponent implements AfterViewInit {
 
   reset() {
     this.selectedDevices = []
+    this.selectedDevice = null
   }
 
   openMap(v: any) {
