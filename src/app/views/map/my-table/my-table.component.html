@@ -60,7 +60,7 @@
                 <th mat-header-cell *matHeaderCellDef><input type="checkbox" value="option1" id="checkbox1"></th>
                 <td mat-cell *matCellDef="let vehicule">
                     <input type="checkbox" value="{{vehicule.id}}" id="{{vehicule.id}}">
-                    <img src="assets/img/vehicules/car/car.png" alt="car" class="list-car">
+                    <img src="assets/img/vehicules/{{tools.getImage(vehicule.icon)}}-img.png" alt="car" class="list-car">
                 </td>
             </ng-container>
 

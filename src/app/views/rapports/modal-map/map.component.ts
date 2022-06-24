@@ -1,5 +1,4 @@
 import { Component, AfterViewInit, Input, SimpleChanges, OnDestroy } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { util } from '../../../tools/utils'
 import * as L from 'leaflet'
@@ -10,9 +9,8 @@ import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
   selector: 'modal-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  providers: [DatePipe]
 })
-export class ModalMapComponent implements AfterViewInit {
+export class ModalMapComponent implements AfterViewInit, OnDestroy {
   map: any
   car = {
     lat: 35.75,
@@ -39,12 +37,11 @@ export class ModalMapComponent implements AfterViewInit {
   selectedEndTime: string
   OneZoomLevel = 17
   timer: any
-  constructor(private vehiculeService: VehiculeService, private router: Router, private tools: util, private datePipe: DatePipe) {
+  constructor(private vehiculeService: VehiculeService, private router: Router, private tools: util,) {
   }
-
   ngOnChanges(changes: SimpleChanges): void {
     // console.log("map changes");
-    console.log(changes);
+    // console.log(changes);
     if (changes['vehiculeID'] || changes['startTime'] || changes['endTime']) {
       this.resetPolyline()
       if (changes['vehiculeID'])
@@ -67,13 +64,13 @@ export class ModalMapComponent implements AfterViewInit {
 
   loadData(url: string, isOne: boolean) {
     url = isOne ? "oneEvent?d=" + url : "map-events?d=" + url
-    console.log("loadData");
-    console.log(url);
+    // console.log("loadData");
+    // console.log(url);
     this.loadingTrajet = true
     this.vehiculeService.getVehiculeEvents(url).subscribe({
       next: (res: any) => {
         // console.log("getVehiculeEvents");
-        console.log(res);
+        // console.log(res);
         let events = res
         if (events.length == 1)
           this.addMarker(events[0])
@@ -136,6 +133,8 @@ export class ModalMapComponent implements AfterViewInit {
     googleHybrid.addTo(this.map)
     L.control.zoom().addTo(this.map)
     if (this.showFullScreenControle) {
+      // console.log(this.mapID + 'fullScreenControl');
+
       let FullScreenControl = this.control(this.mapID + 'fullScreenControl')
       this.fullScreenControl = new FullScreenControl({
         position: "topleft"
@@ -226,16 +225,6 @@ export class ModalMapComponent implements AfterViewInit {
     }
   }
 
-  myIcon(status: string) {
-    let icon = `assets/img/markers/${status}.png`
-    return L.divIcon({
-      html: `<img class="my-icon-img" src="${icon}">`,
-      iconSize: (status == 'start' || status == 'end' || status == 'park') ? [50, 50] : [40, 40],
-      iconAnchor: (status == 'start' || status == 'end') ? [25, 50] : [20, 40],
-      className: (status == 'start' || status == 'end') ? 'important-marker' : ''
-    })
-  }
-
   paintPolyline(events: any) {
     var latlngs = []
     this.invalidate()
@@ -247,13 +236,13 @@ export class ModalMapComponent implements AfterViewInit {
     events.forEach((ev, i) => {
       if (i != 0 && i != (events.length - 1)) {
         if (ev.statusCode == 62465 || ev.statusCode == 62467) {
-          this.createMarker(ev, ev.statusCode == 62465 ? this.myIcon('stop') : this.myIcon('park')).addTo(this.layer)
+          this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park')).addTo(this.layer)
         }
       }
     });
 
-    this.createMarker(events[0], this.myIcon('start')).addTo(this.layer)
-    this.createMarker(events[events.length - 1], this.myIcon('end')).addTo(this.layer)
+    this.createMarker(events[0], this.tools.myDetailsIcon('start')).addTo(this.layer)
+    this.createMarker(events[events.length - 1], this.tools.myDetailsIcon('end')).addTo(this.layer)
     this.layer.addTo(this.map)
   }
 
@@ -262,7 +251,7 @@ export class ModalMapComponent implements AfterViewInit {
     return L.marker([ev.latitude, ev.longitude], {
       icon: icon
     }).bindPopup(`` +
-      `<div>Heure: ${this.formatedTime(time)}</div>` +
+    `<div>Heure: ${this.tools.formatedTime(time)}</div>` +
       `<div>Status: ${ev.statusCode} </div>` +
       `<div>Carburant: ${ev.fuelTotal} </div>`
       , {
@@ -274,7 +263,7 @@ export class ModalMapComponent implements AfterViewInit {
   addMarker(ev: any) {
     this.invalidate()
     this.map.setView([ev.latitude, ev.longitude], this.OneZoomLevel)
-    this.layer = L.layerGroup([this.createMarker(ev, ev.statusCode == 62465 ? this.myIcon('stop') : this.myIcon('park'))])
+    this.layer = L.layerGroup([this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park'))])
     this.layer.addTo(this.map)
   }
 
@@ -282,8 +271,8 @@ export class ModalMapComponent implements AfterViewInit {
     if (this.map) {
       // if (!this.timer) {
       //   this.timer = setInterval(() => 
-      this.map.invalidateSize(true);
-        // , 2000);
+      this.map?.invalidateSize(true);
+      // , 2000);
       // }
     }
   }
@@ -293,20 +282,14 @@ export class ModalMapComponent implements AfterViewInit {
       this.layer.removeFrom(this.map)
     }
   }
-  // -----------------------------------------------------------------------------// 
-  // // 👇️ format as "YYYY-MM-DD hh:mm:ss"
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'Y-M-d HH:mm:ss');
-  }
-  // // 👇️ format as "hh:mm:ss"
-  formatedTime(date: Date) {
-    return this.datePipe.transform(date, 'HH:mm:ss');
-  }
+  // -----------------------------------------------------------------------------//
 
-  OnDestroy() {
+
+  ngOnDestroy(): void {
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
     }
   }
+
 }

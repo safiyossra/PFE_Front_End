@@ -1,18 +1,17 @@
 import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
-import { DatePipe } from '@angular/common';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
+import { util } from 'src/app/tools/utils';
 
 @Component({
   templateUrl: 'details.component.html',
-  providers: [DatePipe]
 })
 export class DetailsComponent {
 
   loading: boolean = false;
 
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService, private tools: util) { }
 
   public mainChartData: Array<any> = [
     {
@@ -243,8 +242,8 @@ export class DetailsComponent {
           // console.log(d);
           this.reportData = d;
           this.reportData.forEach((e) => {
-            e.timeStart = this.formatDate(new Date(Number.parseInt(e.timeStart) * 1000))
-            e.timeEnd = this.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000))
+            e.timeStart = this.tools.formatDate(new Date(Number.parseInt(e.timeStart) * 1000))
+            e.timeEnd = this.tools.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000))
             if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
             if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
           })
@@ -331,10 +330,6 @@ export class DetailsComponent {
 
   getParam(p: any) {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
-  }
-
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
   }
 }
 

@@ -42,7 +42,7 @@ export class MyDataTableComponent implements OnChanges {
   }
 
   onRowClicked(row: any) {
-    console.log('Row clicked: ', row);
+    // console.log('Row clicked: ', row);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

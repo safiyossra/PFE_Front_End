@@ -41,6 +41,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     }
   ]
   radius = 1000
+  radiusOptions: Number[] = [500, 1000, 1500, 2000, 4000, 6000, 10000, 20000];
   selectedType = 'poc'
   POIs = []
   selectedPoi = []
@@ -222,11 +223,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
 
   clearRoutesFromMap() {
-
     this.directionControl?.remove()
-    // if (this.directionControl && this.map.hasCustomControl(this.directionControl)) {
-    //   this.directionControl.removeFrom(this.map)
-    // }
   }
 
   drawDirection(lat, lng) {
@@ -240,11 +237,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     }
 
     this.directionControl.addTo(this.map)
-  }
-
-  clearDirection() {
-
-
   }
 
   toggleMapFullscreen() {
@@ -347,33 +339,27 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   showClosest() {
     this.clearMarkersFromMap()
-    this.loading = true
     if (this.searchedPosition.lat != null && this.searchedPosition.lng != null && this.radius > 2) {
+      this.loading = true
       this.vehiculeService.getData().subscribe({
         next: (res) => {
           const data = res['DeviceList']
+          console.log(data);
+
           let vehicules = []
           data.forEach(e => {
             let l = e['EventData'].length - 1 ?? -1
             if (l > -1) {
               const vData = e['EventData'][l]
               vehicules.push(
-                new Vehicule(
-                  {
-                    id: e["Device"] ?? "",
-                    name: e["Device_desc"] ?? "",
-                    timestamp: vData['Timestamp'] ?? 0,
-                    statusCode: vData["StatusCode"]?.toString(),
-                    lat: vData["GPSPoint_lat"] ?? 0,
-                    lng: vData["GPSPoint_lon"] ?? 0,
-                    heading: vData['Heading'] ?? 0,
-                    speed: vData['Speed'] ?? 0,
-                    fuelLevel: e['FuelLevel'] ?? 0,
-                  }
-                )
+                new Vehicule(e["Device"] ?? "", e["Device_desc"] ?? "", vData['Timestamp'] ?? 0, vData["StatusCode"]?.toString(), vData["Address"] ?? "",
+                  vData["Odometer"] ?? "", vData["acceleration"] ?? "", e["SimCard"] ?? "", e["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
+                  vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, e['Icon'], e['FuelLevel'] ?? 0)
               )
             }
           });
+
+          console.log(vehicules);
           this.createMarkers(vehicules)
         }
       })
@@ -385,14 +371,9 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       if (this.isClose(veh.lat, veh.lng)) {
         this.myMarkers.push(
           L.marker([veh.lat, veh.lng], {
-            icon: this.myIcon(veh, veh.statusCode, 'car'),
+            icon: this.tools.myIcon(veh, veh.statusCode, veh.icon),
           })
-            .bindPopup(`` +
-              `<div>Device: ${veh.name}</div>` +
-              `<div>Speed: ${veh.speed} Km/h</div>` +
-              `<div>Status: ${veh.statusCode} </div>` +
-              `<div>Heading: ${veh.heading} </div>` +
-              `<div>Fuel Level: ${veh.fuelLevel * 100}%</div>`, {
+            .bindPopup(this.tools.formatPopUpContent(veh), {
               closeButton: false,
               offset: L.point(0, -20)
 
@@ -428,21 +409,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     this.map.fitBounds(bounds)
   }
 
-  myIcon(vehicule: any, status: number, vehiculeType: string, isSelected: boolean = false) {
-    let icon = status == 61714 ? `assets/img/vehicules/${vehiculeType}/blue_final.png` : `assets/img/vehicules/${vehiculeType}/red_final.png`
-    return L.divIcon({
-      html: `<div class="center-marker"></div>` +
-        `<img class="my-icon-img rotate-${Math.round(vehicule.heading)}" src="${icon}">` +
-        `<span class="my-icon-title">${vehicule.name}</span>`,
-      iconSize: [50, 50],
-      // iconAnchor: [25, 20],
-      className: 'marker-transition my-div-icon' + (isSelected ? ' marker-selected' : ''),
-
-    })
-  }
-
   invalidate() {
-    this.map.invalidateSize(true)
+    this.map?.invalidateSize(true)
   }
 
   markerClicked(p: any) {

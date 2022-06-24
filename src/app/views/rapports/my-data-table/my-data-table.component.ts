@@ -49,8 +49,8 @@ export class MyDataTableComponent implements OnChanges {
     if (changes['data']) {
       let d = changes['data'].currentValue
       if (d && d.length > 0) {
-        console.log("ngOnChanges data");
-        console.log(d);
+        // console.log("ngOnChanges data");
+        // console.log(d);
         this.dataSource = new MatTableDataSource(d)
         this.displayedColumns = this.columns
         this.totalItems = this.dataSource.data.length
@@ -61,7 +61,7 @@ export class MyDataTableComponent implements OnChanges {
   }
 
   openLocation(timeStart, timeEnd) {
-    console.log(timeStart, timeEnd);
+    // console.log(timeStart, timeEnd);
     let out = { "timeStart": timeStart, "timeEnd": timeEnd, "selectedMapDevice": this.selectedMapDevice }
     this.positionClick.emit(out)
   }

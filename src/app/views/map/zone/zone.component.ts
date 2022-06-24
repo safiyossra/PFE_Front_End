@@ -97,7 +97,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
       this.selectedZoneIndex = index
       switch (zone.zoneType) {
         case ZoneType.circle:
-          console.log('this is a Circle')
+          // console.log('this is a Circle')
           if (!this.myZone || !(this.myZone instanceof L.Circle)) {
             this.myZone = L.circle(zone.latLngs[0], { radius: zone.radius })
           } else {
@@ -109,7 +109,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
           break;
 
         case ZoneType.point:
-          console.log('this is a Point')
+          // console.log('this is a Point')
           if (!this.myZone || !(this.myZone instanceof L.Marker)) {
             this.myZone = L.marker(zone.latLngs[0])
           } else {
@@ -120,7 +120,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
           break;
 
         case ZoneType.polygon:
-          console.log('this is a Polygon')
+          // console.log('this is a Polygon')
           if (!this.myZone || !(this.myZone instanceof L.Polygon)) {
             this.myZone = L.polygon(zone.latLngs)
           } else {
@@ -131,7 +131,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
           break;
 
         default:
-          console.log('Uknown Type');
+          // console.log('Uknown Type');
           break;
       }
     } else {
@@ -237,7 +237,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
         });
 
         this.zones = zones
-        console.log(this.zones.length);
+        // console.log(this.zones.length);
 
         this.dataSource = new MatTableDataSource(this.zones)
         this.dataSource.sort = this.sort
@@ -251,7 +251,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    // console.log(changes);
   }
 
   ngAfterViewInit(): void {
@@ -306,7 +306,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
         break;
 
       default:
-        console.log('default selected');
+        // console.log('default selected');
         if (this.myZone && this.map.hasLayer(this.myZone)) {
           this.myZone.removeFrom(this.map)
         }
@@ -361,7 +361,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
           }
 
           if (centerCircle != null && centerCircle.lat != null && centerCircle.lng != null && val.radius != null) {
-            console.log('not Null');
+            // console.log('not Null');
             this.myZone.setLatLng(centerCircle)
             this.myZone.setRadius(val.radius)
             this.myZone.setStyle({ color: val.color })
@@ -389,7 +389,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
 
           if (centerPoint != null && centerPoint.lat != null && centerPoint.lng != null && val.radius != null) {
-            console.log('not Null');
+            // console.log('not Null');
             this.myZone.setLatLng(centerPoint)
             this.map.setView(this.myZone.getLatLng())
             if (this.map.hasLayer(this.myZone)) {
@@ -641,7 +641,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   toggleMyPosition() {
-    console.log("toggleMyPosition");
+    // console.log("toggleMyPosition");
     if (navigator.geolocation) {
       let options = {
         enableHighAccuracy: true,
@@ -649,7 +649,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
         maximumAge: 0
       };
       navigator.geolocation.getCurrentPosition((p) => {
-        console.log(p.coords);
+        // console.log(p.coords);
         var positionCtl = document.getElementById("positionControl")
         if (!this.isMyPositionVisible) {
           positionCtl.classList.replace("icon-target", "icon-close")
@@ -678,7 +678,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   selectTab(tab) {
-    console.log(tab + ' : selected');
+    // console.log(tab + ' : selected');
     this.mode = tab
     switch (tab) {
       case 'list':
@@ -760,7 +760,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
       this.myMarkers.push(marker)
     })
 
-    console.log(this.myMarkers);
+    // console.log(this.myMarkers);
 
   }
 

@@ -1,12 +1,11 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
-import { DatePipe } from '@angular/common';
 import {ModalDirective, ModalOptions} from 'ngx-bootstrap/modal';
+import { util } from 'src/app/tools/utils';
 
 @Component({
   templateUrl: 'plan.component.html',
-  providers: [DatePipe]
 })
 export class PlanComponent {
 
@@ -17,7 +16,7 @@ export class PlanComponent {
   @ViewChild('motif') motif: ElementRef;
   @ViewChild('type') type: ElementRef;
   @ViewChild('modele') modele: ElementRef;
-  constructor(private dataService: DataService, private datePipe:DatePipe) { }
+  constructor(private dataService: DataService, private tools: util) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -139,11 +138,11 @@ export class PlanComponent {
     var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
         this.dataService.getPlanEntretien(urlParams).subscribe({
           next: (d: any) => {          
-            console.log(d);
+            // console.log(d);
             this.data = d;
             this.data.forEach((e) => {
-              e.timeStart = this.datePipe.transform( new Date(Number.parseInt(e.timeStart) * 1000),'yyyy-MM-dd  h:mm:ss');
-              e.timeEnd = this.datePipe.transform( new Date(Number.parseInt(e.timeEnd) * 1000),'yyyy-MM-dd  h:mm:ss');
+              e.timeStart = this.tools.formatDate(new Date(Number.parseInt(e.timeStart) * 1000));
+              e.timeEnd = this.tools.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000));
              // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
               //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
               if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);

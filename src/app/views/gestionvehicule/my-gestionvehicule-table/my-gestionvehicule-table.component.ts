@@ -1,9 +1,9 @@
-import { DatePipe } from '@angular/common';
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter, ElementRef } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { DataService } from 'src/app/services/data.service';
+import { util } from 'src/app/tools/utils';
 
 /**
  * @title Table with pagination
@@ -33,7 +33,7 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService, private tools: util) { }
 
 
   applyFilter(event: Event) {
@@ -61,10 +61,6 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
     }
   }
 
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
-  }
-
   getClassByAge(age) {
     if (age != undefined) {
       if (age < 0) return "cil-warning bg-warning"
@@ -73,22 +69,6 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
       if (age > 3600) return "cil-history bg-secondary"
     }
     return "cil-report-slash bg-danger";
-  }
-
-  formatAge(seconds) {
-    if (isNaN(seconds)) return "Jamais"
-    // return age
-    //days 
-    let days = Math.floor(seconds / (24 * 3600));
-    seconds -= days * 24 * 3600;
-    //hours 
-    let hours = Math.floor(seconds / 3600);
-    seconds -= hours * 3600;
-    //minutes 
-    let minutes = Math.floor(seconds / 60);
-    seconds -= minutes * 60;
-    //output 
-    return `${days > 0 ? days + " Jours, " : ''}${hours > 0 ? hours + " Heurs, " : ''}${minutes > 0 ? minutes + " minutes, " : ''}${seconds > 0 ? seconds + " seconds" : ''}`;
   }
 }
 

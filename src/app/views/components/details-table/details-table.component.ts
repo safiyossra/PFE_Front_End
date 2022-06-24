@@ -1,9 +1,9 @@
-import { DatePipe } from '@angular/common';
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { DataService } from 'src/app/services/data.service';
+import { util } from 'src/app/tools/utils';
 
 /**
  * @title Table with pagination
@@ -12,7 +12,6 @@ import { DataService } from 'src/app/services/data.service';
   selector: 'details-table',
   styleUrls: ['details-table.component.scss'],
   templateUrl: 'details-table.component.html',
-  providers: [DatePipe]
 })
 export class DetailsTableComponent implements OnChanges {
   @Output() positionClick?: EventEmitter<any> = new EventEmitter();
@@ -37,7 +36,7 @@ export class DetailsTableComponent implements OnChanges {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService, private tools: util) { }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -73,11 +72,11 @@ export class DetailsTableComponent implements OnChanges {
         this.dataSource = new MatTableDataSource(d.data)
         this.loadDonnee = d.data;
         this.loadDonnee.forEach((e) => {
-          e.timestamp = this.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
-          e.creationTime = this.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
-          e.status = this.getStatusName(e.statusCode)
+          e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
+          e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
+          e.status = this.tools.getStatusName(e.statusCode)
         })
-        console.log(this.loadDonnee);
+        // console.log(this.loadDonnee);
         setTimeout(() => {
           this.paginator.pageIndex = this.currentPage;
           this.paginator.length = d.total
@@ -91,33 +90,19 @@ export class DetailsTableComponent implements OnChanges {
   }
 
   pageChanged(event: PageEvent) {
-    console.log({ event })
+    // console.log({ event })
     this.selectedPageSize = event.pageSize
     this.currentPage = event.pageIndex
     this.loadData()
   }
 
   openLocation(e) {
-    console.log("openLocation");
-    console.log(e);
+    // console.log("openLocation");
+    // console.log(e);
     let out = { "timeStart": e, "selectedMapDevice": this.selectedMapDevice }
     this.positionClick.emit(out)
   }
 
-  getStatusName(status: any) {
-    if (status == 61714) { return "En Route"; } else
-      if (status == 62465) { return "Moteur ON"; } else
-        return "Moteur OFF";
-  }
 
-  getStatusColor(status: any) {
-    if (status == 61714) { return "text-success"; } else
-      if (status == 62465) { return "text-primary"; } else
-        return "text-danger";
-  }
-
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
-  } 
 }
 

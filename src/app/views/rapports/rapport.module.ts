@@ -5,12 +5,6 @@ import { NgModule } from '@angular/core';
 
 import { DetailleComponent } from './detaille.component';
 
-// Forms Component
-import { FormsComponent } from './forms.component';
-
-import { SwitchesComponent } from './switches.component';
-import { TablesComponent } from './tables.component';
-
 // Tabs Component
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { JournalierComponent } from './journalier.component';
@@ -18,22 +12,16 @@ import { JournalierComponent } from './journalier.component';
 
 // Collapse Component
 import { CollapseModule } from 'ngx-bootstrap/collapse';
-import { CollapsesComponent } from './collapses.component';
 
 // Dropdowns Component
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 // Pagination Component
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-import { PaginationsComponent } from './paginations.component';
 
 // Popover Component
 import { PopoverModule } from 'ngx-bootstrap/popover';
-import { PopoversComponent } from './popovers.component';
 
-// Progress Component
-import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
-import { ProgressComponent } from './progress.component';
 
 import {MaterialsModule} from 'src/app/materials.module';
 // Components Routing
@@ -56,7 +44,6 @@ import { SynthetiquesComponent } from './synthetiques.component';
     CollapseModule.forRoot(),
     PaginationModule.forRoot(),
     PopoverModule.forRoot(),
-    ProgressbarModule.forRoot(),
     BsDropdownModule.forRoot(),
     TabsModule,
     FormsModule,
@@ -70,14 +57,7 @@ import { SynthetiquesComponent } from './synthetiques.component';
   ],
   declarations: [
     DetailleComponent,
-    FormsComponent,
-    SwitchesComponent,
-    TablesComponent,
     JournalierComponent,
-    CollapsesComponent,
-    PaginationsComponent,
-    PopoversComponent,
-    ProgressComponent,
     MyDataTableComponent,
     MySynthetiquesTableComponent,
     SynthetiquesComponent,

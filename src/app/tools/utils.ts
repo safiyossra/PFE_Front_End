@@ -1,18 +1,16 @@
-import { DOCUMENT } from '@angular/common';
-import { HostListener, Inject } from '@angular/core'
-import { Injectable } from '@angular/core';
+import { formatDate, DOCUMENT } from '@angular/common';
+import { Inject, Injectable,LOCALE_ID } from '@angular/core'
+import {  } from '@angular/core';
+import * as L from 'leaflet';
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class util {
-
     isFullScreen: boolean;
-
-    constructor(@Inject(DOCUMENT) private document: any,) {
+    constructor(@Inject(DOCUMENT) private document: any, @Inject(LOCALE_ID) private locale: string) {
         document.onfullscreenchange = ($event) => this.chkScreenMode($event.target['id']);
-
     }
 
     public openFullscreen(elem: any) {
@@ -47,14 +45,11 @@ export class util {
         }
     }
 
-
     chkScreenMode(id) {
         // var idElem = (id == 'map') || (id == 'mapDetail') ? id+'fullScreenControl' : 'list-fullscreenControl'
-        console.log(id);
-
+        // console.log(id);
         var idElem = id + 'fullScreenControl'
-        console.log(idElem);
-
+        // console.log(idElem);
         var fullScreenCtl = document.getElementById(idElem)
         if (document.fullscreenElement) {
             //fullscreen
@@ -68,4 +63,148 @@ export class util {
             this.isFullScreen = false;
         }
     }
+
+    myIcon(vehicule: any, status: number, vehiculeType: string, isSelected: boolean = false) {
+        let img = this.getImage(vehiculeType)
+        let icon = status == 61714 ? `assets/img/vehicules/${img}-on.png` : `assets/img/vehicules/${img}-off.png`
+        return L.divIcon({
+            html: `<div class="center-marker"></div>` +
+                `<img class="my-icon-img rotate-${Math.round(vehicule.heading)}" src="${icon}">` +
+                `<span class="my-icon-title">${vehicule.name}</span>`,
+            iconSize: [50, 50],
+            // iconAnchor: [25, 20],
+            className: 'marker-transition my-div-icon' + (isSelected ? ' marker-selected' : ''),
+        })
+    }
+    myTrajetIcon(status: string) {
+        let icon = `assets/img/markers/${status}.png`
+        return L.divIcon({
+            html: `<img class="my-icon-img" src="${icon}">`,
+            iconSize: (status == 'start' || status == 'end') ? [50, 50] : [30, 30],
+            iconAnchor: (status == 'start' || status == 'end') ? [25, 50] : [15, 30],
+            className: (status == 'start' || status == 'end') ? 'important-marker' : ''
+        })
+    }
+
+    myDetailsIcon(status: string) {
+        let icon = `assets/img/markers/${status}.png`
+        return L.divIcon({
+            html: `<img class="my-icon-img" src="${icon}">`,
+            iconSize: (status == 'start' || status == 'end' || status == 'park') ? [50, 50] : [40, 40],
+            iconAnchor: (status == 'start' || status == 'end') ? [25, 50] : [20, 40],
+            className: (status == 'start' || status == 'end') ? 'important-marker' : ''
+        })
+    }
+
+    formatPopUpContent(v) {
+        let img = this.getImage(v.icon)
+        let time = this.formatDate(new Date(v.timestamp * 1000))
+        let now = Math.round(new Date().getTime() / 1000)
+        let age = this.formatAge(v.timestamp > 0 ? (now - v.timestamp):"nan")
+        return `` +
+            `<table class="infoBoxTable">
+            <tbody>
+              <tr class="infoBoxRow"
+                style="background-color: #3598dc !important;color: #FFFFFF !important;">
+                <td><img src="assets/img/vehicules/${img}-img.png">&nbsp; </td> 
+                <td class="infoBoxCell" style="vertical-align: middle;"><b>${v.name}</b>, <b  style="text-align: right;">${this.getStatusName(v.statusCode)}</b></td>
+              </tr>
+              <tr class="infoBoxRow">
+                <td class="infoBoxCellTitle">Age:</td>
+                <td class="infoBoxCell"> ${age}</td>
+              </tr>
+              <tr class="infoBoxRow">
+                <td class="infoBoxCellTitle">Date:</td>
+                <td class="infoBoxCell"> ${time}</td>
+              </tr>
+              <tr class="infoBoxRow">
+                <td class="infoBoxCellTitle">GPS:</td>
+                <td class="infoBoxCell"> ${v.lat} / ${v.lng} </td>
+              </tr>
+              <tr class="infoBoxRow">
+                <td class="infoBoxCellTitle">Vitesse: </td>
+                <td class="infoBoxCell"> ${v.speed} Km/H</td>
+              </tr>
+              <tr class="infoBoxRow">
+                <td class="infoBoxCellTitle">Odomètre:</td>
+                <td class="infoBoxCell">${v.odometer} Km</td>
+              </tr>
+              <tr class="infoBoxRow">
+                <td class="infoBoxCellTitle">Adresse: </td>
+                <td class="infoBoxCell"> ${v.address}</td>
+              </tr>
+              <tr class="infoBoxRow">
+                <td class="infoBoxCellTitle">Fuel Level:</td>
+                <td class="infoBoxCell"> ${v.fuelLevel} L</td>
+              </tr>
+              <tr class="infoBoxRow">
+                <td class="infoBoxCellTitle">Type:</td>
+                <td class="infoBoxCell" >${v.deviceCode}</td>
+              </tr>
+              <tr class="infoBoxRow">
+                <td class="infoBoxCellTitle">ID:</td>
+                <td class="infoBoxCell">${v.id}</td>
+              </tr>
+              <tr class="infoBoxRow">
+                <td class="infoBoxCellTitle">Phone:</td>
+                <td class="infoBoxCell">${v.simCard}</td>
+              </tr>
+            </tbody>
+          </table>` +
+            ``
+    }
+    // // 👇️ format as "YYYY-MM-DD hh:mm:ss"
+    formatDate(date: Date) {
+        return formatDate(date, 'Y-M-d HH:mm:ss', this.locale);
+    }
+    // // 👇️ format as "hh:mm:ss"
+    formatedTime(date: Date) {
+        return formatDate(date, 'HH:mm:ss', this.locale);
+    }
+
+    formatAge(seconds) {
+        if (isNaN(seconds)) return "Jamais"
+        // return age
+        //days 
+        let days = Math.floor(seconds / (24 * 3600));
+        seconds -= days * 24 * 3600;
+        //hours 
+        let hours = Math.floor(seconds / 3600);
+        seconds -= hours * 3600;
+        //minutes 
+        let minutes = Math.floor(seconds / 60);
+        seconds -= minutes * 60;
+        //output 
+        return `${days > 0 ? days + " Jours, " : ''}${hours > 0 ? hours + " Heurs, " : ''}${minutes > 0 ? minutes + " minutes, " : ''}${seconds > 0 ? seconds + " seconds" : ''}`;
+    }
+
+    getStatusName(status: any) {
+        if (status == 61714) { return "En Route"; } else
+          if (status == 62465) { return "Moteur ON"; } else
+            return "Moteur OFF";
+      }
+    
+      getStatusColor(status: any) {
+        if (status == 61714) { return "text-success"; } else
+          if (status == 62465) { return "text-primary"; } else
+            return "text-danger";
+      }
+
+    getImage(vehiculeType) {
+        return this.motor.includes(vehiculeType) ? "motor" : this.truck.includes(vehiculeType) ? "truck" : this.sprinter.includes(vehiculeType) ? "sprinter" : this.remorque.includes(vehiculeType) ?
+            "remork" : this.camions.includes(vehiculeType) ? "camion" : this.truck_head.includes(vehiculeType) ? "truck-head" : "car"
+    }
+
+    motor = ["moto", "grnbike",]
+    camions = ['fleetGreen', 'fleet','ffight', 'yeltruck', 'blktruck', 'rgntruck', 'excav','grua', 'h100', 'mzcldr', 'pickup',]
+    remorque = ["trailer"]
+    sprinter = ['bus']
+    truck = ["remolque", "volvo1",]
+    truck_head = ['volvo2']
+    // cars = ["", "black","brown","red","orange","yellow","green", "blue", "purple", "gray", "white", "darkred", "darkgreen", "darkblue", "darkpurple", "teal", 
+    // "salmon", "gold", "pink", "lime", "bluegray", "magenta", "reddot", "greendot", "bluedot", "stop", "slow", "moving", 
+    // "last", "greenh", "yellowh", "heading", "lastlabel", "lastage", "devlabel", "devlbl_r", "devlbl_g", "devlbl_b", "devlbl_y", "pp_arrow_c", 
+    // "pp_arrow_y", "arrow_spd", "arrow_grn", "indexed", "4x4", "medi", "bcar", "rcar", "rgray", "banco", "rflag", "burro", 
+    // "dino", "fabrica", "farmacia", "gas", "home", "hospital", "milenium", "naboo", "patito", "persona", "peru", "pinguino", "policia", "probox", "r2d2", 
+    // "raton", "sniper", "taxi", "templo", "tibirium", "tiefight",  "tren", "xwing"]
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core'
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core'
 import { VehiculeService } from 'src/app/services/vehicule.service'
 import { util } from '../../tools/utils'
 import * as L from 'leaflet'
@@ -12,7 +12,7 @@ import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 })
 
 
-export class MapComponent implements AfterViewInit, OnInit {
+export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
   @Input() showCollapsControle?: Boolean = true
@@ -161,32 +161,13 @@ export class MapComponent implements AfterViewInit, OnInit {
     L.control.scale().addTo(this.map);
   }
 
-  myIcon(vehicule: any, status: number, vehiculeType: string, isSelected: boolean = false) {
-    let icon = status == 61714 ? `assets/img/vehicules/${vehiculeType}/blue_final.png` : `assets/img/vehicules/${vehiculeType}/red_final.png`
-    return L.divIcon({
-      html: `<div class="center-marker"></div>` +
-        `<img class="my-icon-img rotate-${Math.round(vehicule.heading)}" src="${icon}">` +
-        `<span class="my-icon-title">${vehicule.name}</span>`,
-      iconSize: [50, 50],
-      // iconAnchor: [25, 20],
-      className: 'marker-transition my-div-icon' + (isSelected ? ' marker-selected' : ''),
-
-    })
-  }
-
   initMarkers() {
     this.vehicules.forEach((veh, index) => {
       this.markers.push(
         L.marker([veh.lat, veh.lng], {
-          icon: this.myIcon(veh, veh.statusCode, 'car'),
-
+          icon: this.tools.myIcon(veh, veh.statusCode, veh.icon),
         })
-          .bindPopup(`` +
-            `<div>Device: ${veh.name}</div>` +
-            `<div>Speed: ${veh.speed} Km/h</div>` +
-            `<div>Status: ${veh.statusCode} </div>` +
-            `<div>Heading: ${veh.heading} </div>` +
-            `<div>Fuel Level: ${veh.fuelLevel * 100}%</div>`, {
+          .bindPopup(this.tools.formatPopUpContent(veh), {
             closeButton: false,
             offset: L.point(0, -20)
 
@@ -218,18 +199,10 @@ export class MapComponent implements AfterViewInit, OnInit {
   updateMarkers() {
     for (let i = 0; i < this.markers.length; i++) {
       if (this.vehicules[i]) {
-        this.markers[i].setLatLng([this.vehicules[i].lat, this.vehicules[i].lng])
-        this.markers[i].setIcon(
-          this.myIcon(this.vehicules[i], this.vehicules[i].statusCode, 'car', this.selectedVehiculeIndex == i)
-        )
-        this.markers[i].setPopupContent(`` +
-          `<div>Device: ${this.vehicules[i].name}</div>` +
-          `<div>Speed: ${this.vehicules[i].speed} Km/h</div>` +
-          `<div>Status: ${this.vehicules[i].statusCode} </div>` +
-          `<div>Heading: ${this.vehicules[i].heading} </div>` +
-          `<div>Fuel Level: ${this.vehicules[i].fuelLevel * 100}%</div>` +
-          ``
-        )
+        let v = this.vehicules[i]
+        this.markers[i].setLatLng([v.lat, v.lng])
+        this.markers[i].setIcon(this.tools.myIcon(v, v.statusCode, v.icon, this.selectedVehiculeIndex == i))
+        this.markers[i].setPopupContent(this.tools.formatPopUpContent(v))
       }
     }
     this.center()
@@ -250,25 +223,17 @@ export class MapComponent implements AfterViewInit, OnInit {
     this.vehiculeService.getData().subscribe({
       next: (res) => {
         const data = res['DeviceList']
+        console.log("DeviceList", data);
+
         let vehicules = []
         data.forEach(e => {
           let l = e['EventData'].length - 1 ?? -1
           if (l > -1) {
             const vData = e['EventData'][l]
             vehicules.push(
-              new Vehicule(
-                {
-                  id: e["Device"] ?? "",
-                  name: e["Device_desc"] ?? "",
-                  timestamp: vData['Timestamp'] ?? 0,
-                  statusCode: vData["StatusCode"]?.toString(),
-                  lat: vData["GPSPoint_lat"] ?? 0,
-                  lng: vData["GPSPoint_lon"] ?? 0,
-                  heading: vData['Heading'] ?? 0,
-                  speed: vData['Speed'] ?? 0,
-                  fuelLevel: e['FuelLevel'] ?? 0,
-                }
-              )
+              new Vehicule(e["Device"] ?? "", e["Device_desc"] ?? "", vData['Timestamp'] ?? 0, vData["StatusCode"]?.toString(), vData["Address"] ?? "",
+                vData["Odometer"] ?? "", vData["acceleration"] ?? "", e["SimCard"] ?? "", e["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
+                vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, e['Icon'], e['FuelLevel'] ?? 0)
             )
           }
         });
@@ -398,7 +363,7 @@ export class MapComponent implements AfterViewInit, OnInit {
   }
 
   invalidate() {
-    this.map.invalidateSize(true)
+    this.map?.invalidateSize(true)
   }
 
   resetSize(e) {
@@ -410,6 +375,10 @@ export class MapComponent implements AfterViewInit, OnInit {
     this.size = [e.sizes[0], e.sizes[1]]
     this.invalidate()
   }
-  ngOnDestroy() {
+  ngOnDestroy(): void {
+    if (this.inter) {
+      clearInterval(this.inter);
+      this.inter = null;
+    }
   }
 }

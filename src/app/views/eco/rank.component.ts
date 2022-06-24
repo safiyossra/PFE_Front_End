@@ -41,7 +41,7 @@ export class RankComponent implements OnInit {
     else if (this.radioModel == "Year") { this.interval = "Un an à partir de maintenant"; p = "?st=" + this.getLastxDate(365) + "&et=" + this.getLastxDate(0) }
     else this.interval = "Un mois à partir de maintenant";
     this.getEcoIndexes(p)
-    console.log(p);
+    // console.log(p);
 
   }
 

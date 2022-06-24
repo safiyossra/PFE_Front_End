@@ -46,12 +46,12 @@ export class EventsTableComponent implements OnInit, OnChanges {
   }
 
   onRowClicked(row: any) {
-    console.log('Row clicked: ', row);
+    // console.log('Row clicked: ', row);
     this.rowClick.emit(row.id)
   }
 
   onRowDoubleClicked(row: any) {
-    console.log('Row double clicked: ', row);
+    // console.log('Row double clicked: ', row);
     this.rowDoubleClicked.emit(row.id)
   }
 }
