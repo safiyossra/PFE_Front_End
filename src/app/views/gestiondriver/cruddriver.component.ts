@@ -23,6 +23,7 @@ export class CruddriverComponent {
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   data = [];
+  mode = "Ajouter"
   public isnotNum: boolean = false
   displayedColumns: any= ["Véhicule","Device","Num de Tel"]
 
@@ -102,6 +103,7 @@ export class CruddriverComponent {
   };
 
   loadModify(ev) {
+    this.mode ="Modifier"
     this.selectedDriver = new Driver();
     if (ev) {
       var url = "?d=" + ev
@@ -132,6 +134,7 @@ export class CruddriverComponent {
 
   showAddModal(){
     this.selectedDriver = new Driver();
+    this.mode = "Ajouter"
     this.primaryModal.show()
   }
 
@@ -150,7 +153,7 @@ export class CruddriverComponent {
   }
 
   ajouter(){
-    
+    this.mode ="Ajouter"
   }
 
  

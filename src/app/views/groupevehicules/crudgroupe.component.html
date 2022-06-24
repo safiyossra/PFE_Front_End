@@ -94,7 +94,7 @@
                   <label class=" col-md-4 col-form-label" for="select1">Véhicules</label>
                   <div class="col-8 input-group">
                     <my-dropdown-select class="form-control" [placeholder]="'Device Selection'"
-                      [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
+                      [selectPlaceholder]="'Chercher...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
                       [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="true" [labelCount]="2"
                       [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
                     </my-dropdown-select>

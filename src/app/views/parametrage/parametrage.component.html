@@ -9,13 +9,15 @@
     </my-menu-card>
     <my-menu-card class="col-6" title='Affectations' subtitle='' icon="cil-swap-horizontal" underlineColor="bg-primary">
     </my-menu-card>
-    <my-menu-card class="col-6" title='Alertes' subtitle='' icon="cil-bell-exclamation" underlineColor="bg-danger">
+    <my-menu-card class="col-6" title='Utilisateurs' subtitle='' [routerLink]="['/gestionusers']" icon="cil-user" underlineColor="bg-danger">
     </my-menu-card>
     <my-menu-card class="col-6" title='Carte Carburant' subtitle='' [routerLink]="['/gestioncarburant']"
         icon="cil-gauge" underlineColor="bg-warning">
     </my-menu-card>
     <my-menu-card class="col-6" title='Groupe Vehicules' subtitle='' [routerLink]="['/groupevehicules']" icon="cil-list"
         underlineColor="bg-success">
+    </my-menu-card>
+    <my-menu-card class="col-6" title='Alertes' subtitle='' icon="cil-bell-exclamation" underlineColor="bg-danger">
     </my-menu-card>
 </div>
 

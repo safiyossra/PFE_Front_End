@@ -39,7 +39,7 @@
                             <div class="form-group row">
                               <label class=" col-md-4 col-form-label" for="text-input">Date de Création</label>
                               <div class="col-8">
-                            <input type="text" [disabled]="true" [(ngModel)]="selectedDevice.creationTime" [ngModelOptions]="{standalone: true}"
+                            <input type="date" [disabled]="true" [(ngModel)]="selectedDevice.creationTime" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="Choisir la date">
                             </div>
                             </div>
@@ -101,8 +101,8 @@
                             <div class="form-group row">
                               <label class="col-md-4 col-form-label" for="text-input">Numéro de téléphone</label>
                               <div class="col-8">
-                            <input type="number" [(ngModel)]="selectedDevice.simPhoneNumber" [ngModelOptions]="{standalone: true}"
-                              class="form-control" placeholder="0,00">
+                            <input type="tel" [(ngModel)]="selectedDevice.simPhoneNumber" [ngModelOptions]="{standalone: true}"
+                              class="form-control" placeholder="Saisir num de tel">
                             </div>
                             </div>
                             <div class="form-group row">

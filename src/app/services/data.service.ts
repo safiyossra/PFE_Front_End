@@ -148,5 +148,16 @@ export class DataService {
       headers: headers
     })
   }
+  getUsers(urluser) {
+    let SERVER_URL = environment.apiUrl + "gestionusers" + urluser;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
 
 }

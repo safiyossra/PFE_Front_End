@@ -22,7 +22,7 @@
           <div class="modal-dialog modal-primary" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Gestion Conducteur</h5>
+                <h5 class="modal-title">{{mode}} Conducteur</h5>
                 <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -37,7 +37,8 @@
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="select1">Conducteur ID</label>
                             <div class="col-8">
-                            <input type="text" [(ngModel)]="selectedDriver.driverID" [ngModelOptions]="{standalone: true}" class="form-control">
+                            <input type="text" [(ngModel)]="selectedDriver.driverID" [ngModelOptions]="{standalone: true}" 
+                            class="form-control"  placeholder="Saisir un identifiant">
                             </div>
                           </div>
                           <div class="form-group row">
@@ -175,8 +176,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Fermer</button>
-                <button type="submit" class="btn btn-primary" 
-                  (click)="ajouter()">Ajouter</button>
+                <button type="button" class="btn btn-primary" (click)="ajouter()">{{mode}}</button>
               </div>
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->

@@ -107,6 +107,7 @@ export class CrudgroupeComponent {
 
   showAddModal(){
     this.selectedGroupevehicules = new Groupevehicules();
+    this.mode = "Ajouter"
     this.primaryModal.show()
   }
 
