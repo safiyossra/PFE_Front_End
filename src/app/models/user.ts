@@ -9,9 +9,10 @@ export class User {
     timeZone: any
     isActive: any
     notes:any
+    groups : any
 
-    constructor(isActive?,userID?, contactPhone?, password?, contactEmail?,
-         description?, contactName?, notifyEmail?, timeZone?, notes?) {
+    constructor(userID?,isActive?,description?, password?,contactName?, contactPhone?,  contactEmail?,
+           notifyEmail?, timeZone?,groups?, notes? ) {
         this.userID = userID ?? ''
         this.description = description ?? ''
         this.contactPhone = contactPhone ?? ''
@@ -22,5 +23,6 @@ export class User {
         this.timeZone = timeZone ?? ''
         this.isActive = isActive ?? 0
         this.notes = notes ?? ''
+        this.groups = groups ?? ''
     }
 }

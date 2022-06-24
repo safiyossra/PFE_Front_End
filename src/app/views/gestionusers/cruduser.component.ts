@@ -72,16 +72,19 @@ export class CruduserComponent {
 
   loadModify(ev) {
     this.mode = "Modifier"
-    this.selectedUser = new User();
+    this.selectedUser = new User(ev[0],ev[1],ev[2],ev[3],ev[4],ev[5],ev[6],ev[7],ev[8],ev[9],ev[10]);
     if (ev) {
-      var url = "?u=" + ev
+      var url = "?u=" + ev[0]
       this.modalLoading = true;
       this.primaryModal.show()
       this.dataService.getUsers(url).subscribe({
         next: (d: any) => {
-          if (d && d.length) {
-            this.selectedUser = d[0];
-          }
+          // if (d && d.length) {
+           //  this.selectedUser = d[0];
+          // }
+          this.selectedUser.groups = d.map(e=> {return e.groupID});
+          this.selectedGroups=this.selectedUser.groups
+          this.selectedGroup=this.selectedGroups
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;

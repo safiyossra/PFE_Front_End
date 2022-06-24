@@ -34,7 +34,7 @@
                         <div class="form-group row">
                           <label class=" col-md-4 col-form-label">Identifiant</label>
                           <div class="col-8 input-group">
-                            <input type="text" class="form-control" [(ngModel)]="selectedUser.userID" [ngModelOptions]="{standalone: true}"
+                            <input type="text" class="form-control" [disabled]="mode=='Modifier'?'true':'false'" [(ngModel)]="selectedUser.userID" [ngModelOptions]="{standalone: true}"
                               placeholder="Saisir un identifiant">
                           </div>
                         </div>
@@ -59,7 +59,7 @@
                           <label class="col-md-4 col-form-label" for="text-input">Mot de passe</label>
                           <div class="col-8">
                             <input type="password" class="form-control" [(ngModel)]="selectedUser.password" [ngModelOptions]="{standalone: true}"
-                              placeholder="Saisir le mot de passe">
+                              placeholder="************">
                           </div>
                         </div>                       
                         <div class="form-group row">
@@ -115,7 +115,7 @@
                           <label class=" col-md-4 col-form-label">Séléctionnées</label>
                           <div class="col-8 input-group">
                             <select size="6" class="form-control" placeholder="Véhicules Séléctionnées">
-                              <option *ngFor="let e of selectedDevice">{{getDeviceByName(e)}}</option>        
+                              <option *ngFor="let e of selectedGroup">{{getDeviceByName(e)}}</option>        
                             </select>
                           </div>
                         </div> -->
