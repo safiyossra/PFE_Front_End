@@ -46,7 +46,7 @@ export class MyGroupevehiculesTableComponent implements OnChanges {
   }
 
   onRowClicked(row: any) {
-    console.log('Row clicked: ', row);
+    // console.log('Row clicked: ', row);
   }
 
   modif(ev) {

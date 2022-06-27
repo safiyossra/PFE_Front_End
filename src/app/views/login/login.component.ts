@@ -45,7 +45,6 @@ export class LoginComponent {
         },
         (error) => {
           console.log(error);
-
           this.errorMessage = 'Identifiants invalides';
           this.loading = false;
         }

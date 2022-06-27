@@ -166,7 +166,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     if (await this.vehiculeExist(this.vehiculeID)) {
       this.loadVehiculeEvents()
     } else {
-      console.log('Vehicule Does not exist');
+      // console.log('Vehicule Does not exist');
       this.router.navigate(['/404'])
     }
   }
@@ -207,9 +207,9 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   }
 
   dateChange(event: any) {
-    console.log('date changed');
-    console.log(this.selectedDate);
-    console.log(Math.floor(this.selectedDate.getTime() / 1000));
+    // console.log('date changed');
+    // console.log(this.selectedDate);
+    // console.log(Math.floor(this.selectedDate.getTime() / 1000));
 
     this.loadVehiculeEvents()
   }
@@ -332,7 +332,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   }
 
   centerMap() {
-    console.log(this.map.layers)
+    // console.log(this.map.layers)
   }
 
   toggleMapFullscreen() {
@@ -345,7 +345,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   }
 
   toggleMyPosition() {
-    console.log("toggleMyPosition");
+    // console.log("toggleMyPosition");
     if (navigator.geolocation) {
       let options = {
         enableHighAccuracy: true,
@@ -353,7 +353,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
         maximumAge: 0
       };
       navigator.geolocation.getCurrentPosition((p) => {
-        console.log(p.coords);
+        // console.log(p.coords);
         var positionCtl = document.getElementById("positionControl")
         if (!this.isMyPositionVisible) {
           positionCtl.classList.replace("icon-target", "icon-close")
@@ -401,73 +401,65 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  myIcon(status: string) {
-    let icon = `assets/img/markers/${status}.png`
-    return L.divIcon({
-      html: `<img class="my-icon-img" src="${icon}">`,
-      iconSize: (status == 'start' || status == 'end') ? [50, 50] : [30, 30],
-      iconAnchor: (status == 'start' || status == 'end') ? [25, 50] : [15, 30],
-      className: (status == 'start' || status == 'end') ? 'important-marker' : ''
-    })
-  }
-
   paintPolyline(isAll = true, startEventsIndex?: number, endEvenntsIndex?: number) {
     var latlngs = []
     if (isAll) {
-      latlngs = this.events.map(ev => [ev.latitude, ev.longitude])
-      var layer = L.layerGroup([L.polyline(latlngs, { color: '#20a8d8', opacity: 1, weight: 4 })])
+      if (this.events && this.events.length > 0) {
+        latlngs = this.events.map(ev => [ev.latitude, ev.longitude])
+        var layer = L.layerGroup([L.polyline(latlngs, { color: '#20a8d8', opacity: 1, weight: 4 })])
 
-      this.events.forEach((ev, i) => {
-        let time = new Date(ev.timestamp * 1000)
-        if (i != 0 && i != (this.events - 1)) {
-          if (ev.statusCode == 62465 || ev.statusCode == 62467) {
-            var marker = L.marker([ev.latitude, ev.longitude], {
-              icon: ev.statusCode == 62465 ? this.myIcon('stop') : this.myIcon('park')
-            }).bindPopup(`` +
-              `<div>Heure: ${this.formatTime(time)}</div>` +
-              `<div>Status: ${ev.statusCode} </div>` +
-              `<div>Carburant: ${ev.fuelTotal} </div>`
-              , {
-                closeButton: false,
-                offset: L.point(0, -20)
-              })
-            layer.addLayer(marker)
+        this.events.forEach((ev, i) => {
+          let time = new Date(ev.timestamp * 1000)
+          if (i != 0 && i != (this.events - 1)) {
+            if (ev.statusCode == 62465 || ev.statusCode == 62467) {
+              var marker = L.marker([ev.latitude, ev.longitude], {
+                icon: ev.statusCode == 62465 ? this.tools.myTrajetIcon('stop') : this.tools.myTrajetIcon('park')
+              }).bindPopup(`` +
+                `<div>Heure: ${this.formatTime(time)}</div>` +
+                `<div>Status: ${ev.statusCode} </div>` +
+                `<div>Carburant: ${ev.fuelTotal} </div>`
+                , {
+                  closeButton: false,
+                  offset: L.point(0, -20)
+                })
+              layer.addLayer(marker)
+            }
           }
-        }
-      });
-      L.marker([this.events[0].latitude, this.events[0].longitude], {
-        icon: this.myIcon('start')
-      }).bindPopup(`` +
-        `<div>Heure: ${this.formatTime(new Date(this.events[0].timestamp * 1000))}</div>` +
-        `<div>Status: ${this.events[0].statusCode} </div>` +
-        `<div>Carburant: ${this.events[0].fuelTotal} </div>`
-        , {
-          closeButton: false,
-          offset: L.point(0, -20)
-        }).addTo(layer)
+        });
+        L.marker([this.events[0].latitude, this.events[0].longitude], {
+          icon: this.tools.myTrajetIcon('start')
+        }).bindPopup(`` +
+          `<div>Heure: ${this.formatTime(new Date(this.events[0].timestamp * 1000))}</div>` +
+          `<div>Status: ${this.events[0].statusCode} </div>` +
+          `<div>Carburant: ${this.events[0].fuelTotal} </div>`
+          , {
+            closeButton: false,
+            offset: L.point(0, -20)
+          }).addTo(layer)
 
-      L.marker([this.events[this.events.length - 1].latitude, this.events[this.events.length - 1].longitude], {
-        icon: this.myIcon('end')
-      }).bindPopup(`` +
-        `<div>Heure: ${this.formatTime(new Date(this.events[this.events.length - 1].timestamp * 1000))}</div>` +
-        `<div>Status: ${this.events[this.events.length - 1].statusCode} </div>` +
-        `<div>Carburant: ${this.events[this.events.length - 1].fuelTotal} </div>`
-        , {
-          closeButton: false,
-          offset: L.point(0, -20)
-        }).addTo(layer)
+        L.marker([this.events[this.events.length - 1].latitude, this.events[this.events.length - 1].longitude], {
+          icon: this.tools.myTrajetIcon('end')
+        }).bindPopup(`` +
+          `<div>Heure: ${this.formatTime(new Date(this.events[this.events.length - 1].timestamp * 1000))}</div>` +
+          `<div>Status: ${this.events[this.events.length - 1].statusCode} </div>` +
+          `<div>Carburant: ${this.events[this.events.length - 1].fuelTotal} </div>`
+          , {
+            closeButton: false,
+            offset: L.point(0, -20)
+          }).addTo(layer)
 
-      layer.addTo(this.map)
+        layer.addTo(this.map)
+      }
+
     } else {
       var subEvents = this.events.slice(startEventsIndex, endEvenntsIndex + 1)
       latlngs = subEvents.map(ev => [ev.latitude, ev.longitude])
-      var layer = L.layerGroup([L.polyline(latlngs, { color: '#6f42c1', opacity: .8, weight: 4 })]).addTo(this.map)
-
+      var layer = L.layerGroup([L.polyline(latlngs, { color: 'red', opacity: .8, weight: 4 })]).addTo(this.map)
       subEvents.forEach((ev, i) => {
         let time = new Date(ev.timestamp * 1000)
         if (i == 0) {
           var marker = L.marker([ev.latitude, ev.longitude], {
-            icon: this.myIcon('start')
+            icon: this.tools.myTrajetIcon('start')
           }).bindPopup(`` +
             `<div>Heure: ${this.formatTime(time)}</div>` +
             `<div>Status: ${ev.statusCode} </div>` +
@@ -479,7 +471,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
           layer.addLayer(marker)
         } else if (i == subEvents.length - 1) {
           var marker = L.marker([ev.latitude, ev.longitude], {
-            icon: this.myIcon('end')
+            icon: this.tools.myTrajetIcon('end')
           }).bindPopup(`` +
             `<div>Heure: ${this.formatTime(time)}</div>` +
             `<div>Status: ${ev.statusCode} </div>` +
@@ -609,9 +601,6 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   getDurreCond(events) {
     var carStat = 0
     var dureeConduite = 0
-
-    console.log(5 - 15);
-
     events.forEach(ev => {
       if (ev.statusCode == 61714 || ev.statusCode == 62465) {
         if (carStat == 0) {

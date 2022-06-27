@@ -45,7 +45,7 @@ export class MyGestiondriverTableComponent implements OnChanges {
     }
   }
   onRowClicked(row: any) {
-    console.log('Row clicked: ', row);
+    // console.log('Row clicked: ', row);
   }
   modif(ev) {
     this.modify.emit(ev)

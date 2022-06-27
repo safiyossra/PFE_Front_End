@@ -22,8 +22,8 @@
                 class="cil-pen"></i></button>
             <a title="Rapport" [routerLink]="['/rapports/detaille']" target="_blank" [queryParams]="{ id: salle['deviceID']}"
               class="btn rounded btn-secondary"><i class="cil-list"></i> </a>
-            <i [ngClass]="getClassByAge(salle['age'])" class="rounded-circle p-2 h5 m-1 ml-4 align-middle"
-              [title]="formatAge(salle['age'])"></i>
+            <i [ngClass]="(tools.getClassByAge(salle['age']))" class="rounded-circle p-2 h5 m-1 ml-4 align-middle"
+              [title]="tools.formatAge(salle['age'])"></i>
           </div>
           {{ column!='actions'?salle[column]:'' }}
         </td>

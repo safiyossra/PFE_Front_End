@@ -19,7 +19,7 @@ export class VehiculeService {
       'Authorization': 'Bearer ' + jwt,
       'Accept': 'application/json'
     });
-    // http://app.sendatrack.com:8080/events7/data.jsonx?a=actitrans&p=senda65432&u=support&g=all&l=2
+    // http://app.sendatrack.com:8080/eventsApp/data.jsonx?a=actitrans&p=senda65432&u=support&g=all&l=2
     return this.http.get(SERVER_URL, {
       headers: headers
     })
@@ -39,6 +39,20 @@ export class VehiculeService {
 
   }
 
+  getVehiculeEventsByTimestamps(api, timestamps) {
+    // + "map-events?d=" + id;
+    let SERVER_URL = environment.apiUrl + api
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.post(SERVER_URL, {
+      headers: headers,
+      params: { "t": timestamps }
+    })
+
+  }
 
   getDashboardStats(p: string) {
     let SERVER_URL = environment.apiUrl + "dashboard-stats?p=" + p;

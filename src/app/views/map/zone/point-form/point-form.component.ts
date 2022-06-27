@@ -24,17 +24,17 @@ export class PointFormComponent implements OnInit, OnChanges {
 
 
   ngOnInit(): void {
-    console.log(this.latitude);
-    console.log(this.longitude);
+    // console.log(this.latitude);
+    // console.log(this.longitude);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    // console.log(changes);
   }
 
 
   latChange(event: any) {
-    console.log(event.value);
+    // console.log(event.value);
 
   }
 

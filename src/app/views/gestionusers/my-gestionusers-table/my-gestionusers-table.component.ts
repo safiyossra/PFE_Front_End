@@ -1,9 +1,7 @@
-import { DatePipe } from '@angular/common';
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter, ElementRef } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { DataService } from 'src/app/services/data.service';
 
 /**
  * @title Table with pagination
@@ -33,7 +31,7 @@ export class MyGestionusersTableComponent implements OnChanges {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  constructor(private datePipe: DatePipe) { }
+  constructor() { }
 
 
   applyFilter(event: Event) {
@@ -63,20 +61,6 @@ export class MyGestionusersTableComponent implements OnChanges {
         this.dataSource.sort = this.sort;
       }
     }
-  }
-
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
-  }
-
-  getClassByAge(age) {
-    if (age != undefined) {
-      if (age < 0) return "cil-warning bg-warning"
-      if (age <= 180) return "cil-check bg-success"
-      if (age <= 3600) return "cil-loop bg-primary"
-      if (age > 3600) return "cil-history bg-secondary"
-    }
-    return "cil-report-slash bg-danger";
   }
 
   formatAge(seconds) {

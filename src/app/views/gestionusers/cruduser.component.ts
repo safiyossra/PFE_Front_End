@@ -159,7 +159,6 @@ export class CruduserComponent {
         let now = Math.round(new Date().getTime() / 1000)
         d.forEach(e => {
           e.lastLoginTime = this.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
-          e.age = e.age > 0 ? (now - e.age) : "jamais"          
         });
         this.data = d;
         this.loading = false;

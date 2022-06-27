@@ -2,7 +2,7 @@
     min-height: 82vh;
     max-height: 82vh;
     margin-bottom: 0px;
-        border-radius: 10px;
+    border-radius: 10px;
 }
 
 
@@ -89,17 +89,15 @@ td.mat-footer-cell:last-of-type {
 
 .mat-cell {
     padding-left: 0;
-    font-size: 11px;
+    font-size: 14px;
+        font-weight: 600;
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
 }
 
 .list-car {
-    width: 30px;
+    width: 42px;
     margin-left: 5px;
     object-fit: contain;
-}
-
-.status-cercle {
-    margin-right: 5px;
 }
 
 .fa-tripadvisor {

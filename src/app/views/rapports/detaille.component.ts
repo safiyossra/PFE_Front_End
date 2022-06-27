@@ -1,15 +1,14 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
-import { DatePipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { ActivatedRoute } from '@angular/router';
+import { util } from 'src/app/tools/utils';
 
 @Component({
   templateUrl: 'detaille.component.html',
   styleUrls: ['./style.scss'],
-  providers: [DatePipe]
 })
 export class DetailleComponent implements AfterViewInit {
   sub: any
@@ -19,7 +18,7 @@ export class DetailleComponent implements AfterViewInit {
   loadingcharts: boolean = false
 
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private datePipe: DatePipe, private activatedRoute: ActivatedRoute,) {
+  constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private tools: util) {
   }
   ngAfterViewInit(): void {
     if (this.vehiculeID) {
@@ -51,12 +50,13 @@ export class DetailleComponent implements AfterViewInit {
   urldetails = "";
   urlEvolution = "";
   public devices: any = [];
-  selectedDevices = null;
-  selectedDevice = this.selectedDevices;
+  selectedDevices = [];
+  selectedDevice = null;
   ToInvalidate = "0"
   interval = ""
   startTime = "";
   endTime = "";
+  timestamps = "";
   trajetStartTime = "";
   trajetEndTime = "";
   selectedMapDevice = ""
@@ -330,8 +330,8 @@ export class DetailleComponent implements AfterViewInit {
           d.forEach((e) => {
             e.st = e.timeStart;
             e.et = e.timeEnd;
-            e.timeStart = this.formatDate(new Date(Number.parseInt(e.timeStart) * 1000));
-            e.timeEnd = this.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000));
+            e.timeStart = this.tools.formatDate(new Date(Number.parseInt(e.timeStart) * 1000));
+            e.timeEnd = this.tools.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000));
             if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
             if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
             e.cd = Math.round(e.c * extra.fc);
@@ -343,7 +343,7 @@ export class DetailleComponent implements AfterViewInit {
           // else
           this.reportData = d;
           this.reportDataArrets = d.filter((e) => { return e.trajet == 0 });
-          this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), } });
+          this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "st": e.st, "et": e.et, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), } });
           this.selectedMapDevice = this.selectedDevice
           let resumetmp = [];
           let labels = this.reportData.map((l) => { return l.timeStart })
@@ -417,7 +417,7 @@ export class DetailleComponent implements AfterViewInit {
     this.dataService.getEvolution(url).subscribe({
       next: (d: any) => {
         // console.log(d);
-        this.chartLabels = d.map((l) => { return this.formatDate(new Date(l.t * 1000)) })
+        this.chartLabels = d.map((l) => { return this.tools.formatDate(new Date(l.t * 1000)) })
         this.vitesseChartData = [
           {
             data: d.map((l) => { return l.v }),
@@ -468,6 +468,7 @@ export class DetailleComponent implements AfterViewInit {
 
   reset() {
     this.selectedDevices = []
+    this.selectedDevice = null
   }
 
   openMap(v: any) {
@@ -476,13 +477,12 @@ export class DetailleComponent implements AfterViewInit {
     this.selectedMapDevice = v.selectedMapDevice ? v.selectedMapDevice : "";
     if (this.startTime != "" && this.selectedMapDevice != "") {
       this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
-      this.interval = this.formatDate(new Date(Number.parseInt(this.startTime) * 1000))
+      this.interval = this.tools.formatDate(new Date(Number.parseInt(this.startTime) * 1000))
       if (this.endTime != "") {
-        this.interval += " - " + this.formatDate(new Date(Number.parseInt(this.endTime) * 1000))
+        this.interval += " - " + this.tools.formatDate(new Date(Number.parseInt(this.endTime) * 1000))
       }
       this.primaryModal.show()
     }
-
   }
 
   showTrajet() {
@@ -498,6 +498,20 @@ export class DetailleComponent implements AfterViewInit {
     }
   }
 
+  showArretChange(e) {
+    this.isArret = e
+  }
+
+  openMapArrets(d: any) {
+    this.selectedMapDevice = d ? d : "";
+    if (this.reportDataArrets?.length && this.selectedMapDevice != "") {
+      this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
+      this.interval = " Parkings"
+      this.timestamps = this.reportDataArrets.map((e) => { return e.st })
+      this.primaryModal.show()
+    }
+  }
+
   getVehiculeNameById(id) {
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].dID == id) return this.devices[i].name
@@ -510,10 +524,6 @@ export class DetailleComponent implements AfterViewInit {
       if (this.devices[i].dID == id) return { "fe": this.devices[i].fe, "fc": this.devices[i].fc }
     }
     return { "fe": 0, "fc": 0 }
-  }
-
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
   }
 }
 

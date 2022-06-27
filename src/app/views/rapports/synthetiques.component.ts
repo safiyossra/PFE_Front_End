@@ -1,16 +1,14 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
-import { DatePipe } from '@angular/common';
 
 @Component({
   templateUrl: 'synthetiques.component.html',
-  providers: [DatePipe]
 })
 export class SynthetiquesComponent implements OnInit, AfterViewInit {
 
   loading: boolean = false;
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;

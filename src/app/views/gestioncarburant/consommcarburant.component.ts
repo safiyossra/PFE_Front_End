@@ -1,12 +1,10 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
-import { DatePipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   templateUrl: 'consommcarburant.component.html',
-  providers: [DatePipe]
 })
 export class ConsommcarburantComponent {
 
@@ -17,7 +15,7 @@ export class ConsommcarburantComponent {
   @ViewChild('report') report: ElementRef;
   @ViewChild('description') description: ElementRef;
 
-  constructor(private dataService: DataService, private datePipe:DatePipe) { }
+  constructor(private dataService: DataService) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -144,7 +142,7 @@ export class ConsommcarburantComponent {
     this.dataService.getVehicule().subscribe({
       next: (res) => {
         this.devices = res;
-        console.log(res)
+        // console.log(res)
       },
       error: (errors) => {
 

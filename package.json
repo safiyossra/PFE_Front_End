@@ -1,22 +1,25 @@
 {
-  "name": "@coreui/coreui-free-angular-admin-template",
+  "name": "@sendatrack/gps-solution",
   "version": "2.13.0",
-  "description": "CoreUI Free Angular 13 Admin Template",
+  "description": "Sendatrack GPS",
   "author": {
-    "name": "Łukasz Holeczek",
-    "url": "http://holeczek.pl",
-    "github": "https://github.com/mrholek",
-    "twitter": "https://twitter.com/lukaszholeczek"
+    "name": "EZOUAGH YOUNESS",
+    "url": "http://my.sendatrack.com",
+    "github": "https://github.com/yezouagh"
   },
   "contributors": [
     {
-      "name": "Andrzej Kopański",
-      "url": "https://github.com/xidedix"
+      "name": "AYMANE Oulad Benhamou",
+      "url": "https://github.com/aymane2799"
+    },
+    {
+      "name": "Hasnae Chihi",
+      "url": "https://github.com/HasnaeChihi"
     }
   ],
-  "homepage": "https://coreui.io/angular",
-  "copyright": "Copyright 2017-2022 creativeLabs Łukasz Holeczek",
-  "license": "MIT",
+  "homepage": "http://my.sendatrack.com",
+  "copyright": "Senda Track © 2022. All Rights Reserved.",
+  "license": "",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

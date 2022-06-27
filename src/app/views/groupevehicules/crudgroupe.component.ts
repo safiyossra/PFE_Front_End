@@ -1,20 +1,18 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
-import { DatePipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Groupevehicules } from '../../models/Groupevehicules';
 
 @Component({
   templateUrl: 'crudgroupe.component.html',
-  providers: [DatePipe]
 })
 export class CrudgroupeComponent {
 
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -57,7 +55,7 @@ export class CrudgroupeComponent {
 
   getSelectedDevices(selected) {
     this.selectedDevice = selected;
-    console.log(this.selectedDevice?.join(" , ").trim());
+    // console.log(this.selectedDevice?.join(" , ").trim());
 
   }
 
@@ -116,7 +114,7 @@ export class CrudgroupeComponent {
     this.dataService.getVehicule().subscribe({
       next: (res) => {
         this.devices = res;
-        console.log(res)
+        // console.log(res)
       },
       error: (errors) => {
 
@@ -132,9 +130,6 @@ export class CrudgroupeComponent {
     this.mode ="Ajouter"
   }
 
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'yyyy-MM-dd');
-  }
   reset() {
     this.selectedDevice = []
     this.selectedDevices = []

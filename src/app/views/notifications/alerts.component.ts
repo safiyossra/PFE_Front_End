@@ -1,20 +1,19 @@
-import { DatePipe } from '@angular/common';
 import { Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import {ModalDirective} from 'ngx-bootstrap/modal';
+import { util } from 'src/app/tools/utils';
 
 
 @Component({
   templateUrl: 'alerts.component.html',
   encapsulation: ViewEncapsulation.None,
-  providers: [DatePipe]
 })
 export class AlertsComponent {
 
   loading: boolean = false;
  
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService, private tools: util) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -104,7 +103,7 @@ export class AlertsComponent {
         // console.log("data");
         //   console.log(d);
         d.forEach((e) => {
-          e.timestamp = this.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
+          e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
           })
         this.data = d;
           this.loading = false;
@@ -127,9 +126,5 @@ export class AlertsComponent {
 
   reset() {
     this.selectedDevices = []
-  }
-
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
   }
 }

@@ -1,13 +1,12 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
-import { DatePipe } from '@angular/common';
-import {ModalDirective, ModalOptions} from 'ngx-bootstrap/modal';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { util } from 'src/app/tools/utils';
 import { Driver } from '../../models/driver';
 
 @Component({
   templateUrl: 'cruddriver.component.html',
-  providers: [DatePipe]
 })
 export class CruddriverComponent {
 
@@ -15,7 +14,7 @@ export class CruddriverComponent {
   modalLoading: boolean = false;
   selectedDriver: Driver = new Driver();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private datePipe:DatePipe) { }
+  constructor(private dataService: DataService,private tools:util) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -115,9 +114,9 @@ export class CruddriverComponent {
           
           if (d && d.length) {
             d.forEach(e => {
-              e.birthdate = this.formatDate(new Date(Number.parseInt(e.birthdate) * 1000));
-              e.licenseExpire = this.formatDate(new Date(Number.parseInt(e.licenseExpire) * 1000));
-              e.insuranceExpire = this.formatDate(new Date(Number.parseInt(e.insuranceExpire) * 1000));
+              e.birthdate = this.tools.formatDateForInput(new Date(Number.parseInt(e.birthdate ?? 0) ?? 0 * 1000));
+              e.licenseExpire = this.tools.formatDateForInput(new Date(Number.parseInt(e.licenseExpire ?? 0) ?? 0 * 1000));
+              e.insuranceExpire = this.tools.formatDateForInput(new Date(Number.parseInt(e.insuranceExpire ?? 0) ?? 0 * 1000));
             });
             this.selectedDriver = d[0];
           }
@@ -148,14 +147,9 @@ export class CruddriverComponent {
       }
     })
   }
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'yyyy-MM-dd');
-  }
-
   ajouter(){
     this.mode ="Ajouter"
   }
-
  
   reset() {
     this.selectedDevices = [],

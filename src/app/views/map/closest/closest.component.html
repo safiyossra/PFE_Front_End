@@ -35,19 +35,26 @@
                                 [value]="'val'" [multiple]="false" [labelCount]="1" [selectedOptions]="selectedPoi"
                                 (selectionChange)="onPoiChange($event)">
                             </my-dropdown-select>
-                            </div>
-                            <!--</div> -->
-                            </div>
-
+                        </div>
+                        <!--</div> -->
+                        </div>
                     <mat-form-field class="w-100" appearance="fill">
                         <mat-label>Rayon (en mètres)</mat-label>
-                        <input matInput formControlName="radius" type="number" />
+                        <input type="number" aria-label="Number" min="100" max="20000000" matInput formControlName="radius"
+                            [matAutocomplete]="auto">
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let option of radiusOptions" [value]="option">
+                                {{option}}
+                            </mat-option>
+                        </mat-autocomplete>
                     </mat-form-field>
+
                     <div class="card mb-4 rounded-3 shadow-sm">
                         <div class="card-header p-1">
                             <span class="my-0 fw-normal">Position Choisi</span>
                             <button class="btn btn-sm btn-primary card-header-actions mr-1 py-0"
-                                [disabled]="searchedPosition.lat  != '' ? false : true" type="button" (click)="showClosest()">
+                                [disabled]="searchedPosition.lat  != '' ? false : true" type="button"
+                                (click)="showClosest()">
                                 <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
                                 <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> Plus proches
                             </button>
@@ -74,7 +81,7 @@
                             Rénitialiser
                         </button>
                     </div>
-                    </form>
+                </form>
             </div>
         </div>
         <div class="flex-grow-1 my-map">
