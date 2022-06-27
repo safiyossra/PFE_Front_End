@@ -14,7 +14,7 @@
     </div>
     <div class="card-header-actions" *ngIf="isTrajet">
       <input id="s1" type="checkbox" class="switch" [(ngModel)]="isArret" [ngModelOptions]="{standalone: true}"
-        (ngModelChange)="showArretChange()">
+        (ngModelChange)="showArretcheckbox()">
       <label for="s1" class="ml-2">Basculer vers Trajet {{isArret?'sans':'avec'}} Parking &nbsp;</label>
     </div>
     <div class="card-header-actions" *ngIf="!isTrajet">

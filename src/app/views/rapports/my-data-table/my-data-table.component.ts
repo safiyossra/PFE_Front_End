@@ -73,7 +73,7 @@ export class MyDataTableComponent implements OnChanges {
     this.openArretsClick.emit(this.selectedMapDevice)
   }
 
-  showArret() {
+  showArretcheckbox() {
     this.showArretChange.emit(this.isArret)
   }
 }

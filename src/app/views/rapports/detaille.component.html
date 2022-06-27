@@ -97,7 +97,8 @@
           </ng-template>
           <!-- <input id="s1" type="checkbox" class="switch" [(ngModel)]="isArret" [ngModelOptions]="{standalone: true}">
                                         <label for="s1" class="ml-2">Basculer vers Trajet {{isArret?'sans':'avec'}} Parking &nbsp;</label> -->
-          <my-data-table class="detailtable" (positionClick)="openMap($event)" (showArretChange)="showArretChange($event)"
+          <my-data-table class="detailtable" (positionClick)="openMap($event)" [isTrajet]="true"
+            (showArretChange)="showArretChange($event)"
             [selectedMapDevice]="selectedMapDevice"
             [data]="isArret?reportData:reportDataTrajet" [columnNames]="displayedColumns" [columns]="columns">
           </my-data-table>
@@ -106,7 +107,8 @@
           <ng-template tabHeading>
             <i class="icon-list mr-2"></i>Parking &nbsp;
           </ng-template>
-          <my-data-table class="detailtable" (positionClick)="openMap($event)" (openArretsClick)="openMapArrets($event)"
+          <my-data-table class="detailtable" (positionClick)="openMap($event)" [isTrajet]="false"
+            (openArretsClick)="openMapArrets($event)"
             [selectedMapDevice]="selectedMapDevice"
             [data]="reportDataArrets" [columnNames]="displayedColumnsArrets" [columns]="columnsArrets">
           </my-data-table>
