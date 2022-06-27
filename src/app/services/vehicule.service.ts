@@ -39,6 +39,20 @@ export class VehiculeService {
 
   }
 
+  getVehiculeEventsByTimestamps(api, timestamps) {
+    // + "map-events?d=" + id;
+    let SERVER_URL = environment.apiUrl + api
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.post(SERVER_URL, {
+      headers: headers,
+      params: { "t": timestamps }
+    })
+
+  }
 
   getDashboardStats(p: string) {
     let SERVER_URL = environment.apiUrl + "dashboard-stats?p=" + p;

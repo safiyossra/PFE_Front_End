@@ -56,6 +56,7 @@ export class DetailleComponent implements AfterViewInit {
   interval = ""
   startTime = "";
   endTime = "";
+  timestamps = "";
   trajetStartTime = "";
   trajetEndTime = "";
   selectedMapDevice = ""
@@ -482,7 +483,6 @@ export class DetailleComponent implements AfterViewInit {
       }
       this.primaryModal.show()
     }
-
   }
 
   showTrajet() {
@@ -495,6 +495,20 @@ export class DetailleComponent implements AfterViewInit {
       this.trajetStartTime = this.myDateRangePicker.getDateFrom.toString();
       this.trajetEndTime = this.myDateRangePicker.getDateTo.toString();
       this.trajetSelectedDevice = this.selectedDevice;
+    }
+  }
+
+  showArretChange(e) {
+    this.isArret = e
+  }
+
+  openMapArrets(d: any) {
+    this.selectedMapDevice = d ? d : "";
+    if (this.reportDataArrets?.length && this.selectedMapDevice != "") {
+      this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
+      this.interval = " Parkings"
+      this.timestamps = this.reportDataArrets.map((e) => { return e.st })
+      this.primaryModal.show()
     }
   }
 
