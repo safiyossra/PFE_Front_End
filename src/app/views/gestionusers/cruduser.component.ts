@@ -30,11 +30,110 @@ export class CruduserComponent {
     console.log(this.selectedGroup?.join(" , ").trim());
 
   }
-
+ 
   onValidateGroup() {
     this.showErrorGroup = !this.showErrorGroup;
     this.errorMessageGroup = "This field is required";
   }
+  
+  selectedTimezones = null;
+  selectedTimezone = this.selectedTimezones;
+  getSelectedTimezones(selected) {
+    this.selectedTimezone = selected;
+  }
+  public timezone = [
+    {
+      label: "GMT+00:00",
+      data: "GMT+00:00"
+    },
+    {
+      label: "GMT+01:00",
+      data: "GMT+01:00"
+    },
+    {
+      label: "GMT+02:00",
+      data: "GMT+02:00"
+    },
+    {
+      label: "GMT+03:00",
+      data: "GMT+03:00"
+    },
+    {
+      label: "GMT+04:00",
+      data: "GMT+04:00"
+    },
+    {
+      label: "GMT+05:00",
+      data: "GMT+05:00"
+    },
+    {
+      label: "GMT+05:30",
+      data: "GMT+05:30"
+    },
+    {
+      label: "GMT+06:00",
+      data: "GMT+06:00"
+    },
+    {
+      label: "GMT+07:00",
+      data: "GMT+07:00"
+    },
+    {
+      label: "GMT+08:00",
+      data: "GMT+08:00"
+    },
+    {
+      label: "GMT+09:00",
+      data: "GMT+09:00"
+    },
+    {
+      label: "GMT+10:00",
+      data: "GMT+10:00"
+    },
+    {
+      label: "GMT+11:00",
+      data: "GMT+11:00"
+    },
+    {
+      label: "GMT+12:00",
+      data: "GMT+12:00"
+    },
+    {
+      label: "GMT+13:00",
+      data: "GMT+13:00"
+    },
+    {
+      label: "GMT+14:00",
+      data: "GMT+14:00"
+    },
+    {
+      label: "GMT-01:00",
+      data: "GMT-01:00"
+    },
+    {
+      label: "GMT-02:00",
+      data: "GMT-02:00"
+    },
+    {
+      label: "GMT-03:00",
+      data: "GMT-03:00"
+    },
+    {
+      label: "GMT-04:00",
+      data: "GMT-04:00"
+    },
+
+
+// value="GMT-05:00"
+// value="GMT-06:00"
+// value="GMT-07:00"
+// value="GMT-08:00"
+// value="GMT-09:00"
+// value="GMT-10:00"
+// value="GMT-11:00"
+// value="GMT-12:00"
+ 
+  ];
 
   ngOnInit() {
     this.getGroup();
@@ -79,10 +178,9 @@ export class CruduserComponent {
       this.primaryModal.show()
       this.dataService.getUsers(url).subscribe({
         next: (d: any) => {
-          // if (d && d.length) {
-           //  this.selectedUser = d[0];
-          // }
-          this.selectedUser.groups = d.map(e=> {return e.groupID});
+          console.log(d);
+          if(d && d.length)
+          this.selectedUser.groups = d[0].groupID;
           this.selectedGroups=this.selectedUser.groups
           this.selectedGroup=this.selectedGroups
           this.modalLoading = false;
@@ -93,9 +191,27 @@ export class CruduserComponent {
     }
   }
 
-  ajouter() {
-    this.mode = "Ajouter"
+  submit() {
+   if(this.mode == "Ajouter")this.ajouter()
+   if(this.mode == "Modifier")this.modifier()
    }
+
+  ajouter() {
+     this.dataService.addUsers(this.selectedUser).subscribe({
+      next: (res) => {
+        
+        console.log(res)
+      },
+      error: (errors) => {
+
+      }
+    })
+  
+  }
+   
+  modifier() {
+    
+  }
 
    delete(ev){
 

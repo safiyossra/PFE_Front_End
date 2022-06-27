@@ -160,4 +160,17 @@ export class DataService {
     })
   }
 
+  addUsers(user) {
+    let SERVER_URL = environment.apiUrl + "test";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.post(SERVER_URL, {
+      headers: headers,
+      params:{u:user}
+      
+    })
+  }
 }
