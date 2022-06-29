@@ -25,6 +25,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   @Input() vehiculeID: string
   @Input() startTime: string
   @Input() endTime: string
+  @Input() timestamps?: any
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
   layer: any
@@ -45,8 +46,8 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     // console.log(changes);
     if (changes['vehiculeID'] || changes['startTime'] || changes['endTime'] || changes['timestamps']) {
       this.resetPolyline()
-      if (changes['timestamps'])
-        this.selectedTimestamps = changes['timestamps'].currentValue
+      // if (changes['timestamps'])
+      this.selectedTimestamps = changes['timestamps']?.currentValue
       if (changes['vehiculeID'])
         this.selectedVid = changes['vehiculeID'].currentValue
       if (changes['startTime']) {
@@ -58,7 +59,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       if (this.selectedVid != "" && (this.selectedStartTime != "" || this.selectedEndTime != "")) {
         var url = this.selectedVid + "&st=" + this.selectedStartTime + "&3days=true"
         this.loadData(url + (this.selectedEndTime != "" ? "&et=" + this.selectedEndTime : ""), this.selectedEndTime == "")
-      } else if (this.selectedTimestamps != "" && this.selectedVid != "") {
+      } else if (this.selectedTimestamps && this.selectedTimestamps != "" && this.selectedVid != "") {
         this.loadDataByTimestams(this.selectedVid, this.selectedTimestamps)
       }
     }
@@ -73,6 +74,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     // console.log("loadData");
     // console.log(url);
     this.loadingTrajet = true
+    var route = this.router
     this.vehiculeService.getVehiculeEvents(url).subscribe({
       next: (res: any) => {
         // console.log("getVehiculeEvents");
@@ -83,35 +85,40 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
         else if (events.length > 1)
           this.paintPolyline(events)
         this.loadingTrajet = false
-      },
-      error: (errors) => {
-        console.log(errors);
+      }, error(err) {
         this.loadingTrajet = false
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     }
     )
   }
 
   loadDataByTimestams(d, timestamps) {
-    let url = "EventsByTimestamps?d=" + d
-    // console.log("loadData");
-    // console.log(url);
-    this.loadingTrajet = true
-    this.vehiculeService.getVehiculeEventsByTimestamps(url, timestamps).subscribe({
-      next: (res: any) => {
-        // console.log("getVehiculeEvents");
-        console.log(res);
-        let events = res
-        if (events.length > 0)
-          // this.addMarkers(events)
+    if (timestamps.length) {
+      let url = "EventsByTimestamps?d=" + d
+      // console.log("loadData");
+      this.loadingTrajet = true
+      var route = this.router
+      this.vehiculeService.getVehiculeEventsByTimestamps(url, timestamps.join(',')).subscribe({
+        next: (res: any) => {
+          // console.log("getVehiculeEvents");
+          // console.log("res ", res);
+          let events = res
+          if (events.length > 0)
+            this.addMarkers(events)
           this.loadingTrajet = false
-      },
-      error: (errors) => {
-        console.log(errors);
-        this.loadingTrajet = false
+        }, error(err) {
+          this.loadingTrajet = false
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+        }
       }
+      )
     }
-    )
+
   }
 
   createArretsMarkers(e) {
@@ -308,9 +315,10 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       }
     }
     else {
-      this.map.setView([ev.latitude, ev.longitude], this.OneZoomLevel)
+      this.map.setView([ev[0].latitude, ev[0].longitude], this.OneZoomLevel)
     }
-    this.layer = L.layerGroup([this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park'))])
+    let markers = ev.map(e => { return this.createMarker(e, e.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park')) })
+    this.layer = L.layerGroup(markers)
     this.layer.addTo(this.map)
   }
   invalidate() {
@@ -329,7 +337,6 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     }
   }
   // -----------------------------------------------------------------------------//
-
 
   ngOnDestroy(): void {
     if (this.timer) {

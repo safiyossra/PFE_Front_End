@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: 'synthetiques.component.html',
@@ -8,7 +9,7 @@ import { DataService } from '../../services/data.service';
 export class SynthetiquesComponent implements OnInit, AfterViewInit {
 
   loading: boolean = false;
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -75,6 +76,8 @@ export class SynthetiquesComponent implements OnInit, AfterViewInit {
   //////////////////////
   submit() {
     this.loading = true;
+
+    var route = this.router
     var urlParams = "?&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
     this.dataService.getRapportSynthetiques(urlParams).subscribe({
       next: (d: any) => {
@@ -87,7 +90,11 @@ export class SynthetiquesComponent implements OnInit, AfterViewInit {
           e.cm = (100 * (e.c / (e.km != 0 ? e.km : 1))).toFixed(1);
         })
         this.loading = false;
-      },
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
     })
   };
 }

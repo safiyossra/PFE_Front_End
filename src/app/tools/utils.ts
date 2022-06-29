@@ -225,7 +225,24 @@ export class util {
             "Google Satellite": googleSat,
             'Dark': dark,
         };
-        googleStreets.addTo(map)
+        switch (this.getMapType()) {
+            case 'Google Hybrid':
+                googleHybrid.addTo(map)
+                break;
+            case 'Google Terrain':
+                googleTerrain.addTo(map)
+                break;
+            case 'Google Satellite':
+                googleSat.addTo(map)
+                break;
+            case 'Dark':
+                dark.addTo(map)
+                break;
+
+            default:
+                googleStreets.addTo(map)
+                break;
+        }
 
         if (showCollapsControle) {
             let ExpandControl = L.Control.extend({
@@ -272,8 +289,6 @@ export class util {
                 position: "topleft"
             }).addTo(map);
         }
-
-
         ////////////////////////////////////////////////////////////
         GeoSearchControl({
             provider: provider,
@@ -291,6 +306,9 @@ export class util {
         ////////////////////////////////////////////////////////////
         L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(map);
         L.control.scale().addTo(map);
+        map.on('baselayerchange', (e) => {
+            this.setMapType(e.name)
+        })
         return map;
     }
 
@@ -307,6 +325,14 @@ export class util {
     getImage(vehiculeType) {
         return this.motor.includes(vehiculeType) ? "motor" : this.truck.includes(vehiculeType) ? "truck" : this.sprinter.includes(vehiculeType) ? "sprinter" : this.remorque.includes(vehiculeType) ?
             "remork" : this.camions.includes(vehiculeType) ? "camion" : this.truck_head.includes(vehiculeType) ? "truck-head" : "car"
+    }
+
+    setMapType(type) {
+        localStorage.setItem('mapType', type);
+    }
+
+    getMapType() {
+        return localStorage.getItem('mapType') ?? 'Google Street';
     }
 
     motor = ["moto", "grnbike",]

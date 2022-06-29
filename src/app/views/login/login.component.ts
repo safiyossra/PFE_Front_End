@@ -10,20 +10,20 @@ import { AuthenticateService } from '../../services/authenticate.service'
 export class LoginComponent {
   JWT: string;
   loading: boolean = false;
+  passVisible: boolean = false;
+  remember: boolean = false;
   errorMessage: string;
   user: string;
   password: string;
   accountid: string;
 
-
   constructor(private route: Router, private authenticate: AuthenticateService) { }
 
   ngOnInit(): void {
-    this.JWT = localStorage.getItem('JWT')
-    if (this.JWT) {
-      this.route.navigate(['map']);
-    }
-
+    // this.JWT = localStorage.getItem('JWT')
+    // if (this.JWT) {
+      // this.route.navigate(['map']);
+    // }
   }
 
   validate(): boolean {
@@ -35,7 +35,7 @@ export class LoginComponent {
       this.errorMessage = "Veuillez remplir les champs obligatoires."
     } else {
       this.loading = true;
-      this.authenticate.init(this.accountid, this.user, this.password).subscribe(
+      this.authenticate.init(this.accountid, this.user, this.password, this.remember).subscribe(
         (response) => {
           localStorage.setItem('JWT', response.token)
           localStorage.setItem('username', response.user)

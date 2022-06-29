@@ -7,23 +7,18 @@ import { MatTableDataSource } from '@angular/material/table';
  * @title Table with pagination
  */
 @Component({
-  selector: 'my-data-table',
-  styleUrls: ['my-data-table.component.scss'],
-  templateUrl: 'my-data-table.component.html',
+  selector: 'my-carburant-data-table',
+  styleUrls: ['my-carburant-data-table.component.scss'],
+  templateUrl: 'my-carburant-data-table.component.html',
 })
-export class MyDataTableComponent implements OnChanges {
+export class MyCarburantDataTableComponent implements OnChanges {
   @Output() positionClick?: EventEmitter<any> = new EventEmitter();
   @Output() openPointsClick?: EventEmitter<any> = new EventEmitter();
-  @Output() showArretChange?: EventEmitter<any> = new EventEmitter();
   @Input() data: any = [];
-  @Input() isTrajet?= 1;
   @Input() selectedMapDevice: any; //displayColumns,
-  @Input() columnNames?= ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)"]
-  @Input() columns?= ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct"]
-
+  @Input() columnNames?= ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]
+  @Input() columns?= ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
-
-  isArret = false;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   public displayedColumns = this.columns
@@ -51,7 +46,7 @@ export class MyDataTableComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
       let d = changes['data'].currentValue
-      if (d && d.length > 0) {
+      if (d) {
         // console.log("ngOnChanges data");
         // console.log(d);
         this.dataSource = new MatTableDataSource(d)
@@ -63,18 +58,14 @@ export class MyDataTableComponent implements OnChanges {
     }
   }
 
-  openLocation(timeStart, timeEnd) {
+  openLocation(timeStart) {
     // console.log(timeStart, timeEnd);
-    let out = { "timeStart": timeStart, "timeEnd": timeEnd, "selectedMapDevice": this.selectedMapDevice }
+    let out = { "timeStart": timeStart, "timeEnd": timeStart, "selectedMapDevice": this.selectedMapDevice }
     this.positionClick.emit(out)
   }
 
   openMapPoints() {
     this.openPointsClick.emit(this.selectedMapDevice)
-  }
-
-  showArretcheckbox() {
-    this.showArretChange.emit(this.isArret)
   }
 }
 

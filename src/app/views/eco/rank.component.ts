@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { VehiculeService } from 'src/app/services/vehicule.service';
 
 @Component({
@@ -7,7 +8,7 @@ import { VehiculeService } from 'src/app/services/vehicule.service';
   styleUrls: ['./rank.component.scss']
 })
 export class RankComponent implements OnInit {
-  constructor(private dataService: VehiculeService) { }
+  constructor(private dataService: VehiculeService, private router: Router) { }
   radioModel: string = 'Month';
   public isLoading: boolean = false
   data = []
@@ -19,6 +20,7 @@ export class RankComponent implements OnInit {
 
   getEcoIndexes(params: string) {
     this.isLoading = true
+    var route = this.router
     this.dataService.getIndexes(params).subscribe({
       next: (res: any) => {
         let d = res;
@@ -27,10 +29,11 @@ export class RankComponent implements OnInit {
           (a, b) => b.ecoIndex - a.ecoIndex
         )
         this.isLoading = false
-      },
-      error: (errors) => {
+      }, error(err) {
         this.isLoading = false
-        alert(errors)
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }

@@ -61,6 +61,17 @@ export class DataService {
     })
   }
 
+  getPoseFuel(urlParams) {
+    let SERVER_URL = environment.apiUrl + "poseFuel" + urlParams;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
   //fonction de detail
 
   getDetails(urldetails) {

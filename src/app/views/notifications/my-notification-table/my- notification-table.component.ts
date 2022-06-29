@@ -20,7 +20,7 @@ export class MyNotificationTableComponent implements OnChanges {
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  columnNames =["Date","Vehicule","Sujet","Message"];
+  columnNames = ["Date", "Vehicule", "Description", "Message"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;

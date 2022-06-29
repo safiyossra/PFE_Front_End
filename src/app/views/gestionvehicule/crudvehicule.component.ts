@@ -4,6 +4,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Device } from '../../models/device';
 import { VehiculeService } from 'src/app/services/vehicule.service';
 import { util } from 'src/app/tools/utils';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: 'crudvehicule.component.html',
@@ -15,7 +16,7 @@ export class CrudvehiculeComponent {
   modalLoading: boolean = false;
   selectedDevice: Device = new Device();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private vehiculeService: VehiculeService, private tools: util) { }
+  constructor(private dataService: DataService, private vehiculeService: VehiculeService, private tools: util, private router: Router) { }
 
   data = [];
 
@@ -26,6 +27,8 @@ export class CrudvehiculeComponent {
   //////////////////////
   loadData() {
     this.loading = true;
+
+    var route = this.router
     this.dataService.getDeviceData("").subscribe({
       next: (d: any) => {
         let now = Math.round(new Date().getTime() / 1000)
@@ -36,7 +39,10 @@ export class CrudvehiculeComponent {
         this.loading = false;
       }, error(err) {
         this.loading = false;
-      },
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
     })
   };
 
@@ -47,6 +53,8 @@ export class CrudvehiculeComponent {
       var url = "?d=" + ev
       this.modalLoading = true;
       this.primaryModal.show()
+
+      var route = this.router
       this.dataService.getDeviceData(url).subscribe({
         next: (d: any) => {
           if (d && d.length) {
@@ -58,7 +66,10 @@ export class CrudvehiculeComponent {
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
-        },
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+        }
     })
     }
   }

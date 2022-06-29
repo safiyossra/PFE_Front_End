@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { VehiculeService } from 'src/app/services/vehicule.service';
 
 @Component({
@@ -6,7 +7,7 @@ import { VehiculeService } from 'src/app/services/vehicule.service';
 })
 export class DashboardComponent implements OnInit {
 
-  public constructor(private vehiculeService: VehiculeService) { }
+  public constructor(private vehiculeService: VehiculeService, private router: Router) { }
   // lineChart
   public dashboardData: any[] = []
   isFirstTime1 = true
@@ -80,12 +81,17 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loadStatus();
+    var route = this.router
     this.vehiculeService.getDashboardStats("km").subscribe((res: any) => {
       this.KMData = [
         { data: res.map((e: any) => { return Math.round(e["km"]) }), label: 'Distance parcourue' }
       ]
       this.KMLabels = res.map((e) => { return e["description"] })
       this.isFirstTime2 = false
+    }, (err) => {
+      if (err.status == 401) {
+        route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+      }
     })
     this.vehiculeService.getDashboardStats("v").subscribe((res: any) => {
       this.VitesseData = [
@@ -93,6 +99,10 @@ export class DashboardComponent implements OnInit {
       ]
       this.VitesseLabels = res.map((e: any) => { return e["description"] })
       this.isFirstTime3 = false
+    }, (err) => {
+      if (err.status == 401) {
+        route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+      }
     })
     this.vehiculeService.getDashboardStats("c").subscribe((res: any) => {
       this.ConsommationData = [
@@ -100,10 +110,16 @@ export class DashboardComponent implements OnInit {
       ]
       this.ConsommationLabels = res.map((e) => { return e["description"] })
       // this.isFirstTime4 = false
+    }, (err) => {
+      if (err.status == 401) {
+        route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+      }
     })
   }
 
   loadStatus() {
+
+    var route = this.router
     this.vehiculeService.getData().subscribe({
       next: (res) => {
         const data = res['DeviceList']
@@ -128,6 +144,10 @@ export class DashboardComponent implements OnInit {
         });
 
         this.isFirstTime1 = false
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }

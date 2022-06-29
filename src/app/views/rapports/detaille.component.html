@@ -97,18 +97,30 @@
           </ng-template>
           <!-- <input id="s1" type="checkbox" class="switch" [(ngModel)]="isArret" [ngModelOptions]="{standalone: true}">
                                         <label for="s1" class="ml-2">Basculer vers Trajet {{isArret?'sans':'avec'}} Parking &nbsp;</label> -->
-          <my-data-table class="detailtable" (positionClick)="openMap($event)" [isTrajet]="true"
+          <my-data-table class="detailtable" (positionClick)="openMap($event)" [isTrajet]="1"
             (showArretChange)="showArretChange($event)"
             [selectedMapDevice]="selectedMapDevice"
             [data]="isArret?reportData:reportDataTrajet" [columnNames]="displayedColumns" [columns]="columns">
           </my-data-table>
         </tab>
+        <tab style="min-height: 600px" (selectTab)="showTrajet()" [active]="selectedTab==4">
+          <ng-template tabHeading class="card-header-action btn-secondary">
+            <i class="fa fa-map mr-1"></i> Afficher Trajet &nbsp;
+            <i class="fa fa-refresh" (click)="showTrajet()"></i>
+          </ng-template>
+          <div class="text-danger mb-2"> &nbsp;[Seuls les enregistrements des 3 derniers jours au
+            maximum
+            de la période sélectionnée sont affichés]</div>
+          <modal-map [mapID]="'mapTrajet'" [vehiculeID]="trajetSelectedDevice" [startTime]="trajetStartTime"
+            [endTime]="trajetEndTime" [ToInvalidate]="ToInvalidate">
+          </modal-map>
+        </tab>
         <tab style="min-height: 600px" (selectTab)="selectTab(5)" [active]="selectedTab==5">
           <ng-template tabHeading>
             <i class="icon-list mr-2"></i>Parking &nbsp;
           </ng-template>
-          <my-data-table class="detailtable" (positionClick)="openMap($event)" [isTrajet]="false"
-            (openArretsClick)="openMapArrets($event)"
+          <my-data-table class="detailtable" (positionClick)="openMap($event)" [isTrajet]="0"
+            (openPointsClick)="openMapArrets($event)"
             [selectedMapDevice]="selectedMapDevice"
             [data]="reportDataArrets" [columnNames]="displayedColumnsArrets" [columns]="columnsArrets">
           </my-data-table>
@@ -152,17 +164,14 @@
 
           </details-table>
         </tab>
-        <tab style="min-height: 600px" (selectTab)="showTrajet()" [active]="selectedTab==4">
-          <ng-template tabHeading class="card-header-action btn-secondary">
-            <i class="fa fa-map mr-1"></i> Afficher Trajet &nbsp;
-            <i class="fa fa-refresh" (click)="showTrajet()"></i>
+        <tab style="min-height: 600px" (selectTab)="selectTab(6)" [active]="selectedTab==6">
+          <ng-template tabHeading>
+            <i class="icon-list mr-2"></i>Pose Carburant &nbsp;
           </ng-template>
-          <div class="text-danger mb-2"> &nbsp;[Seuls les enregistrements des 3 derniers jours au
-            maximum
-            de la période sélectionnée sont affichés]</div>
-          <modal-map [mapID]="'mapTrajet'" [vehiculeID]="trajetSelectedDevice" [startTime]="trajetStartTime"
-            [endTime]="trajetEndTime" [ToInvalidate]="ToInvalidate">
-          </modal-map>
+          <my-carburant-data-table class="detailtable" (positionClick)="openMap($event)" (openPointsClick)="openMapPoints($event)"
+            [selectedMapDevice]="selectedMapDevice" [data]="reportDataCarburant" [columnNames]="displayedColumnsCarburant"
+            [columns]="columnsCarburant">
+          </my-carburant-data-table>
         </tab>
       </tabset>
 
@@ -182,7 +191,7 @@
         </div>
         <div class="modal-body" style="padding: 4px;">
           <div class="animated fadeIn">
-            <modal-map [mapID]="'mapDetails'" [vehiculeID]="selectedMapDevice" [startTime]="startTime"
+            <modal-map [mapID]="'mapDetails'" [timestamps]="timestamps" [vehiculeID]="selectedMapDevice" [startTime]="startTime"
               [endTime]="endTime">
             </modal-map>
           </div>

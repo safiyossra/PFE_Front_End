@@ -13,23 +13,24 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-shield"></i></span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Account" [(ngModel)]="accountid"
-                      [ngModelOptions]="{standalone: true}" autocomplete="Account" required>
+                    <input type="text" class="form-control" placeholder="Account" (keyup.enter)="signin()" [(ngModel)]="accountid"
+                      [ngModelOptions]="{standalone: true}" autocomplete="account" required>
                   </div>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-user"></i></span>
                     </div>
-                    <input type="text" class="form-control" placeholder="User" [(ngModel)]="user"
+                    <input type="text" class="form-control" placeholder="User" (keyup.enter)="signin()" [(ngModel)]="user"
                       [ngModelOptions]="{standalone: true}" autocomplete="user" required>
                   </div>
                   <div class="input-group mb-4">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-lock"></i></span>
                     </div>
-                    <input type="password" class="form-control" placeholder="Password" [(ngModel)]="password"
-                      [ngModelOptions]="{standalone: true}" (keyup.enter)="signin()" autocomplete="current-password"
-                      required>
+                    <input [type]="passVisible?'text':'password'" class="form-control" placeholder="Password" [(ngModel)]="password"
+                      [ngModelOptions]="{standalone: true}" (keyup.enter)="signin()" autocomplete="current-password" required>
+                    <div class="input-group-append" (click)="passVisible=!passVisible"><span class="input-group-text"><i
+                          class="fa fa-eye{{passVisible?'-slash':''}}"></i></span></div>
                   </div>
                   <div class="row mb-4">
                     <div class="col-md-12">
@@ -44,6 +45,10 @@
                     <div class="col-6 text-right">
                       <a type="button" class="btn btn-link px-0" [routerLink]="['/register']">Forgot password?</a>
                     </div>
+                  </div>
+                  <div class="row mt-4 ml-2">
+                    <input id="s1" type="checkbox" class="switch" [(ngModel)]="remember" [ngModelOptions]="{standalone: true}">
+                    <label for="s1" class="ml-2">Se souvenir &nbsp;</label>
                   </div>
                 </form>
               </div>

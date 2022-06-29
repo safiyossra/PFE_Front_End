@@ -3,6 +3,7 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Groupevehicules } from '../../models/Groupevehicules';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: 'crudgroupe.component.html',
@@ -12,7 +13,7 @@ export class CrudgroupeComponent {
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -25,7 +26,7 @@ export class CrudgroupeComponent {
   displayedColumns: any = ["Véhicule", "Device", "Num de Tel"]
   modalLoading: boolean = false;
   selectedGroupevehicules: Groupevehicules = new Groupevehicules();
-  
+
 
 
   public devices: any = [];
@@ -66,44 +67,54 @@ export class CrudgroupeComponent {
 
   loadData() {
     this.loading = true;
-    this.dataService.getGroupeVehicules("").subscribe({
-      next: (d: any) => {          
-        console.log(d);
-        this.data = d;  
 
-       this.loading = false;
+    var route = this.router
+    this.dataService.getGroupeVehicules("").subscribe({
+      next: (d: any) => {
+        console.log(d);
+        this.data = d;
+
+        this.loading = false;
       }, error(err) {
         this.loading = false;
-      },
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
     })
   };
 
   loadModify(ev) {
-    this.mode ="Modifier"
-    this.selectedGroupevehicules = new Groupevehicules(ev[0],ev[1],ev[2]);
+    this.mode = "Modifier"
+    this.selectedGroupevehicules = new Groupevehicules(ev[0], ev[1], ev[2]);
     if (ev) {
       var url = "?g=" + ev[0]
       this.modalLoading = true;
       this.primaryModal.show()
+
+      var route = this.router
       this.dataService.getGroupeVehicules(url).subscribe({
         next: (d: any) => {
           console.log(d);
-             this.selectedGroupevehicules.vehiclues = d.map(e=> {return e.deviceID});
-             this.selectedDevices=this.selectedGroupevehicules.vehiclues
-             this.selectedDevice=this.selectedDevices
+          this.selectedGroupevehicules.vehiclues = d.map(e => { return e.deviceID });
+          this.selectedDevices = this.selectedGroupevehicules.vehiclues
+          this.selectedDevice = this.selectedDevices
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
-        },
-    })
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+        }
+      })
     }
   }
 
-  delete(ev){
+  delete(ev) {
 
   }
 
-  showAddModal(){
+  showAddModal() {
     this.selectedGroupevehicules = new Groupevehicules();
     this.mode = "Ajouter"
     this.primaryModal.show()
@@ -111,13 +122,15 @@ export class CrudgroupeComponent {
 
 
   getDev() {
+    var route = this.router
     this.dataService.getVehicule().subscribe({
       next: (res) => {
         this.devices = res;
         // console.log(res)
-      },
-      error: (errors) => {
-
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }
@@ -127,7 +140,7 @@ export class CrudgroupeComponent {
   }
 
   ajouter() {
-    this.mode ="Ajouter"
+    this.mode = "Ajouter"
   }
 
   reset() {

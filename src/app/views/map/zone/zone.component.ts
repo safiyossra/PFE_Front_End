@@ -7,6 +7,7 @@ import { Zone, ZoneType } from './../../../models/zone'
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-zone',
@@ -140,7 +141,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
   // ---------------- Zones ------------------
-  constructor(private tools: util, private fb: FormBuilder, private zoneService: ZoneService) {
+  constructor(private tools: util, private fb: FormBuilder, private zoneService: ZoneService, private router: Router) {
     this.zone = fb.group({
       description: new FormControl(),
       radius: new FormControl(),
@@ -199,6 +200,7 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   loadZones() {
+    var route = this.router
     this.zoneService.getData().subscribe({
       next: (res: any) => {
         var zones = []
@@ -241,6 +243,10 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.dataSource = new MatTableDataSource(this.zones)
         this.dataSource.sort = this.sort
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
 

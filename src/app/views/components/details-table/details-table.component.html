@@ -2,19 +2,11 @@
   <!--secondary-->
   <div class="card-header">
     <div class="row">
-      <div class="form-horizontal col-md-6">
+      <div class="form-horizontal col-md-3">
         <div class="input-group">
-          <input
-            type="text"
-            id="input3-group3"
-            name="input3-group3"
-            class="form-control"
-            placeholder="..."
-            (keyup)="applyFilter($event)"
-            #input
-          />
+          <input type="text" class="form-control" placeholder="Rechercher..." (keyup)="applyFilter($event)" #input />
           <div class="input-group-append">
-            <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
+            <div class="btn bg-secondary"><i class="fa fa-search"></i></div>
           </div>
         </div>
       </div>

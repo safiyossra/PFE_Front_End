@@ -36,7 +36,6 @@ export class VehiculeService {
     return this.http.get(SERVER_URL, {
       headers: headers,
     })
-
   }
 
   getVehiculeEventsByTimestamps(api, timestamps) {
@@ -47,11 +46,10 @@ export class VehiculeService {
       'Authorization': 'Bearer ' + jwt,
       'Accept': 'application/json'
     });
-    return this.http.post(SERVER_URL, {
+    return this.http.get(SERVER_URL, {
       headers: headers,
       params: { "t": timestamps }
     })
-
   }
 
   getDashboardStats(p: string) {
