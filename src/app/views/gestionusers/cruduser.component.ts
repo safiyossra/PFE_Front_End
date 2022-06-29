@@ -18,7 +18,7 @@ export class CruduserComponent {
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   constructor(private dataService: DataService, private datePipe: DatePipe) { }
   data = [];
-
+  errorMessage: string;
   public groups: any = [];
   selectedGroups = null;
   selectedGroup = this.selectedGroups;
@@ -35,7 +35,7 @@ export class CruduserComponent {
     this.showErrorGroup = !this.showErrorGroup;
     this.errorMessageGroup = "This field is required";
   }
-  
+
   selectedTimezones = null;
   selectedTimezone = this.selectedTimezones;
   getSelectedTimezones(selected) {
@@ -122,17 +122,163 @@ export class CruduserComponent {
       label: "GMT-04:00",
       data: "GMT-04:00"
     },
+    {
+      label: "GMT-05:00",
+      data: "GMT-05:00"
+    },
+    {
+      label: "GMT-06:00",
+      data: "GMT-06:00"
+    },
+    {
+      label: "GMT-07:00",
+      data: "GMT-07:00"
+    },
+    {
+      label: "GMT-08:00",
+      data: "GMT-08:00"
+    },
+    {
+      label: "GMT-09:00",
+      data: "GMT-09:00"
+    },
+    {
+      label: "GMT-10:00",
+      data: "GMT-10:00"
+    },
+    {
+      label: "GMT-11:00",
+      data: "GMT-11:00"
+    },
+    {
+      label: "GMT-12:00",
+      data: "GMT-12:00"
+    },
+    {
+      label: "US/Hawaii",
+      data: "US/Hawaii"
+    },
+    {
+      label: "US/Alaska",
+      data: "US/Alaska"
+    },
+    {
+      label: "US/Pacific",
+      data: "US/Pacific"
+    },
+    {
+      label: "US/Arizona",
+      data: "US/Arizona"
+    },
+    {
+      label: "US/Mountain",
+      data: "US/Mountain"
+    },
+    {
+      label: "US/Central",
+      data: "US/Central"
+    },
+    {
+      label: "US/Eastern",
+      data: "US/Eastern"
+    },    
+    {
+      label: "Canada/Pacific",
+      data: "Canada/Pacific"
+    },
+    {
+      label: "Canada/Mountain",
+      data: "Canada/Mountain"
+    },
+    {
+      label: "Canada/Central",
+      data: "Canada/Central"
+    },
+    {
+      label: "Canada/Eastern",
+      data: "Canada/Eastern"
+    },   
+    {
+      label: "Canada/Atlantic",
+      data: "Canada/Atlantic"
+    },
+    {
+      label: "Mexico/BajaNorte",
+      data: "Mexico/BajaNorte"
+    },   
+    {
+      label: "Mexico/BajaSur",
+      data: "Mexico/BajaSur"
+    },
+    {
+      label: "Mexico/General",
+      data: "Mexico/General"
+    },
+    {
+      label: "Europe/Athens",
+      data: "Europe/Athens"
+    },
+    {
+      label: "Europe/Berlin",
+      data: "Europe/Berlin"
+    },
 
-
-// value="GMT-05:00"
-// value="GMT-06:00"
-// value="GMT-07:00"
-// value="GMT-08:00"
-// value="GMT-09:00"
-// value="GMT-10:00"
-// value="GMT-11:00"
-// value="GMT-12:00"
- 
+    {
+      label: "Europe/Dublin",
+      data: "Europe/Dublin"
+    },
+    {
+      label: "Europe/Helsinki",
+      data: "Europe/Helsinki"
+    },
+    {
+      label: "Europe/Kiev",
+      data: "Europe/Kiev"
+    },
+    {
+      label: "Europe/Lisbon",
+      data: "Europe/Lisbon"
+    },
+    {
+      label: "Europe/London",
+      data: "Europe/London"
+    },
+    {
+      label: "Europe/Madrid",
+      data: "Europe/Madrid"
+    },
+    {
+      label: "Europe/Moscow",
+      data: "Europe/Moscow"
+    },
+    {
+      label: "Europe/Oslo",
+      data: "Europe/Oslo"
+    },
+    {
+      label: "Europe/Paris",
+      data: "Europe/Paris"
+    },
+    {
+      label: "Europe/Rome",
+      data: "Europe/Rome"
+    },
+    {
+      label: "Europe/Stockholm",
+      data: "Europe/Stockholm"
+    },
+    {
+      label: "Europe/Zurich",
+      data: "Europe/Zurich"
+    },
+    {
+      label: "Pacific/Auckland",
+      data: "Pacific/Auckland"
+    },
+    {
+      label: " Pacific/Chatham",
+      data: " Pacific/Chatham"
+    },    
   ];
 
   ngOnInit() {
@@ -194,8 +340,16 @@ export class CruduserComponent {
    if(this.mode == "Ajouter")this.ajouter()
    if(this.mode == "Modifier")this.modifier()
    }
-
+   
   ajouter() {
+
+    console.log(this.selectedUser.userID)
+    console.log(this.selectedUser.description)
+    
+    if (!this.selectedUser.userID || !this.selectedUser.description || !this.selectedUser.password || !this.selectedUser.contactPhone) {
+      console.log("test")
+      this.errorMessage = "Veuillez remplir les champs obligatoires."
+    } else {
      this.dataService.addUsers(this.selectedUser).subscribe({
       next: (res) => {
         
@@ -205,6 +359,7 @@ export class CruduserComponent {
 
       }
     })
+  }
   
   }
    
