@@ -157,6 +157,10 @@ export class DetailsComponent implements OnInit, AfterViewInit {
         }
       })
 
+    }, (err) => {
+      if (err.status == 401) {
+        this.router.navigate(['login'], { queryParams: { returnUrl: this.router.url } });
+      }
     })
 
     return exist
@@ -202,7 +206,11 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
         this.loadingEvents = false
       },
-
+        (err) => {
+          if (err.status == 401) {
+            this.router.navigate(['login'], { queryParams: { returnUrl: this.router.url } });
+          }
+        }
       )
   }
 

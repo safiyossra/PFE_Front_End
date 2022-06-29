@@ -8,6 +8,7 @@ import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { VehiculeService } from 'src/app/services/vehicule.service';
 import { Vehicule } from 'src/app/models/vehicule';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-closest',
@@ -64,7 +65,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   directionControl: any
 
   // ---------------- Zones ------------------
-  constructor(private tools: util, private zoneService: ZoneService, private vehiculeService: VehiculeService, private fb: FormBuilder) {
+  constructor(private tools: util, private zoneService: ZoneService, private vehiculeService: VehiculeService, private fb: FormBuilder, private router: Router) {
     this.POIForm = fb.group({
       radius: new FormControl(this.radius)
     })
@@ -76,6 +77,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   }
 
   loadPOIs() {
+    var route = this.router
     this.zoneService.getPoi().subscribe({
       next: (res: any) => {
         var POIs = []
@@ -84,6 +86,10 @@ export class ClosestComponent implements OnInit, AfterViewInit {
           POIs.push(poi)
         });
         this.POIs = POIs
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
 
@@ -341,6 +347,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     this.clearMarkersFromMap()
     if (this.searchedPosition.lat != null && this.searchedPosition.lng != null && this.radius > 2) {
       this.loading = true
+
+      var route = this.router
       this.vehiculeService.getData().subscribe({
         next: (res) => {
           const data = res['DeviceList']
@@ -361,6 +369,10 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
           console.log(vehicules);
           this.createMarkers(vehicules)
+        }, error(err) {
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
         }
       })
     }

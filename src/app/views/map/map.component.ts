@@ -3,7 +3,8 @@ import { VehiculeService } from 'src/app/services/vehicule.service'
 import { util } from '../../tools/utils'
 import * as L from 'leaflet'
 import { Vehicule } from '../../models/vehicule'
-import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-map',
@@ -36,7 +37,8 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   inter: any
 
   selectedVehiculeIndex = -1
-  constructor(private vehiculeService: VehiculeService, private tools: util) {
+  constructor(private vehiculeService: VehiculeService, private tools: util, private router: Router) {
+
   }
   ngOnInit(): void {
     this.loadData()
@@ -47,11 +49,9 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
       this.map = this.tools.createMap(this.map, 'map', this.car, this.provider, this.showCollapsControle, this.showFullScreenControle, this.showPositionControle)
       this.inter = setInterval(() => {
         this.loadData()
-      }, 500000)
+      }, 5000)
     }, 100);
   }
-
-
 
   initMarkers() {
     this.vehicules.forEach((veh, index) => {
@@ -111,11 +111,11 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   loadData() {
+    var route = this.router
     this.vehiculeService.getData().subscribe({
       next: (res) => {
         const data = res['DeviceList']
         console.log("DeviceList", data);
-
         let vehicules = []
         data.forEach(e => {
           let l = e['EventData'].length - 1 ?? -1
@@ -137,9 +137,14 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
         } else {
           this.updateMarkers()
         }
+        this.setTypesCount()
+
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
-    this.setTypesCount()
   }
 
   setTypesCount() {
@@ -266,10 +271,16 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     this.size = [e.sizes[0], e.sizes[1]]
     this.invalidate()
   }
+
   ngOnDestroy(): void {
+    this.destroy()
+  }
+
+  destroy() {
     if (this.inter) {
       clearInterval(this.inter);
       this.inter = null;
     }
   }
 }
+

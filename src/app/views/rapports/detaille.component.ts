@@ -3,7 +3,7 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { util } from 'src/app/tools/utils';
 
 @Component({
@@ -18,7 +18,7 @@ export class DetailleComponent implements AfterViewInit {
   loadingcharts: boolean = false
 
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private tools: util) {
+  constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private tools: util, private router: Router) {
   }
   ngAfterViewInit(): void {
     if (this.vehiculeID) {
@@ -38,18 +38,21 @@ export class DetailleComponent implements AfterViewInit {
   reportDataTrajet: any;
   reportData: any;
   reportDataArrets: any;
+  reportDataCarburant: any;
   reportDetails: any;
   displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)"]
   columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct"];
 
   displayedColumnsArrets: any = ["Depart", "Arrivé", "Adresse", "Durée (min)"]
   columnsArrets: any = ["timeStart", "timeEnd", "addi", "da"];
+  displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]
+  columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
 
   resume = [];
 
   urldetails = "";
   urlEvolution = "";
-  public devices: any = [];
+  devices: any = [];
   selectedDevices = [];
   selectedDevice = null;
   ToInvalidate = "0"
@@ -324,9 +327,12 @@ export class DetailleComponent implements AfterViewInit {
       if (this.selectedTab == 4) this.showTrajet()
       // this.resume = []
       var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
+      console.log(urlParams);
+
+      var route = this.router
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
-          // console.log(d);
+          console.log(d);
           d.forEach((e) => {
             e.st = e.timeStart;
             e.et = e.timeEnd;
@@ -369,7 +375,29 @@ export class DetailleComponent implements AfterViewInit {
           resumetmp[length - 2].val = (100 * (resumetmp[length - 3].val / (resumetmp[0].val != 0 ? resumetmp[0].val : 1))).toFixed(1);
           this.resume = resumetmp
           this.loading = false;
-        },
+        }, error(err) {
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+        }
+      })
+      this.dataService.getPoseFuel(urlParams).subscribe({
+        next: (d: any) => {
+          console.log(d);
+          d.forEach((e) => {
+            e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
+            e.device = this.getVehiculeNameById(e.deviceID)
+            var capacity = this.getVehiculeCapacityById(e.deviceID)
+            e.fuelLevel = e.fuelLevel * capacity
+            e.deltaFuelLevel = e.deltaFuelLevel * capacity
+            e.fuelstart = e.fuelstart * capacity
+          })
+          this.reportDataCarburant = d
+        }, error(err) {
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+        }
       })
     }
   };
@@ -414,6 +442,8 @@ export class DetailleComponent implements AfterViewInit {
 
   loadEvolution(url) {
     this.loadingcharts = true;
+
+    var route = this.router
     this.dataService.getEvolution(url).subscribe({
       next: (d: any) => {
         // console.log(d);
@@ -437,7 +467,11 @@ export class DetailleComponent implements AfterViewInit {
           },
         ];
         this.loadingcharts = false;
-      },
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
     })
   }
 
@@ -456,12 +490,14 @@ export class DetailleComponent implements AfterViewInit {
   }
 
   getDev() {
+    var route = this.router
     this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
         this.devices = res;
-      },
-      error: (errors) => {
-
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }
@@ -512,6 +548,16 @@ export class DetailleComponent implements AfterViewInit {
     }
   }
 
+  openMapPoints(d: any) {
+    this.selectedMapDevice = d ? d : "";
+    if (this.reportDataCarburant?.length && this.selectedMapDevice != "") {
+      this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
+      this.interval = " Carburant"
+      this.timestamps = this.reportDataCarburant.map((e) => { return e.ts })
+      this.primaryModal.show()
+    }
+  }
+
   getVehiculeNameById(id) {
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].dID == id) return this.devices[i].name
@@ -524,6 +570,13 @@ export class DetailleComponent implements AfterViewInit {
       if (this.devices[i].dID == id) return { "fe": this.devices[i].fe, "fc": this.devices[i].fc }
     }
     return { "fe": 0, "fc": 0 }
+  }
+
+  getVehiculeCapacityById(id) {
+    for (let i = 0; i < this.devices.length; i++) {
+      if (this.devices[i].dID == id) return this.devices[i].cp
+    }
+    return 0
   }
 }
 

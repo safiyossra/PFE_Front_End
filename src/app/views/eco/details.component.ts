@@ -3,6 +3,7 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { util } from 'src/app/tools/utils';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: 'details.component.html',
@@ -11,7 +12,7 @@ export class DetailsComponent {
 
   loading: boolean = false;
 
-  constructor(private dataService: DataService, private tools: util) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router) { }
 
   public mainChartData: Array<any> = [
     {
@@ -237,6 +238,8 @@ export class DetailsComponent {
       this.loading = true;
       this.resume = []
       var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo + "&eco"
+
+      var route = this.router
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
           // console.log(d);
@@ -276,7 +279,11 @@ export class DetailsComponent {
           ]
           this.mainChartLabels = labels
           this.loading = false;
-        },
+        }, error(err) {
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+        }
       })
     }
   };
@@ -306,6 +313,7 @@ export class DetailsComponent {
   }
 
   getDev() {
+    var route = this.router
     this.dataService.getVehicule().subscribe({
       next: (res) => {
         this.devices = res;
@@ -313,10 +321,10 @@ export class DetailsComponent {
         this.selectedDevice = this.devices[0].dID
         this.submit()
 
-      },
-      error: (errors) => {
-        console.log(errors);
-
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }

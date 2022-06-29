@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, 
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { DataService } from 'src/app/services/data.service';
 import { util } from 'src/app/tools/utils';
 
@@ -36,7 +37,7 @@ export class DetailsTableComponent implements OnChanges {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private dataService: DataService, private tools: util) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router) { }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -66,6 +67,8 @@ export class DetailsTableComponent implements OnChanges {
 
   loadData() {
     this.isLoading = true;
+
+    var route = this.router
     var urlTmp = this.url + "&limE=" + this.selectedPageSize + "&page=" + this.currentPage
     this.dataService.getDetails(urlTmp).subscribe({
       next: (d: any) => {
@@ -84,7 +87,11 @@ export class DetailsTableComponent implements OnChanges {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.isLoading = false;
-      },
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
     })
 
   }

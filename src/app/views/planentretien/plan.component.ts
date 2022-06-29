@@ -3,6 +3,7 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import {ModalDirective, ModalOptions} from 'ngx-bootstrap/modal';
 import { util } from 'src/app/tools/utils';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: 'plan.component.html',
@@ -16,7 +17,7 @@ export class PlanComponent {
   @ViewChild('motif') motif: ElementRef;
   @ViewChild('type') type: ElementRef;
   @ViewChild('modele') modele: ElementRef;
-  constructor(private dataService: DataService, private tools: util) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -136,7 +137,9 @@ export class PlanComponent {
     // } else {
       this.loading = true;
     var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
-        this.dataService.getPlanEntretien(urlParams).subscribe({
+
+    var route = this.router
+    this.dataService.getPlanEntretien(urlParams).subscribe({
           next: (d: any) => {          
             // console.log(d);
             this.data = d;
@@ -149,19 +152,25 @@ export class PlanComponent {
               if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
             })      
            this.loading = false;
-          },
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
         })
     //  }
   };
 
 
   getDev() {
+    var route = this.router
     this.dataService.getVehicule().subscribe({
       next: (res) => {
         this.devices = res;
-      },
-      error: (errors) => {
-
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }

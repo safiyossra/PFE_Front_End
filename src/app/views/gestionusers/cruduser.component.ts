@@ -3,11 +3,12 @@ import { DataService } from '../../services/data.service';
 import { DatePipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { User } from '../../models/user';
+import { Router } from '@angular/router';
+import { util } from 'src/app/tools/utils';
 
 @Component({
   templateUrl: 'cruduser.component.html',
-  styleUrls: ["./style.scss"],
-  providers: [DatePipe]
+  styleUrls: ["./style.scss"]
 })
 export class CruduserComponent {
 
@@ -16,7 +17,7 @@ export class CruduserComponent {
   mode = "Ajouter";
   selectedUser: User = new User();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private datePipe: DatePipe) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router) { }
   data = [];
 
   public groups: any = [];
@@ -42,30 +43,37 @@ export class CruduserComponent {
   }
   
   getGroup() {
+
+    var route = this.router
     this.dataService.getGroupeVehicules("").subscribe({
       next: (res) => {
         this.groups = res;
         console.log(res)
-      },
-      error: (errors) => {
-
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }
   
   loadData() {
     this.loading = true;
+    var route = this.router
     this.dataService.getUsers("").subscribe({
       next: (d: any) => {
         let now = Math.round(new Date().getTime() / 1000)
         d.forEach(e => {
-          e.lastLoginTime = this.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
+          e.lastLoginTime = this.tools.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
         });
         this.data = d;
         this.loading = false;
       }, error(err) {
         this.loading = false;
-      },
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
     })
   };
 
@@ -76,6 +84,8 @@ export class CruduserComponent {
       var url = "?u=" + ev[0]
       this.modalLoading = true;
       this.primaryModal.show()
+
+      var route = this.router
       this.dataService.getUsers(url).subscribe({
         next: (d: any) => {
           // if (d && d.length) {
@@ -87,7 +97,10 @@ export class CruduserComponent {
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
-        },
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+        }
     })
     }
   }
@@ -104,12 +117,7 @@ export class CruduserComponent {
     this.selectedUser = new User();
     this.mode = "Ajouter"
     this.primaryModal.show()
-  }
-
-
-  formatDate(date: Date) {
-    return this.datePipe.transform(date, 'MMM dd, HH:mm:ss');
-  }
+   }
 }
 
 

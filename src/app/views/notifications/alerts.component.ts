@@ -3,6 +3,7 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import { util } from 'src/app/tools/utils';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -13,7 +14,7 @@ export class AlertsComponent {
 
   loading: boolean = false;
  
-  constructor(private dataService: DataService, private tools: util) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -98,6 +99,7 @@ export class AlertsComponent {
     }
     // console.log(urlNotif);
 
+    var route = this.router
     this.dataService.getNotifications(urlNotif).subscribe({
         next: (d: any) => {
         // console.log("data");
@@ -107,19 +109,25 @@ export class AlertsComponent {
           })
         this.data = d;
           this.loading = false;
-        },
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
       })
 
   };
 
 
   getDev() {
+    var route = this.router
     this.dataService.getVehicule().subscribe({
       next: (res) => {
         this.devices = res;
-      },
-      error: (errors) => {
-
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }

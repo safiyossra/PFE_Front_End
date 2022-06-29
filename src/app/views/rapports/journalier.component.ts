@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: 'journalier.component.html',
@@ -8,7 +9,7 @@ import { DataService } from '../../services/data.service';
 export class JournalierComponent {
   loading: boolean = false;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -327,6 +328,8 @@ export class JournalierComponent {
       var requestparams = this.paramstab.join("&")
       if (requestparams != "") {
         var urlParams = "?d=" + this.selectedDevice + "&st=" + Math.round(this.myDateRangePicker.dateFrom.getTime() / 1000) + "&et=" + Math.round(this.myDateRangePicker.dateTo.getTime() / 1000) + "&" + requestparams + iskm
+
+        var route = this.router
         this.dataService.getStatistique(urlParams).subscribe({
           next: (d: any) => {
             this.displayedColumns = ["Date", ...this.getColumnsNames(this.paramstab)]
@@ -360,7 +363,11 @@ export class JournalierComponent {
             this.barChartLabels = labels
             this.barChartData = y.map((l) => { return l.data[0] });
             this.loading = false;
-          },
+          }, error(err) {
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+          }
         })
       } else {
         this.loading = false;
@@ -419,12 +426,14 @@ export class JournalierComponent {
   }
 
   getDev() {
+    var route = this.router
     this.dataService.getVehicule().subscribe({
       next: (res) => {
         this.devices = res;
-      },
-      error: (errors) => {
-
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }
@@ -432,9 +441,9 @@ export class JournalierComponent {
   reset() {
     this.selectedDevices = []
     this.selectedDevice = null
-      this.selectedkmConditions = [],
-        this.selectedkm = null,
-        this.selectedparams = [[], [], [], []]
+    this.selectedkmConditions = [],
+      this.selectedkm = null,
+      this.selectedparams = [[], [], [], []]
     this.selectedparam = [null, null, null, null]
   }
 

@@ -2,24 +2,26 @@
   <!--secondary-->
   <div class="card-header">
     <div class="row">
-      <div class="form-horizontal col-md-6">
+      <div class="form-horizontal col-md-3">
         <div class="input-group">
-          <input type="text" id="input3-group3" name="input3-group3" class="form-control" placeholder="..."
-            (keyup)="applyFilter($event)" #input />
+          <input type="text" class="form-control" placeholder="Rechercher..." (keyup)="applyFilter($event)" #input />
           <div class="input-group-append">
-            <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
+            <div class="btn bg-secondary"><i class="fa fa-search"></i></div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="card-header-actions" *ngIf="isTrajet">
-      <input id="s1" type="checkbox" class="switch" [(ngModel)]="isArret" [ngModelOptions]="{standalone: true}"
-        (ngModelChange)="showArretcheckbox()">
-      <label for="s1" class="ml-2">Basculer vers Trajet {{isArret?'sans':'avec'}} Parking &nbsp;</label>
-    </div>
-    <div class="card-header-actions" *ngIf="!isTrajet">
-      <button class="btn btn-outlined-primary" (click)="openMapArrets()"><i class="fa fa-map mr-1"></i> Afficher les Points
-        du parking</button>
+      <div class="card-header-actions col-md-9" *ngIf="isTrajet==1">
+        <div class="float-right">
+          <input id="s1" type="checkbox" class="switch" [(ngModel)]="isArret" [ngModelOptions]="{standalone: true}"
+            (ngModelChange)="showArretcheckbox()">
+          <label for="s1" class="ml-2">Basculer vers Trajet {{isArret?'sans':'avec'}} Parking &nbsp;</label>
+        </div>
+      </div>
+      <div class="card-header-actions col-md-9" *ngIf="isTrajet==0">
+        <button class="btn btn-outlined-primary float-right" (click)="openMapPoints()"><i class="fa fa-map mr-1"></i>
+          Afficher les Points
+          du parking</button>
+      </div>
     </div>
   </div>
   <div class="card-body">
@@ -38,7 +40,7 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
+    </table>
   </div>
   <div class="card-footer">
     <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [pageSize]="selectedPageSize">

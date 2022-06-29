@@ -32,6 +32,7 @@ import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
 import { MyDataTableComponent } from './my-data-table/my-data-table.component';
+import { MyCarburantDataTableComponent } from './my-carburant-data-table/my-carburant-data-table.component';
 import { MySynthetiquesTableComponent } from './my-synthetiques-table/my-synthetiques-table.component';
 import { ModalMapComponent } from './modal-map/map.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -59,6 +60,7 @@ import { SynthetiquesComponent } from './synthetiques.component';
     DetailleComponent,
     JournalierComponent,
     MyDataTableComponent,
+    MyCarburantDataTableComponent,
     MySynthetiquesTableComponent,
     SynthetiquesComponent,
     DetailsTableComponent,

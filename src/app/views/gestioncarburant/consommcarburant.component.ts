@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: 'consommcarburant.component.html',
@@ -15,7 +16,7 @@ export class ConsommcarburantComponent {
   @ViewChild('report') report: ElementRef;
   @ViewChild('description') description: ElementRef;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -139,13 +140,15 @@ export class ConsommcarburantComponent {
 
 
   getDev() {
+    var route = this.router
     this.dataService.getVehicule().subscribe({
       next: (res) => {
         this.devices = res;
         // console.log(res)
-      },
-      error: (errors) => {
-
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }
