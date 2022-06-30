@@ -22,6 +22,7 @@ export class CrudgroupeComponent {
   iconCollapse: string = 'icon-arrow-up';
   data = [];
   mode = "Ajouter"
+  errorMsg: string;
   public isnotNum: boolean = false
   displayedColumns: any = ["Véhicule", "Device", "Num de Tel"]
   modalLoading: boolean = false;
@@ -139,9 +140,25 @@ export class CrudgroupeComponent {
     return this.devices.filter((v) => { return v.dID == e })[0].name
   }
 
-  ajouter() {
-    this.mode = "Ajouter"
-  }
+  submit() {
+    if(this.mode == "Ajouter")this.ajouter()
+    if(this.mode == "Modifier")this.modifier()
+    }
+    
+    modifier() {
+    
+    }
+
+   ajouter() {
+    
+     if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
+       console.log("test")
+       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+     } else {
+     
+   }
+   
+   }
 
   reset() {
     this.selectedDevice = []

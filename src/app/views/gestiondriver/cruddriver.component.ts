@@ -23,6 +23,7 @@ export class CruddriverComponent {
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   data = [];
+  errorMsg: string;
   mode = "Ajouter"
   public isnotNum: boolean = false
   displayedColumns: any = ["Véhicule", "Device", "Num de Tel"]
@@ -158,9 +159,25 @@ export class CruddriverComponent {
       }
     })
   }
-  ajouter() {
-    this.mode = "Ajouter"
-  }
+  submit() {
+    if(this.mode == "Ajouter")this.ajouter()
+    if(this.mode == "Modifier")this.modifier()
+    }
+    
+    modifier() {
+    
+    }
+
+   ajouter() {
+    
+     if (!this.selectedDriver.driverID || !this.selectedDriver.displayName || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail) {
+       console.log("test")
+       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+     } else {
+     
+   }
+   
+   }
 
   reset() {
     this.selectedDevices = [],
