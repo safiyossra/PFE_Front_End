@@ -79,11 +79,15 @@ export const navItems: INavData[] = [
     url: '/maintenance',
     icon: 'cil-recycle'
   },
-
   {
     name: 'Notifications',
     url: '/notifications/alerts',
     icon: 'icon-bell',
+  },
+  {
+    name: 'Notifications Rules',
+    url: '/notif-ruls',
+    icon: 'icon-settings',
   },
   // {
   //   name: 'Map',

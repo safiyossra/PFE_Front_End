@@ -96,7 +96,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
         this.markers[i].setPopupContent(this.tools.formatPopUpContent(v))
       }
     }
-    this.center()
+    // this.center()
   }
 
   reset() {
@@ -221,7 +221,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  rowClicked(event) {
+  rowClicked(index) {
     const elems = document.getElementsByClassName('my-div-icon')
 
     for (let index = 0; index < elems.length; index++) {
@@ -229,9 +229,10 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
       elems.item(index).classList.remove('marker-selected')
     }
 
-    this.selectedVehiculeIndex = event
+    this.selectedVehiculeIndex = index
     elems.item(this.selectedVehiculeIndex).classList.add('marker-selected')
-    this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
+    // this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
+    this.map.setView(this.markers[index].getLatLng(), 15)
   }
 
   rowDoubleClicked(event) {

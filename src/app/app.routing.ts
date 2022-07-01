@@ -69,6 +69,10 @@ export const routes: Routes = [
         loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
       },
       {
+        path: 'notif-ruls',
+        loadChildren: () => import('./views/notificationsRules/notif-rules.module').then(m => m.NotifRulesModule)
+      },
+      {
         path: 'maintenance',
         loadChildren: () => import('./views/maintenance/maintenance.module').then(m => m.MaintenanceModule)
       },

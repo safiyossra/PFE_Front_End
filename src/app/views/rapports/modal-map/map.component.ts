@@ -56,7 +56,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       if (changes['endTime']) {
         this.selectedEndTime = changes['endTime'].currentValue
       }
-      if (this.selectedVid != "" && (this.selectedStartTime != "" || this.selectedEndTime != "")) {
+      if (this.selectedVid != "" && (this.selectedStartTime != "" || this.selectedEndTime != "") && !changes['timestamps']) {
         var url = this.selectedVid + "&st=" + this.selectedStartTime + "&3days=true"
         this.loadData(url + (this.selectedEndTime != "" ? "&et=" + this.selectedEndTime : ""), this.selectedEndTime == "")
       } else if (this.selectedTimestamps && this.selectedTimestamps != "" && this.selectedVid != "") {
@@ -96,9 +96,9 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   }
 
   loadDataByTimestams(d, timestamps) {
+    // console.log("loadDataByTimestams", d, timestamps);
     if (timestamps.length) {
       let url = "EventsByTimestamps?d=" + d
-      // console.log("loadData");
       this.loadingTrajet = true
       var route = this.router
       this.vehiculeService.getVehiculeEventsByTimestamps(url, timestamps.join(',')).subscribe({

@@ -82,37 +82,45 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.loadStatus();
     var route = this.router
-    this.vehiculeService.getDashboardStats("km").subscribe((res: any) => {
-      this.KMData = [
-        { data: res.map((e: any) => { return Math.round(e["km"]) }), label: 'Distance parcourue' }
-      ]
-      this.KMLabels = res.map((e) => { return e["description"] })
-      this.isFirstTime2 = false
-    }, (err) => {
-      if (err.status == 401) {
-        route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+    this.vehiculeService.getDashboardStats("km").subscribe({
+      next: (res: any) => {
+        this.KMData = [
+          { data: res.map((e: any) => { return Math.round(e["km"]) }), label: 'Distance parcourue' }
+        ]
+        this.KMLabels = res.map((e) => { return e["description"] })
+        this.isFirstTime2 = false
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
-    this.vehiculeService.getDashboardStats("v").subscribe((res: any) => {
-      this.VitesseData = [
-        { data: res.map((e: any) => { return Math.round(e["maxSpeed"]) }), label: 'Max Vitesse' }
-      ]
-      this.VitesseLabels = res.map((e: any) => { return e["description"] })
-      this.isFirstTime3 = false
-    }, (err) => {
-      if (err.status == 401) {
-        route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+    this.vehiculeService.getDashboardStats("v").subscribe({
+      next: (res: any) => {
+        this.VitesseData = [
+          { data: res.map((e: any) => { return Math.round(e["maxSpeed"]) }), label: 'Max Vitesse' }
+        ]
+        this.VitesseLabels = res.map((e: any) => { return e["description"] })
+        this.isFirstTime3 = false
+        // console.log(res);
+
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
-    this.vehiculeService.getDashboardStats("c").subscribe((res: any) => {
-      this.ConsommationData = [
-        { data: res.map((e: any) => { return Math.round(e["consumption"]) }), label: 'Max Consommation' }
-      ]
-      this.ConsommationLabels = res.map((e) => { return e["description"] })
-      // this.isFirstTime4 = false
-    }, (err) => {
-      if (err.status == 401) {
-        route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+    this.vehiculeService.getDashboardStats("c").subscribe({
+      next: (res: any) => {
+        this.ConsommationData = [
+          { data: res.map((e: any) => { return Math.round(e["consumption"]) }), label: 'Max Consommation' }
+        ]
+        this.ConsommationLabels = res.map((e) => { return e["description"] })
+        // this.isFirstTime4 = false
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
       }
     })
   }

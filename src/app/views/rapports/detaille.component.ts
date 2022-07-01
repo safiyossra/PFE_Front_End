@@ -383,7 +383,7 @@ export class DetailleComponent implements AfterViewInit {
       })
       this.dataService.getPoseFuel(urlParams).subscribe({
         next: (d: any) => {
-          console.log(d);
+          // console.log(d);
           d.forEach((e) => {
             e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
             e.device = this.getVehiculeNameById(e.deviceID)
@@ -539,11 +539,14 @@ export class DetailleComponent implements AfterViewInit {
   }
 
   openMapArrets(d: any) {
+    // console.log(d);
+
     this.selectedMapDevice = d ? d : "";
     if (this.reportDataArrets?.length && this.selectedMapDevice != "") {
       this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
       this.interval = " Parkings"
       this.timestamps = this.reportDataArrets.map((e) => { return e.st })
+      // console.log(this.timestamps);
       this.primaryModal.show()
     }
   }

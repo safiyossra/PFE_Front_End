@@ -107,7 +107,10 @@ export class util {
               <tr class="infoBoxRow"
                 style="background-color: #3598dc !important;color: #FFFFFF !important;">
                 <td><img src="assets/img/vehicules/${img}-img.png">&nbsp; </td> 
-                <td class="infoBoxCell" style="vertical-align: bottom;"><b style="vertical-align: sub;">${v.name}</b>, <b style="margin-right: 10px;float: right;">
+                <td class="infoBoxCell" style="vertical-align: bottom;">
+                <b style='vertical-align: sub;'>${v.name},</b>
+                <a href='https://www.google.com/maps/?q=${v.lat},${v.lng}' class='float-right' target='_blank'> <i class="fa fa-share text-light" style="font-size: x-large;"></i></a>
+                <b style="margin-right: 10px;" class="float-right" >
                 <i class="${this.getStatusClass(v.statusCode)}" style="vertical-align: bottom;"></i>${(this.getStatusName(v.statusCode))}</b></td>
               </tr>
               <tr class="infoBoxRow">

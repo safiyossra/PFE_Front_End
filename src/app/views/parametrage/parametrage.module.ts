@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ParametrageRoutingModule } from './parametrage-routing.module';
 import { ParametrageComponent } from './parametrage.component';
 import { SharedModule } from '../components/shared.module';
+import { GestionNotifsRulesModule } from './gestionNotifsRules/gestionnotifsrules.module';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { SharedModule } from '../components/shared.module';
   imports: [
     CommonModule,
     ParametrageRoutingModule,
-    SharedModule
+    SharedModule,
+    GestionNotifsRulesModule,
   ]
 })
 export class ParametrageModule { }
