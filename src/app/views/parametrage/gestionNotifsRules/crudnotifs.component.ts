@@ -89,6 +89,9 @@ export class CrudNotifsRulesComponent {
           // if (d && d.length) {
           //  this.selectedUser = d[0];
           // }
+          d.forEach(e => {
+            e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
+          });
           this.selectedAlert = d[0]
           this.modalLoading = false;
         }, error(err) {

@@ -64,6 +64,10 @@ export class MyGestionNotifsRulesTableComponent implements OnChanges {
     }
   }
 
+  getIsYes(v) {
+    return v == 0 ? "Non" : "Oui"
+  }
+
   formatAge(seconds) {
     if (isNaN(seconds)) return "Jamais"
     // return age
