@@ -3,16 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
-import { PlanComponent } from './plan.component';
+import { CruddriverComponent } from './cruddriver.component';
 
 // Forms Component
-import { MyPlanentretienaTableComponent } from '../planentretien/my-planentretien-table/my-planentretien-table.component';
+import { MyGestiondriverTableComponent } from './my-gestiondriver-table/my-gestiondriver-table.component';
 
-import { MaterialsModule } from '../../materials.module';
+import { MaterialsModule } from '../../../materials.module';
 // Components Routing
-import { PlanentretienRoutingModule } from './planentretien-routing.module';
-import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-daterangepicker.module';
-import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
+import { MyDateRangePickerModule } from '../../components/my-date-range-picker/my-daterangepicker.module';
+import { MyDropdownModule } from '../../components/my-dropdown/my-dropdown.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -21,7 +20,6 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 @NgModule({
   imports: [
     CommonModule,
-    PlanentretienRoutingModule,
     FormsModule,
     MatSelectModule,
     ChartsModule,
@@ -33,8 +31,8 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     CollapseModule.forRoot(),
   ],
   declarations: [
-    PlanComponent,
-    MyPlanentretienaTableComponent
+    CruddriverComponent,
+    MyGestiondriverTableComponent
   ]
 })
-export class PlanentretienModule { }
+export class GestiondriverModule { }

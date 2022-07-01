@@ -1,8 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { DatePipe } from '@angular/common';
+import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { User } from '../../models/user';
+import { User } from '../../../models/user';
 import { Router } from '@angular/router';
 import { util } from 'src/app/tools/utils';
 import { Constant } from 'src/app/tools/constants';
@@ -18,7 +17,7 @@ export class CruduserComponent {
   mode = "Ajouter";
   selectedUser: User = new User();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, private router: Router, private cst:Constant) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router, private cst: Constant) { }
   data = [];
   errorMsg: string;
   public groups: any = [];
@@ -32,7 +31,7 @@ export class CruduserComponent {
     console.log(this.selectedGroup?.join(" , ").trim());
 
   }
- 
+
   onValidateGroup() {
     this.showErrorGroup = !this.showErrorGroup;
     this.errorMessageGroup = "This field is required";
@@ -43,13 +42,13 @@ export class CruduserComponent {
   getSelectedTimezones(selected) {
     this.selectedTimezone = selected;
   }
- 
+
 
   ngOnInit() {
     this.getGroup();
     this.loadData();
   }
-  
+
   getGroup() {
 
     var route = this.router
@@ -64,7 +63,7 @@ export class CruduserComponent {
       }
     })
   }
-  
+
   loadData() {
     this.loading = true;
     var route = this.router
@@ -87,7 +86,7 @@ export class CruduserComponent {
 
   loadModify(ev) {
     this.mode = "Modifier"
-    this.selectedUser = new User(ev[0],ev[1],ev[2],ev[3],ev[4],ev[5],ev[6],ev[7],ev[8],ev[9],ev[10]);
+    this.selectedUser = new User(ev[0], ev[1], ev[2], ev[3], ev[4], ev[5], ev[6], ev[7], ev[8], ev[9], ev[10]);
     if (ev) {
       var url = "?u=" + ev[0]
       this.modalLoading = true;
@@ -97,10 +96,10 @@ export class CruduserComponent {
       this.dataService.getUsers(url).subscribe({
         next: (d: any) => {
           console.log(d);
-          if(d && d.length)
-          this.selectedUser.groups = d[0].groupID;
-          this.selectedGroups=this.selectedUser.groups
-          this.selectedGroup=this.selectedGroups
+          if (d && d.length)
+            this.selectedUser.groups = d[0].groupID;
+          this.selectedGroups = this.selectedUser.groups
+          this.selectedGroup = this.selectedGroups
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
@@ -108,50 +107,50 @@ export class CruduserComponent {
             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
           }
         }
-    })
+      })
     }
   }
 
   submit() {
-   if(this.mode == "Ajouter")this.ajouter()
-   if(this.mode == "Modifier")this.modifier()
-   }
-   
+    if (this.mode == "Ajouter") this.ajouter()
+    if (this.mode == "Modifier") this.modifier()
+  }
+
   ajouter() {
 
     console.log(this.selectedUser.userID)
     console.log(this.selectedUser.description)
-    
+
     if (!this.selectedUser.userID || !this.selectedUser.description || !this.selectedUser.password || !this.selectedUser.contactPhone) {
       console.log("test")
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-     this.dataService.addUsers(this.selectedUser).subscribe({
-      next: (res) => {
-        
-        console.log(res)
-      },
-      error: (errors) => {
+      this.dataService.addUsers(this.selectedUser).subscribe({
+        next: (res) => {
 
-      }
-    })
+          console.log(res)
+        },
+        error: (errors) => {
+
+        }
+      })
+    }
+
   }
-  
-  }
-   
+
   modifier() {
-    
-  }
-
-   delete(ev){
 
   }
 
-   showAddModal(){
+  delete(ev) {
+
+  }
+
+  showAddModal() {
     this.selectedUser = new User();
     this.mode = "Ajouter"
     this.primaryModal.show()
-   }
+  }
 }
 
 

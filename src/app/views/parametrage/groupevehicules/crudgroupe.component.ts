@@ -1,8 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
-import { DataService } from '../../services/data.service';
+import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
+import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { Groupevehicules } from '../../models/Groupevehicules';
+import { Groupevehicules } from '../../../models/Groupevehicules';
 import { Router } from '@angular/router';
 
 @Component({
@@ -141,24 +141,24 @@ export class CrudgroupeComponent {
   }
 
   submit() {
-    if(this.mode == "Ajouter")this.ajouter()
-    if(this.mode == "Modifier")this.modifier()
-    }
-    
-    modifier() {
-    
+    if (this.mode == "Ajouter") this.ajouter()
+    if (this.mode == "Modifier") this.modifier()
+  }
+
+  modifier() {
+
+  }
+
+  ajouter() {
+
+    if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
+      console.log("test")
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+
     }
 
-   ajouter() {
-    
-     if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
-       console.log("test")
-       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
-     } else {
-     
-   }
-   
-   }
+  }
 
   reset() {
     this.selectedDevice = []

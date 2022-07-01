@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
-import { DataService } from '../../services/data.service';
+import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
+import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 
@@ -27,7 +27,7 @@ export class ConsommcarburantComponent {
   datatrajet = [];
   public isnotNum: boolean = false
 
-  
+
   public devices: any = [];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
@@ -39,7 +39,7 @@ export class ConsommcarburantComponent {
   showErrorDeviceModal = false;
   errorMessageDeviceModal = "";
 
-  
+
   selectedCiternes = null;
   selectedCiterne = this.selectedCiternes;
 
@@ -56,7 +56,7 @@ export class ConsommcarburantComponent {
       label: "Citerne 2",
       data: "2"
     },
- 
+
   ];
   getSelectedDevicesModal(selected) {
     // console.log(selected);
@@ -154,26 +154,26 @@ export class ConsommcarburantComponent {
   }
 
 
-  ajouter(){
-    
-   
+  ajouter() {
+
+
     // console.log(this.input1.nativeElement.value);
     // console.log(this.input2.nativeElement.value);
     // console.log(this.motif.nativeElement.value);
     // console.log(this.type.nativeElement.value);
     // console.log(this.modele.nativeElement.value);
-    
+
   }
 
- 
+
   reset() {
     this.selectedDevices = [],
 
-    this.report.nativeElement.value= ''
-    this.id.nativeElement.value= ''
-    this.description.nativeElement.value= ''
-    this.pushpin.nativeElement.value= '' 
-    
+      this.report.nativeElement.value = ''
+    this.id.nativeElement.value = ''
+    this.description.nativeElement.value = ''
+    this.pushpin.nativeElement.value = ''
+
   }
 
 }

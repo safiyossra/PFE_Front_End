@@ -8,17 +8,15 @@ import { CrudvehiculeComponent } from './crudvehicule.component';
 // Forms Component
 import { MyGestionvehiculeTableComponent } from './my-gestionvehicule-table/my-gestionvehicule-table.component';
 
-import { MaterialsModule } from '../../materials.module';
+import { MaterialsModule } from '../../../materials.module';
 // Components Routing
-import { GestionvehiculeRoutingModule } from './gestionvehicule-routing.module';
-import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
+import { MyDropdownModule } from '../../components/my-dropdown/my-dropdown.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 @NgModule({
   imports: [
     CommonModule,
-    GestionvehiculeRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     MaterialsModule,

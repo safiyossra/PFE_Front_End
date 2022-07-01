@@ -53,12 +53,12 @@ export const routes: Routes = [
     },
     children: [
       {
-        path: 'rapports',
-        loadChildren: () => import('./views/rapports/rapport.module').then(m => m.RapportModule)
-      },
-      {
         path: 'map',
         loadChildren: () => import('./views/map/map.module').then(m => m.MapModule)
+      },
+      {
+        path: 'rapports',
+        loadChildren: () => import('./views/rapports/rapport.module').then(m => m.RapportModule)
       },
       {
         path: 'eco',
@@ -67,10 +67,6 @@ export const routes: Routes = [
       {
         path: 'parametrage',
         loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
-      },
-      {
-        path: 'notif-ruls',
-        loadChildren: () => import('./views/notificationsRules/notif-rules.module').then(m => m.NotifRulesModule)
       },
       {
         path: 'maintenance',
@@ -84,30 +80,10 @@ export const routes: Routes = [
         path: 'notifications',
         loadChildren: () => import('./views/notifications/notifications.module').then(m => m.NotificationsModule)
       },
-      {
-        path: 'planentretien',
-        loadChildren: () => import('./views/planentretien/planentretien.module').then(m => m.PlanentretienModule)
-      },
-      {
-        path: 'gestionvehicule',
-        loadChildren: () => import('./views/gestionvehicule/gestionvehicule.module').then(m => m.GestionvehiculeModule)
-      },
-      {
-        path: 'gestiondriver',
-        loadChildren: () => import('./views/gestiondriver/gestiondriver.module').then(m => m.GestiondriverModule)
-      },
-      {
-        path: 'groupevehicules',
-        loadChildren: () => import('./views/groupevehicules/groupevehicules.module').then(m => m.GroupevehiculesModule)
-      },
-      {
-        path: 'gestioncarburant',
-        loadChildren: () => import('./views/gestioncarburant/gestioncarburant.module').then(m => m.GestioncarburantModule)
-      },
-      {
-        path: 'gestionusers',
-        loadChildren: () => import('./views/gestionusers/gestionusers.module').then(m => m.GestionusersModule)
-      },
+      // {
+      //   path: 'notif-ruls',
+      //   loadChildren: () => import('./views/notificationsRules/notif-rules.module').then(m => m.NotifRulesModule)
+      // },
     ]
   },
   { path: '**', component: P404Component }

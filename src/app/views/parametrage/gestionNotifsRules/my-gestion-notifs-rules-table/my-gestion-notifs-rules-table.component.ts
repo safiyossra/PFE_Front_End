@@ -7,21 +7,21 @@ import { MatTableDataSource } from '@angular/material/table';
  * @title Table with pagination
  */
 @Component({
-  selector: 'my-gestionusers-table',
-  styleUrls: ['my-gestionusers-table.component.scss'],
-  templateUrl: 'my-gestionusers-table.component.html',
+  selector: 'my-gestion-notifs-rules-table',
+  styleUrls: ['my-gestion-notifs-rules-table.component.scss'],
+  templateUrl: 'my-gestion-notifs-rules-table.component.html',
 })
-export class MyGestionusersTableComponent implements OnChanges {
+export class MyGestionNotifsRulesTableComponent implements OnChanges {
   @Input() data = [];
   // @Input() columnNames?: any[]
-  public displayedColumns = ["actions", "userID", "description", "roleID", "contactName", "contactEmail", "timeZone", "lastLoginTime"]
+  public displayedColumns = ["actions", "ruleID", "description", "notifyEmail", "isCronRule"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   @Output() modify?: EventEmitter<any> = new EventEmitter();
   @Output() delete?: EventEmitter<any> = new EventEmitter();
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
-  columnNames = ["Actions", "Identifiant", "Nom de l'utilisateur", "Role", "Nom du contact", "Adresse email", "Fuseau horaire", "Last Login"];
+  columnNames = ["Actions", "Identifiant", "Description", "Email", "Cron Rule"]
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -46,11 +46,12 @@ export class MyGestionusersTableComponent implements OnChanges {
   modif(ev) {
     this.modify.emit(ev)
   }
+
   supp(ev) {
     this.delete.emit(ev)
-    if(confirm("Are you sure to delete "+ev)) { console.log("Implement delete functionality here"); }
+    if (confirm("Are you sure to delete " + ev)) { console.log("Implement delete functionality here"); }
   }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
       let d = changes['data'].currentValue

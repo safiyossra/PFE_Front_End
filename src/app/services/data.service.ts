@@ -24,6 +24,7 @@ export class DataService {
       headers: headers
     })
   }
+
   getStatistique(urlParams) {
     let SERVER_URL = environment.apiUrl + "statistique" + urlParams;
     let jwt = this.JWT.get();
@@ -159,6 +160,7 @@ export class DataService {
       headers: headers
     })
   }
+
   getUsers(urluser) {
     let SERVER_URL = environment.apiUrl + "gestionusers" + urluser;
     let jwt = this.JWT.get();
@@ -182,6 +184,18 @@ export class DataService {
       headers: headers,
       params:{u:user}
       
+    })
+  }
+
+  getNotifRules(p) {
+    let SERVER_URL = environment.apiUrl + "getNotifRules" + p;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
     })
   }
 }

@@ -1,8 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
-import { DataService } from '../../services/data.service';
-import {ModalDirective, ModalOptions} from 'ngx-bootstrap/modal';
-import { util } from 'src/app/tools/utils';
+import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
+import { DataService } from '../../../services/data.service';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { util } from '../../../tools/utils';
 import { Router } from '@angular/router';
 
 @Component({
@@ -26,9 +26,9 @@ export class PlanComponent {
   iconCollapse: string = 'icon-arrow-up';
   data = [];
   public isnotNum: boolean = false
-  displayedColumns: any= ["Sélectionner","Véhicule","Date de Création","Type Opération","Déclenchement", "Anticipant"]
+  displayedColumns: any = ["Sélectionner", "Véhicule", "Date de Création", "Type Opération", "Déclenchement", "Anticipant"]
 
-  
+
   public devices: any = [];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
@@ -45,7 +45,7 @@ export class PlanComponent {
   selectedOperation = this.selectedOperations;
   showErrorOperation = false;
   errorMessageOperation = "";
- 
+
   getSelectedOperations(selected) {
     // console.log(selected);
     this.selectedOperation = selected;
@@ -135,29 +135,29 @@ export class PlanComponent {
     // if (this.selectedDevice == null) {
     //   this.onValidateDevice()
     // } else {
-      this.loading = true;
+    this.loading = true;
     var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
 
     var route = this.router
     this.dataService.getPlanEntretien(urlParams).subscribe({
-          next: (d: any) => {          
-            // console.log(d);
-            this.data = d;
-            this.data.forEach((e) => {
-              e.timeStart = this.tools.formatDate(new Date(Number.parseInt(e.timeStart) * 1000));
-              e.timeEnd = this.tools.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000));
-             // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
-              //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
-              if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
-              if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
-            })      
-           this.loading = false;
+      next: (d: any) => {
+        // console.log(d);
+        this.data = d;
+        this.data.forEach((e) => {
+          e.timeStart = this.tools.formatDate(new Date(Number.parseInt(e.timeStart) * 1000));
+          e.timeEnd = this.tools.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000));
+          // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
+          //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
+          if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
+          if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
+        })
+        this.loading = false;
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
         }
       }
-        })
+    })
     //  }
   };
 
@@ -176,27 +176,27 @@ export class PlanComponent {
   }
 
 
-  ajouter(){
-    
-   
+  ajouter() {
+
+
     // console.log(this.input1.nativeElement.value);
     // console.log(this.input2.nativeElement.value);
     // console.log(this.motif.nativeElement.value);
     // console.log(this.type.nativeElement.value);
     // console.log(this.modele.nativeElement.value);
-    
+
   }
 
- 
+
   reset() {
     this.selectedDevices = [],
-    this.selectedDevicesModal = [],
-    this.selectedOperations = [],
-    this.input1.nativeElement.value= ''
-    this.input2.nativeElement.value= ''
-    this.motif.nativeElement.value= ''
-    this.type.nativeElement.value= ''
-    this.modele.nativeElement.value= ''
+      this.selectedDevicesModal = [],
+      this.selectedOperations = [],
+      this.input1.nativeElement.value = ''
+    this.input2.nativeElement.value = ''
+    this.motif.nativeElement.value = ''
+    this.type.nativeElement.value = ''
+    this.modele.nativeElement.value = ''
   }
 
 

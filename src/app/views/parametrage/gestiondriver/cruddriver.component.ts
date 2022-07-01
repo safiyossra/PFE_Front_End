@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
-import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
-import { DataService } from '../../services/data.service';
+import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
+import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { util } from 'src/app/tools/utils';
-import { Driver } from '../../models/driver';
+import { Driver } from '../../../models/driver';
 import { Router } from '@angular/router';
 
 @Component({
@@ -160,24 +160,24 @@ export class CruddriverComponent {
     })
   }
   submit() {
-    if(this.mode == "Ajouter")this.ajouter()
-    if(this.mode == "Modifier")this.modifier()
-    }
-    
-    modifier() {
-    
+    if (this.mode == "Ajouter") this.ajouter()
+    if (this.mode == "Modifier") this.modifier()
+  }
+
+  modifier() {
+
+  }
+
+  ajouter() {
+
+    if (!this.selectedDriver.driverID || !this.selectedDriver.displayName || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail) {
+      console.log("test")
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+
     }
 
-   ajouter() {
-    
-     if (!this.selectedDriver.driverID || !this.selectedDriver.displayName || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail) {
-       console.log("test")
-       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
-     } else {
-     
-   }
-   
-   }
+  }
 
   reset() {
     this.selectedDevices = [],

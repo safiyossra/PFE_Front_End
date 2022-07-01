@@ -1,8 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DataService } from '../../../services/data.service';
-import { DatePipe } from '@angular/common';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { User } from '../../../models/user';
+import { AlertRule } from '../../../models/alertRule';
 import { Router } from '@angular/router';
 import { util } from '../../../tools/utils'
 
@@ -15,7 +14,7 @@ export class CrudNotifsRulesComponent {
   loading: boolean = false;
   modalLoading: boolean = false;
   mode = "Ajouter";
-  selectedUser: User = new User();
+  selectedAlert = new AlertRule();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   constructor(private dataService: DataService, private tools: util, private router: Router) { }
   data = [];
@@ -60,12 +59,11 @@ export class CrudNotifsRulesComponent {
   loadData() {
     this.loading = true;
     var route = this.router
-    this.dataService.getUsers("").subscribe({
+    this.dataService.getNotifRules("").subscribe({
       next: (d: any) => {
-        let now = Math.round(new Date().getTime() / 1000)
-        d.forEach(e => {
-          e.lastLoginTime = this.tools.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
-        });
+        // d.forEach(e => {
+        //   e.lastLoginTime = this.tools.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
+        // });
         this.data = d;
         this.loading = false;
       }, error(err) {
@@ -79,21 +77,19 @@ export class CrudNotifsRulesComponent {
 
   loadModify(ev) {
     this.mode = "Modifier"
-    this.selectedUser = new User(ev[0], ev[1], ev[2], ev[3], ev[4], ev[5], ev[6], ev[7], ev[8], ev[9], ev[10]);
+    this.selectedAlert = new AlertRule();
     if (ev) {
-      var url = "?u=" + ev[0]
+      var url = "?d=" + ev
       this.modalLoading = true;
       this.primaryModal.show()
 
       var route = this.router
-      this.dataService.getUsers(url).subscribe({
+      this.dataService.getNotifRules(url).subscribe({
         next: (d: any) => {
           // if (d && d.length) {
           //  this.selectedUser = d[0];
           // }
-          this.selectedUser.groups = d.map(e => { return e.groupID });
-          this.selectedGroups = this.selectedUser.groups
-          this.selectedGroup = this.selectedGroups
+          this.selectedAlert = d[0]
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
@@ -106,7 +102,7 @@ export class CrudNotifsRulesComponent {
   }
 
   ajouter() {
-    this.mode = "Ajouter"
+
   }
 
   delete(ev) {
@@ -114,10 +110,8 @@ export class CrudNotifsRulesComponent {
   }
 
   showAddModal() {
-    this.selectedUser = new User();
+    this.selectedAlert = new AlertRule();
     this.mode = "Ajouter"
     this.primaryModal.show()
   }
 }
-
-

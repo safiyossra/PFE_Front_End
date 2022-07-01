@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DataService } from '../../services/data.service';
+import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { Device } from '../../models/device';
+import { Device } from '../../../models/device';
 import { VehiculeService } from 'src/app/services/vehicule.service';
 import { util } from 'src/app/tools/utils';
 import { Router } from '@angular/router';
@@ -70,7 +70,7 @@ export class CrudvehiculeComponent {
             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
           }
         }
-    })
+      })
     }
   }
 

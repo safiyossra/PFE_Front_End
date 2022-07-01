@@ -84,11 +84,11 @@ export const navItems: INavData[] = [
     url: '/notifications/alerts',
     icon: 'icon-bell',
   },
-  {
-    name: 'Notifications Rules',
-    url: '/notif-ruls',
-    icon: 'icon-settings',
-  },
+  // {
+  //   name: 'Notifications Rules',
+  //   url: '/notif-ruls',
+  //   icon: 'icon-settings',
+  // },
   // {
   //   name: 'Map',
   //   url: '/map',

@@ -3,16 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
-import { CrudgroupeComponent} from './crudgroupe.component';
+import { ConsommcarburantComponent } from './consommcarburant.component';
 
 // Forms Component
-import { MyGroupevehiculesTableComponent} from './my-groupevehicules-table/my-groupevehicules-table.component';
-
-import { MaterialsModule } from '../../materials.module';
+import { MyGestioncarburantTableComponent } from './my-gestioncarburant-table/my-gestioncarburant-table.component';
+import { MyCarburantmodalTableComponent } from './my-carburantmodal-table/my-carburantmodal-table.component';
+import { MaterialsModule } from '../../../materials.module';
 // Components Routing
-import { GroupevehiculesRoutingModule } from './groupevehicules-routing.module';
-import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-daterangepicker.module';
-import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
+import { MyDateRangePickerModule } from '../../components/my-date-range-picker/my-daterangepicker.module';
+import { MyDropdownModule } from '../../components/my-dropdown/my-dropdown.module';
 import { MatSelectModule } from '@angular/material/select';
 import { ChartsModule } from 'ng2-charts';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -21,7 +20,6 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 @NgModule({
   imports: [
     CommonModule,
-    GroupevehiculesRoutingModule,
     FormsModule,
     MatSelectModule,
     ChartsModule,
@@ -33,8 +31,9 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     CollapseModule.forRoot(),
   ],
   declarations: [
-    CrudgroupeComponent,
-    MyGroupevehiculesTableComponent
+    ConsommcarburantComponent,
+    MyGestioncarburantTableComponent,
+    MyCarburantmodalTableComponent
   ]
 })
-export class GroupevehiculesModule { }
+export class GestioncarburantModule { }
