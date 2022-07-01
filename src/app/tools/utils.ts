@@ -4,13 +4,15 @@ import { } from '@angular/core';
 import * as L from 'leaflet';
 import { GeoSearchControl } from 'leaflet-geosearch';
 
+import { Constant } from 'src/app/tools/constants';
+
 @Injectable({
     providedIn: 'root'
 })
 
 export class util {
     isFullScreen: boolean;
-    constructor(@Inject(DOCUMENT) private document: any, @Inject(LOCALE_ID) private locale: string) {
+    constructor(@Inject(DOCUMENT) private document: any, @Inject(LOCALE_ID) private locale: string, private cst:Constant) {
         document.onfullscreenchange = ($event) => this.chkScreenMode($event.target['id']);
     }
 
@@ -326,8 +328,8 @@ export class util {
       }
 
     getImage(vehiculeType) {
-        return this.motor.includes(vehiculeType) ? "motor" : this.truck.includes(vehiculeType) ? "truck" : this.sprinter.includes(vehiculeType) ? "sprinter" : this.remorque.includes(vehiculeType) ?
-            "remork" : this.camions.includes(vehiculeType) ? "camion" : this.truck_head.includes(vehiculeType) ? "truck-head" : "car"
+        return this.cst.motor.includes(vehiculeType) ? "motor" : this.cst.truck.includes(vehiculeType) ? "truck" : this.cst.sprinter.includes(vehiculeType) ? "sprinter" : this.cst.remorque.includes(vehiculeType) ?
+            "remork" : this.cst.camions.includes(vehiculeType) ? "camion" : this.cst.truck_head.includes(vehiculeType) ? "truck-head" : "car"
     }
 
     setMapType(type) {
@@ -338,16 +340,5 @@ export class util {
         return localStorage.getItem('mapType') ?? 'Google Street';
     }
 
-    motor = ["moto", "grnbike",]
-    camions = ['fleetGreen', 'fleet', 'ffight', 'yeltruck', 'blktruck', 'rgntruck', 'excav', 'grua', 'h100', 'mzcldr', 'pickup',]
-    remorque = ["trailer"]
-    sprinter = ['bus']
-    truck = ["remolque", "volvo1",]
-    truck_head = ['volvo2']
-    // cars = ["", "black","brown","red","orange","yellow","green", "blue", "purple", "gray", "white", "darkred", "darkgreen", "darkblue", "darkpurple", "teal", 
-    // "salmon", "gold", "pink", "lime", "bluegray", "magenta", "reddot", "greendot", "bluedot", "stop", "slow", "moving", 
-    // "last", "greenh", "yellowh", "heading", "lastlabel", "lastage", "devlabel", "devlbl_r", "devlbl_g", "devlbl_b", "devlbl_y", "pp_arrow_c", 
-    // "pp_arrow_y", "arrow_spd", "arrow_grn", "indexed", "4x4", "medi", "bcar", "rcar", "rgray", "banco", "rflag", "burro", 
-    // "dino", "fabrica", "farmacia", "gas", "home", "hospital", "milenium", "naboo", "patito", "persona", "peru", "pinguino", "policia", "probox", "r2d2", 
-    // "raton", "sniper", "taxi", "templo", "tibirium", "tiefight",  "tren", "xwing"]
+    
 }

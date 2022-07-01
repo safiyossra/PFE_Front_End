@@ -5,6 +5,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { User } from '../../models/user';
 import { Router } from '@angular/router';
 import { util } from 'src/app/tools/utils';
+import { Constant } from 'src/app/tools/constants';
 
 @Component({
   templateUrl: 'cruduser.component.html',
@@ -17,25 +18,32 @@ export class CruduserComponent {
   mode = "Ajouter";
   selectedUser: User = new User();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, private router: Router) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router, private cst:Constant) { }
   data = [];
-
+  errorMsg: string;
   public groups: any = [];
   selectedGroups = null;
   selectedGroup = this.selectedGroups;
   showErrorGroup = false;
   errorMessageGroup = "";
-
+  timezone = this.cst.timezone
   getSelectedGroups(selected) {
     this.selectedGroup = selected;
     console.log(this.selectedGroup?.join(" , ").trim());
 
   }
-
+ 
   onValidateGroup() {
     this.showErrorGroup = !this.showErrorGroup;
     this.errorMessageGroup = "This field is required";
   }
+
+  selectedTimezones = null;
+  selectedTimezone = this.selectedTimezones;
+  getSelectedTimezones(selected) {
+    this.selectedTimezone = selected;
+  }
+ 
 
   ngOnInit() {
     this.getGroup();
@@ -88,10 +96,9 @@ export class CruduserComponent {
       var route = this.router
       this.dataService.getUsers(url).subscribe({
         next: (d: any) => {
-          // if (d && d.length) {
-           //  this.selectedUser = d[0];
-          // }
-          this.selectedUser.groups = d.map(e=> {return e.groupID});
+          console.log(d);
+          if(d && d.length)
+          this.selectedUser.groups = d[0].groupID;
           this.selectedGroups=this.selectedUser.groups
           this.selectedGroup=this.selectedGroups
           this.modalLoading = false;
@@ -105,9 +112,36 @@ export class CruduserComponent {
     }
   }
 
-  ajouter() {
-    this.mode = "Ajouter"
+  submit() {
+   if(this.mode == "Ajouter")this.ajouter()
+   if(this.mode == "Modifier")this.modifier()
    }
+   
+  ajouter() {
+
+    console.log(this.selectedUser.userID)
+    console.log(this.selectedUser.description)
+    
+    if (!this.selectedUser.userID || !this.selectedUser.description || !this.selectedUser.password || !this.selectedUser.contactPhone) {
+      console.log("test")
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+     this.dataService.addUsers(this.selectedUser).subscribe({
+      next: (res) => {
+        
+        console.log(res)
+      },
+      error: (errors) => {
+
+      }
+    })
+  }
+  
+  }
+   
+  modifier() {
+    
+  }
 
    delete(ev){
 
