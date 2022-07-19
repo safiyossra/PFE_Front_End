@@ -118,17 +118,13 @@ export class CruduserComponent {
 
   ajouter() {
 
-    console.log(this.selectedUser.userID)
-    console.log(this.selectedUser.description)
-
     if (!this.selectedUser.userID || !this.selectedUser.description || !this.selectedUser.password || !this.selectedUser.contactPhone) {
-      console.log("test")
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.dataService.addUsers(this.selectedUser).subscribe({
         next: (res) => {
-
-          console.log(res)
+          console.log("add")
+         // console.log(res)
         },
         error: (errors) => {
 
@@ -142,9 +138,25 @@ export class CruduserComponent {
 
   }
 
-  delete(ev) {
+  // delete(user) {
+   
+  // }
 
-  }
+
+  delete(user) {
+  
+
+    this.dataService.delUsers(this.selectedUser).subscribe({
+      next: (res) => {
+        console.log("deleted")
+       // console.log(res)
+      },
+      error: (errors) => {
+
+      }
+    })
+  
+}
 
   showAddModal() {
     this.selectedUser = new User();

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { JwtService } from './jwt.service';
+import {  Observable} from 'rxjs';
+import { User } from '../models/user';
 
 
 @Injectable({
@@ -173,20 +175,6 @@ export class DataService {
     })
   }
 
-  addUsers(user) {
-    let SERVER_URL = environment.apiUrl + "test";
-    let jwt = this.JWT.get();
-    let headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + jwt,
-      'Accept': 'application/json'
-    });
-    return this.http.post(SERVER_URL, {
-      headers: headers,
-      params:{u:user}
-      
-    })
-  }
-
   getNotifRules(p) {
     let SERVER_URL = environment.apiUrl + "getNotifRules" + p;
     let jwt = this.JWT.get();
@@ -198,4 +186,46 @@ export class DataService {
       headers: headers
     })
   }
+
+  addUsers(user: User) {
+    let SERVER_URL = environment.apiUrl + "createUser";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params:{u: JSON.stringify(user)}
+      
+    })
+  }
+
+  delUsers(user: User) {
+    let SERVER_URL = environment.apiUrl + "deleteUser";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params:{u: JSON.stringify(user)}
+      
+    })
+  }
+
+  // private apiURL = "http://localhost:8000/api/AddUser/";
+
+  // httpOptions = {
+  //    headers: new HttpHeaders({
+  //      'Content-Type': 'application/json'
+  //    })
+  // }
+  // create(user): Observable<User> {
+  //   return this.http.post<User>(this.apiURL, JSON.stringify(user), this.httpOptions)
+  //   .pipe(
+  //    // catchError(this.errorHandler)
+  //   )
+  // }
 }
