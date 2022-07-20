@@ -21,14 +21,13 @@ export class CruduserComponent {
   data = [];
   errorMsg: string;
   public groups: any = [];
-  selectedGroups = null;
-  selectedGroup = this.selectedGroups;
+  selectedGroups = "*";
   showErrorGroup = false;
   errorMessageGroup = "";
   timezone = this.cst.timezone
   getSelectedGroups(selected) {
-    this.selectedGroup = selected;
-    console.log(this.selectedGroup?.join(" , ").trim());
+    this.selectedUser.groups = selected;
+    console.log(this.selectedUser);
 
   }
 
@@ -55,6 +54,7 @@ export class CruduserComponent {
     this.dataService.getGroupeVehicules("").subscribe({
       next: (res) => {
         this.groups = res;
+        this.groups.unshift({ groupID: "*", description: "Tout" })
         console.log(res)
       }, error(err) {
         if (err.status == 401) {
@@ -71,7 +71,12 @@ export class CruduserComponent {
       next: (d: any) => {
         let now = Math.round(new Date().getTime() / 1000)
         d.forEach(e => {
-          e.lastLoginTime = this.tools.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
+          if (e.lastLoginTime != 0) {
+            e.lastLoginTime = this.tools.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
+          } else {
+            e.lastLoginTime = "Jamais"
+          }
+
         });
         this.data = d;
         this.loading = false;
@@ -86,7 +91,7 @@ export class CruduserComponent {
 
   loadModify(ev) {
     this.mode = "Modifier"
-    this.selectedUser = new User(ev[0], ev[1], ev[2], ev[3], ev[4], ev[5], ev[6], ev[7], ev[8], ev[9], ev[10]);
+    this.selectedUser = new User(ev[0], ev[1], ev[2], ev[3], ev[4], ev[5], ev[6], ev[7], ev[8], "*", ev[9]);
     if (ev) {
       var url = "?u=" + ev[0]
       this.modalLoading = true;
@@ -96,10 +101,12 @@ export class CruduserComponent {
       this.dataService.getUsers(url).subscribe({
         next: (d: any) => {
           console.log(d);
-          if (d && d.length)
-            this.selectedUser.groups = d[0].groupID;
-          this.selectedGroups = this.selectedUser.groups
-          this.selectedGroup = this.selectedGroups
+          if (d && d.length) {
+            this.selectedGroups = d[0].groupID
+          } else {
+            this.selectedGroups = "*"
+          }
+          this.selectedUser.groups = this.selectedGroups
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
@@ -118,67 +125,101 @@ export class CruduserComponent {
 
   ajouter() {
 
+    var route = this.router
     if (!this.selectedUser.userID || !this.selectedUser.description || !this.selectedUser.password || !this.selectedUser.contactPhone) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
-    } else {
+    }else {
+        if(this.selectedUser.notifyEmail && this.ValidateEmail(this.selectedUser.notifyEmail))this.errorMsg = "Vous avez saisi un email de notification invalid."
+        else if(this.selectedUser.contactEmail && this.ValidateEmail(this.selectedUser.contactEmail))this.errorMsg = "Vous avez saisi un email de contact invalid."
+        else if(this.selectedUser.password && this.selectedUser.password.length<6)this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."       
+     else {
       this.dataService.addUsers(this.selectedUser).subscribe({
         next: (res) => {
           console.log("add")
-         // console.log(res)
-        },
-        error: (errors) => {
-
+          this.loadData()
+          this.primaryModal.hide()
+        }
+        , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
         }
       })
     }
-
+  }
   }
 
   modifier() {
-
-    if (!this.selectedUser.description || !this.selectedUser.password || !this.selectedUser.contactPhone) {
+    var route = this.router
+    if (!this.selectedUser.description || !this.selectedUser.contactPhone)  {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
+      if(this.selectedUser.notifyEmail && this.ValidateEmail(this.selectedUser.notifyEmail)==false)this.errorMsg = "Vous avez saisi un email de notification invalid."
+      else if(this.selectedUser.contactEmail && this.ValidateEmail(this.selectedUser.contactEmail)==false)this.errorMsg = "Vous avez saisi un email de contact invalid."
+      else if(this.selectedUser.password && this.selectedUser.password.length<6)this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
+      else{
       this.dataService.updateUsers(this.selectedUser).subscribe({
         next: (res) => {
-          console.log("edit")
-          //console.log(this.selectedUser)
-        },
-        error: (errors) => {
-
+          this.loadData()
+          this.primaryModal.hide()
+        } , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur la modification est bloqué."
+          }
         }
       })
+      }
     }
-
-
-
   }
 
-  // delete(user) {
-   
-  // }
 
+  delete(user) {
+    if (confirm("Are you sure to delete " + user)) {
+      var route = this.router
+      var u = "?u=" + user
+      this.dataService.delUsers(u).subscribe({
+        next: (res) => {
+          console.log("deleted cruduser")
+          this.loadData()
+        }, error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            alert("Erreur, la suppression est bloqué")
+          }
+        }
+      })
 
-//   delete(user) {
-//     //user =  this.selectedUser 
-
-//     this.dataService.delUsers(user).subscribe({
-//       next: (res) => {
-//         console.log("deleted cruduser")
-//        // console.log(res)
-//       },
-//       error: (errors) => {
-
-//       }
-//     })
-  
-// }
+    }
+  }
 
   showAddModal() {
     this.selectedUser = new User();
+    this.selectedGroups = "*"
     this.mode = "Ajouter"
     this.primaryModal.show()
   }
+
+ ValidateEmail(mail) 
+{
+  ///^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  
+ if (/^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$/.test(mail))
+  {
+    return (true)
+  }
+    return (false)
+}
 }
 
 

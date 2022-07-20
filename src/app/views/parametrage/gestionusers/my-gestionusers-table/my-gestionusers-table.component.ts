@@ -49,17 +49,7 @@ export class MyGestionusersTableComponent implements OnChanges {
   }
   supp(ev) {
     this.delete.emit(ev)
-    if(confirm("Are you sure to delete "+ev)) { 
-        var u = "?u=" + ev
-      this.dataService.delUsers(u).subscribe({
-        next: (res) => {
-          console.log("deleted")
-        },
-        error: (errors) => {
   
-        }
-      })
-       }
   }
   
   ngOnChanges(changes: SimpleChanges): void {
