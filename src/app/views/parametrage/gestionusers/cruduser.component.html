@@ -25,6 +25,7 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
+              <form name="test">
               <div class="modal-body">
                 <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
                 <div class="animated fadeIn">
@@ -81,7 +82,7 @@
                           <label class="col-md-4 col-form-label" for="text-input">Email du contact</label>
                           <div class="col-8">
                             <input type="email" class="form-control" [(ngModel)]="selectedUser.contactEmail"
-                              [ngModelOptions]="{standalone: true}" placeholder="xxxxxxxx@gmail.com">
+                              [ngModelOptions]="{standalone: true}" placeholder="xxxxxxxx@exemple.com">
                           </div>
                         </div>
                       </div>
@@ -91,8 +92,11 @@
                         <div class="form-group row">
                           <label class="col-md-4 col-form-label">Email de notification</label>
                           <div class="col-8">
-                            <input type="email" class="form-control" [(ngModel)]="selectedUser.notifyEmail"
-                              [ngModelOptions]="{standalone: true}" placeholder="xxxxxxxx@gmail.com">
+                            <input type="text" class="form-control" name="emailn" [(ngModel)]="selectedUser.notifyEmail"
+                              [ngModelOptions]="{standalone: true}" placeholder="xxxxxxxx@exemple.com" autocomplete="off" 
+                              ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" >
+                              <span style="color:Red" ng-show="test.emailn.$dirty&&emailn.$error.pattern">
+                                Please Enter Valid Email</span>
                           </div>
                         </div>
                         <div class="form-group row">
@@ -141,6 +145,7 @@
                   </div>
                 </div>
               </div>
+            </form>
               <div class="modal-footer" style="justify-content: left;display: initial;">
                 <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
                 <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
@@ -159,8 +164,11 @@
   <div class="row">
     <div class="col-lg-12">
       <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
-      <my-gestionusers-table (modify)="loadModify($event)" (delete)="delete($event)" [data]="data">
+      <my-gestionusers-table (modify)="loadModify($event)" [data]="data">
       </my-gestionusers-table>
     </div>
   </div>
 </div>
+
+
+<!-- (delete)="delete($event)"  -->

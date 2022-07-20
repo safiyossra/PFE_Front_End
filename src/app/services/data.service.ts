@@ -201,8 +201,8 @@ export class DataService {
     })
   }
 
-  delUsers(user: User) {
-    let SERVER_URL = environment.apiUrl + "deleteUser";
+  updateUsers(user: User) {
+    let SERVER_URL = environment.apiUrl + "editUser";
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
@@ -215,17 +215,17 @@ export class DataService {
     })
   }
 
-  // private apiURL = "http://localhost:8000/api/AddUser/";
 
-  // httpOptions = {
-  //    headers: new HttpHeaders({
-  //      'Content-Type': 'application/json'
-  //    })
-  // }
-  // create(user): Observable<User> {
-  //   return this.http.post<User>(this.apiURL, JSON.stringify(user), this.httpOptions)
-  //   .pipe(
-  //    // catchError(this.errorHandler)
-  //   )
-  // }
+  delUsers(u) {
+    let SERVER_URL = environment.apiUrl + "deleteUser" + u;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers     
+    })
+  }
+
 }
