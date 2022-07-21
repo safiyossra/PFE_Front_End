@@ -5,7 +5,7 @@ import { JwtService } from './jwt.service';
 import {  Observable} from 'rxjs';
 import { User } from '../models/user';
 import { Device } from '../models/device';
-
+import { Driver } from '../models/driver';
 
 @Injectable({
   providedIn: 'root'
@@ -244,5 +244,45 @@ export class DataService {
     })
   }
 
+  addDriver(driver: Driver) {
+    let SERVER_URL = environment.apiUrl + "addDrivers";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params:{d: JSON.stringify(driver)}
+      
+    })
+  }
+
+  updateDriver(driver: Driver) {
+    let SERVER_URL = environment.apiUrl + "editDrivers";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params:{d: JSON.stringify(driver)}
+      
+    })
+  }
+
+
+  delDriver(d) {
+    let SERVER_URL = environment.apiUrl + "deleteDrivers" + d;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers     
+    })
+  }
 
 }

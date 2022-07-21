@@ -137,9 +137,6 @@ export class CruddriverComponent {
       })
     }
   }
-  delete(ev) {
-
-  }
 
   showAddModal() {
     this.selectedDriver = new Driver();
@@ -164,19 +161,79 @@ export class CruddriverComponent {
     if (this.mode == "Modifier") this.modifier()
   }
 
-  modifier() {
-
-  }
-
   ajouter() {
-
+    var route = this.router
     if (!this.selectedDriver.driverID || !this.selectedDriver.displayName || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail) {
-      console.log("test")
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
+      if (!this.ValidateEmail(this.selectedDriver.contactEmail)) {
+        this.errorMsg = "Vous avez saisi un email de contact invalid."
+      } else {
+        this.dataService.addDriver(this.selectedDriver).subscribe({
+          next: (res) => {
+            console.log("add")
+            this.loadData()
+            this.primaryModal.hide()
+          }
+          , error(err) {
+            this.modalLoading = false;
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+            else if (err.status == 402) {
+              this.errorMsg = "Erreur l'ajout est bloqué."
+            }
+          }
+        })
+      }
+    }
+  }
+
+  modifier() {
+    var route = this.router
+    if (!this.selectedDriver.displayName || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      if (!this.ValidateEmail(this.selectedDriver.contactEmail)) {
+        this.errorMsg = "Vous avez saisi un email de contact invalid."
+      } else {
+      this.dataService.updateDriver(this.selectedDriver).subscribe({
+        next: (res) => {
+          this.loadData()
+          this.primaryModal.hide()
+        } , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur la modification est bloqué."
+          }
+        }
+      })
+      }
+    }
+  }
+
+  delete(driver) {
+    if (confirm("Are you sure to delete " + driver)) {
+      var route = this.router
+      var d = "?d=" + driver
+      this.dataService.delDriver(d).subscribe({
+        next: (res) => {
+          this.loadData()
+        }, error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            alert("Erreur, la suppression est bloqué")
+          }
+        }
+      })
 
     }
-
   }
 
   reset() {
@@ -184,6 +241,14 @@ export class CruddriverComponent {
       this.selectedDevice = null
   }
 
+  ValidateEmail(mail) 
+  {   
+   if ( /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail))
+    {
+      return (true)
+    }
+      return (false)
+  }
 
 }
 
