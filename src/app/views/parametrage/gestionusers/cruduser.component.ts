@@ -129,9 +129,10 @@ export class CruduserComponent {
     if (!this.selectedUser.userID || !this.selectedUser.description || !this.selectedUser.password || !this.selectedUser.contactPhone) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     }else {
-        if(this.selectedUser.notifyEmail && this.ValidateEmail(this.selectedUser.notifyEmail))this.errorMsg = "Vous avez saisi un email de notification invalid."
-        else if(this.selectedUser.contactEmail && this.ValidateEmail(this.selectedUser.contactEmail))this.errorMsg = "Vous avez saisi un email de contact invalid."
-        else if(this.selectedUser.password && this.selectedUser.password.length<6)this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."       
+        if(this.selectedUser.password && this.selectedUser.password.length<6)this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
+        else if(this.selectedUser.notifyEmail && (this.ValidateEmail(this.selectedUser.notifyEmail)==false))this.errorMsg = "Vous avez saisi un email de notification invalid."
+        else if(this.selectedUser.contactEmail && (this.ValidateEmail(this.selectedUser.contactEmail==false)))this.errorMsg = "Vous avez saisi un email de contact invalid."
+       // else if ((this.selectedUser.notifyEmail && this.ValidateEmail(this.selectedUser.notifyEmail)==false) || (this.selectedUser.notifyEmail && this.ValidateEmail(this.selectedUser.notifyEmail)==false)) this.errorMsg = "Vous avez saisi une adresse e-mail invalide."     
      else {
       this.dataService.addUsers(this.selectedUser).subscribe({
         next: (res) => {

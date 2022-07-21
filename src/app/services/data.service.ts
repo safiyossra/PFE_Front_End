@@ -4,6 +4,7 @@ import { environment } from './../../environments/environment';
 import { JwtService } from './jwt.service';
 import {  Observable} from 'rxjs';
 import { User } from '../models/user';
+import { Device } from '../models/device';
 
 
 @Injectable({
@@ -227,5 +228,21 @@ export class DataService {
       headers: headers     
     })
   }
+
+
+  updateDevice(vehicule: Device) {
+    let SERVER_URL = environment.apiUrl + "editVehicule";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params:{v: JSON.stringify(vehicule)}
+      
+    })
+  }
+
 
 }

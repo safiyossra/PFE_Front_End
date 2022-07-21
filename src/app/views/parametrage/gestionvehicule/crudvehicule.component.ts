@@ -15,6 +15,7 @@ export class CrudvehiculeComponent {
   loading: boolean = false;
   modalLoading: boolean = false;
   selectedDevice: Device = new Device();
+  errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   constructor(private dataService: DataService, private vehiculeService: VehiculeService, private tools: util, private router: Router) { }
 
@@ -74,7 +75,28 @@ export class CrudvehiculeComponent {
     }
   }
 
-  modifier() { }
+  modifier() {
+    var route = this.router
+    if (!this.selectedDevice.description)  {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      this.dataService.updateDevice(this.selectedDevice).subscribe({
+        next: (res) => {
+          this.loadData()
+          this.primaryModal.hide()
+        } , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur la modification est bloqué."
+          }
+        }
+      })
+      
+    }
+  }
 }
 
 
