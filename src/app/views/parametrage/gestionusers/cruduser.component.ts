@@ -130,27 +130,28 @@ export class CruduserComponent {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     }else {
         if(this.selectedUser.password && this.selectedUser.password.length<6)this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
-        else if(this.selectedUser.notifyEmail && !this.ValidateEmail(this.selectedUser.notifyEmail))this.errorMsg = "Vous avez saisi un email de notification invalid."
-        else if(this.selectedUser.contactEmail && !this.ValidateEmail(this.selectedUser.contactEmail))this.errorMsg = "Vous avez saisi un email de contact invalid."
-       // else if ((this.selectedUser.notifyEmail && this.ValidateEmail(this.selectedUser.notifyEmail)==false) || (this.selectedUser.notifyEmail && this.ValidateEmail(this.selectedUser.notifyEmail)==false)) this.errorMsg = "Vous avez saisi une adresse e-mail invalide."     
-     else {
-      this.dataService.addUsers(this.selectedUser).subscribe({
-        next: (res) => {
-          console.log("add")
-          this.loadData()
-          this.primaryModal.hide()
-        }
-        , error(err) {
-          this.modalLoading = false;
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        else{
+          if(this.selectedUser.notifyEmail && !this.ValidateEmail(this.selectedUser.notifyEmail))this.errorMsg = "Vous avez saisi un email de notification invalid."
+          else if(this.selectedUser.contactEmail && !this.ValidateEmail(this.selectedUser.contactEmail))this.errorMsg = "Vous avez saisi un email de contact invalid."
+          else {
+            this.dataService.addUsers(this.selectedUser).subscribe({
+              next: (res) => {
+                console.log("add")
+                this.loadData()
+                this.primaryModal.hide()
+              }
+              , error(err) {
+                this.modalLoading = false;
+                if (err.status == 401) {
+                  route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+                }
+                else if (err.status == 402) {
+                  this.errorMsg = "Erreur l'ajout est bloqué."
+                }
+              }
+            })
           }
-          else if (err.status == 402) {
-            this.errorMsg = "Erreur l'ajout est bloqué."
-          }
-        }
-      })
-    }
+        } 
   }
   }
 
@@ -159,14 +160,15 @@ export class CruduserComponent {
     if (!this.selectedUser.description || !this.selectedUser.contactPhone)  {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      if(this.selectedUser.notifyEmail && this.ValidateEmail(this.selectedUser.notifyEmail)==false)this.errorMsg = "Vous avez saisi un email de notification invalid."
-      else if(this.selectedUser.contactEmail && this.ValidateEmail(this.selectedUser.contactEmail)==false)this.errorMsg = "Vous avez saisi un email de contact invalid."
+      if(this.selectedUser.notifyEmail && !this.ValidateEmail(this.selectedUser.notifyEmail))this.errorMsg = "Vous avez saisi un email de notification invalid."
+      else if(this.selectedUser.contactEmail && !this.ValidateEmail(this.selectedUser.contactEmail))this.errorMsg = "Vous avez saisi un email de contact invalid."
       else if(this.selectedUser.password && this.selectedUser.password.length<6)this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
       else{
       this.dataService.updateUsers(this.selectedUser).subscribe({
         next: (res) => {
           this.loadData()
           this.primaryModal.hide()
+          this.errorMsg = ""
         } , error(err) {
           this.modalLoading = false;
           if (err.status == 401) {
@@ -207,15 +209,16 @@ export class CruduserComponent {
   showAddModal() {
     this.selectedUser = new User();
     this.selectedGroups = "*"
+    this.errorMsg = ""
     this.mode = "Ajouter"
     this.primaryModal.show()
   }
 
  ValidateEmail(mail) 
 {
-  ///^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+
   
- if (/^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$/.test(mail))
+ if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
   {
     return (true)
   }
