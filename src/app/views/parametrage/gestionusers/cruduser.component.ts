@@ -139,6 +139,7 @@ export class CruduserComponent {
                 console.log("add")
                 this.loadData()
                 this.primaryModal.hide()
+                this.errorMsg = ""
               }
               , error(err) {
                 this.modalLoading = false;
@@ -202,7 +203,6 @@ export class CruduserComponent {
           }
         }
       })
-
     }
   }
 
@@ -216,8 +216,6 @@ export class CruduserComponent {
 
  ValidateEmail(mail) 
 {
-
-  
  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
   {
     return (true)

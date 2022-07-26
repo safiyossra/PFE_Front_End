@@ -6,6 +6,7 @@ import {  Observable} from 'rxjs';
 import { User } from '../models/user';
 import { Device } from '../models/device';
 import { Driver } from '../models/driver';
+import { Groupevehicules } from '../models/groupevehicules';
 
 @Injectable({
   providedIn: 'root'
@@ -275,6 +276,45 @@ export class DataService {
 
   delDriver(d) {
     let SERVER_URL = environment.apiUrl + "deleteDrivers" + d;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers     
+    })
+  }
+
+  addDevicesGroup(group: Groupevehicules) {
+    let SERVER_URL = environment.apiUrl + "addGroupeVehicules";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params:{g: JSON.stringify(group)}     
+    })
+  }
+
+  updateDevicesGroup(group: Groupevehicules){
+    let SERVER_URL = environment.apiUrl + "editGroupeVehicules";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params:{g: JSON.stringify(group)}
+      
+    })
+  }
+
+  delDevicesGroup(g) {
+    let SERVER_URL = environment.apiUrl + "deleteGroupeVehicules" + g;
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,

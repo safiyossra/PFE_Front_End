@@ -55,7 +55,6 @@ export class MyGroupevehiculesTableComponent implements OnChanges {
 
   supp(ev) {
     this.delete.emit(ev)
-    if(confirm("Are you sure to delete "+ev)) { console.log("Implement delete functionality here"); }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

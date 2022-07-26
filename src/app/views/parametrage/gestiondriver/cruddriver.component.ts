@@ -140,6 +140,7 @@ export class CruddriverComponent {
 
   showAddModal() {
     this.selectedDriver = new Driver();
+    this.errorMsg = ""
     this.mode = "Ajouter"
     this.primaryModal.show()
   }
@@ -170,10 +171,14 @@ export class CruddriverComponent {
         this.errorMsg = "Vous avez saisi un email de contact invalid."
       } else {
         this.dataService.addDriver(this.selectedDriver).subscribe({
-          next: (res) => {
-            console.log("add")
+          next: (res: any) => {
+            this.selectedDriver.birthdate =Date.parse(this.selectedDriver.birthdate);
+            console.log("res")
+            console.log(this.selectedDriver.birthdate)
             this.loadData()
             this.primaryModal.hide()
+            this.errorMsg = ""
+            
           }
           , error(err) {
             this.modalLoading = false;
@@ -198,9 +203,14 @@ export class CruddriverComponent {
         this.errorMsg = "Vous avez saisi un email de contact invalid."
       } else {
       this.dataService.updateDriver(this.selectedDriver).subscribe({
-        next: (res) => {
+        next: (res:any) => {
+          res.forEach(e => {
+           // e.birthdate = this.tools.formatDate(new Date(Number.parseInt(e.birthdate) * 1000));
+           e.birthdate =Date.parse(e.birthdate);
+        });
           this.loadData()
           this.primaryModal.hide()
+          this.errorMsg = ""
         } , error(err) {
           this.modalLoading = false;
           if (err.status == 401) {

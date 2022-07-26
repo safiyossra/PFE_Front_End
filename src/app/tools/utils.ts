@@ -340,5 +340,7 @@ export class util {
         return localStorage.getItem('mapType') ?? 'Google Street';
     }
 
-    
+
+    // fonction tranformer
+   
 }
