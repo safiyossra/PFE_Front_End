@@ -18,6 +18,7 @@ export class DetailsTableComponent implements OnChanges {
   @Output() positionClick?: EventEmitter<any> = new EventEmitter();
   @Input() url: string
   @Input() selectedMapDevice: any;
+  @Input() tableID = "Detaill";
   // public columnNames = ["Date","Status","Pushpin Code","Lat/Lon","Vitesse(km/h)","Distance en kilométrage","Carburant %","Fuel Vol(L)","Carburant Total(L)","Adresse","Insert Date"]
   // Pushpin Code , Carburant %, 
   public columnNames = ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]

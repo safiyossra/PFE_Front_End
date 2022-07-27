@@ -1,9 +1,9 @@
 import { Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
-import {ModalDirective} from 'ngx-bootstrap/modal';
 import { util } from 'src/app/tools/utils';
 import { Router } from '@angular/router';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
 
 
 @Component({
@@ -14,7 +14,7 @@ export class AlertsComponent {
 
   loading: boolean = false;
  
-  constructor(private dataService: DataService, private tools: util, private router: Router) { }
+  constructor(private dataService: DataService, private tools: util, private exportingTool: ExportingTool, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -134,5 +134,9 @@ export class AlertsComponent {
 
   reset() {
     this.selectedDevices = []
+  }
+
+  exporter() {
+    this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
   }
 }

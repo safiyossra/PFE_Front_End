@@ -3,14 +3,14 @@
 <div class="animated fadeIn" [ngClass]="!(isFirstTime1 || isFirstTime2 || isFirstTime3)? '': 'd-none'">
  <div class="row">
   <div class="card-columns cols-2 col-lg">
- <!-- Vihecule Par Status -->
+<!-- Véhicule Par Status -->
     <div class="card">
       <div class="card-header">
-        Vihecule Par État
+        Véhicule Par État
         <div class="card-header-actions">
-          <a href="#">
-            <small class="text-muted">Exporter</small>
-          </a>
+          <button type="button" (click)="exporter()" class="btn btn-square btn-link">
+            <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
+          </button>
         </div>
       </div>
       <div class="card-body">
@@ -30,9 +30,9 @@
       <div class="card-header">
         Top Kilometrages
         <div class="card-header-actions">
-          <a href="#">
-            <small class="text-muted">Exporter</small>
-          </a>
+          <button type="button" (click)="exporter()" class="btn btn-square btn-link">
+            <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
+          </button>
         </div>
       </div>
       <div class="card-body">
@@ -59,9 +59,9 @@
       <div class="card-header">
         Top Vitesse
         <div class="card-header-actions">
-          <a href="#">
-            <small class="text-muted">Exporter</small>
-          </a>
+          <button type="button" (click)="exporter()" class="btn btn-square btn-link">
+            <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
+          </button>
         </div>
       </div>
       <div class="card-body">
@@ -83,9 +83,9 @@
       <div class="card-header">
         Top Consommation
         <div class="card-header-actions">
-          <a href="#">
-            <small class="text-muted">Exporter</small>
-          </a>
+          <button type="button" (click)="exporter()" class="btn btn-square btn-link">
+            <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
+          </button>
         </div>
       </div>
       <div class="card-body">

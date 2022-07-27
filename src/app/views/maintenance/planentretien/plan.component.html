@@ -6,9 +6,9 @@
           <button type="button" data-toggle="modal" (click)="primaryModal.show()" class="btn btn-outline-primary"><i
               class="fa fa-plus-circle"></i> Ajouter Plan Entretien </button>
           <div class="card-header-actions">
-            <a href="#">
+            <button type="button" (click)="exporter()" class="btn btn-square btn-link">
               <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
-            </a>
+            </button>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>

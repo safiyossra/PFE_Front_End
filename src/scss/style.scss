@@ -292,7 +292,7 @@ table.infoBoxTable tr:nth-child(odd) {
     background-color: transparent !important;
 }
 @supports(-webkit-appearance: none) or (-moz-appearance: none) {
-    input#s1[type='checkbox'] {
+    input.switch[type='checkbox'] {
         --active: #0077c2;
         --active-inner: #fff;
         --focus: 2px rgba(16, 127, 253, 0.678);
@@ -380,7 +380,7 @@ table.infoBoxTable tr:nth-child(odd) {
         }
     }
 
-    input#s1[type='checkbox'] {
+        input.switch[type='checkbox'] {
         &:not(.switch) {
             border-radius: 7px;
 

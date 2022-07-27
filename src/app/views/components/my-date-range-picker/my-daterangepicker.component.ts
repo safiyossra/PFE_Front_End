@@ -255,9 +255,9 @@ export class MyDateRangePickerComponent implements ControlValueAccessor, OnInit,
     toggleCalendar(e: MouseEvent, selection: 'from' | 'to'): void {
         // Arrow position
         if (selection === 'from') {
-            this.arrowLeft = this.fromInput.nativeElement.offsetWidth * 0.4;
+            this.arrowLeft = this.fromInput.nativeElement.offsetWidth * 0.2;
         } else {
-            this.arrowLeft = this.fromInput.nativeElement.offsetWidth + this.fromInput.nativeElement.offsetWidth * 0.4;
+            this.arrowLeft = this.fromInput.nativeElement.offsetWidth + this.fromInput.nativeElement.offsetWidth * 0.2;
         }
 
         if (this.opened && this.opened !== selection) {
@@ -300,9 +300,9 @@ export class MyDateRangePickerComponent implements ControlValueAccessor, OnInit,
         }
 
         if (this.opened === 'from') {
-            this.arrowLeft = this.fromInput.nativeElement.offsetWidth * 0.4;
+            this.arrowLeft = this.fromInput.nativeElement.offsetWidth * 0.2;
         } else {
-            this.arrowLeft = this.fromInput.nativeElement.offsetWidth + this.fromInput.nativeElement.offsetWidth * 0.4;
+            this.arrowLeft = this.fromInput.nativeElement.offsetWidth + this.fromInput.nativeElement.offsetWidth * 0.2;
         }
 
         if (this.options.menu && this.options.menu.length > 0) {

@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
 
 @Component({
   templateUrl: 'journalier.component.html',
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
 export class JournalierComponent {
   loading: boolean = false;
 
-  constructor(private dataService: DataService, private router: Router) { }
+  constructor(private dataService: DataService, private exportingTool: ExportingTool, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -25,6 +26,7 @@ export class JournalierComponent {
   paramstab = [];
   resume = [];
   urldetails = "";
+  TrajetJournalierID = "TrajetJournalier"
 
 
   public chartColours: Array<any> = [//primary,warning,danger,dark
@@ -460,6 +462,9 @@ export class JournalierComponent {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
   }
 
+  exporter() {
+    this.exportingTool.exportexcel(this.TrajetJournalierID, "Rapport Trajet")
+  }
 }
 
 

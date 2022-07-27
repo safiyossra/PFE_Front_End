@@ -5,9 +5,9 @@
         <div class="card-header">
           <i class="fa fa-edit"></i> Rapports Journalier
           <div class="card-header-actions">
-            <a href="#">
+            <button type="button" (click)="exporter()" class="btn btn-square btn-link">
               <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
-            </a>
+            </button>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>
@@ -235,7 +235,8 @@
             <i class="icon-list"></i>
             Trajet &nbsp;
           </ng-template>
-          <my-data-table [data]="reportData" [columnNames]="displayedColumns" [columns]="columns" [isTrajet]="-1">
+          <my-data-table [data]="reportData" [tableID]="TrajetJournalierID" [columnNames]="displayedColumns" [columns]="columns"
+            [isTrajet]="-1">
           </my-data-table>
         </tab>
         <tab style="min-height: 660px">

@@ -6,8 +6,9 @@ export class AlertRule {
     notifyEmail: any
     isCronRule: any
     minNotifyAge: any
+    selector: any
 
-    constructor(isActive?, ruleID?, creationTime?, description?, notifyEmail?, isCronRule?, minNotifyAge?) {
+    constructor(isActive?, ruleID?, creationTime?, description?, notifyEmail?, isCronRule?, minNotifyAge?, selector?) {
         this.isActive = isActive ?? 0
         this.creationTime = creationTime ?? ''
         this.description = description ?? ''
@@ -15,5 +16,6 @@ export class AlertRule {
         this.notifyEmail = notifyEmail ?? ''
         this.isCronRule = isCronRule ?? 0
         this.minNotifyAge = minNotifyAge ?? 0
+        this.selector = selector ?? ''
     }
 }

@@ -4,6 +4,7 @@ import { DataService } from '../../services/data.service';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { util } from 'src/app/tools/utils';
 import { Router } from '@angular/router';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
 
 @Component({
   templateUrl: 'details.component.html',
@@ -12,7 +13,7 @@ export class DetailsComponent {
 
   loading: boolean = false;
 
-  constructor(private dataService: DataService, private tools: util, private router: Router) { }
+  constructor(private dataService: DataService, private tools: util, private exportingTool: ExportingTool, private router: Router) { }
 
   public mainChartData: Array<any> = [
     {
@@ -24,6 +25,7 @@ export class DetailsComponent {
       label: 'Consommation'
     },
   ];
+  TrajetEcoID = "TrajetEco"
   /* tslint:disable:max-line-length */
   public mainChartLabels: Array<any> = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Thursday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   /* tslint:enable:max-line-length */
@@ -335,9 +337,12 @@ export class DetailsComponent {
       this.selectedOperations = []
   }
 
-
   getParam(p: any) {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
+  }
+
+  exporter() {
+    this.exportingTool.exportexcel(this.TrajetEcoID, "Rapport Trajet")
   }
 }
 

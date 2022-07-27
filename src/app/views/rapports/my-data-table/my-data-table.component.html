@@ -24,7 +24,7 @@
       </div>
     </div>
   </div>
-  <div class="card-body">
+  <div class="card-body" id="{{tableID}}">
     <table mat-table [dataSource]="dataSource" matSort>
       <ng-container *ngFor="let column of displayedColumns; let index = index" [matColumnDef]="column">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>

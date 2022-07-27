@@ -17,6 +17,7 @@ export class MyDataTableComponent implements OnChanges {
   @Output() showArretChange?: EventEmitter<any> = new EventEmitter();
   @Input() data: any = [];
   @Input() isTrajet?= 1;
+  @Input() tableID?= "myTable";
   @Input() selectedMapDevice: any; //displayColumns,
   @Input() columnNames?= ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)"]
   @Input() columns?= ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct"]

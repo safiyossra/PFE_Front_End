@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VehiculeService } from 'src/app/services/vehicule.service';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
 
 @Component({
   templateUrl: 'dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {
 
-  public constructor(private vehiculeService: VehiculeService, private router: Router) { }
+  public constructor(private vehiculeService: VehiculeService, private exportingTool: ExportingTool, private router: Router) { }
   // lineChart
   public dashboardData: any[] = []
   isFirstTime1 = true
@@ -168,5 +169,7 @@ export class DashboardComponent implements OnInit {
   public chartHovered(e: any): void {
     // console.log(e);
   }
-
+  exporter() {
+    this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+  }
 }

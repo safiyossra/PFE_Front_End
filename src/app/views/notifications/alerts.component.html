@@ -5,9 +5,9 @@
         <div class="card-header">
           <i class="fa fa-edit"></i> Filtrer
           <div class="card-header-actions">
-            <a href="#">
+            <button type="button" (click)="exporter()" class="btn btn-square btn-link">
               <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
-            </a>
+            </button>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse($event)">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>

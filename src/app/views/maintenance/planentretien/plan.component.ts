@@ -4,6 +4,7 @@ import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { util } from '../../../tools/utils';
 import { Router } from '@angular/router';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
 
 @Component({
   templateUrl: 'plan.component.html',
@@ -17,7 +18,7 @@ export class PlanComponent {
   @ViewChild('motif') motif: ElementRef;
   @ViewChild('type') type: ElementRef;
   @ViewChild('modele') modele: ElementRef;
-  constructor(private dataService: DataService, private tools: util, private router: Router) { }
+  constructor(private dataService: DataService, private tools: util, private exportingTool: ExportingTool, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -199,6 +200,9 @@ export class PlanComponent {
     this.modele.nativeElement.value = ''
   }
 
+  exporter() {
+    this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+  }
 
 }
 

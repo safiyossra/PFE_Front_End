@@ -5,6 +5,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { ActivatedRoute, Router } from '@angular/router';
 import { util } from 'src/app/tools/utils';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
 
 @Component({
   templateUrl: 'detaille.component.html',
@@ -16,9 +17,12 @@ export class DetailleComponent implements AfterViewInit {
   loading: boolean = false
   isArret: boolean = false
   loadingcharts: boolean = false
+  TrajetDetaillID = "TrajetDetaill"
+  ParkingDetaillID = "ParkingDetaill"
+  DetaillID = "Detaill"
 
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private tools: util, private router: Router) {
+  constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private tools: util, private exportingTool: ExportingTool, private router: Router) {
   }
   ngAfterViewInit(): void {
     if (this.vehiculeID) {
@@ -580,6 +584,16 @@ export class DetailleComponent implements AfterViewInit {
       if (this.devices[i].dID == id) return this.devices[i].cp
     }
     return 0
+  }
+
+  exporter() {
+    if (this.selectedTab == 1)
+      this.exportingTool.exportexcel(this.TrajetDetaillID, "Rapport des Trajets")
+    if (this.selectedTab == 3)
+      this.exportingTool.exportexcel(this.DetaillID, "Rapport Détaillés")
+    if (this.selectedTab == 5)
+      this.exportingTool.exportexcel(this.ParkingDetaillID, "Rapport de Parking")
+
   }
 }
 

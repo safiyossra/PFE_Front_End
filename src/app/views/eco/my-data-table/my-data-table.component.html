@@ -8,7 +8,7 @@
     </div>
   </div>
 </div>
-<table mat-table [dataSource]="dataSource" style="min-height: 250px" matSort>
+<table mat-table id="{{tableID}}" [dataSource]="dataSource" style="min-height: 250px" matSort>
   <ng-container *ngFor="let column of displayedColumns; let index = index" [matColumnDef]="column">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>
       {{ columnNames[index] | uppercase }}

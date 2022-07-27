@@ -5,9 +5,9 @@
         <div class="card-header">
           <i class="fa fa-edit"></i> Eco Conduite Détaillés
           <div class="card-header-actions">
-            <a href="#">
+            <button type="button" (click)="exporter()" class="btn btn-square btn-link">
               <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
-            </a>
+            </button>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>
@@ -61,7 +61,8 @@
           Trajet et Eco-Index
         </div>
         <div class="card-body">
-          <my-data-table class="detailtable" [data]="reportData" [columnNames]="displayedColumns" [columns]="columns">
+          <my-data-table class="detailtable" [tableID]="TrajetEcoID" [data]="reportData" [columnNames]="displayedColumns"
+            [columns]="columns">
           </my-data-table>
           <div class="chart-wrapper" style="height:300px;margin-top:40px; overflow-x: scroll;">
             <canvas baseChart class="chart" [datasets]="mainChartData" [labels]="mainChartLabels" [options]="mainChartOptions"

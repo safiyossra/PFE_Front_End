@@ -5,9 +5,9 @@
         <div class="card-header">
           <i class="fa fa-edit"></i> Rapports Détaillés
           <div class="card-header-actions">
-            <a href="#">
+            <button type="button" (click)="exporter()" class="btn btn-square btn-link">
               <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
-            </a>
+            </button>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>
@@ -97,7 +97,7 @@
           </ng-template>
           <!-- <input id="s1" type="checkbox" class="switch" [(ngModel)]="isArret" [ngModelOptions]="{standalone: true}">
                                         <label for="s1" class="ml-2">Basculer vers Trajet {{isArret?'sans':'avec'}} Parking &nbsp;</label> -->
-          <my-data-table class="detailtable" (positionClick)="openMap($event)" [isTrajet]="1"
+          <my-data-table class="detailtable" [tableID]="TrajetDetaillID" (positionClick)="openMap($event)" [isTrajet]="1"
             (showArretChange)="showArretChange($event)"
             [selectedMapDevice]="selectedMapDevice"
             [data]="isArret?reportData:reportDataTrajet" [columnNames]="displayedColumns" [columns]="columns">
@@ -119,7 +119,7 @@
           <ng-template tabHeading>
             <i class="icon-list mr-2"></i>Parking &nbsp;
           </ng-template>
-          <my-data-table class="detailtable" (positionClick)="openMap($event)" [isTrajet]="0"
+          <my-data-table class="detailtable" [tableID]="ParkingDetaillID" (positionClick)="openMap($event)" [isTrajet]="0"
             (openPointsClick)="openMapArrets($event)"
             [selectedMapDevice]="selectedMapDevice"
             [data]="reportDataArrets" [columnNames]="displayedColumnsArrets" [columns]="columnsArrets">
@@ -160,7 +160,8 @@
             <i class="fa fa-list-alt mr-1"></i> Evenements Détaillés &nbsp;
             <!-- <i class="fa fa-refresh" (click)="getdetails()"></i>-->
           </ng-template>
-          <details-table [url]="urldetails" (positionClick)="openMap($event)" [selectedMapDevice]="selectedMapDevice">
+          <details-table [url]="urldetails" [tableID]="DetaillID" (positionClick)="openMap($event)"
+            [selectedMapDevice]="selectedMapDevice">
 
           </details-table>
         </tab>

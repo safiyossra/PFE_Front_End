@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
 
 @Component({
   templateUrl: 'synthetiques.component.html',
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
 export class SynthetiquesComponent implements OnInit, AfterViewInit {
 
   loading: boolean = false;
-  constructor(private dataService: DataService, private router: Router) { }
+  constructor(private dataService: DataService, private exportingTool: ExportingTool, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -96,7 +97,12 @@ export class SynthetiquesComponent implements OnInit, AfterViewInit {
         }
       }
     })
-  };
+  }
+
+  exporter() {
+    this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+  }
+
 }
 
 

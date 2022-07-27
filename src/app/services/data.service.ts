@@ -198,4 +198,16 @@ export class DataService {
       headers: headers
     })
   }
+
+  getGroupedUnseenNotifs() {
+    let SERVER_URL = environment.apiUrl + "getGroupedUnseenNotifs";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
 }
