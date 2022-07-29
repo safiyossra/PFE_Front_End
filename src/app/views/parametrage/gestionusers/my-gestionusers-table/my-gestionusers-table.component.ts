@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { DataService } from 'src/app/services/data.service';
 
 /**
  * @title Table with pagination
@@ -31,8 +32,8 @@ export class MyGestionusersTableComponent implements OnChanges {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  constructor() { }
 
+  constructor(private dataService: DataService) { }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -48,7 +49,7 @@ export class MyGestionusersTableComponent implements OnChanges {
   }
   supp(ev) {
     this.delete.emit(ev)
-    if(confirm("Are you sure to delete "+ev)) { console.log("Implement delete functionality here"); }
+  
   }
   
   ngOnChanges(changes: SimpleChanges): void {

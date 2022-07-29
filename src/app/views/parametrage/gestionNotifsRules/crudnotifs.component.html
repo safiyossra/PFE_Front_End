@@ -167,7 +167,7 @@
                       <label class="col-md-4 col-form-label" for="text-input">Cron rule</label>
                       <div class="col-8">
                         <my-dropdown-select class="form-control col-4" [selectPlaceholder]="'Chercher...'" [options]="crons_rule"
-                          [display]="'name'" [value]="'val'" [multiple]="false" [labelCount]="1" [selectedOptions]="selectedCrons"
+                          [display]="'name'" [value]="'val'" [multiple]="false" [labelCount]="1" [selectedOptions]="selectedAlert.ruleTag"
                           (selectionChange)="getSelectedCron($event)">
                         </my-dropdown-select>
                       </div>
@@ -178,8 +178,9 @@
                         <div class="col-4">
                           <label class="ml-2"> Par Véhicule ID&nbsp;</label>
                         </div>
-                        <my-dropdown-select class="form-control col-6" [ngClass]="selectedG==null || selectedG=='-'? '': 'bg-secondary'"
-                          [disabled]="selectedG!=null && selectedG!='-'" [selectPlaceholder]="'Chercher...'" [options]="devices"
+                        <my-dropdown-select class="form-control col-6"
+                          [ngClass]="selectedAlert.g==null || selectedAlert.g=='-'? '': 'bg-secondary'"
+                          [disabled]="selectedAlert.g!=null && selectedAlert.g!='-'" [selectPlaceholder]="'Chercher...'" [options]="devices"
                           [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="1" [selectedOptions]="selectedVs"
                           (selectionChange)="getSelectedV($event)">
                         </my-dropdown-select>
@@ -188,8 +189,9 @@
                     <div class="col-4">
                       <label class="ml-2"> Par Group ID&nbsp;</label>
                     </div>
-                    <my-dropdown-select class="form-control col-6" [ngClass]="selectedV==null || selectedV=='-'? '': 'bg-secondary'"
-                      [disabled]="selectedV!=null && selectedV!='-'" [selectPlaceholder]="'Chercher...'" [options]="groups"
+                    <my-dropdown-select class="form-control col-6"
+                      [ngClass]="selectedAlert.v==null || selectedAlert.v=='-'? '': 'bg-secondary'"
+                      [disabled]="selectedAlert.v!=null && selectedAlert.v!='-'" [selectPlaceholder]="'Chercher...'" [options]="groups"
                       [display]="'description'" [value]="'groupID'" [multiple]="false" [labelCount]="1" [selectedOptions]="selectedGs"
                       (selectionChange)="getSelectedGroup($event)">
                     </my-dropdown-select>
@@ -199,8 +201,8 @@
                       <label class="ml-2"> Code d'etat&nbsp;</label>
                     </div>
                     <my-dropdown-select class="form-control col-6"
-                      [ngClass]="(selectedG==null || selectedG=='-') && (selectedV==null || selectedV=='-')? 'bg-secondary': ''"
-                      [disabled]="(selectedG==null || selectedG=='-') && (selectedV==null || selectedV=='-')"
+                      [ngClass]="(selectedAlert.g==null || selectedAlert.g=='-') && (selectedAlert.v==null || selectedAlert.v=='-')? 'bg-secondary': ''"
+                      [disabled]="(selectedAlert.g==null || selectedAlert.g=='-') && (selectedAlert.v==null || selectedAlert.v=='-')"
                       [selectPlaceholder]="'Chercher...'" [options]="cnst.statusCodes" [display]="'name'" [value]="'val'" [multiple]="false"
                       [labelCount]="1" [selectedOptions]="selectedSs" (selectionChange)="getSelectedS($event)">
                     </my-dropdown-select>
@@ -212,9 +214,10 @@
                 </div>
                 </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
-                  <button type="button" class="btn btn-primary" (click)="ajouter()">{{mode}}</button>
+                <div class="modal-footer" style="justify-content: left;display: initial;">
+                  <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
+                  <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
+                  <button type="button" class="btn btn-secondary float-right" (click)="primaryModal.hide()">Fermer</button>
                 </div>
                 </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->

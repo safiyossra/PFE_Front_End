@@ -14,7 +14,7 @@ import { MatTableDataSource } from '@angular/material/table';
 export class MyGestionNotifsRulesTableComponent implements OnChanges {
   @Input() data = [];
   // @Input() columnNames?: any[]
-  public displayedColumns = ["actions", "ruleID", "description", "notifyEmail", "isCronRule"]
+  public displayedColumns = ["actions", "ruleID", "description", "notifyEmail", "ruleTag"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   @Output() modify?: EventEmitter<any> = new EventEmitter();
@@ -49,7 +49,6 @@ export class MyGestionNotifsRulesTableComponent implements OnChanges {
 
   supp(ev) {
     this.delete.emit(ev)
-    if (confirm("Are you sure to delete " + ev)) { console.log("Implement delete functionality here"); }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -65,7 +64,7 @@ export class MyGestionNotifsRulesTableComponent implements OnChanges {
   }
 
   getIsYes(v) {
-    return v == 0 ? "Non" : "Oui"
+    return v == '0' || v == '' ? "Non" : "Oui"
   }
 
   formatAge(seconds) {

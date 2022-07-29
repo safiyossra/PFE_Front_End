@@ -52,20 +52,15 @@ export class MyGestiondriverTableComponent implements OnChanges {
   }
   supp(ev) {
     this.delete.emit(ev)
-    if(confirm("Are you sure to delete "+ev)) { console.log("Implement delete functionality here"); }
+  
   }
 
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
     let d = changes['data'].currentValue
-    if (d) {
-
-      console.log(d);
-      console.log(changes['columnNames']);
-      
-    this.dataSource = new MatTableDataSource(d)
-   // this.displayedColumns = this.columns
+      if (d) {
+      this.dataSource = new MatTableDataSource(d)
     this.totalItems = this.dataSource.data.length
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;

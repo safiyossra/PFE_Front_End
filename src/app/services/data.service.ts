@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { JwtService } from './jwt.service';
-
+import { Observable } from 'rxjs';
+import { User } from '../models/user';
+import { Device } from '../models/device';
+import { Driver } from '../models/driver';
+import { Groupevehicules } from '../models/groupevehicules';
 
 @Injectable({
   providedIn: 'root'
@@ -87,7 +91,6 @@ export class DataService {
     })
   }
 
-
   getEvolution(urldetails) {
     let SERVER_URL = environment.apiUrl + "eventsEvolution" + urldetails;
     let jwt = this.JWT.get();
@@ -99,9 +102,10 @@ export class DataService {
       headers: headers
     })
   }
+
   // fonction de AlertPlanEntretien
   getPlanEntretien(urlplan) {
-    let SERVER_URL = environment.apiUrl + "planentretien" + urlplan; 
+    let SERVER_URL = environment.apiUrl + "planentretien" + urlplan;
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
@@ -115,6 +119,70 @@ export class DataService {
   // fonction de notifications
   getNotifications(urlNotif) {
     let SERVER_URL = environment.apiUrl + "notif" + urlNotif;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  getNotifRules(p) {
+    let SERVER_URL = environment.apiUrl + "getNotifRules" + p;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  addRule(rule) {
+    let SERVER_URL = environment.apiUrl + "createRule";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(rule) }
+
+    })
+  }
+
+  updateRule(rule) {
+    let SERVER_URL = environment.apiUrl + "editRule";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(rule) }
+
+    })
+  }
+
+  delRule(rule) {
+    let SERVER_URL = environment.apiUrl + "deleteRule" + rule;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  getGroupedUnseenNotifs() {
+    let SERVER_URL = environment.apiUrl + "getGroupedUnseenNotifs";
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
@@ -173,22 +241,36 @@ export class DataService {
     })
   }
 
-  addUsers(user) {
-    let SERVER_URL = environment.apiUrl + "test";
+  addUsers(user: User) {
+    let SERVER_URL = environment.apiUrl + "createUser";
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
       'Accept': 'application/json'
     });
-    return this.http.post(SERVER_URL, {
+    return this.http.get(SERVER_URL, {
       headers: headers,
-      params:{u:user}
-      
+      params: { u: JSON.stringify(user) }
+
     })
   }
 
-  getNotifRules(p) {
-    let SERVER_URL = environment.apiUrl + "getNotifRules" + p;
+  updateUsers(user: User) {
+    let SERVER_URL = environment.apiUrl + "editUser";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(user) }
+
+    })
+  }
+
+  delUsers(u) {
+    let SERVER_URL = environment.apiUrl + "deleteUser" + u;
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
@@ -199,8 +281,51 @@ export class DataService {
     })
   }
 
-  getGroupedUnseenNotifs() {
-    let SERVER_URL = environment.apiUrl + "getGroupedUnseenNotifs";
+  updateDevice(vehicule: Device) {
+    let SERVER_URL = environment.apiUrl + "editVehicule";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { v: JSON.stringify(vehicule) }
+
+    })
+  }
+
+  addDriver(driver: Driver) {
+    let SERVER_URL = environment.apiUrl + "addDrivers";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { d: JSON.stringify(driver) }
+
+    })
+  }
+
+  updateDriver(driver: Driver) {
+    let SERVER_URL = environment.apiUrl + "editDrivers";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { d: JSON.stringify(driver) }
+
+    })
+  }
+
+
+  delDriver(d) {
+    let SERVER_URL = environment.apiUrl + "deleteDrivers" + d;
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
@@ -210,4 +335,44 @@ export class DataService {
       headers: headers
     })
   }
+
+  addDevicesGroup(group: Groupevehicules) {
+    let SERVER_URL = environment.apiUrl + "addGroupeVehicules";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { g: JSON.stringify(group) }
+    })
+  }
+
+  updateDevicesGroup(group: Groupevehicules) {
+    let SERVER_URL = environment.apiUrl + "editGroupeVehicules";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { g: JSON.stringify(group) }
+
+    })
+  }
+
+  delDevicesGroup(g) {
+    let SERVER_URL = environment.apiUrl + "deleteGroupeVehicules" + g;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
 }

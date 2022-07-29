@@ -23,6 +23,6 @@ export class User {
         this.timeZone = timeZone ?? ''
         this.isActive = isActive ?? 0
         this.notes = notes ?? ''
-        this.groups = groups ?? ''
+        this.groups = groups ?? '*'
     }
 }

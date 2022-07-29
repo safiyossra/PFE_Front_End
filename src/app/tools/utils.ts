@@ -12,7 +12,7 @@ import { Constant } from 'src/app/tools/constants';
 
 export class util {
     isFullScreen: boolean;
-    constructor(@Inject(DOCUMENT) private document: any, @Inject(LOCALE_ID) private locale: string, private cst:Constant) {
+    constructor(@Inject(DOCUMENT) private document: any, @Inject(LOCALE_ID) private locale: string, private cst: Constant) {
         document.onfullscreenchange = ($event) => this.chkScreenMode($event.target['id']);
     }
 
@@ -325,7 +325,7 @@ export class util {
             if (age > 3600) return "cil-history bg-secondary"
         }
         return "cil-report-slash bg-danger";
-      }
+    }
 
     getImage(vehiculeType) {
         return this.cst.motor.includes(vehiculeType) ? "motor" : this.cst.truck.includes(vehiculeType) ? "truck" : this.cst.sprinter.includes(vehiculeType) ? "sprinter" : this.cst.remorque.includes(vehiculeType) ?
@@ -340,5 +340,12 @@ export class util {
         return localStorage.getItem('mapType') ?? 'Google Street';
     }
 
-    
+    ValidateEmail(mail) {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+            return (true)
+        }
+        return (false)
+    }
+    // fonction tranformer
+
 }

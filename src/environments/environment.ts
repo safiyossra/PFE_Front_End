@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://backup.sendatrack.com/sendatrack-demo/public/api/', // Dynamic variable set by region choice
+  apiUrl: 'http://backup.sendatrack.com/sendatrack-dev/public/api/', // Dynamic variable set by region choice
 };
 
 /*

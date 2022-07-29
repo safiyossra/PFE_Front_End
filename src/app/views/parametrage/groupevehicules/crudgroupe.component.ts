@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { Groupevehicules } from '../../../models/Groupevehicules';
+import { Groupevehicules } from '../../../models/groupevehicules';
 import { Router } from '@angular/router';
 
 @Component({
@@ -48,7 +48,6 @@ export class CrudgroupeComponent {
     this.loadData();
   }
 
-
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
@@ -59,6 +58,7 @@ export class CrudgroupeComponent {
     this.selectedDevice = selected;
     // console.log(this.selectedDevice?.join(" , ").trim());
 
+    this.selectedGroupevehicules.vehiclues = selected;
   }
 
   onValidateDevice() {
@@ -111,17 +111,6 @@ export class CrudgroupeComponent {
     }
   }
 
-  delete(ev) {
-
-  }
-
-  showAddModal() {
-    this.selectedGroupevehicules = new Groupevehicules();
-    this.mode = "Ajouter"
-    this.primaryModal.show()
-  }
-
-
   getDev() {
     var route = this.router
     this.dataService.getVehicule().subscribe({
@@ -145,25 +134,89 @@ export class CrudgroupeComponent {
     if (this.mode == "Modifier") this.modifier()
   }
 
-  modifier() {
-
-  }
-
   ajouter() {
-
+    var route = this.router
     if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
-      console.log("test")
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
+      this.dataService.addDevicesGroup(this.selectedGroupevehicules).subscribe({
+        next: (res) => {
+          console.log("add")
+          this.loadData()
+          this.primaryModal.hide()
+          this.errorMsg = ""
+        }
+        , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+        }
+      })
+    }
+  }
+
+  modifier() {
+    var route = this.router
+    if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      this.dataService.updateDevicesGroup(this.selectedGroupevehicules).subscribe({
+        next: (res) => {
+          console.log("edit groupevehivule")
+          this.loadData()
+          this.primaryModal.hide()
+          this.errorMsg = ""
+        }, error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur la modification est bloqué."
+          }
+        }
+      })
+    }
+  }
+
+
+  delete(group) {
+    if (confirm("Are you sure to delete " + group)) {
+      var route = this.router
+      var g = "?g=" + group
+      this.dataService.delDevicesGroup(g).subscribe({
+        next: (res) => {
+          this.loadData()
+        }, error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            alert("Erreur, la suppression est bloqué")
+          }
+        }
+      })
 
     }
+  }
 
+  showAddModal() {
+    this.selectedGroupevehicules = new Groupevehicules();
+    this.selectedDevice = []
+    this.selectedDevices = []
+    this.errorMsg = ""
+    this.mode = "Ajouter"
+    this.primaryModal.show()
   }
 
   reset() {
     this.selectedDevice = []
     this.selectedDevices = []
-
   }
 
 }

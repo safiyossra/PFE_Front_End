@@ -25,6 +25,7 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
+              <form>
               <div class="modal-body">
                 <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
                 <div class="animated fadeIn">
@@ -60,7 +61,7 @@
                           <label class="col-md-4 col-form-label" for="text-input">Mot de passe *</label>
                           <div class="col-8">
                             <input type="password" class="form-control" [(ngModel)]="selectedUser.password"
-                              [ngModelOptions]="{standalone: true}" placeholder="************" required>
+                              [ngModelOptions]="{standalone: true}" placeholder="************" [required]="mode=='Modifier'?'false':'true'">
                           </div>
                         </div>
                         <div class="form-group row">
@@ -81,7 +82,7 @@
                           <label class="col-md-4 col-form-label" for="text-input">Email du contact</label>
                           <div class="col-8">
                             <input type="email" class="form-control" [(ngModel)]="selectedUser.contactEmail"
-                              [ngModelOptions]="{standalone: true}" placeholder="xxxxxxxx@gmail.com">
+                              [ngModelOptions]="{standalone: true}" placeholder="xxxxxxxx@exemple.com">
                           </div>
                         </div>
                       </div>
@@ -91,8 +92,9 @@
                         <div class="form-group row">
                           <label class="col-md-4 col-form-label">Email de notification</label>
                           <div class="col-8">
-                            <input type="email" class="form-control" [(ngModel)]="selectedUser.notifyEmail"
-                              [ngModelOptions]="{standalone: true}" placeholder="xxxxxxxx@gmail.com">
+                            <input type="text" class="form-control" [(ngModel)]="selectedUser.notifyEmail"
+                              [ngModelOptions]="{standalone: true}" placeholder="xxxxxxxx@exemple.com" autocomplete="on" >
+                              
                           </div>
                         </div>
                         <div class="form-group row">
@@ -141,6 +143,7 @@
                   </div>
                 </div>
               </div>
+            </form>
               <div class="modal-footer" style="justify-content: left;display: initial;">
                 <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
                 <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
@@ -164,3 +167,6 @@
     </div>
   </div>
 </div>
+
+
+<!-- (delete)="delete($event)"  -->

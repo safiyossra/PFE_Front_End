@@ -47,7 +47,6 @@ export class CruddriverComponent {
   errorMessageOperation = "";
 
   getSelectedOperations(selected) {
-    // console.log(selected);
     this.selectedOperation = selected;
   }
   resetValidator() {
@@ -72,12 +71,10 @@ export class CruddriverComponent {
   }
 
   getSelectedDevices(selected) {
-    // console.log(selected);
     this.selectedDevice = selected;
   }
 
   getSelectedDevicesModal(selected) {
-    // console.log(selected);
     this.selectedDeviceModal = selected;
   }
 
@@ -95,7 +92,6 @@ export class CruddriverComponent {
     var route = this.router
     this.dataService.getDriverData(urlParams).subscribe({
       next: (d: any) => {
-        console.log(d);
         this.data = d;
         this.loading = false;
       }, error(err) {
@@ -118,7 +114,6 @@ export class CruddriverComponent {
       var route = this.router
       this.dataService.getDriverData(url).subscribe({
         next: (d: any) => {
-          console.log(d);
           if (d && d.length) {
             d.forEach(e => {
               e.birthdate = this.tools.formatDateForInput(new Date(Number.parseInt(e.birthdate ?? 0) ?? 0 * 1000));
@@ -137,12 +132,10 @@ export class CruddriverComponent {
       })
     }
   }
-  delete(ev) {
-
-  }
 
   showAddModal() {
     this.selectedDriver = new Driver();
+    this.errorMsg = ""
     this.mode = "Ajouter"
     this.primaryModal.show()
   }
@@ -164,26 +157,98 @@ export class CruddriverComponent {
     if (this.mode == "Modifier") this.modifier()
   }
 
-  modifier() {
-
-  }
-
   ajouter() {
-
+    var route = this.router
+    this.errorMsg = ""
     if (!this.selectedDriver.driverID || !this.selectedDriver.displayName || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail) {
-      console.log("test")
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
+      if (!this.tools.ValidateEmail(this.selectedDriver.contactEmail)) {
+        this.errorMsg = "Vous avez saisi un email de contact invalid."
+      } else {
+        this.dataService.addDriver(this.selectedDriver).subscribe({
+          next: (res: any) => {
+            this.selectedDriver.birthdate =Date.parse(this.selectedDriver.birthdate);
+            console.log("res", res)
+            console.log(this.selectedDriver.birthdate)
+            this.loadData()
+            this.primaryModal.hide()
+            this.errorMsg = ""
+          }
+          , error(err) {
+            console.log("res", err)
+            this.modalLoading = false;
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+            else if (err.status == 402) {
+              this.errorMsg = "Erreur l'ajout est bloqué."
+            }
+          }
+        })
+      }
+    }
+  }
+
+  modifier() {
+    var route = this.router
+    this.errorMsg = ""
+    console.log("selectedDriver", this.selectedDriver)
+    if (!this.selectedDriver.displayName || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      if (!this.tools.ValidateEmail(this.selectedDriver.contactEmail)) {
+        this.errorMsg = "Vous avez saisi un email de contact invalid."
+      } else {
+      this.dataService.updateDriver(this.selectedDriver).subscribe({
+        next: (res:any) => {
+          console.log("res", res)
+          res.forEach(e => {
+           // e.birthdate = this.tools.formatDate(new Date(Number.parseInt(e.birthdate) * 1000));
+           e.birthdate =Date.parse(e.birthdate);
+        });
+          this.loadData()
+          this.primaryModal.hide()
+          this.errorMsg = ""
+        } , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur la modification est bloqué."
+          }
+        }
+      })
+      }
+    }
+  }
+
+  delete(driver) {
+    if (confirm("Are you sure to delete " + driver)) {
+      var route = this.router
+      var d = "?d=" + driver
+      this.dataService.delDriver(d).subscribe({
+        next: (res) => {
+          this.loadData()
+        }, error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            alert("Erreur, la suppression est bloqué")
+          }
+        }
+      })
 
     }
-
   }
 
   reset() {
     this.selectedDevices = [],
       this.selectedDevice = null
   }
-
 
 }
 

@@ -25,8 +25,8 @@
             <!-- <i [ngClass]="getClassByAge(salle['age'])" class="rounded-circle p-2 h5 m-1 ml-4 align-middle"
                           [title]="formatAge(salle['age'])"></i> -->
           </div>
-          {{ column!='actions'&&column!='isCronRule'?salle[column]:'' }}
-          {{ column=='isCronRule'?getIsYes(salle[column]):'' }}
+          {{ column!='actions'&&column!='ruleTag'?salle[column]:'' }}
+          {{ column=='ruleTag'?getIsYes(salle[column]):'' }}
         </td>
       </ng-container>
 

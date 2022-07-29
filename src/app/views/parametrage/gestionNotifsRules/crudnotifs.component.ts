@@ -17,14 +17,14 @@ export class CrudNotifsRulesComponent {
   modalLoading: boolean = false;
   mode = "Ajouter";
   selectedAlert = new AlertRule();
+  errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   constructor(private dataService: DataService, private tools: util, public cnst: Constant, private zoneService: ZoneService, private router: Router) { }
-  crons_rule = [{ name: "Non", val: "0" }, { name: "Oui", val: "1" }, { name: "Oui", val: "1" }, { name: "5 Minutes", val: "5min" },
+  crons_rule = [{ name: "Non", val: "0" }, { name: "Oui", val: "1" }, { name: "5 Minutes", val: "5min" },
   { name: "15 Minutes", val: "15min" }, { name: "30 Minute", val: "30min" }, { name: "Hourly", val: "hourly" },
   { name: "Daily", val: "daily" }, { name: "Weekly", val: "weekly" },]
 
   selectedCrons = '0';
-  selectedCron = this.selectedCrons;
   data = [];
   POIs = []
   selectedPois1 = null
@@ -34,32 +34,47 @@ export class CrudNotifsRulesComponent {
   selectedPoi2 = this.selectedPois2
   selectedPoi3 = this.selectedPois3
   rules = [false, false, false, false, false, false]
+  disabledOptions = [false, false, true]
   rulesValues = [20, 0]
   groups: any = [];
-  selectedGs = '-';
-  selectedG = this.selectedGs;
   devices: any = [];
   selectedVs = '-';
-  selectedV = this.selectedVs;
-  selectedSs = "0";
-  selectedS = this.selectedSs;
+  selectedGs = '-';
+  selectedSs = '0';
   resultedRule = ""
 
   getSelectedGroup(selected) {
-    this.selectedG = selected;
+    this.selectedAlert.g = selected;
+    var isNotGroup = (this.selectedAlert.g == null || this.selectedAlert.g == '-')
+    var isNotV = (this.selectedAlert.v == null || this.selectedAlert.v == '-')
+    this.disabledOptions[0] = !isNotGroup
+    if (isNotGroup && isNotV) {
+      this.disabledOptions[2] = true
+      this.selectedSs = '0'
+      this.selectedAlert.s = '0'
+    }
   }
 
   getSelectedV(selected) {
-    this.selectedV = selected;
+    this.selectedAlert.v = selected;
+    var isNotGroup = (this.selectedAlert.g == null || this.selectedAlert.g == '-')
+    var isNotV = (this.selectedAlert.v == null || this.selectedAlert.v == '-')
+    this.disabledOptions[0] = !isNotGroup
+    if (isNotGroup && isNotV) {
+      this.disabledOptions[2] = true
+      this.selectedSs = '0'
+      this.selectedAlert.s = '0'
+    }
   }
 
   getSelectedS(selected) {
-    this.selectedS = selected;
+    this.selectedAlert.s = selected;
   }
 
   getSelectedCron(selected) {
-    this.selectedCron = selected;
+    this.selectedAlert.ruleTag = selected;
   }
+
   ngOnInit() {
     this.loadData();
     this.loadPOIs();
@@ -74,7 +89,6 @@ export class CrudNotifsRulesComponent {
         this.groups = res;
         this.groups.unshift({ groupID: '*', description: 'Tout sélectionner' })
         this.groups.unshift({ groupID: '-', description: 'No Group (sélectionner par véhicule)' })
-        console.log(res)
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -87,7 +101,6 @@ export class CrudNotifsRulesComponent {
     var route = this.router
     this.dataService.getVehicule().subscribe({
       next: (res) => {
-        console.log(res);
         this.devices = res;
         this.devices.unshift({ dID: '*', name: 'Tout sélectionner' })
         this.devices.unshift({ dID: '-', name: 'No Véhicules (sélectionner par Groupe de véhicules)' })
@@ -110,6 +123,7 @@ export class CrudNotifsRulesComponent {
         this.data = d;
         this.loading = false;
       }, error(err) {
+        console.log(err);
         this.loading = false;
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -130,31 +144,23 @@ export class CrudNotifsRulesComponent {
       var route = this.router
       this.dataService.getNotifRules(url).subscribe({
         next: (d: any) => {
-          console.log(d);
           d.rule.forEach(e => {
             e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
           });
           if (d.rule && d.rule.length) {
-            this.selectedAlert = d.rule[0]
-            this.resultedRule = d.rule[0].selector
+            var tmp = d.rule[0]
+            this.selectedAlert = new AlertRule(tmp.isActive, tmp.ruleID, tmp.creationTime, tmp.description, tmp.notifyEmail, tmp.ruleTag, tmp.minNotifyAge, "", '-', '0', '-')
+            this.resultedRule = tmp.selector
           }
 
           if (d.ruleList && d.ruleList.length) {
             this.selectedSs = d.ruleList[0].statusCode.toString();
-            this.selectedS = this.selectedSs
+            this.selectedAlert.s = this.selectedSs
             this.selectedGs = d.ruleList[0].groupID
-            this.selectedG = this.selectedGs
+            this.selectedAlert.g = this.selectedGs
             this.selectedVs = d.ruleList[0].deviceID
-            this.selectedV = this.selectedVs
+            this.selectedAlert.v = this.selectedVs
           }
-
-          console.log(this.selectedSs,
-            this.selectedS,
-            this.selectedGs,
-            this.selectedG,
-            this.selectedVs,
-            this.selectedV);
-
           this.reverse_operation(this.resultedRule)
           this.modalLoading = false;
         }, error(err) {
@@ -167,12 +173,93 @@ export class CrudNotifsRulesComponent {
     }
   }
 
-  ajouter() {
-
+  submit() {
+    if (this.mode == "Ajouter") this.ajouter()
+    if (this.mode == "Modifier") this.modifier()
   }
 
-  delete(ev) {
+  ajouter() {
+    var route = this.router
+    this.errorMsg = ""
+    this.selectedAlert.selector = this.resultedRule
+    if (!this.selectedAlert.ruleID || !this.selectedAlert.description || !this.selectedAlert.notifyEmail || !this.selectedAlert.selector) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      if (this.selectedAlert.selector == "") this.errorMsg = "Veuillez saisir un selector ."
+      else {
+        if (this.selectedAlert.notifyEmail && !this.tools.ValidateEmail(this.selectedAlert.notifyEmail)) this.errorMsg = "Vous avez saisi un email de notification invalid."
+        else {
+          this.dataService.addRule(this.selectedAlert).subscribe({
+            next: (res) => {
+              console.log("added", res)
+              this.loadData()
+              this.primaryModal.hide()
+              this.errorMsg = ""
+            }
+            , error(err) {
+              this.modalLoading = false;
+              if (err.status == 401) {
+                route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+              }
+              else if (err.status == 402) {
+                this.errorMsg = "Erreur l'ajout est bloqué."
+              }
+            }
+          })
+        }
+      }
+    }
+  }
 
+  modifier() {
+    var route = this.router
+    this.errorMsg = ""
+    this.selectedAlert.selector = this.resultedRule
+    if (!this.selectedAlert.description || !this.selectedAlert.notifyEmail || !this.selectedAlert.selector) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      if (this.selectedAlert.notifyEmail && !this.tools.ValidateEmail(this.selectedAlert.notifyEmail)) this.errorMsg = "Vous avez saisi un email de notification invalid."
+      else if (this.selectedAlert.selector == "") this.errorMsg = "Veuillez saisir un selector."
+      else {
+        this.dataService.updateRule(this.selectedAlert).subscribe({
+          next: (res) => {
+            this.errorMsg = ""
+            this.loadData()
+            this.primaryModal.hide()
+            this.errorMsg = ""
+          }, error(err) {
+            console.log("error", err)
+            this.modalLoading = false;
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+            else if (err.status == 402) {
+              this.errorMsg = "Erreur la modification est bloqué."
+            }
+          }
+        })
+      }
+    }
+  }
+
+  delete(rule) {
+    if (confirm("Are you sure to delete " + rule)) {
+      var route = this.router
+      var u = "?id=" + rule
+      this.dataService.delRule(u).subscribe({
+        next: (res) => {
+          this.loadData()
+        }, error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            alert("Erreur, la suppression est bloqué")
+          }
+        }
+      })
+    }
   }
 
   loadPOIs() {
@@ -180,8 +267,6 @@ export class CrudNotifsRulesComponent {
     this.zoneService.getPoi().subscribe({
       next: (res: any) => {
         var POIs = []
-        console.log(res);
-
         res.map((e: any) => {
           var poi = { name: e.description, val: e.geozoneID }
           POIs.push(poi)
@@ -212,6 +297,9 @@ export class CrudNotifsRulesComponent {
   }
 
   showAddModal() {
+    this.resetRulesAffectation();
+    this.resultedRule = "";
+    this.resetRules();
     this.selectedAlert = new AlertRule();
     this.mode = "Ajouter"
     this.primaryModal.show()
@@ -252,8 +340,6 @@ export class CrudNotifsRulesComponent {
   }
 
   reverse_operation(query) {
-    console.log(query);
-
     this.resetRules()
     //test demarrage
     if (this.cnst.regExpDemarrage.test(query)) {
@@ -266,16 +352,11 @@ export class CrudNotifsRulesComponent {
       this.rulesValues[0] = Number.parseInt(element)
     }
     //test InZone
-    console.log("before InZone");
     if (this.cnst.RegExpInZone.test(query)) {
-      console.log("InZone");
-
       this.rules[2] = true
       var element = query.match(this.cnst.RegExpInZone)[0]
       this.selectedPois1 = element
       this.selectedPoi1 = this.selectedPois1
-
-      console.log(element);
     }
     //test depart
     if (this.cnst.RegExpDepart.test(query)) {
@@ -312,10 +393,10 @@ export class CrudNotifsRulesComponent {
 
   resetRulesAffectation() {
     this.selectedSs = "0"
-    this.selectedS = this.selectedSs
+    this.selectedAlert.s = this.selectedSs
     this.selectedGs = '-'
-    this.selectedG = this.selectedGs
+    this.selectedAlert.g = this.selectedGs
     this.selectedVs = '-'
-    this.selectedV = this.selectedVs
+    this.selectedAlert.v = this.selectedVs
   }
 }
