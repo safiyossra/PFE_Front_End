@@ -57,6 +57,7 @@
     "font-awesome": "^4.7.0",
     "leaflet-geosearch": "^3.6.1",
     "leaflet-routing-machine": "^3.2.12",
+    "@geoman-io/leaflet-geoman-free": "^2.7.0",
     "ng2-charts": "^2.4.3",
     "ngx-bootstrap": "^6.2.0",
     "ngx-perfect-scrollbar": "^10.1.1",

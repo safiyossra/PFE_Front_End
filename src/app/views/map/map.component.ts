@@ -5,6 +5,9 @@ import * as L from 'leaflet'
 import { Vehicule } from '../../models/vehicule'
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import { Router } from '@angular/router'
+import { Constant } from 'src/app/tools/constants'
+import { ZoneService } from 'src/app/services/zone.service'
+import { Zone, ZoneType } from './../../models/zone'
 
 @Component({
   selector: 'app-map',
@@ -37,7 +40,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   inter: any
 
   selectedVehiculeIndex = -1
-  constructor(private vehiculeService: VehiculeService, private tools: util, private router: Router) {
+  constructor(private vehiculeService: VehiculeService, private tools: util, public cts: Constant, private zoneService: ZoneService, private router: Router) {
 
   }
   ngOnInit(): void {
@@ -50,6 +53,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
       this.inter = setInterval(() => {
         this.loadData()
       }, 5000)
+      this.loadZones()
     }, 100);
   }
 
@@ -115,7 +119,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     this.vehiculeService.getData().subscribe({
       next: (res) => {
         const data = res['DeviceList']
-        console.log("DeviceList", data);
+        // console.log("DeviceList", data);
         let vehicules = []
         data.forEach(e => {
           let l = e['EventData'].length - 1 ?? -1
@@ -271,6 +275,84 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   onDragEnd(e) {
     this.size = [e.sizes[0], e.sizes[1]]
     this.invalidate()
+  }
+
+  loadZones() {
+    this.zoneService.getData().subscribe({
+      next: (res: any) => {
+        var zones: Zone[] = []
+        res.map((element: any) => {
+          var zone = new Zone()
+          zone.description = element.description
+          zone.isActive = element.isActive
+          zone.iconName = element.iconName
+          zone.radius = element.radius
+          zone.zoneType = element.zoneType
+          zone.latitude1 = element.latitude1
+          zone.longitude1 = element.longitude1
+          zone.latitude2 = element.latitude2
+          zone.longitude2 = element.longitude2
+          zone.latitude3 = element.latitude3
+          zone.longitude3 = element.longitude3
+          zone.latitude4 = element.latitude4
+          zone.longitude4 = element.longitude4
+          zone.latitude5 = element.latitude5
+          zone.longitude5 = element.longitude5
+          zone.latitude6 = element.latitude6
+          zone.longitude6 = element.longitude6
+          zone.latitude7 = element.latitude7
+          zone.longitude7 = element.longitude7
+          zone.latitude8 = element.latitude8
+          zone.longitude8 = element.longitude8
+          zone.latitude9 = element.latitude9
+          zone.longitude9 = element.longitude9
+          zone.latitude10 = element.latitude10
+          zone.longitude10 = element.longitude10
+          zones.push(zone)
+        });
+        this.generateZonesLayers(zones)
+        this.map.on('overlayadd', (e) => {
+          console.log('overlayadd', e.layer);
+          if (e.layer._latlng && !e.layer._radius)
+            this.map.setView(e.layer._latlng, 15)
+          else this.map.fitBounds(e.layer.getBounds())
+        })
+      }, error(err) {
+        console.log(err);
+      }
+    })
+
+  }
+
+  generateZonesLayers(zones: Zone[]) {
+    var layers = {}
+    zones.forEach(e => {
+      layers[e.description] = this.getZoneLayer(e)
+    });
+    L.control.layers(null, layers, { collapsed: true, position: "topleft" }).addTo(this.map);
+  }
+
+  getZoneLayer(zone: Zone) {
+    var layer: any
+    if (zone.zoneType == ZoneType.Circle) {
+      layer = L.circle(new L.LatLng(zone.latitude1, zone.longitude1), zone.radius);
+    } else if (zone.zoneType == ZoneType.Polygon) {
+      layer = L.polygon(zone.latLngs)
+    } else {
+      var iconName = "default"
+      if (this.iconExists(zone.iconName)) {
+        iconName = zone.iconName
+      }
+      var icon = L.icon({
+        iconUrl: 'assets/img/POI/' + iconName + '.png'
+      });
+      layer = L.marker(new L.LatLng(zone.latitude1, zone.longitude1), { icon: icon })
+    }
+    return layer
+  }
+
+  iconExists(name: any) {
+    return this.cts.zoneIcons.includes({ name: name })
   }
 
   ngOnDestroy(): void {

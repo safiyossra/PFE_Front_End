@@ -438,3 +438,6 @@ table.infoBoxTable tr:nth-child(odd) {
 .nav-link {
     padding: 0.2rem 1rem;
 }
+#map[overlay]>div.leaflet-control-container>div.leaflet-top.leaflet-left>div.leaflet-control:last-child .leaflet-control-layers-toggle {
+    background-image: url('../assets/img/markers/pin.png');
+}

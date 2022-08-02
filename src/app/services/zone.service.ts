@@ -23,6 +23,7 @@ export class ZoneService {
       headers: headers
     })
   }
+
   getPoi() {
     let SERVER_URL = environment.apiUrl + "zones?zoneType"; //?zoneType=4
     let jwt = this.JWT.get();
@@ -31,6 +32,46 @@ export class ZoneService {
       'Accept': 'application/json'
     });
 
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  addZone(zone) {
+    let SERVER_URL = environment.apiUrl + "addZone";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(zone) }
+
+    })
+  }
+
+  updateZone(zone) {
+    let SERVER_URL = environment.apiUrl + "editZone";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(zone) }
+
+    })
+  }
+
+  delZone(zone) {
+    let SERVER_URL = environment.apiUrl + "deleteZone" + zone;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
     return this.http.get(SERVER_URL, {
       headers: headers
     })

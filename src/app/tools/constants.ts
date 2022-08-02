@@ -263,6 +263,11 @@ export class Constant {
   // "raton", "sniper", "taxi", "templo", "tibirium", "tiefight",  "tren", "xwing"]
 
   //Demarrage
+
+  zoneIcons = [{ name: "default" }, { name: "Airport" }, { name: "ClientCustomer" }, { name: "CoffeeRestauran" }, { name: "Company" }, { name: "Desktop" },
+  { name: "Factory" }, { name: "Fire_Station" }, { name: "Gas_Station" }, { name: "Hospital" }, { name: "Hotel" }, { name: "House" },
+  { name: "Market" }, { name: "Mosque" }, { name: "Parking" }, { name: "Port" }, { name: "Supermarket" }, { name: "Warehouse" },]
+
   regExpDemarrage = /\(true\)/i
   //Speeding
   RegExpSpeed = /(?<=\$Speeding\()[a-z0-9A-Z]+(?=\))/i

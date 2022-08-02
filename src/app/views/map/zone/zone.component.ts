@@ -1,39 +1,35 @@
 import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { util } from '../../../tools/utils'
 import * as L from 'leaflet'
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ZoneService } from './../../../services/zone.service'
 import { Zone, ZoneType } from './../../../models/zone'
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import '@geoman-io/leaflet-geoman-free';
 import { Router } from '@angular/router';
+import { Constant } from 'src/app/tools/constants';
 
 @Component({
   selector: 'app-zone',
   templateUrl: './zone.component.html',
   styleUrls: ['./zone.component.scss']
 })
-export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
+export class ZoneComponent implements OnInit, AfterViewInit {
 
   provider = new OpenStreetMapProvider();
-  @Input() showFullScreenControle?: Boolean = true
-  @Input() showPositionControle?: Boolean = true
+  @Input() showFullScreenControle?: boolean = true
+  @Input() showPositionControle?: boolean = true
   // ---------------- MAP -----------------
-  isMyPositionVisible: Boolean = false
+  isMyPositionVisible: boolean = false
   MyPositionMarker: L.Marker
   map: any
-
-
-  fullScreenControl: L.Control;
-  resetControl: L.Control;
-  positionControl: L.Control;
-
 
   // ---------------- MAP -----------------
 
   // ---------------- Zones ------------------
   zones: Zone[]
+  selectedZone: Zone = new Zone()
 
   default = {
     latitude: 35.75,
@@ -42,7 +38,8 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     description: '',
     color: '#000'
   }
-
+  errorMsg = ""
+  isLoading = false
   mode = 'list'
 
   dataSource = new MatTableDataSource();
@@ -52,43 +49,19 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  zoneTypes = [
-    {
-      name: 'point',
-      icon: 'fa fa-map-pin', // cil-chevron-double-down
-    },
-    {
-      name: 'polygon',
-      icon: 'fa fa-pencil-square-o', // cil-square
-    },
-    {
-      name: 'circle',
-      icon: 'fa fa-circle',
-    }
-  ]
-  selectedType: any
-
-  point: FormGroup
-  myPoint: L.Marker
-
-  circle: FormGroup
-  myCircle: L.Circle
-
-  polygon: FormGroup
-  myPolygon: L.Polygon
-
-  zone: FormGroup
-  zoneModel: Zone
-  myZone: any
+  layer: any
 
   myMarkers = []
 
   zoneDisplayed = false
   selectedZoneIndex = -1
 
+  // ---------------- Zones ------------------
+  constructor(private tools: util, public cts: Constant, private zoneService: ZoneService, private router: Router) {
+  }
   clearZoneFromMap() {
-    if (this.myZone && this.map.hasLayer(this.myZone)) {
-      this.myZone.removeFrom(this.map)
+    if (this.layer && this.map.hasLayer(this.layer)) {
+      this.layer.removeFrom(this.map)
     }
   }
 
@@ -96,103 +69,15 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     this.clearZoneFromMap()
     if (this.selectedZoneIndex != index) {
       this.selectedZoneIndex = index
-      switch (zone.zoneType) {
-        case ZoneType.circle:
-          // console.log('this is a Circle')
-          if (!this.myZone || !(this.myZone instanceof L.Circle)) {
-            this.myZone = L.circle(zone.latLngs[0], { radius: zone.radius })
-          } else {
-            this.myZone.setLatLng(zone.latLngs[0])
-            this.myZone.setRadius(zone.radius)
-          }
-          this.myZone.addTo(this.map)
-          this.map.fitBounds(this.myZone)
-          break;
-
-        case ZoneType.point:
-          // console.log('this is a Point')
-          if (!this.myZone || !(this.myZone instanceof L.Marker)) {
-            this.myZone = L.marker(zone.latLngs[0])
-          } else {
-            this.myZone.setLatLng(zone.latLngs[0])
-          }
-          this.myZone.addTo(this.map)
-          this.map.setView(this.myZone.getLatLng())
-          break;
-
-        case ZoneType.polygon:
-          // console.log('this is a Polygon')
-          if (!this.myZone || !(this.myZone instanceof L.Polygon)) {
-            this.myZone = L.polygon(zone.latLngs)
-          } else {
-            this.myZone.setLatLngs(zone.latLngs)
-          }
-          this.myZone.addTo(this.map)
-          this.map.fitBounds(this.myZone.getBounds())
-          break;
-
-        default:
-          // console.log('Uknown Type');
-          break;
+      var icon = "default"
+      if (this.iconExists(zone.shapeColor)) {
+        icon = zone.shapeColor
       }
+      this.drawShape(this.getShapeFromZone(zone), icon)
     } else {
       this.selectedZoneIndex = -1
     }
 
-  }
-  // ---------------- Zones ------------------
-  constructor(private tools: util, private fb: FormBuilder, private zoneService: ZoneService, private router: Router) {
-    this.zone = fb.group({
-      description: new FormControl(),
-      radius: new FormControl(),
-      color: new FormControl('#63c2de'),
-      points: fb.array([
-        this.fb.group({
-          latitude: null,
-          longitude: null,
-        }),
-        this.fb.group({
-          latitude: null,
-          longitude: null,
-        }),
-        this.fb.group({
-          latitude: null,
-          longitude: null,
-        }),
-        this.fb.group({
-          latitude: null,
-          longitude: null,
-        }),
-        this.fb.group({
-          latitude: null,
-          longitude: null,
-        }),
-        this.fb.group({
-          latitude: null,
-          longitude: null,
-        }),
-        this.fb.group({
-          latitude: null,
-          longitude: null,
-        }),
-        this.fb.group({
-          latitude: null,
-          longitude: null,
-        }),
-        this.fb.group({
-          latitude: null,
-          longitude: null,
-        }),
-        this.fb.group({
-          latitude: null,
-          longitude: null,
-        }),
-      ]),
-    })
-  }
-
-  get zonePoints() {
-    return this.zone.controls['points'] as FormArray
   }
 
   ngOnInit(): void {
@@ -201,16 +86,18 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
   loadZones() {
     var route = this.router
+    this.isLoading = true
     this.zoneService.getData().subscribe({
       next: (res: any) => {
         var zones = []
         res.map((element: any) => {
           var zone = new Zone()
+          zone.geozoneID = element.geozoneID
           zone.clientID = element.clientID
           zone.groupID = element.groupID
           zone.description = element.description
           zone.isActive = element.isActive
-          zone.shapeColor = element.shapeColor
+          zone.iconName = element.iconName
           zone.radius = element.radius
           zone.zoneType = element.zoneType
           zone.latitude1 = element.latitude1
@@ -234,16 +121,14 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
           zone.latitude10 = element.latitude10
           zone.longitude10 = element.longitude10
           zone.creationTime = element.creationTime * 1000
-
           zones.push(zone)
         });
-
         this.zones = zones
-        // console.log(this.zones.length);
-
         this.dataSource = new MatTableDataSource(this.zones)
         this.dataSource.sort = this.sort
+        this.isLoading = false
       }, error(err) {
+        this.isLoading = false
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
         }
@@ -256,385 +141,313 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     this.displayedColumns = newColumnList
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // console.log(changes);
-  }
-
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.createMap()
     }, 100)
-    this.zoneChanges()
   }
 
-  onTypeChange(event: any) {
-    switch (event.value) {
-      case 'point':
-        this.resetZoneForm()
-        if (this.myZone && this.map.hasLayer(this.myZone)) {
-          this.myZone.removeFrom(this.map)
-        }
-
-        this.zone.patchValue({
-          radius: 5
-        })
-
-        let centerPoint = L.latLng(this.zone.value.points[0][0], this.zone.value.points[0][0])
-        this.myZone = L.marker(centerPoint, { icon: L.icon({ iconUrl: 'assets/img/markers/pin_n.png', iconSize: [50, 50], iconAnchor: [25, 50] }) })
-        break;
-
-      case 'circle':
-        this.resetZoneForm()
-        if (this.myZone && this.map.hasLayer(this.myZone)) {
-          this.myZone.removeFrom(this.map)
-        }
-
-        this.zone.patchValue({
-          radius: 500
-        })
-
-        let centerCircle = L.latLng(this.zone.value.points[0][0], this.zone.value.points[0][0])
-        this.myZone = L.circle(centerCircle, { color: this.zone.value.color })
-        break;
-
-      case 'polygon':
-        this.resetZoneForm()
-        if (this.myZone && this.map.hasLayer(this.myZone)) {
-          this.myZone.removeFrom(this.map)
-        }
-
-        this.zone.patchValue({
-          radius: 5
-        })
-
-        this.myZone = L.polygon(this.zone.value.points.map((p: any) => L.latLng(p[0], p[1])), { color: this.zone.value.color })
-
-        break;
-
-      default:
-        // console.log('default selected');
-        if (this.myZone && this.map.hasLayer(this.myZone)) {
-          this.myZone.removeFrom(this.map)
-        }
-
-        break;
-    }
-
-  }
-
-  resetZoneForm(fullReset: Boolean = false) {
+  resetZoneForm(fullReset = false) {
     if (fullReset) {
-      this.selectedType = null
-      this.zone.reset({
-        color: '#4dbd74'
-      })
+      var ID = this.selectedZone.geozoneID
+      this.selectedZone = new Zone()
+      this.selectedZone.geozoneID = ID
+      this.showInitialDrawControls(this.map)
       this.clearZoneFromMap()
-    } else {
-      this.zone.reset({
-        description: this.zone.value.description,
-        color: '#4dbd74'
-      })
     }
   }
 
-  zoneChanges(): void {
-    this.zone.valueChanges.subscribe(val => {
-      var points = val.points
-
-      // points.forEach((p, i) => {
-      //   if (p.latitude != null && p.longitude != null) {
-      //     this.myMarkers[i].setLatLng(L.latLng(p.latitude, p.longitude))
-      //     console.log(this.myMarkers[i].getLatLng());
-      //     if (this.myMarkers[i].getLatLng() != null) {
-      //       this.myMarkers[i].addTo(this.map)
-      //     }
-      //   } else {
-      //     if (this.map.hasLayer(this.myMarkers[i])) {
-      //       this.myMarkers[i].removeFrom(this.map)
-      //     }
-
-      //   }
-      // });
-
-      this.clearZoneFromMap()
-
-      switch (this.selectedType) {
-        case 'circle':
-          let centerCircle = L.latLng(points[0].latitude, points[0].longitude)
-
-          if (!this.myZone) {
-            this.myZone = L.circle(centerCircle, { color: this.zone.value.color })
-          }
-
-          if (centerCircle != null && centerCircle.lat != null && centerCircle.lng != null && val.radius != null) {
-            // console.log('not Null');
-            this.myZone.setLatLng(centerCircle)
-            this.myZone.setRadius(val.radius)
-            this.myZone.setStyle({ color: val.color })
-
-            if (this.map.hasLayer(this.myZone)) {
-              this.map.fitBounds(this.myZone.getBounds())
-            } else {
-              this.myZone.addTo(this.map)
-              this.map.fitBounds(this.myZone.getBounds())
-            }
-          } else {
-            if (this.myZone && this.map.hasLayer(this.myZone)) {
-              this.myZone.removeFrom(this.map)
-            }
-          }
-
-          break;
-
-        case 'point':
-          let centerPoint = L.latLng(points[0].latitude, points[0].longitude)
-
-          if (!this.myZone) {
-            this.myZone = L.marker(centerPoint, { icon: L.icon({ iconUrl: 'assets/img/markers/pin_n.png', iconSize: [50, 50], iconAnchor: [25, 50] }) })
-          }
-
-
-          if (centerPoint != null && centerPoint.lat != null && centerPoint.lng != null && val.radius != null) {
-            // console.log('not Null');
-            this.myZone.setLatLng(centerPoint)
-            this.map.setView(this.myZone.getLatLng())
-            if (this.map.hasLayer(this.myZone)) {
-              this.map.setView(this.myZone.getLatLng())
-            } else {
-              this.myZone.addTo(this.map)
-              this.map.setView(this.myZone.getLatLng())
-            }
-          } else {
-            if (this.myZone && this.map.hasLayer(this.myZone)) {
-              this.myZone.removeFrom(this.map)
-            }
-          }
-          break;
-
-        case 'polygon':
-          var latlngs = []
-          points.forEach((point: any, index) => {
-            if (point.latitude != null && point.longitude != null) {
-              latlngs.push(L.latLng(point.latitude, point.longitude))
-            }
-          });
-
-          if (!this.myZone) {
-            this.myZone = L.polygon(latlngs, { color: this.zone.value.color })
-          }
-
-          if (this.myZone && latlngs.length > 0) {
-            this.myZone.setLatLngs(latlngs)
-            this.myZone.setStyle({ color: val.color })
-            if (this.map.hasLayer(this.myZone)) {
-              this.map.fitBounds(this.myZone.getBounds())
-            } else {
-              this.myZone.addTo(this.map)
-              this.map.fitBounds(this.myZone.getBounds())
-            }
-          }
-          else {
-            if (this.myZone && this.map.hasLayer(this.myZone)) {
-              this.myZone.removeFrom(this.map)
-            }
-          }
-
-          break;
-
-        default:
-          break;
-      }
-
-    })
+  apply() {
+    if (this.mode == 'edit') {
+      this.updateZone()
+    }
+    else {
+      this.addZone()
+    }
   }
 
   addZone() {
-
+    var route = this.router
+    this.errorMsg = ""
+    if (!this.selectedZone.description || !this.selectedZone.latitude1 || !this.selectedZone.longitude1 || !this.selectedZone.radius) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      this.isLoading = true
+      this.zoneService.addZone(this.selectedZone).subscribe({
+        next: (res) => {
+          this.isLoading = false
+          this.mode = 'list'
+          this.loadZones()
+        }
+        , error(err) {
+          console.log("err", err)
+          this.isLoading = false
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+        }
+      })
+    }
   }
 
   updateZone() {
+    var route = this.router
+    this.errorMsg = ""
+    console.log("this.selectedZone", this.selectedZone)
+    if (!this.selectedZone.description || !this.selectedZone.latitude1 || !this.selectedZone.longitude1 || !this.selectedZone.radius) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      this.isLoading = true
+      this.zoneService.updateZone(this.selectedZone).subscribe({
+        next: (res) => {
+          console.log("updateZone", res)
+          this.isLoading = false
+          this.mode = 'list'
+          this.loadZones()
+        }, error(err) {
+          console.log("error", err)
+          this.isLoading = false
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur la modification est bloqué."
+          }
+        }
+      })
 
+    }
   }
 
-
-  resetZonePoint(pointIndex: number) {
-    this.zonePoints.controls[pointIndex].patchValue({
-      latitude: null,
-      longitude: null,
-    })
+  delete(id) {
+    if (confirm("Are you sure to delete " + id)) {
+      this.isLoading = true
+      var route = this.router
+      var u = "?id=" + id
+      this.zoneService.delZone(u).subscribe({
+        next: (res) => {
+          console.log("delZone", res)
+          this.isLoading = false
+          this.loadZones()
+        }, error(err) {
+          this.isLoading = false
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            alert("Erreur, la suppression est bloqué")
+          }
+        }
+      })
+    }
   }
 
   createMap() {
-    const zoomLevel = 12
-    this.map = L.map('map', { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
-      .setView([this.default.latitude, this.default.longitude], zoomLevel)
-
-    // dark map 
-    const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 19
-    });
-    const googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-    // google street 
-    const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-
-    //google satellite
-    const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-    const googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-    const baseMaps = {
-      "Google Hybrid": googleHybrid,
-      "Google Terrain": googleTerrain,
-      "Google Satellite": googleSat,
-      'Google Street': googleStreets,
-      'Dark': dark,
-    };
-    googleHybrid.addTo(this.map)
-
-    L.control.zoom().addTo(this.map)
-
-    if (this.showFullScreenControle) {
-      let FullScreenControl = L.Control.extend({
-        onAdd(map: L.Map) {
-          return L.DomUtil.get('mapfullScreenControl');
-        },
-        onRemove(map: L.Map) { }
-      });
-      this.fullScreenControl = new FullScreenControl({
-        position: "topleft"
-      }).addTo(this.map);
+    var car = {
+      lat: this.default.latitude,
+      lng: this.default.longitude
     }
-    if (this.showPositionControle) {
-      let PositionControl = L.Control.extend({
-        onAdd(map: L.Map) {
-          return L.DomUtil.get('positionControl');
-        },
-        onRemove(map: L.Map) { }
-      });
-      this.positionControl = new PositionControl({
-        position: "topleft"
-      }).addTo(this.map);
-    }
-    ////////////////////////////////////////////////////////////
-    GeoSearchControl({
-      provider: this.provider,
-      showMarker: false,
-      // style: 'bar',
-      position: "topleft",
-      retainZoomLevel: false, // optional: true|false  - default false
-      animateZoom: true, // optional: true|false  - default true
-      autoClose: true, // optional: true|false  - default false
-      searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
-      // keepResult: false, // optional: true|false  - default false
-      updateMap: true, // optional: true|false  - default true
-    }).addTo(this.map)
-
-    ////////////////////////////////////////////////////////////
-    L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
-    L.control.scale().addTo(this.map);
-
-    // this.initMarkers()
-
+    this.map = this.tools.createMap(this.map, 'map', car, this.provider, false, this.showFullScreenControle, this.showPositionControle, false)
     this.map.doubleClickZoom.disable();
-    this.map.on('dblclick', (event) => {
-      if (this.mode != 'list') {
-        this.selectedZoneIndex = -1
-        switch (this.selectedType) {
-          case 'point':
-            this.generatePoint(event.latlng)
+    this.addDrawToMap()
+  }
 
-            break;
-          case 'circle':
-            this.generateCircle(event.latlng)
-            break;
-          case 'polygon':
-            this.generatePolygon(event.latlng)
-            break;
-
-          default:
-            break;
+  addDrawToMap() {
+    this.hideDrawControls(this.map)
+    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png' });
+    this.map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
+    this.map.pm.setLang('fr');
+    var map = this.map
+    this.map.on('pm:create', (e: any) => {
+      var res: any;
+      this.layer = e.layer;
+      res = this.getShape(map, undefined, undefined)
+      this.updateZoneForm(e.shape)
+      this.showAfterDrawControls(map)
+      this.getZoneFromShape(res)
+      console.log(res);
+      this.layer.on('pm:update', (e: any) => {
+        var res = this.getShape(map, undefined, undefined)
+        this.getZoneFromShape(res)
+        console.log(res);
+      });
+    });
+    map.on('pm:remove', (e: any) => {
+      this.showInitialDrawControls(map)
+      this.updateZoneForm(null)
+      this.getZoneFromShape({ shape: null, coord: [], radius: 5, })
+    });
+    this.map.on('pm:drawstart', (e: any) => {
+      var count = 10;
+      e.workingLayer.on('pm:vertexadded', (e: any) => {
+        count--;
+        if (count == 0) {
+          this.triggerDblClick('map');
         }
-      }
-    })
-
+      });
+    });
   }
 
-
-  generatePolygon(center) {
-    let radiusMts = 5500;
-    let bounds = L.latLng(center.lat, center.lng).toBounds(radiusMts);
-
-    let rectanlePoints = L.rectangle(bounds).getLatLngs()[0];
-
-    let points = []
-
-    let dist = Math.abs((rectanlePoints[0].lat - rectanlePoints[1].lat) / 4)
-
-    let startPoint = [center.lat, center.lng]
-    points.push([startPoint[0] - 3 * dist, startPoint[1] + dist])
-    points.push([startPoint[0] - 3 * dist, startPoint[1]])
-    points.push([startPoint[0] - 3 * dist, startPoint[1] - 1 * dist])
-    points.push([startPoint[0] - 1 * dist, startPoint[1] - 3 * dist])
-    points.push([startPoint[0] + 1 * dist, startPoint[1] - 3 * dist])
-    points.push([startPoint[0] + 3 * dist, startPoint[1] - 1 * dist])
-    points.push([startPoint[0] + 3 * dist, startPoint[1]])
-    points.push([startPoint[0] + 3 * dist, startPoint[1] + 1 * dist])
-    points.push([startPoint[0] + 1 * dist, startPoint[1] + 3 * dist])
-    points.push([startPoint[0] - 1 * dist, startPoint[1] + 3 * dist])
-
-    this.clearZoneFromMap()
-    this.zone.patchValue({
-      points: points.map(p => {
-        return {
-          latitude: p[0],
-          longitude: p[1]
-        }
-      })
-    })
-
-    this.myZone.setLatLngs(points.map(p => L.latLng(p[0], p[1])))
-    this.myZone.setStyle({ color: this.zone.value.color })
-    this.map.fitBounds(this.myZone.getBounds())
-    this.myZone.addTo(this.map)
+  getShape(map: any, layer: any, shape: any) {
+    var res: any;
+    var shapeInfo = map == undefined ? layer : map.pm.getGeomanDrawLayers()[0]
+    var shape = map == undefined ? shape : shapeInfo.pm._shape;
+    if (shape.toString() == 'Marker') {
+      res = {
+        shape: ZoneType.Marker,
+        coord: [shapeInfo._latlng],
+        radius: 5,
+      };
+    } else if (shape.toString() == 'Polygon' || shape.toString() == 'Rectangle') {
+      res = {
+        shape: ZoneType.Polygon,
+        coord: shapeInfo._latlngs[0],
+        radius: 5,
+      };
+    } else if (shape.toString() == 'Circle') {
+      res = {
+        shape: ZoneType.Circle,
+        coord: [shapeInfo._latlng],
+        radius: shapeInfo._mRadius,
+      };
+    }
+    return res
   }
 
-  generateCircle(center) {
-    let radius = this.zone.value.radius
-
-    this.zonePoints.controls[0].patchValue({
-      latitude: center.lat,
-      longitude: center.lng,
-    })
-
-    this.myZone.setLatLng([center.lat, center.lng])
-    this.myZone.setRadius(radius)
-    this.myZone.addTo(this.map)
-    this.map.fitBounds(this.myZone.getBounds())
-
+  drawShape(shape: any, iconString) {
+    if (shape.shape == ZoneType.Circle) {
+      var center = new L.LatLng(shape.coord[0][0], shape.coord[0][1])
+      this.layer = L.circle(center, shape.radius);
+      var bounds = center.toBounds(shape.radius * 2);
+      this.map.fitBounds(bounds)
+    } else if (shape.shape == ZoneType.Polygon) {
+      this.layer = L.polygon(shape.coord)
+      this.map.fitBounds(this.layer.getBounds())
+    } else {
+      var icon = L.icon({
+        iconUrl: 'assets/img/POI/' + iconString + '.png'
+      });
+      this.layer = L.marker(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), { icon: icon })
+      this.map.setView(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), 15)
+    }
+    this.layer.addTo(this.map)
   }
 
-  generatePoint(center) {
-    this.zonePoints.controls[0].patchValue({
-      latitude: center.lat,
-      longitude: center.lng,
+  updateZoneForm(shape: any) {
+    switch (shape) {
+      case "Circle":
+        this.selectedZone.zoneType = ZoneType.Circle
+        break;
+      case "Polygon":
+        this.selectedZone.zoneType = ZoneType.Polygon
+        break;
+      case "Rectangle":
+        this.selectedZone.zoneType = ZoneType.Polygon
+        break;
+      case "Marker":
+        this.selectedZone.zoneType = ZoneType.Marker
+        this.selectedZone.iconName = "default"
+        break;
+      default:
+        this.selectedZone.zoneType = null
+        break;
+    }
+  }
+
+  getShapeFromZone(zone: Zone) {
+    var res: any;
+
+    console.log("zone.latLngs", zone.latLngs)
+    var shape = zone.zoneType;
+    if (shape == ZoneType.Marker) {
+      res = {
+        shape: shape,
+        coord: [[zone.latitude1, zone.longitude1]],
+        radius: 5,
+      };
+    } else if (shape == ZoneType.Polygon) {
+      res = {
+        shape: shape,
+        coord: zone.latLngs,
+        radius: 5,
+      };
+    } else if (shape == ZoneType.Circle) {
+      res = {
+        shape: shape,
+        coord: [[zone.latitude1, zone.longitude1]],
+        radius: zone.radius,
+      };
+    }
+    return res
+  }
+
+  getZoneFromShape(shape: any) {
+    this.selectedZone.setLatLngs(shape.coord)
+    this.selectedZone.radius = shape.radius
+  }
+
+  triggerDblClick(map: any) {
+    var event = new MouseEvent('dblclick', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+    document.getElementById(map)?.dispatchEvent(event);
+  }
+
+  showAfterDrawControls(map: any) {
+    map.pm.addControls({
+      position: 'topleft',
+      drawPolyline: false,
+      drawText: false,
+      drawCircleMarker: false,
+      cutPolygon: false,
+      drawMarker: false,
+      drawRectangle: false,
+      drawPolygon: false,
+      drawCircle: false,
+      editControls: true,
+    });
+    map.pm.enableGlobalEditMode();
+    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png' });
+    map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
+  }
+
+  showInitialDrawControls(map: any) {
+    map.pm.addControls({
+      position: 'topleft',
+      drawPolyline: false,
+      drawText: false,
+      drawCircleMarker: false,
+      cutPolygon: false,
+      drawMarker: true,
+      drawRectangle: true,
+      drawPolygon: true,
+      drawCircle: true,
+      editControls: true,
+    });
+    map.pm.enableGlobalEditMode();
+    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png' });
+    map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
+  }
+
+  hideDrawControls(map: any) {
+    map.pm.addControls({
+      position: 'topleft',
+      drawPolyline: false,
+      editControls: false,
+      drawText: false,
+      drawCircleMarker: false,
+      cutPolygon: false,
+      drawMarker: false,
+      drawRectangle: false,
+      drawPolygon: false,
+      drawCircle: false,
     })
-
-    this.myZone.setLatLng([center.lat, center.lng])
-    this.myZone.addTo(this.map)
-    this.map.setView(this.myZone.getLatLng())
-
+    map.pm.disableGlobalEditMode();
   }
 
   toggleMapFullscreen() {
@@ -679,7 +492,6 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
 
   search(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-
     this.dataSource.filter = filterValue
   }
 
@@ -688,87 +500,55 @@ export class ZoneComponent implements OnInit, AfterViewInit, OnChanges {
     this.mode = tab
     switch (tab) {
       case 'list':
+        this.selectedZone = new Zone()
+        this.selectedZoneIndex = -1
         this.clearZoneFromMap()
-        this.selectedType = ''
+        this.hideDrawControls(this.map)
         break;
-
+      case 'edit':
+        console.log("edit mode");
+        // this.clearZoneFromMap()
+        this.showAfterDrawControls(this.map)
+        break;
+      case 'create':
+        this.selectedZone = new Zone()
+        this.clearZoneFromMap()
+        this.showInitialDrawControls(this.map)
+        break;
       default:
         break;
     }
 
   }
 
-  editZone(zone: Zone) {
+  onIconChange(e) {
+    console.log(e, this.selectedZone);
+    var icon = L.icon({
+      iconUrl: 'assets/img/POI/' + e.value + '.png'
+    });
+    this.layer.setIcon(icon)
+  }
+
+  editZone(zone) {
     this.mode = 'edit'
-
     this.clearZoneFromMap()
-    this.selectedType = ZoneType[zone.zoneType]
-    this.zone.patchValue({
-      description: zone.description,
-      radius: zone.radius,
-      color: zone.shapeColor == null || zone.shapeColor == '' ? '#63c2de' : zone.shapeColor,
-      points: [
-        {
-          latitude: zone.latitude1,
-          longitude: zone.longitude1
-        },
-        {
-          latitude: zone.latitude2,
-          longitude: zone.longitude2
-        },
-        {
-          latitude: zone.latitude3,
-          longitude: zone.longitude3
-        },
-        {
-          latitude: zone.latitude4,
-          longitude: zone.longitude4
-        },
-        {
-          latitude: zone.latitude5,
-          longitude: zone.longitude5
-        },
-        {
-          latitude: zone.latitude6,
-          longitude: zone.longitude6
-        },
-        {
-          latitude: zone.latitude7,
-          longitude: zone.longitude7
-        },
-        {
-          latitude: zone.latitude8,
-          longitude: zone.longitude8
-        },
-        {
-          latitude: zone.latitude9,
-          longitude: zone.longitude9
-        },
-        {
-          latitude: zone.latitude10,
-          longitude: zone.longitude10
-        },
-      ]
-    })
-
+    this.selectedZone = zone
+    var icon = "default"
+    if (this.iconExists(this.selectedZone.iconName)) {
+      icon = this.selectedZone.iconName
+    } else {
+      this.selectedZone.iconName = "default"
+    }
+    this.drawShape(this.getShapeFromZone(zone), icon)
+    this.layer.on('pm:update', (e: any) => {
+      var res = this.getShape(undefined, e.layer, e.shape)
+      this.getZoneFromShape(res)
+      console.log(res);
+    });
+    this.showAfterDrawControls(this.map)
   }
 
-  initMarkers() {
-    var points = this.zone.value.points
-
-    points.forEach(p => {
-      let marker = L.marker(L.latLng(p.latitude, p.longitude), { draggable: true })
-      marker.on('dragend', function (event) {
-        var marker = event.target;
-        var position = marker.getLatLng();
-        marker.setLatLng(new L.LatLng(position.lat, position.lng), { draggable: 'true' });
-      });
-      this.myMarkers.push(marker)
-    })
-
-    // console.log(this.myMarkers);
-
+  iconExists(name: any) {
+    return this.cts.zoneIcons.includes({ name: name })
   }
-
-
 }

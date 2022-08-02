@@ -193,7 +193,7 @@ export class util {
                     return "fa fa-close text-dark status-cercle";
     }
 
-    createMap(map, mapId, car, provider, showCollapsControle = true, showFullScreenControle = true, showPositionControle = true) {
+    createMap(map, mapId, car, provider, showCollapsControle = true, showFullScreenControle = true, showPositionControle = true, showResetControle = true) {
         const zoomLevel = 12
         map = L.map(mapId, { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
             .setView([car.lat, car.lng], zoomLevel)
@@ -260,16 +260,17 @@ export class util {
                 position: "topleft"
             }).addTo(map);
         }
-        let ResetControl = L.Control.extend({
-            onAdd(map: L.Map) {
-                return L.DomUtil.get('resetConrtol');
-            },
-            onRemove(map: L.Map) { }
-        });
-        new ResetControl({
-            position: "topleft"
-        }).addTo(map);
-
+        if (showResetControle) {
+            let ResetControl = L.Control.extend({
+                onAdd(map: L.Map) {
+                    return L.DomUtil.get('resetConrtol');
+                },
+                onRemove(map: L.Map) { }
+            });
+            new ResetControl({
+                position: "topleft"
+            }).addTo(map);
+        }
         L.control.zoom().addTo(map)
 
         if (showFullScreenControle) {
