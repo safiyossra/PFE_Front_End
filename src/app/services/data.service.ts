@@ -53,7 +53,6 @@ export class DataService {
     })
   }
 
-
   getAllTrajets(urlParams) {
     let SERVER_URL = environment.apiUrl + "trajet-jour" + urlParams + "&k&na&da&dc&c&t&v&addi&addf";
     let jwt = this.JWT.get();
@@ -77,8 +76,8 @@ export class DataService {
       headers: headers
     })
   }
-  //fonction de detail
 
+  //fonction de detail
   getDetails(urldetails) {
     let SERVER_URL = environment.apiUrl + "eventspagination" + urldetails;
     let jwt = this.JWT.get();
@@ -322,7 +321,6 @@ export class DataService {
 
     })
   }
-
 
   delDriver(d) {
     let SERVER_URL = environment.apiUrl + "deleteDrivers" + d;

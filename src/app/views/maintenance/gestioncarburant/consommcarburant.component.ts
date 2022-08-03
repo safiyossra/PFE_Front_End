@@ -1,3 +1,5 @@
+import { Consommation } from './../../../models/Consommation';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../../services/data.service';
@@ -16,7 +18,7 @@ export class ConsommcarburantComponent {
   @ViewChild('report') report: ElementRef;
   @ViewChild('description') description: ElementRef;
 
-  constructor(private dataService: DataService, private router: Router) { }
+  constructor(private dataService: DataService, private router: Router, private formBuilder: FormBuilder) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -29,8 +31,13 @@ export class ConsommcarburantComponent {
 
 
   public devices: any = [];
+  public drivers: any = [];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
+
+  selectedDrivers = null;
+  selectedDriver = this.selectedDrivers;
+
   showErrorDevice = false;
   errorMessageDevice = "";
 
@@ -42,6 +49,8 @@ export class ConsommcarburantComponent {
 
   selectedCiternes = null;
   selectedCiterne = this.selectedCiternes;
+
+  consommation: Consommation = new Consommation();
 
   public citernes = [
     {
@@ -58,6 +67,9 @@ export class ConsommcarburantComponent {
     },
 
   ];
+
+
+
   getSelectedDevicesModal(selected) {
     // console.log(selected);
     this.selectedDeviceModal = selected;
@@ -78,6 +90,7 @@ export class ConsommcarburantComponent {
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
+
     this.myDateRangePickerOptions = {
       theme: 'default',
       labels: ['Start', 'End'],
@@ -120,24 +133,29 @@ export class ConsommcarburantComponent {
     };
 
     this.getDev();
+
+    this.getDriver();
   }
 
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
-
   }
 
   getSelectedDevices(selected) {
     // console.log(selected);
-    this.selectedDevice = selected;
+    this.consommation.NumMat = selected;
+  }
+
+  getSelectedDriver(selected) {
+    // console.log(selected);
+    this.consommation.NumChauf = selected;
   }
 
   onValidateDevice() {
     this.showErrorDevice = !this.showErrorDevice;
     this.errorMessageDevice = "This field is required";
   }
-
 
   getDev() {
     var route = this.router
@@ -153,23 +171,40 @@ export class ConsommcarburantComponent {
     })
   }
 
+  getDriver() {
+    var route = this.router
+    this.dataService.getDriverData("?minimum=true").subscribe({
+      next: (res) => {
+        console.log(res)
+        this.drivers = res;
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    })
+  }
 
+  showArretcheckbox() {
+    // consommation.PleinON =
+    console.log(this.consommation.PleinON);
+  }
+
+  // save button function
   ajouter() {
-
-
     // console.log(this.input1.nativeElement.value);
     // console.log(this.input2.nativeElement.value);
     // console.log(this.motif.nativeElement.value);
     // console.log(this.type.nativeElement.value);
     // console.log(this.modele.nativeElement.value);
 
+    console.log(this.consommation);
+
   }
 
-
   reset() {
-    this.selectedDevices = [],
-
-      this.report.nativeElement.value = ''
+    this.selectedDevices = []
+    this.report.nativeElement.value = ''
     this.id.nativeElement.value = ''
     this.description.nativeElement.value = ''
     this.pushpin.nativeElement.value = ''
