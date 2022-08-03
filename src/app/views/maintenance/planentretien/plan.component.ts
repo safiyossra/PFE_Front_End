@@ -5,6 +5,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { util } from '../../../tools/utils';
 import { Router } from '@angular/router';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
+import { PlanEntretien } from 'src/app/models/planEnretien';
 
 @Component({
   templateUrl: 'plan.component.html',
@@ -12,22 +13,20 @@ import { ExportingTool } from 'src/app/tools/exporting_tool';
 export class PlanComponent {
 
   loading: boolean = false;
+  modalLoading: boolean = false;
+  mode = "Ajouter";
+  selectedPlan = new PlanEntretien();
+  errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  @ViewChild('compt1') input1: ElementRef;
-  @ViewChild('compt2') input2: ElementRef;
-  @ViewChild('motif') motif: ElementRef;
-  @ViewChild('type') type: ElementRef;
-  @ViewChild('modele') modele: ElementRef;
   constructor(private dataService: DataService, private tools: util, private exportingTool: ExportingTool, private router: Router) { }
 
-  value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
   isCollapsed: boolean = false;
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   data = [];
   public isnotNum: boolean = false
-  displayedColumns: any = ["Sélectionner", "Véhicule", "Date de Création", "Type Opération", "Déclenchement", "Anticipant"]
+  displayedColumns: any = ["Actions", "Véhicule", "Date de Création", "Type d'Opération", "Déclenchement", "Anticipant"]
 
 
   public devices: any = [];
@@ -47,17 +46,10 @@ export class PlanComponent {
   showErrorOperation = false;
   errorMessageOperation = "";
 
-  getSelectedOperations(selected) {
+  getSelectedOperation(selected) {
     // console.log(selected);
-    this.selectedOperation = selected;
+    this.selectedPlan.operation = selected;
   }
-  resetValidator() {
-    this.showErrorDevice = false;
-    this.errorMessageDevice = "";
-    this.showErrorOperation = false;
-    this.errorMessageOperation = "";
-  }
-
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -105,7 +97,7 @@ export class PlanComponent {
         to: tomorrow
       }
     };
-
+    // this.loadData(true)
     this.getDev();
   }
 
@@ -122,46 +114,34 @@ export class PlanComponent {
 
   getSelectedDevicesModal(selected) {
     // console.log(selected);
-    this.selectedDeviceModal = selected;
-  }
-
-  onValidateDevice() {
-    this.showErrorDevice = !this.showErrorDevice;
-    this.errorMessageDevice = "This field is required";
+    this.selectedPlan.device = selected;
   }
 
   //////////////////////
-  submit() {
-    // this.resetValidator()
-    // if (this.selectedDevice == null) {
-    //   this.onValidateDevice()
-    // } else {
-    this.loading = true;
-    var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
-
+  loadData(first = false) {
     var route = this.router
+    this.loading = true;
+    var urlParams = ""
+    if (!first)
+      urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
     this.dataService.getPlanEntretien(urlParams).subscribe({
       next: (d: any) => {
-        // console.log(d);
+        console.log(d);
         this.data = d;
         this.data.forEach((e) => {
-          e.timeStart = this.tools.formatDate(new Date(Number.parseInt(e.timeStart) * 1000));
-          e.timeEnd = this.tools.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000));
-          // e.timeStart = new Date(Number.parseInt(e.timeStart) * 1000).toLocaleDateString();
-          //e.timeEnd = new Date(Number.parseInt(e.timeEnd) * 1000).toLocaleDateString();
-          if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
-          if (e.dc) e.dc = Math.round(Number.parseInt(e.dc) / 60);
+          e.DateCreation = this.tools.formatDate(new Date(Number.parseInt(e.DateCreation) * 1000));
+          e.DateSaisie = this.tools.formatDate(new Date(Number.parseInt(e.DateSaisie) * 1000));
+          // if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
         })
         this.loading = false;
       }, error(err) {
+        this.loading = false;
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
         }
       }
     })
-    //  }
   };
-
 
   getDev() {
     var route = this.router
@@ -176,28 +156,97 @@ export class PlanComponent {
     })
   }
 
-
-  ajouter() {
-
-
-    // console.log(this.input1.nativeElement.value);
-    // console.log(this.input2.nativeElement.value);
-    // console.log(this.motif.nativeElement.value);
-    // console.log(this.type.nativeElement.value);
-    // console.log(this.modele.nativeElement.value);
-
+  loadModify(ev) {
+    this.mode = "Modifier"
+    this.selectedPlan = new PlanEntretien();
+    // this.resetRulesAffectation()
+    if (ev) {
+      // this.selectedPlan...
+      this.primaryModal.show()
+    }
   }
 
+  submit() {
+    if (this.mode == "Ajouter") this.ajouter()
+    if (this.mode == "Modifier") this.modifier()
+  }
+
+  ajouter() {
+    var route = this.router
+    this.errorMsg = ""
+    // this.this.selectedPlan.device = this.resultedRule
+    if (!this.selectedPlan.device || (!this.selectedPlan.decDate && !this.selectedPlan.decKm) || (!this.selectedPlan.decKmValue && !this.selectedPlan.decDateValue) || !this.selectedPlan.operation) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      this.dataService.addRule(this.selectedPlan).subscribe({
+        next: (res) => {
+          console.log("added", res)
+          this.loadData(true)
+          this.primaryModal.hide()
+          this.errorMsg = ""
+        }
+        , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+        }
+      })
+    }
+  }
+
+  modifier() {
+    var route = this.router
+    this.errorMsg = ""
+    if (!this.selectedPlan.device || (!this.selectedPlan.decDate && !this.selectedPlan.decKm) || (!this.selectedPlan.decKmValue && !this.selectedPlan.decDateValue) || !this.selectedPlan.operation) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      this.dataService.updateRule(this.selectedPlan).subscribe({
+        next: (res) => {
+          this.errorMsg = ""
+          this.loadData(true)
+          this.primaryModal.hide()
+          this.errorMsg = ""
+        }, error(err) {
+          console.log("error", err)
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur la modification est bloqué."
+          }
+        }
+      })
+    }
+  }
+
+  delete(plan) {
+    if (confirm("Are you sure you want to delete " + plan)) {
+      var route = this.router
+      var u = "?id=" + plan
+      this.dataService.delRule(u).subscribe({
+        next: (res) => {
+          this.loadData()
+        }, error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            alert("Erreur, la suppression est bloqué")
+          }
+        }
+      })
+    }
+  }
 
   reset() {
-    this.selectedDevices = [],
-      this.selectedDevicesModal = [],
-      this.selectedOperations = [],
-      this.input1.nativeElement.value = ''
-    this.input2.nativeElement.value = ''
-    this.motif.nativeElement.value = ''
-    this.type.nativeElement.value = ''
-    this.modele.nativeElement.value = ''
+    this.selectedDevices = null
+    this.selectedDevice = null
   }
 
   exporter() {

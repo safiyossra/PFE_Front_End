@@ -5,6 +5,7 @@ import { MaintenanceRoutingModule } from './maintenance-routing.module';
 import { MaintenanceComponent } from './maintenance.component';
 import { SharedModule } from '../components/shared.module';
 import { PlanentretienModule } from './planentretien/planentretien.module';
+import { GestioncarburantModule } from './gestioncarburant/gestioncarburant.module';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { PlanentretienModule } from './planentretien/planentretien.module';
   imports: [
     CommonModule,
     MaintenanceRoutingModule,
+    GestioncarburantModule,
     PlanentretienModule,
     SharedModule
   ]
