@@ -54,7 +54,7 @@ export class MyGestionNotifsRulesTableComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
       let d = changes['data'].currentValue
-      if (d && d.length > 0) {
+      if (d /*&& d.length > 0*/) {
         this.dataSource = new MatTableDataSource(d)
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;

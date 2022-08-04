@@ -49,8 +49,8 @@ export class DetailleComponent implements AfterViewInit {
 
   displayedColumnsArrets: any = ["Depart", "Arrivé", "Adresse", "Durée (min)"]
   columnsArrets: any = ["timeStart", "timeEnd", "addi", "da"];
-  displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]
-  columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
+  displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Carburant réel (L)", "Odomètre", "Adresse"]
+  columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "cr", "odometerKM", "address"];
 
   resume = [];
 
@@ -336,7 +336,7 @@ export class DetailleComponent implements AfterViewInit {
       var route = this.router
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
-          console.log(d);
+          // console.log(d);
           d.forEach((e) => {
             e.st = e.timeStart;
             e.et = e.timeEnd;
@@ -355,6 +355,10 @@ export class DetailleComponent implements AfterViewInit {
           this.reportDataArrets = d.filter((e) => { return e.trajet == 0 });
           this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "st": e.st, "et": e.et, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), } });
           this.selectedMapDevice = this.selectedDevice
+          console.log("trajet et parking", this.reportData);
+          console.log("parking", this.reportDataArrets);
+          console.log("trajet", this.reportDataTrajet);
+
           let resumetmp = [];
           let labels = this.reportData.map((l) => { return l.timeStart })
           this.columns.forEach((e, index) => {
@@ -392,9 +396,9 @@ export class DetailleComponent implements AfterViewInit {
             e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
             e.device = this.getVehiculeNameById(e.deviceID)
             var capacity = this.getVehiculeCapacityById(e.deviceID)
-            e.fuelLevel = e.fuelLevel * capacity
-            e.deltaFuelLevel = e.deltaFuelLevel * capacity
-            e.fuelstart = e.fuelstart * capacity
+            e.fuelLevel = Math.fround(e.fuelLevel * capacity)
+            e.deltaFuelLevel = Math.fround(e.deltaFuelLevel * capacity)
+            e.fuelstart = Math.fround(e.fuelstart * capacity)
           })
           this.reportDataCarburant = d
         }, error(err) {

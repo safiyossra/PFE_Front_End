@@ -80,7 +80,7 @@ export class DetailsTableComponent implements OnChanges {
           e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
           e.status = this.tools.getStatusName(e.statusCode)
         })
-        // console.log(this.loadDonnee);
+        console.log("events", this.loadDonnee);
         setTimeout(() => {
           this.paginator.pageIndex = this.currentPage;
           this.paginator.length = d.total

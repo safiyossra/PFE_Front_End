@@ -63,10 +63,10 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   // charts attributes
   public lineChartData1: Array<any> = [
-    { data: [], label: 'Vitesse' }
+    { data: [], label: 'Vitesse(km/h)' }
   ]
   public lineChartData2: Array<any> = [
-    { data: [], label: 'Carburant' }
+    { data: [], label: 'Carburant(%)' }
   ]
   public lineChartLabels: Array<any> = []
   public lineChartOptions: any = {
@@ -185,7 +185,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
           return { x: new Date(event.timestamp * 1000), y: event.speedKPH }
         }))
 
-        this.lineChartData2[0].data = (this.events.map((event) => event.fuelTotal))
+        this.lineChartData2[0].data = (this.events.map((event) => event.fuelLevel))
 
         this.lineChartLabels = this.events.map((event: { timestamp: any; }) => new Date(event.timestamp * 1000))
 
