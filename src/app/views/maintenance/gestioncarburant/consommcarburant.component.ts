@@ -1,9 +1,12 @@
+import { util } from './../../../tools/utils';
+import { routes } from './../../../app.routing';
 import { Consommation } from './../../../models/Consommation';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   templateUrl: 'consommcarburant.component.html',
@@ -17,7 +20,7 @@ export class ConsommcarburantComponent {
   @ViewChild('report') report: ElementRef;
   @ViewChild('description') description: ElementRef;
 
-  constructor(private dataService: DataService, private router: Router) {
+  constructor(private dataService: DataService, private router: Router, private tools: util, private dateAdapter: DateAdapter<Date>, private route: Router) {
   }
 
   value: string | Object;
@@ -50,9 +53,6 @@ export class ConsommcarburantComponent {
 
   consommation: Consommation = new Consommation();
 
-  getSelectedDevicesModal(selected) {
-    this.selectedDeviceModal = selected;
-  }
 
   getSelectedCiternes(selected) {
     this.selectedCiterne = selected;
@@ -62,10 +62,13 @@ export class ConsommcarburantComponent {
     this.showErrorDevice = false;
     this.errorMessageDevice = "";
   }
+
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
 
   ngOnInit() {
+    this.dateAdapter.setLocale('en-GB');
+
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
@@ -114,6 +117,8 @@ export class ConsommcarburantComponent {
     this.getDev();
 
     this.getDriver();
+
+    this.loadData();
   }
 
   toggleCollapse(): void {
@@ -126,18 +131,52 @@ export class ConsommcarburantComponent {
     this.errorMessageDevice = "This field is required";
   }
 
+  getSelectedDevices(selected) {
+    this.selectedDevice = selected;
+  }
+
+  // La list des vehicules
   getDev() {
     var route = this.router
-    this.dataService.getVehicule().subscribe({
+    this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
         this.devices = res;
-        // console.log(res)
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
         }
       }
     })
+  }
+
+  // Modal functions
+
+  editKmEncours = false;
+  editKmPrecedent = false;
+
+  // formatingDate() {
+  //   // this.consommation.dateFill = formatDate(new Date(this.consommation.dateFill), 'dd/MM/yyyy HH:mm:ss', 'en');
+  //   console.log(this.consommation.dateFill);
+  // }
+
+  dateToTimeStamp(date) {
+    console.log(Date.parse(date) / 1000);
+    return Date.parse(date) / 1000 as number;
+  }
+
+  timestampToDate(myTimestamp) {
+
+    console.log(Date.parse(myTimestamp) / 1000);
+
+    return Date.parse(myTimestamp) / 1000 as number;
+  }
+
+  // km_actuel
+  getCurrentKm(id) {
+    for (let i = 0; i < this.devices.length; i++) {
+      if (this.devices[i].dID == id) return this.devices[i].km
+    }
+    return 0
   }
 
   getDriver() {
@@ -154,57 +193,132 @@ export class ConsommcarburantComponent {
     })
   }
 
-  getSelectedDevices(selected) {
+  showArretcheckbox() {
+    // console.log(this.consommation.pleinOn);
+    // show ConsomMoy
+  }
+
+  // convert date + hour to timestamp
+  // consomDate: any;
+  // consomTime: any;
+  // getConsomTime() {
+  //   var time = this.consomDate + ' ' + this.consomTime;
+  //   var consomTime: number = Date.parse(time) / 1000;
+  //   return consomTime;
+  // }
+
+
+  getSelectedDevicesModal(selected) {
     this.consommation.deviceID = selected;
+    this.consommation.kmEncours = this.getCurrentKm(selected);
   }
 
   getSelectedDriver(selected) {
     this.consommation.driverID = selected;
   }
 
-  showArretcheckbox() {
-    // console.log(this.consommation.pleinOn);
-    // show ConsomMoy
+  dateSelected() {
+    this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
+
+    if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '')
+      this.getKmPrecedent(this.consommation.dateFill, this.consommation.deviceID);
+
   }
 
-  consomDate: any;
-  consomTime: any;
+  // get km precedent
+  getKmPrecedent(date, vehID) {
+    this.dataService.getConsommation("?date=" + date + "&vehId=" + vehID).subscribe({
+      next: (res) => {
+        this.consommation.kmEncours = res.kmEncours ?? 0;
+      }, error(err) {
+        if (err.status == 401) {
+          this.route.navigate(['login']);
+        }
+      }
+    });
+  }
 
-  getConsomTime() {
-    var time = this.consomDate + ' ' + this.consomTime;
-    var consomTime: number = Date.parse(time) / 1000;
-    // console.log(consomTime);
-    return consomTime;
+  getQte() {
+    this.calculateQteMoy();
+  }
+
+  calculateQteMoy() {
+    this.consommation.consoM = (this.consommation.kmEncours - this.consommation.kmPrecedent) / this.consommation.qte * 100;
+  }
+
+  errorMsg = "";
+
+  verifyConsommationFields() {
+    return (!this.consommation.deviceID &&
+      !this.consommation.driverID &&
+      !this.consommation.qte &&
+      !this.consommation.montant &&
+      !this.consommation.montantTTC &&
+      !this.consommation.dateFill &&
+      !this.consommation.dateFillString &&
+      !this.consommation.kmPrecedent &&
+      !this.consommation.kmEncours &&
+      !this.consommation.pleinOn &&
+      !this.consommation.consoM &&
+      !this.consommation.fournisseur &&
+      !this.consommation.numCarte &&
+      !this.consommation.numBon)
+
   }
 
   // save button function
   ajouter() {
-    this.consommation.dateFill = this.getConsomTime();
     console.log(this.consommation);
 
-    // var route = this.router
-    // if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
-    //   this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
-    // } else {
-    //   this.dataService.addDevicesGroup(this.selectedGroupevehicules).subscribe({
-    //     next: (res) => {
-    //       console.log("add")
-    //       this.loadData()
-    //       this.primaryModal.hide()
-    //       this.errorMsg = ""
-    //     }
-    //     , error(err) {
-    //       this.modalLoading = false;
-    //       if (err.status == 401) {
-    //         route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-    //       }
-    //       else if (err.status == 402) {
-    //         this.errorMsg = "Erreur l'ajout est bloqué."
-    //       }
-    //     }
-    //   })
-    // }
+    var route = this.router
+    this.errorMsg = ""
+    // this.this.selectedPlan.device = this.resultedRule
+    if (this.verifyConsommationFields()) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+
+      this.dataService.addConsommation(this.consommation).subscribe({
+        next: (res) => {
+          console.log("added", res)
+          this.loadData(true)
+          this.primaryModal.hide()
+          this.errorMsg = ""
+        }
+        , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+        }
+      })
+    }
   }
+
+  loadData(first = false) {
+    var route = this.router
+    this.loading = true;
+    var urlParams = ""
+    // if (!first)
+    //   urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
+    this.dataService.getConsommation(urlParams).subscribe({
+      next: (d: any) => {
+        console.log(d);
+        this.data = d;
+        this.data.forEach((e) => {
+          e.dateFill = this.tools.formatDate(new Date(Number.parseInt(e.dateFill) * 1000));
+        })
+        this.loading = false;
+      }, error(err) {
+        this.loading = false;
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    })
+  };
 
   reset() {
     this.selectedDevices = []

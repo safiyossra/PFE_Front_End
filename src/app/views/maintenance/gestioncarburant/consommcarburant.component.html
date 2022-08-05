@@ -52,7 +52,6 @@
                     <div class="col-lg-6 d-flex h-full mb-md-0">
                       <!-- info consommation -->
                       <div class="card flex-grow-1 pb-md-0">
-                        <div class="card-header">Information consommation</div>
                         <div class="card-body">
                           <!-- n fiche -->
                           <!-- <div class="row form-group">
@@ -77,32 +76,17 @@
                           <!-- dates -->
                           <div class="form-group row">
                             <label
-                              class="col-md-3 col-form-label"
+                              class="col-md-2 col-form-label"
                               for="text-input"
                               >Date</label
                             >
-                            <div class="col-md-3">
+                            <div class="col">
                               <input
-                                type="date"
-                                id="text-input"
-                                #date
-                                [(ngModel)]="consomDate"
-                                name="fiche"
-                                class="form-control"
-                              />
-                            </div>
-                            <label
-                              class="col-md-3 col-form-label"
-                              for="text-input"
-                              >Heure</label
-                            >
-                            <div class="col-md-3">
-                              <input
-                                type="time"
-                                id="text-input"
-                                [(ngModel)]="consomTime"
-                                #heure
-                                name="fiche"
+                                type="datetime-local"
+                                id="meeting-time"
+                                [(ngModel)]="consommation.dateFillString"
+                                (ngModelChange)="dateSelected()"
+                                name="date"
                                 class="form-control"
                               />
                             </div>
@@ -110,7 +94,7 @@
 
                           <!-- matricule -->
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="select1"
+                            <label class="col-md-2 col-form-label" for="select1"
                               >Matricule</label
                             >
                             <div class="col input-group">
@@ -126,7 +110,9 @@
                                 [multiple]="false"
                                 [labelCount]="0"
                                 [selectedOptions]="selectedDevices"
-                                (selectionChange)="getSelectedDevices($event)"
+                                (selectionChange)="
+                                  getSelectedDevicesModal($event)
+                                "
                               >
                               </my-dropdown-select>
                             </div>
@@ -134,7 +120,7 @@
 
                           <!-- Driver -->
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="select2"
+                            <label class="col-md-2 col-form-label" for="select2"
                               >Conducteur</label
                             >
                             <div class="col input-group">
@@ -158,39 +144,70 @@
 
                           <!-- kilometrage -->
                           <div class="form-group row mb-0">
+                            <!-- precedent -->
                             <label
-                              class="col-md-3 col-form-label"
+                              class="col-md-2 col-form-label"
                               for="text-input"
                               >Km precedent</label
                             >
-                            <div class="col-md-3">
+                            <div class="col-md-4 input-group">
                               <input
                                 [(ngModel)]="consommation.kmPrecedent"
                                 type="number"
                                 min="0"
                                 id="text-input"
-                                #kmp
+                                [disabled]="!editKmPrecedent"
                                 name="kmp"
                                 class="form-control"
                                 placeholder="0,00"
                               />
+                              <div class="input-group-append">
+                                <span class="input-group-text">
+                                  <input
+                                    id="s1"
+                                    type="checkbox"
+                                    class="switch"
+                                    [(ngModel)]="editKmPrecedent"
+                                    [ngModelOptions]="{ standalone: true }"
+                                  />
+                                  <label for="s1" class="ml-2 my-2 my-md-0">
+                                    modifier</label
+                                  >
+                                </span>
+                              </div>
                             </div>
+
+                            <!-- Actuel -->
                             <label
-                              class="col-md-3 col-form-label"
+                              class="col-md-2 col-form-label"
                               for="text-input"
                               >Km actuel</label
                             >
-                            <div class="col-md-3">
+                            <div class="col-md-4 input-group">
                               <input
                                 [(ngModel)]="consommation.kmEncours"
                                 type="number"
                                 min="0"
                                 id="text-input"
-                                #kma
+                                [disabled]="!editKmEncours"
                                 name="kma"
                                 class="form-control"
                                 placeholder="0,00"
                               />
+                              <div class="input-group-append">
+                                <span class="input-group-text">
+                                  <input
+                                    id="s1"
+                                    type="checkbox"
+                                    class="switch"
+                                    [(ngModel)]="editKmEncours"
+                                    [ngModelOptions]="{ standalone: true }"
+                                  /><label for="s1" class="ml-2 my-2 my-md-0">
+                                    <!-- (ngModelChange)="showArretcheckbox()" -->
+                                    modifier</label
+                                  >
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -200,9 +217,27 @@
                     <!-- right col -->
                     <div class="col-lg-6" style="box-sizing: border-box">
                       <div class="card pb-md-0">
-                        <div class="card-header">Consommation par citerne</div>
                         <div class="card-body">
-                          <!-- n carte -->
+                          <!-- societe -->
+                          <div class="form-group row align-items-center">
+                            <label
+                              class="col-md-3 col-form-label"
+                              for="text-input"
+                              >Société</label
+                            >
+                            <div class="col">
+                              <input
+                                type="text"
+                                id="text-input"
+                                #societe
+                                [(ngModel)]="consommation.fournisseur"
+                                name="societe"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+
+                          <!-- n bon, carte -->
                           <div class="form-group row align-items-center">
                             <!-- carte -->
                             <label
@@ -210,7 +245,7 @@
                               for="text-input"
                               >N° carte</label
                             >
-                            <div class="col">
+                            <div class="col-md-3">
                               <input
                                 type="text"
                                 id="text-input"
@@ -220,10 +255,7 @@
                                 class="form-control"
                               />
                             </div>
-                          </div>
 
-                          <!-- n bon, societe -->
-                          <div class="form-group row align-items-center">
                             <!-- n bon -->
                             <label
                               class="col-md-3 col-form-label"
@@ -241,23 +273,6 @@
                                 placeholder="0"
                               />
                             </div>
-
-                            <!-- societe -->
-                            <label
-                              class="col-md-3 col-form-label"
-                              for="text-input"
-                              >Société</label
-                            >
-                            <div class="col-md-3">
-                              <input
-                                type="text"
-                                id="text-input"
-                                #societe
-                                [(ngModel)]="consommation.fournisseur"
-                                name="societe"
-                                class="form-control"
-                              />
-                            </div>
                           </div>
 
                           <!-- plein qte-->
@@ -268,7 +283,7 @@
                               for="text-input"
                               >Qte (L)</label
                             >
-                            <div class="col-md-3">
+                            <div class="input-group col">
                               <input
                                 [(ngModel)]="consommation.qte"
                                 type="number"
@@ -279,24 +294,21 @@
                                 class="form-control"
                                 placeholder="0,000"
                               />
-                            </div>
-
-                            <!-- plein -->
-                            <label
-                              for="s1"
-                              class="mr-2 my-2 my-md-0 col-md-1 offset-md-3"
-                            >
-                              Plein</label
-                            >
-                            <div class="col-md-1 ml-2 ml-md-1 px-2">
-                              <input
-                                id="s1"
-                                type="checkbox"
-                                class="switch"
-                                [(ngModel)]="consommation.pleinOn"
-                                [ngModelOptions]="{ standalone: true }"
-                                (ngModelChange)="showArretcheckbox()"
-                              />
+                              <!-- plein -->
+                              <div class="input-group-append">
+                                <span class="input-group-text">
+                                  <input
+                                    id="s1"
+                                    type="checkbox"
+                                    class="switch"
+                                    [(ngModel)]="consommation.pleinOn"
+                                    [ngModelOptions]="{ standalone: true }"
+                                    (ngModelChange)="showArretcheckbox()"
+                                  /><label for="s1" class="mr-2 my-2 my-md-0">
+                                    Plein</label
+                                  >
+                                </span>
+                              </div>
                             </div>
                           </div>
 

@@ -12,15 +12,43 @@ import { MatTableDataSource } from '@angular/material/table';
   templateUrl: 'my-gestioncarburant-table.component.html',
 })
 export class MyGestioncarburantTableComponent implements OnChanges {
-  @Input() data=[];
+  @Input() data = [];
   // @Input() columnNames?: any[]
-  public displayedColumns =  ["id","extern","on","depot","pere","carte","date","immat",'marque',"model","qte","cons","conducteur","km prec","km encours","mt","num","trans","mat trans"]
+  public displayedColumns = ['id',
+    'driverID',
+    'deviceID',
+    'dateFill',
+    'montant',
+    'numCarte',
+    'qte',
+    'kmPrecedent',
+    'kmEncours',
+    'fournisseur',
+    'observation',
+    'montantTTC',
+    'numBon',
+    'pleinOn',
+    'consoM']
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  columnNames =["ID","Externe","PleinOn","Dépôt","Dépôt père","N° carte","Date","Immat","Marque","Modèle","Qte","Consom moyenne","Conducteur","Km prec","Km encours","Montant","N° Bon","Trans","Mat Trans"];
+  columnNames = ['id',
+    'Chauffeur',
+    'Vehicule',
+    'Date',
+    'Montant',
+    'N Carte',
+    'Qte',
+    'KM Precedent',
+    'KM Encours',
+    'Fournisseur',
+    'Observation',
+    'Montant TTC',
+    'N Bon',
+    'Plein',
+    'Consommation Moy'];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -44,25 +72,20 @@ export class MyGestioncarburantTableComponent implements OnChanges {
   }
 
   onRowClicked(row: any) {
-    // console.log('Row clicked: ', row);
+    console.log('Row clicked: ', row);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-  //   if (changes['data']) {
-  //   let d = changes['data'].currentValue
-  //   if (d && d.length>0) {
-  //     console.log("data");
-      
-  //     console.log(d);
-  //     console.log(changes['columnNames']);
-      
-  //   this.dataSource = new MatTableDataSource(d)
-  //   this.displayedColumns = this.columns
-  //   this.totalItems = this.dataSource.data.length
-  //   this.dataSource.paginator = this.paginator;
-  //   this.dataSource.sort = this.sort;
-  //   }
-  // }
-}
+    if (changes['data']) {
+      let d = changes['data'].currentValue
+      if (d && d.length > 0) {
+        this.dataSource = new MatTableDataSource(d)
+        // this.displayedColumns = this.columns
+        this.totalItems = this.dataSource.data.length
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      }
+    }
+  }
 }
 

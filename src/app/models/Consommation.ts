@@ -6,6 +6,7 @@ export class Consommation {
   montant: any;
   montantTTC: any;
   dateFill: any;
+  dateFillString: any;
   kmPrecedent: any;
   kmEncours: any;
   pleinOn: any;
