@@ -49,18 +49,19 @@
                 <div class="animated fadeIn">
                   <form class="row">
                     <!-- left col -->
-                    <div class="col-lg-6 d-flex flex-column">
+                    <div class="col-lg-6 d-flex h-full mb-md-0">
                       <!-- info consommation -->
-                      <div class="card">
+                      <div class="card flex-grow-1 pb-md-0">
                         <div class="card-header">Information consommation</div>
                         <div class="card-body">
-                          <div class="row form-group">
+                          <!-- n fiche -->
+                          <!-- <div class="row form-group">
                             <label
                               class="col-md-2 col-form-label"
                               for="text-input"
                               >N° fiche</label
                             >
-                            <div class="col-4">
+                            <div class="col-md-4">
                               <input
                                 type="text"
                                 id="text-input"
@@ -71,30 +72,16 @@
                                 class="form-control"
                               />
                             </div>
-                            <label
-                              class="col-md-2 col-form-label"
-                              for="text-input"
-                              >Société</label
-                            >
-                            <div class="col-3">
-                              <input
-                                type="text"
-                                id="text-input"
-                                #societe
-                                [(ngModel)]="consommation.Fournisseur"
-                                name="societe"
-                                class="form-control"
-                              />
-                            </div>
-                          </div>
+                          </div> -->
 
+                          <!-- dates -->
                           <div class="form-group row">
                             <label
-                              class="col-md-2 col-form-label"
+                              class="col-md-3 col-form-label"
                               for="text-input"
                               >Date</label
                             >
-                            <div class="col-4">
+                            <div class="col-md-3">
                               <input
                                 type="date"
                                 id="text-input"
@@ -105,13 +92,13 @@
                               />
                             </div>
                             <label
-                              class="col-md-2 col-form-label"
+                              class="col-md-3 col-form-label"
                               for="text-input"
                               >Heure</label
                             >
-                            <div class="col-3">
+                            <div class="col-md-3">
                               <input
-                                type="text"
+                                type="time"
                                 id="text-input"
                                 #heure
                                 name="fiche"
@@ -119,20 +106,13 @@
                               />
                             </div>
                           </div>
-                        </div>
-                      </div>
 
-                      <!-- info chauffeur -->
-                      <div class="card flex-grow-1">
-                        <div class="card-header">
-                          Informations Vehicule/Chauffeur
-                        </div>
-                        <div class="card-body">
+                          <!-- matricule -->
                           <div class="form-group row">
-                            <label class="col-md-4 col-form-label" for="select1"
+                            <label class="col-md-3 col-form-label" for="select1"
                               >Matricule</label
                             >
-                            <div class="col-8 input-group">
+                            <div class="col input-group">
                               <my-dropdown-select
                                 class="form-control"
                                 [placeholder]="'Vehicules Selection'"
@@ -150,11 +130,13 @@
                               </my-dropdown-select>
                             </div>
                           </div>
+
+                          <!-- Driver -->
                           <div class="form-group row">
-                            <label class="col-md-4 col-form-label" for="select2"
+                            <label class="col-md-3 col-form-label" for="select2"
                               >Conducteur</label
                             >
-                            <div class="col-8 input-group">
+                            <div class="col input-group">
                               <my-dropdown-select
                                 class="form-control"
                                 [placeholder]="'Vehicules Selection'"
@@ -172,115 +154,15 @@
                               </my-dropdown-select>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
 
-                    <!-- right col -->
-                    <div class="col-lg-6">
-                      <!-- citern -->
-                      <div class="card">
-                        <div class="card-header">Consommation par citerne</div>
-                        <div class="card-body">
-                          <div class="form-group row">
-                            <label
-                              class="col-md-4 col-form-label"
-                              for="text-input"
-                              >N° de Bon</label
-                            >
-                            <div class="col-8">
-                              <input
-                                type="number"
-                                id="text-input"
-                                #numb
-                                name="numbon"
-                                [(ngModel)]="consommation.NumBon"
-                                class="form-control"
-                                placeholder="0"
-                              />
-                            </div>
-                          </div>
-                          <div
-                            class="form-group row d-flex align-content-center justify-content-between"
-                          >
-                            <!-- check box -->
-                            <div class="col-md-4">
-                              <label for="s1" class="col-md-8 col-form-label">
-                                Plein</label
-                              >
-                              <input
-                                id="s1"
-                                type="checkbox"
-                                class="switch mt-2"
-                                [(ngModel)]="consommation.PleinON"
-                                [ngModelOptions]="{ standalone: true }"
-                                (ngModelChange)="showArretcheckbox()"
-                              />
-                            </div>
-
-                            <div class="col-md-8">
-                              <label
-                                class="col-md-8"
-                                for="text-input"
-                                >Consom Moy</label
-                              >
-                              <!-- consom should be calculated -->
-                              <label
-                                class="col-md-4 text-center border rounded col-form-label"
-                                >{{ consommation.consoM }} L/Km</label
-                              >
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- last card -->
-                      <div class="card">
-                        <div class="card-header">Informations consommation</div>
-                        <div class="card-body">
-                          <div class="form-group row">
-                            <label
-                              class="col-md-3 col-form-label"
-                              for="text-input"
-                              >N° carte</label
-                            >
-                            <div class="col-3">
-                              <input
-                                type="text"
-                                id="text-input"
-                                #carte
-                                name="carte"
-                                [(ngModel)]="consommation.Carte"
-                                class="form-control"
-                              />
-                            </div>
-
-                            <label
-                              class="col-md-3 col-form-label"
-                              for="text-input"
-                              >Qte (L)</label
-                            >
-                            <div class="col-3">
-                              <input
-                                [(ngModel)]="consommation.Qte"
-                                type="number"
-                                min="0"
-                                id="text-input"
-                                #qte
-                                name="qte"
-                                class="form-control"
-                                placeholder="0,000"
-                              />
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
+                          <!-- kilometrage -->
+                          <div class="form-group row mb-0">
                             <label
                               class="col-md-3 col-form-label"
                               for="text-input"
                               >Km precedent</label
                             >
-                            <div class="col-3">
+                            <div class="col-md-3">
                               <input
                                 [(ngModel)]="consommation.KmPrecedent"
                                 type="number"
@@ -297,7 +179,7 @@
                               for="text-input"
                               >Km actuel</label
                             >
-                            <div class="col-3">
+                            <div class="col-md-3">
                               <input
                                 [(ngModel)]="consommation.KmEncours"
                                 type="number"
@@ -310,14 +192,121 @@
                               />
                             </div>
                           </div>
+                        </div>
+                      </div>
+                    </div>
 
-                          <div class="form-group row">
+                    <!-- right col -->
+                    <div class="col-lg-6" style="box-sizing: border-box">
+                      <div class="card pb-md-0">
+                        <div class="card-header">Consommation par citerne</div>
+                        <div class="card-body">
+                          <!-- n carte -->
+                          <div class="form-group row align-items-center">
+                            <!-- carte -->
+                            <label
+                              class="col-md-3 col-form-label"
+                              for="text-input"
+                              >N° carte</label
+                            >
+                            <div class="col">
+                              <input
+                                type="text"
+                                id="text-input"
+                                #carte
+                                name="carte"
+                                [(ngModel)]="consommation.Carte"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+
+                          <!-- n bon, societe -->
+                          <div class="form-group row align-items-center">
+                            <!-- n bon -->
+                            <label
+                              class="col-md-3 col-form-label"
+                              for="text-input"
+                              >N° de Bon</label
+                            >
+                            <div class="col-md-3">
+                              <input
+                                type="number"
+                                id="text-input"
+                                #numb
+                                name="numbon"
+                                [(ngModel)]="consommation.NumBon"
+                                class="form-control"
+                                placeholder="0"
+                              />
+                            </div>
+
+                            <!-- societe -->
+                            <label
+                              class="col-md-3 col-form-label"
+                              for="text-input"
+                              >Société</label
+                            >
+                            <div class="col-md-3">
+                              <input
+                                type="text"
+                                id="text-input"
+                                #societe
+                                [(ngModel)]="consommation.Fournisseur"
+                                name="societe"
+                                class="form-control"
+                              />
+                            </div>
+                          </div>
+
+                          <!-- plein qte-->
+                          <div class="form-group row align-items-center">
+                            <!-- qte -->
+                            <label
+                              class="col-md-3 col-form-label"
+                              for="text-input"
+                              >Qte (L)</label
+                            >
+                            <div class="col-md-3">
+                              <input
+                                [(ngModel)]="consommation.Qte"
+                                type="number"
+                                min="0"
+                                id="text-input"
+                                #qte
+                                name="qte"
+                                class="form-control"
+                                placeholder="0,000"
+                              />
+                            </div>
+
+                            <!-- plein -->
+                            <label
+                              for="s1"
+                              class="mr-2 my-2 my-md-0 col-md-1 offset-md-3"
+                            >
+                              Plein</label
+                            >
+                            <div class="col-md-1 ml-2 ml-md-1 px-2">
+                              <input
+                                id="s1"
+                                type="checkbox"
+                                class="switch"
+                                [(ngModel)]="consommation.PleinON"
+                                [ngModelOptions]="{ standalone: true }"
+                                (ngModelChange)="showArretcheckbox()"
+                              />
+                            </div>
+                          </div>
+
+                          <!-- montants -->
+                          <div class="form-group row align-items-center">
                             <label
                               class="col-md-3 col-form-label"
                               for="text-input"
                               >Montant T.T.C</label
                             >
-                            <div class="col-3">
+                            <div class="col-md-3">
                               <input
                                 [(ngModel)]="consommation.MontantTTC"
                                 type="number"
@@ -334,7 +323,7 @@
                               for="text-input"
                               >Montant H.T</label
                             >
-                            <div class="col-3">
+                            <div class="col-md-3">
                               <input
                                 [(ngModel)]="consommation.Montant"
                                 type="number"
@@ -345,6 +334,24 @@
                                 class="form-control"
                                 placeholder="0,00"
                               />
+                            </div>
+                          </div>
+
+                          <!-- consommation Moyenne -->
+                          <div
+                            *ngIf="consommation.PleinON"
+                            class="form-group row align-items-center mb-0 justify-content-end"
+                          >
+                            <label
+                              class="col-md-2 pl-md-0 my-0 offset-md-2"
+                              for="text-input"
+                              >Consom Moy</label
+                            >
+                            <div
+                              style="background-color: #2962ff"
+                              class="text-center rounded mx-3 col-md-4 py-2 text-white"
+                            >
+                              <span>{{ consommation.consoM }} L/Km</span>
                             </div>
                           </div>
                         </div>
@@ -463,7 +470,7 @@
                         ><i class="fa fa-filter fa-sm"></i
                       ></span>
                     </div>
-                    <my-dropdown-select
+                    <!-- <my-dropdown-select
                       class="form-control"
                       [placeholder]="'Citerne '"
                       [selectPlaceholder]="'Chercher...'"
@@ -475,7 +482,7 @@
                       [selectedOptions]="selectedCiternes"
                       (selectionChange)="getSelectedCiternes($event)"
                     >
-                    </my-dropdown-select>
+                    </my-dropdown-select> -->
                   </div>
                 </div>
               </div>

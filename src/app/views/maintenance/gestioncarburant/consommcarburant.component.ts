@@ -1,5 +1,4 @@
 import { Consommation } from './../../../models/Consommation';
-import { FormBuilder, Validators } from '@angular/forms';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../../services/data.service';
@@ -18,7 +17,8 @@ export class ConsommcarburantComponent {
   @ViewChild('report') report: ElementRef;
   @ViewChild('description') description: ElementRef;
 
-  constructor(private dataService: DataService, private router: Router, private formBuilder: FormBuilder) { }
+  constructor(private dataService: DataService, private router: Router) {
+  }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -51,24 +51,6 @@ export class ConsommcarburantComponent {
   selectedCiterne = this.selectedCiternes;
 
   consommation: Consommation = new Consommation();
-
-  public citernes = [
-    {
-      label: "Tout",
-      data: "0"
-    },
-    {
-      label: "Citerne 1",
-      data: "1"
-    },
-    {
-      label: "Citerne 2",
-      data: "2"
-    },
-
-  ];
-
-
 
   getSelectedDevicesModal(selected) {
     // console.log(selected);

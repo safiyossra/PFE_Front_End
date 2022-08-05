@@ -7,6 +7,7 @@ import { User } from '../models/user';
 import { Device } from '../models/device';
 import { Driver } from '../models/driver';
 import { Groupevehicules } from '../models/groupevehicules';
+import { Consommation } from '../models/Consommation';
 
 @Injectable({
   providedIn: 'root'
@@ -363,6 +364,61 @@ export class DataService {
 
   delDevicesGroup(g) {
     let SERVER_URL = environment.apiUrl + "deleteGroupeVehicules" + g;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  // get Consommation
+  getConsommation(urlplan) {
+    let SERVER_URL = environment.apiUrl + "consommation" + urlplan;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  // create consommation
+  addConsommation(consommation: Consommation) {
+    let SERVER_URL = environment.apiUrl + "addConsommation";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { c: JSON.stringify(consommation) }
+    })
+  }
+
+  // edit consommation
+  editConsommation(consommation: Consommation) {
+    let SERVER_URL = environment.apiUrl + "editConsommation";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { c: JSON.stringify(consommation) }
+
+    })
+  }
+
+  // delete consommation
+  deleteConsommation(id) {
+    let SERVER_URL = environment.apiUrl + "deleteConsommation" + id;
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
