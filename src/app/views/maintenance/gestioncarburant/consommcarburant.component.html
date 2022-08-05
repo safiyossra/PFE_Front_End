@@ -86,7 +86,7 @@
                                 type="date"
                                 id="text-input"
                                 #date
-                                [(ngModel)]="consommation.date_heure"
+                                [(ngModel)]="consomDate"
                                 name="fiche"
                                 class="form-control"
                               />
@@ -100,6 +100,7 @@
                               <input
                                 type="time"
                                 id="text-input"
+                                [(ngModel)]="consomTime"
                                 #heure
                                 name="fiche"
                                 class="form-control"
@@ -164,7 +165,7 @@
                             >
                             <div class="col-md-3">
                               <input
-                                [(ngModel)]="consommation.KmPrecedent"
+                                [(ngModel)]="consommation.kmPrecedent"
                                 type="number"
                                 min="0"
                                 id="text-input"
@@ -181,7 +182,7 @@
                             >
                             <div class="col-md-3">
                               <input
-                                [(ngModel)]="consommation.KmEncours"
+                                [(ngModel)]="consommation.kmEncours"
                                 type="number"
                                 min="0"
                                 id="text-input"
@@ -215,7 +216,7 @@
                                 id="text-input"
                                 #carte
                                 name="carte"
-                                [(ngModel)]="consommation.Carte"
+                                [(ngModel)]="consommation.numCarte"
                                 class="form-control"
                               />
                             </div>
@@ -235,7 +236,7 @@
                                 id="text-input"
                                 #numb
                                 name="numbon"
-                                [(ngModel)]="consommation.NumBon"
+                                [(ngModel)]="consommation.numBon"
                                 class="form-control"
                                 placeholder="0"
                               />
@@ -252,7 +253,7 @@
                                 type="text"
                                 id="text-input"
                                 #societe
-                                [(ngModel)]="consommation.Fournisseur"
+                                [(ngModel)]="consommation.fournisseur"
                                 name="societe"
                                 class="form-control"
                               />
@@ -269,7 +270,7 @@
                             >
                             <div class="col-md-3">
                               <input
-                                [(ngModel)]="consommation.Qte"
+                                [(ngModel)]="consommation.qte"
                                 type="number"
                                 min="0"
                                 id="text-input"
@@ -292,7 +293,7 @@
                                 id="s1"
                                 type="checkbox"
                                 class="switch"
-                                [(ngModel)]="consommation.PleinON"
+                                [(ngModel)]="consommation.pleinOn"
                                 [ngModelOptions]="{ standalone: true }"
                                 (ngModelChange)="showArretcheckbox()"
                               />
@@ -308,7 +309,7 @@
                             >
                             <div class="col-md-3">
                               <input
-                                [(ngModel)]="consommation.MontantTTC"
+                                [(ngModel)]="consommation.montantTTC"
                                 type="number"
                                 min="0"
                                 id="text-input"
@@ -325,7 +326,7 @@
                             >
                             <div class="col-md-3">
                               <input
-                                [(ngModel)]="consommation.Montant"
+                                [(ngModel)]="consommation.montant"
                                 type="number"
                                 min="0"
                                 id="text-input"
@@ -339,7 +340,7 @@
 
                           <!-- consommation Moyenne -->
                           <div
-                            *ngIf="consommation.PleinON"
+                            *ngIf="consommation.pleinOn"
                             class="form-group row align-items-center mb-0 justify-content-end"
                           >
                             <label
@@ -366,7 +367,7 @@
                           <div class="w-100">
                             <textarea
                               type="text"
-                              [(ngModel)]="consommation.Observation"
+                              [(ngModel)]="consommation.observation"
                               id="textarea-input"
                               rows="5"
                               #observ

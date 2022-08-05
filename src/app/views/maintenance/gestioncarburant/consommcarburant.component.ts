@@ -29,7 +29,6 @@ export class ConsommcarburantComponent {
   datatrajet = [];
   public isnotNum: boolean = false
 
-
   public devices: any = [];
   public drivers: any = [];
   selectedDevices = null;
@@ -46,19 +45,16 @@ export class ConsommcarburantComponent {
   showErrorDeviceModal = false;
   errorMessageDeviceModal = "";
 
-
   selectedCiternes = null;
   selectedCiterne = this.selectedCiternes;
 
   consommation: Consommation = new Consommation();
 
   getSelectedDevicesModal(selected) {
-    // console.log(selected);
     this.selectedDeviceModal = selected;
   }
 
   getSelectedCiternes(selected) {
-    // console.log(selected);
     this.selectedCiterne = selected;
   }
 
@@ -68,6 +64,7 @@ export class ConsommcarburantComponent {
   }
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
+
   ngOnInit() {
     const today = new Date();
     const tomorrow = new Date();
@@ -124,16 +121,6 @@ export class ConsommcarburantComponent {
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
   }
 
-  getSelectedDevices(selected) {
-    // console.log(selected);
-    this.consommation.NumMat = selected;
-  }
-
-  getSelectedDriver(selected) {
-    // console.log(selected);
-    this.consommation.NumChauf = selected;
-  }
-
   onValidateDevice() {
     this.showErrorDevice = !this.showErrorDevice;
     this.errorMessageDevice = "This field is required";
@@ -167,21 +154,56 @@ export class ConsommcarburantComponent {
     })
   }
 
+  getSelectedDevices(selected) {
+    this.consommation.deviceID = selected;
+  }
+
+  getSelectedDriver(selected) {
+    this.consommation.driverID = selected;
+  }
+
   showArretcheckbox() {
-    // consommation.PleinON =
-    console.log(this.consommation.PleinON);
+    // console.log(this.consommation.pleinOn);
+    // show ConsomMoy
+  }
+
+  consomDate: any;
+  consomTime: any;
+
+  getConsomTime() {
+    var time = this.consomDate + ' ' + this.consomTime;
+    var consomTime: number = Date.parse(time) / 1000;
+    // console.log(consomTime);
+    return consomTime;
   }
 
   // save button function
   ajouter() {
-    // console.log(this.input1.nativeElement.value);
-    // console.log(this.input2.nativeElement.value);
-    // console.log(this.motif.nativeElement.value);
-    // console.log(this.type.nativeElement.value);
-    // console.log(this.modele.nativeElement.value);
-
+    this.consommation.dateFill = this.getConsomTime();
     console.log(this.consommation);
 
+    // var route = this.router
+    // if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
+    //   this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    // } else {
+    //   this.dataService.addDevicesGroup(this.selectedGroupevehicules).subscribe({
+    //     next: (res) => {
+    //       console.log("add")
+    //       this.loadData()
+    //       this.primaryModal.hide()
+    //       this.errorMsg = ""
+    //     }
+    //     , error(err) {
+    //       this.modalLoading = false;
+    //       if (err.status == 401) {
+    //         route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+    //       }
+    //       else if (err.status == 402) {
+    //         this.errorMsg = "Erreur l'ajout est bloqué."
+    //       }
+    //     }
+    //   })
+    // }
   }
 
   reset() {
