@@ -14,7 +14,10 @@ import { MatTableDataSource } from '@angular/material/table';
 export class MyGestioncarburantTableComponent implements OnChanges {
   @Input() data = [];
   // @Input() columnNames?: any[]
-  public displayedColumns = ['id',
+  public displayedColumns = [
+    "actions",
+    'id',
+    'driverName',
     'driverID',
     'deviceID',
     'dateFill',
@@ -34,8 +37,11 @@ export class MyGestioncarburantTableComponent implements OnChanges {
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  columnNames = ['id',
+  columnNames = [
+    "Actions",
+    'id',
     'Chauffeur',
+    'ID Chauffeur',
     'Vehicule',
     'Date',
     'Montant',
@@ -73,16 +79,18 @@ export class MyGestioncarburantTableComponent implements OnChanges {
     }
   }
 
-  onRowClicked(row: any) {
+  modifyEvent(row: any) {
     this.modify.emit(row);
+  }
+  deleteEvent(row: any) {
+    this.delete.emit(row);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
       let d = changes['data'].currentValue
-      if (d && d.length > 0) {
+      if (d) {
         this.dataSource = new MatTableDataSource(d)
-        // this.displayedColumns = this.columns
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;

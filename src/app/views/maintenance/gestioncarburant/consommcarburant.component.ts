@@ -37,14 +37,14 @@ export class ConsommcarburantComponent {
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
 
-  selectedDrivers = null;
-  selectedDriver = this.selectedDrivers;
+  selectedDriverOption = null;
+  selectedDriver = this.selectedDriverOption;
 
   showErrorDevice = false;
   errorMessageDevice = "";
 
   selectedDevicesModal = null;
-  selectedDeviceModal = this.selectedDevicesModal;
+  selectedDeviceModalOption = this.selectedDevicesModal;
   showErrorDeviceModal = false;
   errorMessageDeviceModal = "";
 
@@ -120,7 +120,7 @@ export class ConsommcarburantComponent {
 
     this.getDrivers();
 
-    this.loadData();
+    this.loadData(true);
   }
 
   onValidateDevice() {
@@ -138,6 +138,7 @@ export class ConsommcarburantComponent {
     this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
         this.devices = res;
+        this.devices.unshift({ dID: '-', name: 'sélectionner une vehicule' })
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -148,27 +149,14 @@ export class ConsommcarburantComponent {
 
   // Modal functions
 
-  mode = "add";
+  mode = "Ajouter";
 
   submit() {
-    this.mode == 'add' ? this.ajouter() : this.modifier();
+    this.mode == 'Ajouter' ? this.ajouter() : this.modifier();
   }
 
   editKmEncours = false;
   editKmPrecedent = false;
-
-  // formatingDate() {
-  //   // this.consommation.dateFill = formatDate(new Date(this.consommation.dateFill), 'dd/MM/yyyy HH:mm:ss', 'en');
-  //   console.log(this.consommation.dateFill);
-  // }
-  // convert date + hour to timestamp
-  // consomDate: any;
-  // consomTime: any;
-  // getConsomTime() {
-  //   var time = this.consomDate + ' ' + this.consomTime;
-  //   var consomTime: number = Date.parse(time) / 1000;
-  //   return consomTime;
-  // }
 
   dateToTimeStamp(date) {
     console.log(Date.parse(date) / 1000);
@@ -188,6 +176,7 @@ export class ConsommcarburantComponent {
       next: (res) => {
         console.log(res)
         this.drivers = res;
+        this.drivers.unshift({ driverID: '-', displayName: 'sélectionner un chauffeur' })
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -197,9 +186,6 @@ export class ConsommcarburantComponent {
   }
 
   dateSelected() {
-    this.consommation.dateFillString = "2021-08-08T00:51";
-    console.log(this.consommation.dateFillString);
-
     this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
 
     if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '') {
@@ -275,12 +261,15 @@ export class ConsommcarburantComponent {
       this.qteValidate();
 
       if (this.kilometrageValidate() && this.qteValidate())
-        this.consommation.consoM = (this.qteTotal + this.consommation.qte) / (this.consommation.kmEncours - this.consommation.kmPrecedent) * 100;
+        if (this.consommation.kmPrecedent > 0)
+          this.consommation.consoM = (this.qteTotal + this.consommation.qte) / (this.consommation.kmEncours - this.consommation.kmPrecedent) * 100;
+        else
+          this.consommation.consoM = 0
     }
   }
 
   kilometrageValidate() {
-    if (this.consommation.kmEncours <= this.consommation.kmPrecedent) {
+    if (this.consommation.kmEncours < this.consommation.kmPrecedent) {
       this.kilometrageErr = true;
       return false;
     }
@@ -305,9 +294,9 @@ export class ConsommcarburantComponent {
       &&
       this.kilometrageValidate()
       &&
-      this.consommation.deviceID != ''
+      this.consommation.deviceID != '-'
       &&
-      this.consommation.driverID != ''
+      this.consommation.driverID != '-'
       &&
       this.consommation.montant != 0
       &&
@@ -325,22 +314,16 @@ export class ConsommcarburantComponent {
 
   // save button function
   ajouter() {
-    console.log(this.consommation);
-
     var route = this.router
     this.errorMsg = ""
 
     if (!this.verifyConsommationFields()) {
-      console.log(!this.verifyConsommationFields());
-
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.errorMsg = ""
       this.dataService.addConsommation(this.consommation).subscribe({
         next: (res) => {
-          console.log("added", res)
           this.loadData(true)
-          this.primaryModal.hide()
           this.clearModal();
         }
         , error(err) {
@@ -356,12 +339,16 @@ export class ConsommcarburantComponent {
     }
   }
 
+  getJsonValue(v) {
+    return JSON.parse(JSON.stringify(v))
+  }
+
   loadConsomToModify(consom) {
-    this.mode = 'edit';
-    console.log(consom);
-    this.consommation = consom;
+    this.mode = 'Modifier';
+    this.consommation = this.getJsonValue(consom);
     this.consommation.dateFillString = consom.dateFill.replace(' ', 'T');
-    console.log(this.consommation.dateFillString);
+    this.selectedDriverOption = this.consommation.driverID;
+    this.selectedDeviceModalOption = this.consommation.deviceID;
     this.primaryModal.show()
   }
 
@@ -371,60 +358,96 @@ export class ConsommcarburantComponent {
 
     if (!this.verifyConsommationFields()) {
       console.log(!this.verifyConsommationFields());
-
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.errorMsg = ""
       console.log(this.consommation);
-      // this.dataService.addConsommation(this.consommation).subscribe({
-      //   next: (res) => {
-      //     console.log("added", res)
-      //     this.loadData(true)
-      //     this.primaryModal.hide()
-      //     this.clearModal();
-      //   }
-      //   , error(err) {
-      //     this.modalLoading = false;
-      //     if (err.status == 401) {
-      //       route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-      //     }
-      //     else if (err.status == 402) {
-      //       this.errorMsg = "Erreur l'ajout est bloqué."
-      //     }
-      //   }
-      // })
+
+      this.dataService.editConsommation(this.consommation).subscribe({
+        next: (res) => {
+          this.loadData(true)
+          this.clearModal();
+        }
+        , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+        }
+      })
+    }
+  }
+
+  deleteConsommation(consommation) {
+    if (confirm("Are you sure to delete " + consommation.id)) {
+      var route = this.router
+      var id = "?id=" + consommation.id
+      this.dataService.deleteConsommation(id).subscribe({
+        next: (res) => {
+          console.log("deleted cruduser")
+          this.loadData(true)
+        }, error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            alert("Erreur, la suppression est bloqué")
+          }
+        }
+      })
+      console.log(consommation);
+
     }
   }
 
   clearModal() {
-    this.consommation.deviceID = ''
-    this.consommation.driverID = ''
-    this.consommation.qte = 0.0
-    this.consommation.montant = 0.0
-    this.consommation.montantTTC = 0.0
-    this.consommation.dateFill = ''
-    this.consommation.dateFillString = ''
-    this.consommation.kmPrecedent = 0.0
-    this.consommation.kmEncours = 0.0
-    this.consommation.pleinOn = 0
-    this.consommation.consoM = 0.0
-    this.consommation.fournisseur = ''
-    this.consommation.numCarte = ''
-    this.consommation.numBon = ''
+    this.primaryModal.hide();
+
+    this.consommation.deviceID = '';
+    this.consommation.driverID = '';
+    this.consommation.qte = 0.0;
+    this.consommation.montant = 0.0;
+    this.consommation.montantTTC = 0.0;
+    this.consommation.dateFill = '';
+    this.consommation.dateFillString = '';
+    this.consommation.kmPrecedent = 0.0;
+    this.consommation.kmEncours = 0.0;
+    this.consommation.pleinOn = 0;
+    this.consommation.consoM = 0.0;
+    this.consommation.fournisseur = '';
+    this.consommation.numCarte = '';
+    this.consommation.numBon = '';
+    this.consommation.observation = '';
+    this.selectedDeviceModalOption = '-';
+    this.selectedDriverOption = '-';
+    this.editKmEncours = false;
+    this.editKmPrecedent = false;
+    this.mode = 'Ajouter';
   }
 
   loadData(first = false) {
     var route = this.router
     this.loading = true;
     var urlParams = ""
-    // if (!first)
-    //   urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
+    if (!first) {
+      var d = this.selectedDevice == '-' || this.selectedDevice == null ? "?" : "?d=" + this.selectedDevice + "&"
+      urlParams = d + "st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
+    }
+
     this.dataService.getConsommation(urlParams).subscribe({
       next: (d: any) => {
         console.log(d);
         this.data = d;
         this.data.forEach((e) => {
           e.dateFill = this.tools.formatDateVer(new Date(Number.parseInt(e.dateFill) * 1000));
+
+          const d = { ...this.drivers.find(elem => elem.driverID == e.driverID) };
+
+          e.driverName! = d.displayName;
         })
         this.loading = false;
       }, error(err) {

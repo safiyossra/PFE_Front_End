@@ -412,7 +412,6 @@ export class DataService {
     return this.http.get(SERVER_URL, {
       headers: headers,
       params: { c: JSON.stringify(consommation) }
-
     })
   }
 

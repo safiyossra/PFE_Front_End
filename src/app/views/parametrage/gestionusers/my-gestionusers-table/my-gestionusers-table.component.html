@@ -17,7 +17,7 @@
         </th>
         <td mat-cell *matCellDef="let salle" [ngClass]="salle['isActive']==0 ? 'bg-danger':''">
           <div *ngIf="column=='actions'">
-        
+
             <button type="button" title="Modifier" (click)="modif([salle['userID'],salle['isActive'],salle['description'],salle['password'],salle['contactName'],salle['contactPhone'],salle['contactEmail'],salle['notifyEmail'],salle['timeZone'],salle['notes']])" class="btn rounded m-1 btn-primary"><i
                 class="cil-pen"></i></button>
                 <button type="button" title="Supprimer" (click)="supp(salle['userID'])" class="btn rounded m-1 btn-danger"><i
@@ -38,3 +38,4 @@
     </mat-paginator>
   </div>
 </div>
+

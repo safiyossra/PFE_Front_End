@@ -38,7 +38,7 @@
                 <button
                   type="button"
                   class="close"
-                  (click)="primaryModal.hide()"
+                  (click)="clearModal()"
                   aria-label="Close"
                 >
                   <span aria-hidden="true">&times;</span>
@@ -89,7 +89,7 @@
                                 [value]="'dID'"
                                 [multiple]="false"
                                 [labelCount]="0"
-                                [selectedOptions]="selectedDevices"
+                                [selectedOptions]="selectedDeviceModalOption"
                                 (selectionChange)="
                                   getSelectedDeviceModal($event)
                                 "
@@ -115,7 +115,7 @@
                                 [value]="'driverID'"
                                 [multiple]="false"
                                 [labelCount]="0"
-                                [selectedOptions]="selectedDrivers"
+                                [selectedOptions]="selectedDriverOption"
                                 (selectionChange)="getSelectedDriver($event)"
                               >
                               </my-dropdown-select>
@@ -409,14 +409,14 @@
                 <button
                   type="button"
                   class="btn btn-secondary"
-                  (click)="primaryModal.hide()"
+                  (click)="clearModal()"
                 >
                   Close
                 </button>
                 <button
                   type="reset"
                   class="btn btn-sm btn-danger"
-                  (click)="reset()"
+                  (click)="clearModal()"
                 >
                   &nbsp; Annuler
                 </button>
@@ -424,9 +424,9 @@
                   type="button"
                   class="btn btn-primary"
                   *ngIf="isnotNum == false"
-                  (click)="ajouter()"
+                  (click)="submit()"
                 >
-                  Ajouter
+                  {{ mode }}
                 </button>
               </div>
             </div>
@@ -437,7 +437,7 @@
 
         <!-- devices table -->
         <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
-          <form class="form-horizontal">
+          <form class="form-horizontal" (submit)="loadData(false)">
             <div class="form-group row">
               <div class="col-md-5">
                 <my-daterangepicker
@@ -486,31 +486,6 @@
                 </div>
               </div>
 
-              <div class="col-md-2">
-                <div class="controls">
-                  <div class="input-group">
-                    <div class="input-group-append">
-                      <span class="input-group-text"
-                        ><i class="fa fa-filter fa-sm"></i
-                      ></span>
-                    </div>
-                    <!-- <my-dropdown-select
-                      class="form-control"
-                      [placeholder]="'Citerne '"
-                      [selectPlaceholder]="'Chercher...'"
-                      [options]="citernes"
-                      [display]="'label'"
-                      [value]="'data'"
-                      [multiple]="false"
-                      [labelCount]="0"
-                      [selectedOptions]="selectedCiternes"
-                      (selectionChange)="getSelectedCiternes($event)"
-                    >
-                    </my-dropdown-select> -->
-                  </div>
-                </div>
-              </div>
-
               <div class="form-actions">
                 <button
                   type="submit"
@@ -539,6 +514,7 @@
       <my-gestioncarburant-table
         [data]="data"
         (modify)="loadConsomToModify($event)"
+        (delete)="deleteConsommation($event)"
       >
       </my-gestioncarburant-table>
     </div>
