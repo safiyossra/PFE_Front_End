@@ -15,10 +15,6 @@ export class ConsommcarburantComponent {
 
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  @ViewChild('id') id: ElementRef;
-  @ViewChild('pushpin') pushpin: ElementRef;
-  @ViewChild('report') report: ElementRef;
-  @ViewChild('description') description: ElementRef;
 
   constructor(private dataService: DataService, private router: Router, private tools: util, private dateAdapter: DateAdapter<Date>, private route: Router) {
   }
@@ -138,7 +134,7 @@ export class ConsommcarburantComponent {
     this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
         this.devices = res;
-        this.devices.unshift({ dID: '-', name: 'sélectionner une vehicule' })
+        // this.devices.unshift({ dID: '-', name: 'sélectionner une vehicule' })
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -159,7 +155,6 @@ export class ConsommcarburantComponent {
   editKmPrecedent = false;
 
   dateToTimeStamp(date) {
-    console.log(Date.parse(date) / 1000);
     return Date.parse(date) / 1000 as number;
   }
 
@@ -176,7 +171,7 @@ export class ConsommcarburantComponent {
       next: (res) => {
         console.log(res)
         this.drivers = res;
-        this.drivers.unshift({ driverID: '-', displayName: 'sélectionner un chauffeur' })
+        // this.drivers.unshift({ driverID: '-', displayName: 'sélectionner un chauffeur' })
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -194,6 +189,8 @@ export class ConsommcarburantComponent {
   }
 
   getSelectedDeviceModal(selected) {
+    console.log("getSelectedDeviceModal");
+
     this.consommation.deviceID = selected;
     this.consommation.kmEncours = this.getCurrentKm(selected);
     if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '')
@@ -324,7 +321,8 @@ export class ConsommcarburantComponent {
       this.dataService.addConsommation(this.consommation).subscribe({
         next: (res) => {
           this.loadData(true)
-          this.clearModal();
+          // this.clearModal();
+          this.primaryModal.hide();
         }
         , error(err) {
           this.modalLoading = false;
@@ -345,10 +343,18 @@ export class ConsommcarburantComponent {
 
   loadConsomToModify(consom) {
     this.mode = 'Modifier';
+    this.clearModal()
     this.consommation = this.getJsonValue(consom);
     this.consommation.dateFillString = consom.dateFill.replace(' ', 'T');
+    this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
     this.selectedDriverOption = this.consommation.driverID;
     this.selectedDeviceModalOption = this.consommation.deviceID;
+    this.primaryModal.show()
+  }
+
+  btnAjouter(){
+    this.mode = 'Ajouter';
+    this.clearModal()
     this.primaryModal.show()
   }
 
@@ -361,12 +367,16 @@ export class ConsommcarburantComponent {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.errorMsg = ""
+
       console.log(this.consommation);
+
 
       this.dataService.editConsommation(this.consommation).subscribe({
         next: (res) => {
           this.loadData(true)
-          this.clearModal();
+          // this.clearModal();
+          this.primaryModal.hide();
+
         }
         , error(err) {
           this.modalLoading = false;
@@ -405,28 +415,17 @@ export class ConsommcarburantComponent {
   }
 
   clearModal() {
-    this.primaryModal.hide();
+    this.consommation = new Consommation()
+    this.selectedDeviceModalOption = null;
+    this.selectedDriverOption = null;
 
-    this.consommation.deviceID = '';
-    this.consommation.driverID = '';
-    this.consommation.qte = 0.0;
-    this.consommation.montant = 0.0;
-    this.consommation.montantTTC = 0.0;
-    this.consommation.dateFill = '';
-    this.consommation.dateFillString = '';
-    this.consommation.kmPrecedent = 0.0;
-    this.consommation.kmEncours = 0.0;
-    this.consommation.pleinOn = 0;
-    this.consommation.consoM = 0.0;
-    this.consommation.fournisseur = '';
-    this.consommation.numCarte = '';
-    this.consommation.numBon = '';
-    this.consommation.observation = '';
-    this.selectedDeviceModalOption = '-';
-    this.selectedDriverOption = '-';
     this.editKmEncours = false;
     this.editKmPrecedent = false;
-    this.mode = 'Ajouter';
+
+    console.log(this.selectedDeviceModalOption);
+    console.log(this.selectedDriverOption);
+
+
   }
 
   loadData(first = false) {
@@ -440,7 +439,6 @@ export class ConsommcarburantComponent {
 
     this.dataService.getConsommation(urlParams).subscribe({
       next: (d: any) => {
-        console.log(d);
         this.data = d;
         this.data.forEach((e) => {
           e.dateFill = this.tools.formatDateVer(new Date(Number.parseInt(e.dateFill) * 1000));
@@ -459,14 +457,6 @@ export class ConsommcarburantComponent {
     })
   };
 
-  reset() {
-    this.selectedDevices = []
-    this.report.nativeElement.value = ''
-    this.id.nativeElement.value = ''
-    this.description.nativeElement.value = ''
-    this.pushpin.nativeElement.value = ''
-
-  }
 
 }
 

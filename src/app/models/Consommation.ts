@@ -47,7 +47,7 @@ export class Consommation {
     this.observation = observation ?? '';
     this.montantTTC = montantTTC ?? 0.0;
     this.numBon = numBon ?? '';
-    this.pleinOn = pleinOn ?? false;
+    this.pleinOn = pleinOn ?? 0;
     this.consoM = consoM ?? 0;
     this.deviceID = deviceID ?? '';
   }

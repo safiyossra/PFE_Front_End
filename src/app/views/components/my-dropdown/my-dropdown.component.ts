@@ -49,6 +49,7 @@ export class MyDropdownComponent {
       this.formControl.enable();
     }
     this.filteredOptions = this.options;
+
     if (this.selectedOptions) {
       this.selectedValue = this.selectedOptions;
     } else if (this.formControl.value) {

@@ -6,7 +6,7 @@
           <button
             type="button"
             data-toggle="modal"
-            (click)="primaryModal.show()"
+            (click)="btnAjouter()"
             class="btn btn-outline-primary"
           >
             <i class="fa fa-plus-circle"></i> Ajouter
@@ -38,7 +38,7 @@
                 <button
                   type="button"
                   class="close"
-                  (click)="clearModal()"
+                  (click)="primaryModal.hide()"
                   aria-label="Close"
                 >
                   <span aria-hidden="true">&times;</span>
@@ -82,8 +82,6 @@
                                 class="form-control"
                                 [placeholder]="'Vehicules Selection'"
                                 [selectPlaceholder]="'search...'"
-                                [errorMsg]="errorMessageDevice"
-                                [showErrorMsg]="showErrorDevice"
                                 [options]="devices"
                                 [display]="'name'"
                                 [value]="'dID'"
@@ -106,7 +104,7 @@
                             <div class="col input-group">
                               <my-dropdown-select
                                 class="form-control"
-                                [placeholder]="'Vehicules Selection'"
+                                [placeholder]="'Driver Selection'"
                                 [selectPlaceholder]="'search...'"
                                 [errorMsg]="errorMessageDevice"
                                 [showErrorMsg]="showErrorDevice"
@@ -408,22 +406,14 @@
               <div class="modal-footer">
                 <button
                   type="button"
-                  class="btn btn-secondary"
-                  (click)="clearModal()"
-                >
-                  Close
-                </button>
-                <button
-                  type="reset"
                   class="btn btn-sm btn-danger"
-                  (click)="clearModal()"
+                  (click)="primaryModal.hide()"
                 >
                   &nbsp; Annuler
                 </button>
                 <button
                   type="button"
                   class="btn btn-primary"
-                  *ngIf="isnotNum == false"
                   (click)="submit()"
                 >
                   {{ mode }}
