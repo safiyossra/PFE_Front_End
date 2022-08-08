@@ -52,6 +52,8 @@ export class ConsommcarburantComponent {
   selectedCiterne = this.selectedCiternes;
 
   consommation: Consommation = new Consommation();
+  kilometrageErr = false;
+  qteZeroErr = false;
 
 
   getSelectedCiternes(selected) {
@@ -116,14 +118,9 @@ export class ConsommcarburantComponent {
 
     this.getDev();
 
-    this.getDriver();
+    this.getDrivers();
 
     this.loadData();
-  }
-
-  toggleCollapse(): void {
-    this.isCollapsed = !this.isCollapsed;
-    this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
   }
 
   onValidateDevice() {
@@ -151,12 +148,26 @@ export class ConsommcarburantComponent {
 
   // Modal functions
 
+  mode = "add";
+
+  submit() {
+    this.mode == 'add' ? this.ajouter() : this.modifier();
+  }
+
   editKmEncours = false;
   editKmPrecedent = false;
 
   // formatingDate() {
   //   // this.consommation.dateFill = formatDate(new Date(this.consommation.dateFill), 'dd/MM/yyyy HH:mm:ss', 'en');
   //   console.log(this.consommation.dateFill);
+  // }
+  // convert date + hour to timestamp
+  // consomDate: any;
+  // consomTime: any;
+  // getConsomTime() {
+  //   var time = this.consomDate + ' ' + this.consomTime;
+  //   var consomTime: number = Date.parse(time) / 1000;
+  //   return consomTime;
   // }
 
   dateToTimeStamp(date) {
@@ -171,15 +182,7 @@ export class ConsommcarburantComponent {
     return Date.parse(myTimestamp) / 1000 as number;
   }
 
-  // km_actuel
-  getCurrentKm(id) {
-    for (let i = 0; i < this.devices.length; i++) {
-      if (this.devices[i].dID == id) return this.devices[i].km
-    }
-    return 0
-  }
-
-  getDriver() {
+  getDrivers() {
     var route = this.router
     this.dataService.getDriverData("?minimum=true").subscribe({
       next: (res) => {
@@ -193,43 +196,37 @@ export class ConsommcarburantComponent {
     })
   }
 
-  showArretcheckbox() {
-    // console.log(this.consommation.pleinOn);
-    // show ConsomMoy
+  dateSelected() {
+    this.consommation.dateFillString = "2021-08-08T00:51";
+    console.log(this.consommation.dateFillString);
+
+    this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
+
+    if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '') {
+      this.getKmPrecedent(this.consommation.dateFill, this.consommation.deviceID);
+    }
   }
 
-  // convert date + hour to timestamp
-  // consomDate: any;
-  // consomTime: any;
-  // getConsomTime() {
-  //   var time = this.consomDate + ' ' + this.consomTime;
-  //   var consomTime: number = Date.parse(time) / 1000;
-  //   return consomTime;
-  // }
-
-
-  getSelectedDevicesModal(selected) {
+  getSelectedDeviceModal(selected) {
     this.consommation.deviceID = selected;
     this.consommation.kmEncours = this.getCurrentKm(selected);
+    if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '')
+      this.getKmPrecedent(this.consommation.dateFill, this.consommation.deviceID);
   }
 
   getSelectedDriver(selected) {
     this.consommation.driverID = selected;
   }
 
-  dateSelected() {
-    this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
-
-    if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '')
-      this.getKmPrecedent(this.consommation.dateFill, this.consommation.deviceID);
-
-  }
-
   // get km precedent
   getKmPrecedent(date, vehID) {
     this.dataService.getConsommation("?date=" + date + "&vehId=" + vehID).subscribe({
       next: (res) => {
-        this.consommation.kmEncours = res.kmEncours ?? 0;
+        this.consommation.kmPrecedent = (res as any)?.kmEncours ?? 0;
+
+        if (this.consommation.pleinOn == 1)
+          this.getQteTotale(this.consommation.dateFill);
+
       }, error(err) {
         if (err.status == 401) {
           this.route.navigate(['login']);
@@ -238,32 +235,92 @@ export class ConsommcarburantComponent {
     });
   }
 
-  getQte() {
-    this.calculateQteMoy();
+  // km_actuel
+  getCurrentKm(id) {
+    for (let i = 0; i < this.devices.length; i++) {
+      if (this.devices[i].dID == id) {
+        return this.devices[i].km
+      }
+    }
+    return 0
+  }
+
+  pleincheckbox() {
+    if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '' && this.consommation.pleinOn == 1)
+      this.getQteTotale(this.consommation.dateFill);
+  }
+
+  // get qte total => plein
+  qteTotal = 0;
+  getQteTotale(date) {
+    this.dataService.getConsommation("?date=" + date + "&plein=true").subscribe({
+      next: (res) => {
+
+        this.qteTotal = res as number;
+
+        this.calculateQteMoy();
+
+      }, error(err) {
+        if (err.status == 401) {
+          this.route.navigate(['login']);
+        }
+      }
+    });
   }
 
   calculateQteMoy() {
-    this.consommation.consoM = (this.consommation.kmEncours - this.consommation.kmPrecedent) / this.consommation.qte * 100;
+    if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '' && this.consommation.pleinOn == 1) {
+
+      this.kilometrageValidate();
+      this.qteValidate();
+
+      if (this.kilometrageValidate() && this.qteValidate())
+        this.consommation.consoM = (this.qteTotal + this.consommation.qte) / (this.consommation.kmEncours - this.consommation.kmPrecedent) * 100;
+    }
+  }
+
+  kilometrageValidate() {
+    if (this.consommation.kmEncours <= this.consommation.kmPrecedent) {
+      this.kilometrageErr = true;
+      return false;
+    }
+    this.kilometrageErr = false;
+    return true;
+  }
+
+  qteValidate() {
+    if (this.consommation.qte <= 0) {
+      this.qteZeroErr = true;
+      return false;
+    }
+    this.qteZeroErr = false;
+    return true;
   }
 
   errorMsg = "";
 
   verifyConsommationFields() {
-    return (!this.consommation.deviceID &&
-      !this.consommation.driverID &&
-      !this.consommation.qte &&
-      !this.consommation.montant &&
-      !this.consommation.montantTTC &&
-      !this.consommation.dateFill &&
-      !this.consommation.dateFillString &&
-      !this.consommation.kmPrecedent &&
-      !this.consommation.kmEncours &&
-      !this.consommation.pleinOn &&
-      !this.consommation.consoM &&
-      !this.consommation.fournisseur &&
-      !this.consommation.numCarte &&
-      !this.consommation.numBon)
-
+    return (
+      this.qteValidate()
+      &&
+      this.kilometrageValidate()
+      &&
+      this.consommation.deviceID != ''
+      &&
+      this.consommation.driverID != ''
+      &&
+      this.consommation.montant != 0
+      &&
+      this.consommation.montantTTC != 0
+      &&
+      this.consommation.dateFill != ''
+      &&
+      this.consommation.fournisseur != ''
+      &&
+      this.consommation.numCarte != ''
+      &&
+      this.consommation.numBon != ''
+    )
   }
 
   // save button function
@@ -272,17 +329,19 @@ export class ConsommcarburantComponent {
 
     var route = this.router
     this.errorMsg = ""
-    // this.this.selectedPlan.device = this.resultedRule
-    if (this.verifyConsommationFields()) {
+
+    if (!this.verifyConsommationFields()) {
+      console.log(!this.verifyConsommationFields());
+
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-
+      this.errorMsg = ""
       this.dataService.addConsommation(this.consommation).subscribe({
         next: (res) => {
           console.log("added", res)
           this.loadData(true)
           this.primaryModal.hide()
-          this.errorMsg = ""
+          this.clearModal();
         }
         , error(err) {
           this.modalLoading = false;
@@ -297,6 +356,63 @@ export class ConsommcarburantComponent {
     }
   }
 
+  loadConsomToModify(consom) {
+    this.mode = 'edit';
+    console.log(consom);
+    this.consommation = consom;
+    this.consommation.dateFillString = consom.dateFill.replace(' ', 'T');
+    console.log(this.consommation.dateFillString);
+    this.primaryModal.show()
+  }
+
+  modifier() {
+    var route = this.router
+    this.errorMsg = ""
+
+    if (!this.verifyConsommationFields()) {
+      console.log(!this.verifyConsommationFields());
+
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      this.errorMsg = ""
+      console.log(this.consommation);
+      // this.dataService.addConsommation(this.consommation).subscribe({
+      //   next: (res) => {
+      //     console.log("added", res)
+      //     this.loadData(true)
+      //     this.primaryModal.hide()
+      //     this.clearModal();
+      //   }
+      //   , error(err) {
+      //     this.modalLoading = false;
+      //     if (err.status == 401) {
+      //       route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+      //     }
+      //     else if (err.status == 402) {
+      //       this.errorMsg = "Erreur l'ajout est bloqué."
+      //     }
+      //   }
+      // })
+    }
+  }
+
+  clearModal() {
+    this.consommation.deviceID = ''
+    this.consommation.driverID = ''
+    this.consommation.qte = 0.0
+    this.consommation.montant = 0.0
+    this.consommation.montantTTC = 0.0
+    this.consommation.dateFill = ''
+    this.consommation.dateFillString = ''
+    this.consommation.kmPrecedent = 0.0
+    this.consommation.kmEncours = 0.0
+    this.consommation.pleinOn = 0
+    this.consommation.consoM = 0.0
+    this.consommation.fournisseur = ''
+    this.consommation.numCarte = ''
+    this.consommation.numBon = ''
+  }
+
   loadData(first = false) {
     var route = this.router
     this.loading = true;
@@ -308,7 +424,7 @@ export class ConsommcarburantComponent {
         console.log(d);
         this.data = d;
         this.data.forEach((e) => {
-          e.dateFill = this.tools.formatDate(new Date(Number.parseInt(e.dateFill) * 1000));
+          e.dateFill = this.tools.formatDateVer(new Date(Number.parseInt(e.dateFill) * 1000));
         })
         this.loading = false;
       }, error(err) {

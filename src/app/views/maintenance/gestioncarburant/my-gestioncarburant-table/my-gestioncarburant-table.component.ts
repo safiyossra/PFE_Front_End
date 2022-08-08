@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -58,6 +58,8 @@ export class MyGestioncarburantTableComponent implements OnChanges {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @Output() modify?: EventEmitter<any> = new EventEmitter();
+  @Output() delete?: EventEmitter<any> = new EventEmitter();
 
   constructor() {
   }
@@ -72,7 +74,7 @@ export class MyGestioncarburantTableComponent implements OnChanges {
   }
 
   onRowClicked(row: any) {
-    console.log('Row clicked: ', row);
+    this.modify.emit(row);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

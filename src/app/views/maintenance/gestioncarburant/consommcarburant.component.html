@@ -53,26 +53,6 @@
                       <!-- info consommation -->
                       <div class="card flex-grow-1 pb-md-0">
                         <div class="card-body">
-                          <!-- n fiche -->
-                          <!-- <div class="row form-group">
-                            <label
-                              class="col-md-2 col-form-label"
-                              for="text-input"
-                              >N° fiche</label
-                            >
-                            <div class="col-md-4">
-                              <input
-                                type="text"
-                                id="text-input"
-                                #fiche
-                                ngM
-                                [(ngModel)]="consommation.IDConsom"
-                                name="fiche"
-                                class="form-control"
-                              />
-                            </div>
-                          </div> -->
-
                           <!-- dates -->
                           <div class="form-group row">
                             <label
@@ -111,7 +91,7 @@
                                 [labelCount]="0"
                                 [selectedOptions]="selectedDevices"
                                 (selectionChange)="
-                                  getSelectedDevicesModal($event)
+                                  getSelectedDeviceModal($event)
                                 "
                               >
                               </my-dropdown-select>
@@ -150,9 +130,10 @@
                               for="text-input"
                               >Km precedent</label
                             >
-                            <div class="col-md-4 input-group">
+                            <div class="col input-group">
                               <input
                                 [(ngModel)]="consommation.kmPrecedent"
+                                (ngModelChange)="calculateQteMoy()"
                                 type="number"
                                 min="0"
                                 id="text-input"
@@ -179,13 +160,14 @@
 
                             <!-- Actuel -->
                             <label
-                              class="col-md-2 col-form-label"
+                              class="col-md-2 pr-0 col-form-label"
                               for="text-input"
                               >Km actuel</label
                             >
-                            <div class="col-md-4 input-group">
+                            <div class="col input-group">
                               <input
                                 [(ngModel)]="consommation.kmEncours"
+                                (ngModelChange)="calculateQteMoy()"
                                 type="number"
                                 min="0"
                                 id="text-input"
@@ -203,12 +185,21 @@
                                     [(ngModel)]="editKmEncours"
                                     [ngModelOptions]="{ standalone: true }"
                                   /><label for="s1" class="ml-2 my-2 my-md-0">
-                                    <!-- (ngModelChange)="showArretcheckbox()" -->
                                     modifier</label
                                   >
                                 </span>
                               </div>
                             </div>
+                          </div>
+                          <div
+                            *ngIf="kilometrageErr"
+                            class="row mt-3 align-items-center text-danger"
+                          >
+                            <p class="col">
+                              {{
+                                "Le kilométrage encours doit etre supperieur au kilométrage précédent"
+                              }}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -264,13 +255,12 @@
                             >
                             <div class="col-md-3">
                               <input
-                                type="number"
+                                type="text"
                                 id="text-input"
                                 #numb
                                 name="numbon"
                                 [(ngModel)]="consommation.numBon"
                                 class="form-control"
-                                placeholder="0"
                               />
                             </div>
                           </div>
@@ -286,6 +276,7 @@
                             <div class="input-group col">
                               <input
                                 [(ngModel)]="consommation.qte"
+                                (ngModelChange)="calculateQteMoy()"
                                 type="number"
                                 min="0"
                                 id="text-input"
@@ -303,13 +294,22 @@
                                     class="switch"
                                     [(ngModel)]="consommation.pleinOn"
                                     [ngModelOptions]="{ standalone: true }"
-                                    (ngModelChange)="showArretcheckbox()"
+                                    (ngModelChange)="pleincheckbox()"
                                   /><label for="s1" class="mr-2 my-2 my-md-0">
                                     Plein</label
                                   >
                                 </span>
                               </div>
                             </div>
+                          </div>
+
+                          <div
+                            *ngIf="qteZeroErr"
+                            class="row align-items-center text-danger"
+                          >
+                            <p class="col">
+                              {{ "La quantité doit etre superieur à zero" }}
+                            </p>
                           </div>
 
                           <!-- montants -->
@@ -364,11 +364,22 @@
                               style="background-color: #2962ff"
                               class="text-center rounded mx-3 col-md-4 py-2 text-white"
                             >
-                              <span>{{ consommation.consoM }} L/Km</span>
+                              <span
+                                >{{
+                                  consommation.consoM | number: "1.0-2"
+                                }}
+                                %</span
+                              >
                             </div>
                           </div>
                         </div>
                       </div>
+                    </div>
+
+                    <div class="col text-danger">
+                      <p class="col">
+                        {{ errorMsg }}
+                      </p>
                     </div>
 
                     <!-- observation -->
@@ -525,7 +536,11 @@
 
   <div class="row">
     <div class="col-lg-12">
-      <my-gestioncarburant-table [data]="data"> </my-gestioncarburant-table>
+      <my-gestioncarburant-table
+        [data]="data"
+        (modify)="loadConsomToModify($event)"
+      >
+      </my-gestioncarburant-table>
     </div>
   </div>
 </div>
