@@ -248,7 +248,9 @@ export class Constant {
       data: " Pacific/Chatham"
     },
   ];
-
+  vehicleIcons = [{ name: "Voiture", id: "default", img: "car" }, { name: "Motor", id: "moto", img: "motor" }, { name: "Camion", id: "fleetGreen", img: "camion" },
+  { name: "Sprinter", id: "bus", img: "sprinter" }, { name: "Remorque", id: "trailer", img: "remork" }, { name: "Tracteur Remorque", id: "remolque", img: "truck" },
+  { name: "Tracteur", id: "volvo2", img: "truck-head" }]
   motor = ["moto", "grnbike",]
   camions = ['fleetGreen', 'fleet', 'ffight', 'yeltruck', 'blktruck', 'rgntruck', 'excav', 'grua', 'h100', 'mzcldr', 'pickup',]
   remorque = ["trailer"]

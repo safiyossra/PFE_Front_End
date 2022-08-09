@@ -51,7 +51,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     setTimeout(() => {
       this.map = this.tools.createMap(this.map, 'map', this.car, this.provider, this.showCollapsControle, this.showFullScreenControle, this.showPositionControle)
       this.inter = setInterval(() => {
-        this.loadData()
+        // this.loadData()
       }, 5000)
       this.loadZones()
     }, 100);

@@ -102,8 +102,9 @@ export class util {
     formatPopUpContent(v) {
         let img = this.getImage(v.icon)
         let time = this.formatDate(new Date(v.timestamp * 1000))
-        let now = Math.round(new Date().getTime() / 1000)
-        let age = this.formatAge(v.timestamp > 0 ? (now - v.timestamp) : "nan")
+
+        let age = this.getAge(v.timestamp)
+        let ageString = this.formatAge(age)
         return `<table class="infoBoxTable">
             <tbody>
               <tr class="infoBoxRow"
@@ -117,7 +118,7 @@ export class util {
               </tr>
               <tr class="infoBoxRow">
                 <td class="infoBoxCellTitle">Age:</td>
-                <td class="infoBoxCell"> ${age}</td>
+                <td class="infoBoxCell"> ${ageString}</td>
               </tr>
               <tr class="infoBoxRow">
                 <td class="infoBoxCellTitle">Date:</td>
@@ -156,6 +157,11 @@ export class util {
     }
     formatDateForInput(date: Date) {
         return formatDate(date, 'yyyy-MM-dd', this.locale);
+    }
+
+    getAge(timestamp) {
+        let now = Math.round(new Date().getTime() / 1000)
+        return timestamp > 0 ? (now - timestamp) : "nan"
     }
 
     formatAge(seconds) {
@@ -331,6 +337,11 @@ export class util {
     getImage(vehiculeType) {
         return this.cst.motor.includes(vehiculeType) ? "motor" : this.cst.truck.includes(vehiculeType) ? "truck" : this.cst.sprinter.includes(vehiculeType) ? "sprinter" : this.cst.remorque.includes(vehiculeType) ?
             "remork" : this.cst.camions.includes(vehiculeType) ? "camion" : this.cst.truck_head.includes(vehiculeType) ? "truck-head" : "car"
+    }
+
+    getImageId(vehiculeType) {
+        return this.cst.motor.includes(vehiculeType) ? "moto" : this.cst.truck.includes(vehiculeType) ? "remolque" : this.cst.sprinter.includes(vehiculeType) ? "bus" : this.cst.remorque.includes(vehiculeType) ?
+            "trailer" : this.cst.camions.includes(vehiculeType) ? "fleetGreen" : this.cst.truck_head.includes(vehiculeType) ? "volvo2" : "default"
     }
 
     setMapType(type) {

@@ -30,19 +30,19 @@ export class CruddriverComponent {
 
 
   public devices: any = [];
-  selectedDevices = null;
-  selectedDevice = this.selectedDevices;
+  selectedDevices = [];
+  selectedDevice = null;
   showErrorDevice = false;
   errorMessageDevice = "";
 
-  selectedDevicesModal = null;
-  selectedDeviceModal = this.selectedDevicesModal;
+  selectedDevicesModal = [];
+  selectedDeviceModal = null;
   showErrorDeviceModal = false;
   errorMessageDeviceModal = "";
 
   public operations: any = [];
-  selectedOperations = null;
-  selectedOperation = this.selectedOperations;
+  selectedOperations = [];
+  selectedOperation = null;
   showErrorOperation = false;
   errorMessageOperation = "";
 
@@ -93,8 +93,10 @@ export class CruddriverComponent {
     this.dataService.getDriverData(urlParams).subscribe({
       next: (d: any) => {
         this.data = d;
+        console.log(d);
         this.loading = false;
       }, error(err) {
+        console.log(err);
         this.loading = false;
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -110,18 +112,19 @@ export class CruddriverComponent {
       var url = "?d=" + ev
       this.modalLoading = true;
       this.primaryModal.show()
-
       var route = this.router
       this.dataService.getDriverData(url).subscribe({
         next: (d: any) => {
           if (d && d.length) {
             d.forEach(e => {
-              e.birthdate = this.tools.formatDateForInput(new Date(Number.parseInt(e.birthdate ?? 0) ?? 0 * 1000));
-              e.licenseExpire = this.tools.formatDateForInput(new Date(Number.parseInt(e.licenseExpire ?? 0) ?? 0 * 1000));
-              e.insuranceExpire = this.tools.formatDateForInput(new Date(Number.parseInt(e.insuranceExpire ?? 0) ?? 0 * 1000));
+              e.birthdateString = this.tools.formatDateForInput(new Date(Number.parseInt(e.birthdate ?? 0) * 1000));
+              e.licenseExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.licenseExpire ?? 0) * 1000));
+              e.insuranceExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.insuranceExpire ?? 0) * 1000));
             });
             this.selectedDriver = d[0];
           }
+          console.log("d", d);
+
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
@@ -153,6 +156,9 @@ export class CruddriverComponent {
     })
   }
   submit() {
+    this.selectedDriver.birthdate = Math.round((new Date(this.selectedDriver.birthdateString).getTime()) / 1000);
+    this.selectedDriver.licenseExpire = Math.round((new Date(this.selectedDriver.licenseExpireString).getTime()) / 1000);
+    this.selectedDriver.insuranceExpire = Math.round((new Date(this.selectedDriver.insuranceExpireString).getTime()) / 1000);
     if (this.mode == "Ajouter") this.ajouter()
     if (this.mode == "Modifier") this.modifier()
   }
@@ -168,9 +174,7 @@ export class CruddriverComponent {
       } else {
         this.dataService.addDriver(this.selectedDriver).subscribe({
           next: (res: any) => {
-            this.selectedDriver.birthdate =Date.parse(this.selectedDriver.birthdate);
             console.log("res", res)
-            console.log(this.selectedDriver.birthdate)
             this.loadData()
             this.primaryModal.hide()
             this.errorMsg = ""
@@ -203,10 +207,6 @@ export class CruddriverComponent {
       this.dataService.updateDriver(this.selectedDriver).subscribe({
         next: (res:any) => {
           console.log("res", res)
-          res.forEach(e => {
-           // e.birthdate = this.tools.formatDate(new Date(Number.parseInt(e.birthdate) * 1000));
-           e.birthdate =Date.parse(e.birthdate);
-        });
           this.loadData()
           this.primaryModal.hide()
           this.errorMsg = ""
@@ -249,6 +249,8 @@ export class CruddriverComponent {
     this.selectedDevices = [],
       this.selectedDevice = null
   }
+
+  exporter(type) { }
 
 }
 

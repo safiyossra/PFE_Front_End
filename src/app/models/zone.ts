@@ -4,6 +4,7 @@ export class Zone {
     groupID: any
     description: any
     isActive: any
+    reverseGeocode: any
     zoneType: ZoneType
     radius: any
     iconName: any
@@ -34,7 +35,8 @@ export class Zone {
         this.clientID = null
         this.groupID = null
         this.description = ''
-        this.isActive = 0
+        this.isActive = 1
+        this.reverseGeocode = 1
         this.zoneType = null
         this.radius = 5
         this.iconName = null

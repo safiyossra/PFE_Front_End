@@ -3,6 +3,7 @@ export class Device {
     deviceID: any
     creationTime: string
     uniqueID: any
+    pushpinID: any
     description: any
     vehicleID: any
     vehicleMake: any
@@ -17,10 +18,11 @@ export class Device {
     lastOdometerKM: any
 
     constructor(isActive?, deviceID?, creationTime?, uniqueID?, description?, vehicleID?, vehicleMake?, vehicleModel?, serialNumber?,
-        simPhoneNumber?, speedLimitKPH?, fuelEconomy?, fuelCostPerLiter?, fuelCapacity?, fuelCapacity2?, lastOdometerKM?) {
+        simPhoneNumber?, speedLimitKPH?, fuelEconomy?, fuelCostPerLiter?, fuelCapacity?, fuelCapacity2?, lastOdometerKM?, pushpinID?) {
         this.deviceID = deviceID ?? ''
         this.isActive = isActive ?? 0
         this.creationTime = creationTime ?? ''
+        this.pushpinID = pushpinID ?? 'default'
         this.description = description ?? ''
         this.uniqueID = uniqueID ?? ''
         this.vehicleID = vehicleID ?? ''

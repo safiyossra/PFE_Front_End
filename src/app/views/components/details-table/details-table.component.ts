@@ -16,14 +16,16 @@ import { util } from 'src/app/tools/utils';
 })
 export class DetailsTableComponent implements OnChanges {
   @Output() positionClick?: EventEmitter<any> = new EventEmitter();
+  @Output() exportEvents?: EventEmitter<any> = new EventEmitter();
   @Input() url: string
   @Input() selectedMapDevice: any;
+  @Input() exportEvts: any;
   @Input() tableID = "Detaill";
   // public columnNames = ["Date","Status","Pushpin Code","Lat/Lon","Vitesse(km/h)","Distance en kilométrage","Carburant %","Fuel Vol(L)","Carburant Total(L)","Adresse","Insert Date"]
   // Pushpin Code , Carburant %, 
   public columnNames = ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
   public pageSizeOptions = [10, 15, 20, 30, 50, 100, 200, 500, 1000];
-  public data: any;
+  // public data: any;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   public isLoading: boolean = false
   public displayedColumns: any = ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
@@ -64,13 +66,20 @@ export class DetailsTableComponent implements OnChanges {
         this.loadData()
       }
     }
+    if (changes['exportEvts']) {
+      let change = changes['exportEvts'].currentValue
+      if (change && change.type)
+        this.export(change.type)
+    }
   }
 
   loadData() {
     this.isLoading = true;
 
     var route = this.router
+
     var urlTmp = this.url + "&limE=" + this.selectedPageSize + "&page=" + this.currentPage
+    console.log("urlTmp", urlTmp);
     this.dataService.getDetails(urlTmp).subscribe({
       next: (d: any) => {
         this.dataSource = new MatTableDataSource(d.data)
@@ -111,6 +120,13 @@ export class DetailsTableComponent implements OnChanges {
     this.positionClick.emit(out)
   }
 
-
+  export(type) {
+    console.log("export(type)");
+    console.log(type);
+    if (this.loadDonnee && this.loadDonnee.length) {
+      let out = { data: this.loadDonnee, type: type }
+      this.exportEvents.emit(out)
+    }
+  }
 }
 

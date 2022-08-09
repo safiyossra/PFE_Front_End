@@ -1,4 +1,4 @@
-<app-header [navbarBrandRouterLink]="['/dashboard']" [fixed]="true"
+<app-header [navbarBrandRouterLink]="['/map']" [fixed]="true"
   [navbarBrandFull]="{src: 'assets/img/brand/logo_sidenav_brand.png', width: 95, height: 60, alt: 'Sendatrack Logo'}"
   [navbarBrandMinimized]="{src: 'assets/img/brand/senda-track-logo.png', width: 40, height: 40, alt: 'Sendatrack Logo'}"
   ><!--[sidebarToggler]="'lg'" [asideMenuToggler]="'lg'"-->
@@ -7,10 +7,13 @@
       <a class="nav-link" [routerLink]="['/dashboard']">Dashboard</a>
     </li>
     <li class="nav-item px-3">
-      <a class="nav-link" [routerLink]="['/gestionvehicule/list']">Véhicules</a>
+      <a class="nav-link" [routerLink]="['/map']">Map</a>
     </li>
     <li class="nav-item px-3">
       <a class="nav-link" [routerLink]="['/rapports']">Rapports</a>
+    </li>
+    <li class="nav-item px-3">
+      <a class="nav-link" [routerLink]="['/parametrage/gestionvehicule']">Véhicules</a>
     </li>
   </ul>
   <ul class="nav navbar-nav ml-auto">
@@ -32,7 +35,7 @@
       </div>
     </li>
     <li class="nav-item d-md-down-none">
-      <a class="nav-link" [routerLink]="['/gestionvehicule/list']"><i class="icon-list"></i></a>
+      <a class="nav-link" [routerLink]="['/parametrage/gestionvehicule']"><i class="icon-list"></i></a>
     </li>
     <li class="nav-item d-md-down-none">
       <a class="nav-link" [routerLink]="['/map']"><i class="icon-location-pin"></i></a>
@@ -72,19 +75,19 @@
     <app-sidebar-minimizer></app-sidebar-minimizer>
   </app-sidebar>
   <!-- Main content -->
-  <main class="main">
+  <main class="main mt-2">
     <!-- Breadcrumb -->
     <!-- breaking change 'cui-breadcrumb' -->
-    <cui-breadcrumb>
+    <!-- <cui-breadcrumb> -->
       <!-- Breadcrumb Menu-->
-      <li class="breadcrumb-menu d-md-down-none">
+      <!-- <li class="breadcrumb-menu d-md-down-none">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
           <a class="btn" href="#"><i class="icon-speech"></i></a>
           <a class="btn" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>
           <a class="btn" href="#"><i class="icon-settings"></i> &nbsp;Settings</a>
         </div>
       </li>
-    </cui-breadcrumb>
+    </cui-breadcrumb> -->
     <!-- deprecation warning for 'app-breadcrumb' 
                         <ol class="breadcrumb">
                         <app-breadcrumb></app-breadcrumb>

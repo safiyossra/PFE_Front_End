@@ -17,12 +17,12 @@ export const navItems: INavData[] = [
   {
     name: 'Map',
     url: '/map/vehicule',
-    icon: 'cil-garage'
+    icon: 'cil-map'
   },
   {
     name: 'Zones',
     url: '/map/zones',
-    icon: 'cil-map'
+    icon: 'cil-location-pin'
   },
   {
     name: 'Vehicules Plus Proches',

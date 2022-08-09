@@ -22,8 +22,8 @@ export class AlertsComponent {
   iconCollapse: string = 'icon-arrow-down';
   data: any;
   public devices: any = [];
-  selectedDevices = null;
-  selectedDevice = this.selectedDevices;
+  selectedDevices = [];
+  selectedDevice = null;
   showErrorDevice = false;
   errorMessageDevice = "";
 
@@ -136,7 +136,7 @@ export class AlertsComponent {
     this.selectedDevices = []
   }
 
-  exporter() {
-    this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+  exporter(type) {
+    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
   }
 }

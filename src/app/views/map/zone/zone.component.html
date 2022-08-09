@@ -4,7 +4,10 @@
     <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
         class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
     <div class="row">
-        <div class="col-lg-3 zones-tabs">
+        <as-split #mySplit direction="horizontal" [useTransition]="true" (gutterClick)="resetSize($event)"
+            (dragEnd)="onDragEnd($event)" (transitionEnd)="invalidate()">
+            <as-split-area [size]="size[0]" [order]="1" style="overflow: hidden;">
+                <div class="zones-tabs">
             <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
             <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
             <tabset>
@@ -89,8 +92,11 @@
                         <i class="cil-plus" style="vertical-align: middle;"></i> | {{mode ==
                         'edit'?'Modifier':'Ajouter'}}
                     </ng-template>
-                    <input type="text" class="form-control w-100 my-4 px-1" placeholder="Description"
+                    <input type="text" class="form-control w-100 my-2 px-1" placeholder="Description"
                         [ngModelOptions]="{ standalone: true }" [(ngModel)]="selectedZone.description">
+                        <input class="form-check-input switch mx-2 mb-4 " type="checkbox" id="sw1" [(ngModel)]="selectedZone.reverseGeocode"
+                            [ngModelOptions]="{standalone: true}"><label for="sw1" class="ml-2">
+                            Géocodage inversé&nbsp;</label>
                     <mat-form-field *ngIf="selectedZone?.zoneType==4" appearance="fill" class="w-100 px-1 bg-white">
                         <mat-label>Selectionner une icon</mat-label>
                         <mat-select [(value)]="selectedZone.iconName" (selectionChange)="onIconChange($event)">
@@ -129,8 +135,13 @@
                 </tab>
             </tabset>
         </div>
+        </as-split-area>
+        
+        <as-split-area [size]="size[1]" [order]="2">
         <div class="flex-grow-1 my-map">
             <div class="card-body" id="map"></div>
         </div>
+        </as-split-area>
+        </as-split>
     </div>
 </div>

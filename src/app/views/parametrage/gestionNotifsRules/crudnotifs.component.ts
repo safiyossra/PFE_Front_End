@@ -27,12 +27,12 @@ export class CrudNotifsRulesComponent {
   selectedCrons = '0';
   data = [];
   POIs = []
-  selectedPois1 = null
-  selectedPois2 = null
-  selectedPois3 = null
-  selectedPoi1 = this.selectedPois1
-  selectedPoi2 = this.selectedPois2
-  selectedPoi3 = this.selectedPois3
+  selectedPois1 = []
+  selectedPois2 = []
+  selectedPois3 = []
+  selectedPoi1 = null
+  selectedPoi2 = null
+  selectedPoi3 = null
   rules = [false, false, false, false, false, false]
   disabledOptions = [false, false, true]
   rulesValues = [20, 0]
@@ -121,6 +121,7 @@ export class CrudNotifsRulesComponent {
         //   e.lastLoginTime = this.tools.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
         // });
         this.data = d;
+        console.log(d);
         this.loading = false;
       }, error(err) {
         console.log(err);
@@ -381,12 +382,12 @@ export class CrudNotifsRulesComponent {
   }
 
   resetRules() {
-    this.selectedPois1 = null
-    this.selectedPois2 = null
-    this.selectedPois3 = null
-    this.selectedPoi1 = this.selectedPois1
-    this.selectedPoi2 = this.selectedPois2
-    this.selectedPoi3 = this.selectedPois3
+    this.selectedPois1 = []
+    this.selectedPois2 = []
+    this.selectedPois3 = []
+    this.selectedPoi1 = null
+    this.selectedPoi2 = null
+    this.selectedPoi3 = null
     this.rules = [false, false, false, false, false, false]
     this.rulesValues = [20, 0]
   }
@@ -399,4 +400,6 @@ export class CrudNotifsRulesComponent {
     this.selectedVs = '-'
     this.selectedAlert.v = this.selectedVs
   }
+
+  exporter(type) { }
 }

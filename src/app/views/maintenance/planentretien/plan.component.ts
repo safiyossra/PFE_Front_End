@@ -32,14 +32,14 @@ export class PlanComponent {
 
 
   public devices: any = [];
-  selectedDevices = null;
+  selectedDevices = [];
   selectedDevice = this.selectedDevices;
 
-  selectedDevicesModal = null;
+  selectedDevicesModal = [];
   selectedDeviceModal = this.selectedDevicesModal;
 
   public operations: any = [];
-  selectedOperations = null;
+  selectedOperations = [];
   selectedOperation = this.selectedOperations;
 
   getSelectedOperation(selected) {
@@ -130,11 +130,14 @@ export class PlanComponent {
         console.log(d);
         this.data = d;
         this.data.forEach((e) => {
-          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime) * 1000));
-          e.decDateValueString = this.tools.formatDateForInput(new Date(Number.parseInt(e.decDateValue) * 1000));
+          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime ?? 0) * 1000));
+          e.decDateValueString = this.tools.formatDateForInput(new Date(Number.parseInt(e.decDateValue ?? 0) * 1000));
           // if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
         })
+
+        console.log(this.data);
       }, error(err) {
+        console.log(err);
         this.loading = false;
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -166,8 +169,8 @@ export class PlanComponent {
   modalAjoutr() {
     this.mode = "Ajouter"
     this.selectedPlan = new PlanEntretien();
-    this.selectedDevicesModal = 'null'
-    this.selectedOperations = 'null'
+    this.selectedDevicesModal = []
+    this.selectedOperations = []
     this.currentKM = null
     this.primaryModal.show()
   }
@@ -286,12 +289,12 @@ export class PlanComponent {
   }
 
   reset() {
-    this.selectedDevices = null
+    this.selectedDevices = []
     this.selectedDevice = null
   }
 
-  exporter() {
-    this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+  exporter(type) {
+    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
   }
 
   getJsonValue(v) {
