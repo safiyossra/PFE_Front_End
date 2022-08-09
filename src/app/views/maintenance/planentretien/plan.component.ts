@@ -274,7 +274,7 @@ export class PlanComponent {
       var u = "?id=" + plan
       this.dataService.delPlanEntretien(u).subscribe({
         next: (res) => {
-          this.loadData()
+          this.loadData(true)
         }, error(err) {
           this.modalLoading = false;
           if (err.status == 401) {
