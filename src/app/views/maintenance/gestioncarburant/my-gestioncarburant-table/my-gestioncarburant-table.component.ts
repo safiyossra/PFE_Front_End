@@ -51,7 +51,7 @@ export class MyGestioncarburantTableComponent implements OnChanges {
     'Montant TTC',
     'KM Precedent',
     'KM Encours',
-    'Consommation Moy',
+    'Consommation Moy (%)',
     'Date',
     'Observation',
   ];

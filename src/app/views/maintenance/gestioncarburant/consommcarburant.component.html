@@ -296,15 +296,6 @@
                             </div>
                           </div>
 
-                          <div
-                            *ngIf="qteZeroErr"
-                            class="row align-items-center text-danger"
-                          >
-                            <p class="col">
-                              {{ "La quantité doit etre superieur à zero" }}
-                            </p>
-                          </div>
-
                           <!-- montants -->
                           <div class="form-group row align-items-center">
                             <label
@@ -356,8 +347,6 @@
                             <div class="col-md-2">
                               <input
                                 [(ngModel)]="consommation.montant"
-                                disabled="true"
-                                readonly
                                 type="number"
                                 min="0"
                                 id="text-input"

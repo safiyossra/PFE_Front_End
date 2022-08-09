@@ -180,6 +180,16 @@
             [columns]="columnsCarburant">
           </my-carburant-data-table>
         </tab>
+
+        <tab style="min-height: 600px" (selectTab)="selectTab(6)" [active]="selectedTab==6">
+          <ng-template tabHeading>
+            <i class="icon-list mr-2"></i>Carburant Réel &nbsp;
+          </ng-template>
+          <my-carburant-data-table class="detailtable" (positionClick)="openMap($event)" (openPointsClick)="openMapPoints($event)"
+            [selectedMapDevice]="selectedMapDevice" [data]="reportDataCarburant" [columnNames]="displayedColumnsCarburant"
+            [columns]="columnsCarburant">
+          </my-carburant-data-table>
+        </tab>
       </tabset>
 
     </div>
