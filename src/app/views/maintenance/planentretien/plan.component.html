@@ -7,10 +7,10 @@
               class="fa fa-plus-circle"></i> Ajouter Plan d'entretien </button>
           <div class="card-header-actions">
             <span class="dropdown" dropdown placement="bottom">
-              <button type="button" dropdownToggle (click)="false" data-toggle="dropdown" role="button" aria-haspopup="true"
-                aria-expanded="false" class="btn btn-square btn-link">
-              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
-            </button>
+              <button type="button" dropdownToggle (click)="false" data-toggle="dropdown" role="button"
+                aria-haspopup="true" aria-expanded="false" class="btn btn-square btn-link">
+                <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
+              </button>
               <div class="dropdown-menu dropdown-menu-center" *dropdownMenu aria-labelledby="simple-dropdown">
                 <div class="dropdown-header text-center"><strong></strong></div>
                 <button class="dropdown-item" (click)="exporter(0)"><i class="fa fa-file-excel-o text-success"
@@ -19,7 +19,7 @@
                     style="font-size: large;"></i>
                   Pdf</button>
               </div>
-              </span>
+            </span>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>
@@ -28,7 +28,7 @@
             </button>
           </div>
         </div>
-        <div class="card-body" [collapse]="isCollapsed" [isAnimated]="true">
+        <<<<<<< HEAD <div class="card-body" [collapse]="isCollapsed" [isAnimated]="true">
           <div class="form-group row">
             <div class="col-md-5">
               <my-daterangepicker #calendar [options]="myDateRangePickerOptions"></my-daterangepicker>
@@ -49,53 +49,110 @@
                         *ngIf="selectedDevice != null">{{
                         selectedDevice
                         }}</i></span>
+                    =======
+                    <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
+                      <form class="form-horizontal">
+                        <div class="form-group row">
+                          <div class="col-md-5">
+                            <my-daterangepicker #calendar [options]="myDateRangePickerOptions"></my-daterangepicker>
+                          </div>
+                          <div class="col-md-5">
+                            <div class="controls">
+                              <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
+                                </div>
+                                <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule'"
+                                  [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice"
+                                  [showErrorMsg]="showErrorDevice" [options]="devices" [display]="'name'"
+                                  [value]="'dID'" [multiple]="false" [labelCount]="0"
+                                  [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
+                                </my-dropdown-select>
+                                <div class="input-group-append">
+                                  <span class="input-group-text"><i class="fa fa-key fa-sm"
+                                      *ngIf="selectedDevice == null"></i><i *ngIf="selectedDevice != null">{{
+                                      selectedDevice
+                                      }}</i></span>
+                                </div>
+                                >>>>>>> 03e3d40e069668bbb2469555b139d230d7db0048
+                              </div>
+                            </div>
+                            <<<<<<< HEAD <!--</div> -->
+                          </div>
+                        </div>
+                        <div class="form-actions">
+                          <button class="btn btn-sm btn-primary" (click)="loadData(false)" [disabled]="loading">
+                            <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                            <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
+                          </button>
+                        </div>
+                    </div>
                   </div>
                 </div>
-                <!--</div> -->
+              </div>
+              <!--/.col-->
+            </div>
+            <!--/.row-->
+
+
+            <div class="row">
+              <div class="col-lg-12">
+                <my-planentretien-table (modify)="loadModify($event)" (cloturer)="close($event)"
+                  (delete)="delete($event)" [data]="data">
+                </my-planentretien-table>
               </div>
             </div>
-            <div class="form-actions">
-              <button class="btn btn-sm btn-primary" (click)="loadData(false)" [disabled]="loading">
-                <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
-                <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
-              </button>
+          </div>
+
+          <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade"
+            tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-primary" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  =======
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-sm btn-primary" [disabled]="loading">
+                    <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                    <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i>
+                    &nbsp;Appliquer
+                  </button>
+                </div>
               </div>
-              </div>
-        </div>
-      </div>
+              </form>
+            </div>
+          </div>
       </div>
       <!--/.col-->
+    </div>
+    <!--/.row-->
+
+    <div class="row">
+      <div class="col-lg-12">
+        <my-planentretien-table [data]="data"> </my-planentretien-table>
       </div>
-      <!--/.row-->
-      
-      
-      <div class="row">
-        <div class="col-lg-12">
-      <my-planentretien-table (modify)="loadModify($event)" (cloturer)="close($event)" (delete)="delete($event)"
-        [data]="data">
-      </my-planentretien-table>
-      </div>
-      </div>
-      </div>
-      
-      <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
-        role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-primary" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-        <h5 class="modal-title">Ajouter Plan d'entretien</h5>
-        <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="animated fadeIn">
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="card">
-                <div class="card-header">
-                  Véhicule
-                  </div>
+    </div>
+  </div>
+
+  <div bsModal #primaryModal="bs-modal" [config]="{ backdrop: 'static', keyboard: false }" class="modal fade"
+    tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-primary" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          >>>>>>> 03e3d40e069668bbb2469555b139d230d7db0048
+          <h5 class="modal-title">Ajouter Plan d'entretien</h5>
+          <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="animated fadeIn">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="card">
+                  <<<<<<< HEAD <div class="card-header">
+                    Véhicule
+                </div>
                 <div class="card-body card-body1">
                   <div class="form-group row">
                     <label class=" col-md-4 col-form-label" for="deviceID">Véhicule *</label>
@@ -109,101 +166,234 @@
                         <span class="input-group-text">
                           <i class="fa fa-key fa-sm" *ngIf="selectedPlan.deviceID == null"></i>
                           <i *ngIf="selectedPlan.deviceID != null">{{
-                            selectedPlan.device
-                            }}</i></span>
+                            =======
+                            <div class="card-header">* Champs Obligatoires</div>
+                            <div class="card-body1">
+                              <div class="form-group row">
+                                <label class="col-md-4 col-form-label" for="deviceID">Véhicule *</label>
+                                <div class="col-8 input-group">
+                                  <my-dropdown-select id="deviceID" class="form-control"
+                                    [placeholder]="'Sélection le véhicule'" [selectPlaceholder]="'search...'"
+                                    [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice" [options]="devices"
+                                    [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
+                                    [selectedOptions]="selectedDevicesModal"
+                                    (selectionChange)="getSelectedDevicesModal($event)">
+                                  </my-dropdown-select>
+                                  <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-key fa-sm"
+                                        *ngIf="selectedPlan.device == null"></i><i
+                                        *ngIf="selectedPlan.device != null">{{
+                                        >>>>>>> 03e3d40e069668bbb2469555b139d230d7db0048
+                                        selectedPlan.device
+                                        }}</i></span>
+                                  </div>
+                                </div>
+                              </div>
+                              <<<<<<< HEAD <div class="form-group row">
+                                <label class="col-md-4 col-form-label" for="kmActuel">Kilométrage actuel</label>
+                                <div class="col-8 input-group">
+                                  <input type="number" id="kmActuel" disabled [value]="currentKM" step="0.1"
+                                    class="form-control" placeholder="Kilométrage Actuel">
+                                  <div class="input-group-append">
+                                    <span class="input-group-text">
+                                      KM
+                                    </span>
+                                  </div>
+                                </div>
+                            </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="form-group row">
+                          <label class=" col-md-4 col-form-label" for="operation">Opération *</label>
+                          <div class="col-8">
+                            <my-dropdown-select id="operation" class="form-control"
+                              [placeholder]="'Operation Selection'" [selectPlaceholder]="'search...'"
+                              [options]="cts.planOperations" [display]="'name'" [value]="'id'" [multiple]="false"
+                              [labelCount]="0" [selectedOptions]="selectedOperations"
+                              (selectionChange)="getSelectedOperation($event)">
+                            </my-dropdown-select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-header">
+                        Déclenchement
+                      </div>
+                      <div class="card-body">
+                        <mat-radio-group [(ngModel)]="selectedPlan.typeDeclenchement" class="row">
+                          =======
+                          <!-- <div class="form-group row">
+                                                                                                                                                                                                                                                                <label class=" col-md-4 col-form-label" for="modele">Modèle</label>
+                            <div class="col-8">
+                              <input type="text" id="modele" [(ngModel)]="selectedPlan.model" [ngModelOptions]="{standalone: true}"
+                                class="form-control" placeholder="Saisir le modèle">
+                            </div>
+                          </div> -->
+                          <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="kmActuel">Kilométrage actuel</label>
+                            <div class="col-8">
+                              <input type="number" id="kmActuel" [(ngModel)]="selectedPlan.kmActuel"
+                                [ngModelOptions]="{ standalone: true }" class="form-control"
+                                placeholder="Saisir le Kilométrage Actuel" />
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="form-group row">
+                          <!-- <label class="col-md-3 col-form-label" for="text-input">Motif</label> -->
+                          <div class="col-12">
+                            <textarea type="text" rows="4" [(ngModel)]="selectedPlan.motif"
+                              [ngModelOptions]="{ standalone: true }" class="form-control"
+                              placeholder="Saisir votre motif"></textarea>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <div class="form-group row">
+                          <label class="col-md-4 col-form-label" for="operation">Opération *</label>
+                          <div class="col-8 input-group">
+                            <my-dropdown-select id="operation" class="form-control"
+                              [placeholder]="'Operation Selection'" [selectPlaceholder]="'search...'"
+                              [errorMsg]="errorMessageOperation" [showErrorMsg]="showErrorOperation" [options]="devices"
+                              [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
+                              [selectedOptions]="selectedOperations" (selectionChange)="getSelectedOperation($event)">
+                            </my-dropdown-select>
+                            <div class="input-group-append">
+                              <span class="input-group-text">
+                                <i class="fa fa-list fa-sm" *ngIf="selectedPlan.operation == null"></i>
+                                <i *ngIf="selectedPlan.operation != null">{{
+                                  selectedPlan.operation
+                                  }}</i>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header">Type de déclenchement</div>
+                      <div class="card-body">
+                        <mat-radio-group [(ngModel)]="selectedPlan.decKm" class="row">
+                          >>>>>>> 03e3d40e069668bbb2469555b139d230d7db0048
+                          <label class="col-4"></label>
+                          <mat-radio-button class="col-4" [value]="1">
+                            Par Kilométrage
+                          </mat-radio-button>
+                          <mat-radio-button class="col-4" [value]="0">
+                            Par Date
+                          </mat-radio-button>
+                        </mat-radio-group>
+                        <<<<<<< HEAD <div class="form-group row" *ngIf="selectedPlan.typeDeclenchement==1">
+                          <label class="col-md-4 col-form-label" for="compteurKm">Valeur *</label>
+                          =======
+                          <div class="form-group row" *ngIf="selectedPlan.decKm == '1'">
+                            <label class="col-md-4 col-form-label" for="compteurKm">Valeur *</label>
+                            >>>>>>> 03e3d40e069668bbb2469555b139d230d7db0048
+                            <div class="col-8">
+                              <input type="number" id="compteurKm" [(ngModel)]="selectedPlan.decKmValue"
+                                [ngModelOptions]="{ standalone: true }" class="form-control"
+                                placeholder="Saisir un chiffre" />
+                            </div>
+                          </div>
+                          <<<<<<< HEAD <div class="form-group row" *ngIf="selectedPlan.typeDeclenchement==0">
+                            <label class="col-md-4 col-form-label" for="compteurDate">Valeur *</label>
+                            <div class="col-8">
+                              <input type="date" id="compteurDate" [(ngModel)]="selectedPlan.decDateValueString"
+                                [ngModelOptions]="{standalone: true}" class="form-control"
+                                placeholder="Saisir une date">
+                            </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-4 col-form-label" for="beforeValue">Déclencher avant par</label>
+                        <div class="col-8 input-group">
+                          <input type="number" *ngIf="selectedPlan.typeDeclenchement==1"
+                            [(ngModel)]="selectedPlan.kmValue" [ngModelOptions]="{standalone: true}" id="beforeValue"
+                            class="form-control" placeholder="Saisir le nombre de KM">
+                          <input type="number" *ngIf="selectedPlan.typeDeclenchement==0"
+                            [(ngModel)]="selectedPlan.dateValue" [ngModelOptions]="{standalone: true}" id="beforeValue"
+                            class="form-control" placeholder="Saisir le nombre de jours">
+                          <div class="input-group-append">
+                            <span class="input-group-text">
+                              {{selectedPlan.typeDeclenchement==0?'Jours':'KM'}}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-md-4 col-form-label" for="kmActuel">Kilométrage actuel</label>
-                    <div class="col-8 input-group">
-                      <input type="number" id="kmActuel" disabled [value]="currentKM" step="0.1" class="form-control"
-                        placeholder="Kilométrage Actuel">
-                      <div class="input-group-append">
-                        <span class="input-group-text">
-                          KM
-                        </span>
-                      </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-              <div class="card">
-                <div class="card-body">
-                  <div class="form-group row">
-                    <label class=" col-md-4 col-form-label" for="operation">Opération *</label>
-                    <div class="col-8">
-                      <my-dropdown-select id="operation" class="form-control" [placeholder]="'Operation Selection'"
-                        [selectPlaceholder]="'search...'" [options]="cts.planOperations" [display]="'name'"
-                        [value]="'id'" [multiple]="false" [labelCount]="0" [selectedOptions]="selectedOperations"
-                        (selectionChange)="getSelectedOperation($event)">
-                      </my-dropdown-select>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-            <div class="col-lg-6">
-              <div class="card">
-                <div class="card-header">
-                  Déclenchement
-                  </div>
-                  <div class="card-body">
-                  <mat-radio-group [(ngModel)]="selectedPlan.typeDeclenchement" class="row">
-                    <label class="col-4"></label>
-                    <mat-radio-button class="col-4" [value]="1">
-                      Par Kilométrage
-                    </mat-radio-button>
-                    <mat-radio-button class="col-4" [value]="0">
-                      Par Date
-                    </mat-radio-button>
-                  </mat-radio-group>
-                  <div class="form-group row" *ngIf="selectedPlan.typeDeclenchement==1">
-                    <label class="col-md-4 col-form-label" for="compteurKm">Valeur *</label>
-                    <div class="col-8">
-                      <input type="number" id="compteurKm" [(ngModel)]="selectedPlan.decKmValue" [ngModelOptions]="{standalone: true}"
-                        class="form-control" placeholder="Saisir un chiffre">
+                    <!-- <label class="col-md-3 col-form-label" for="text-input">Motif</label> -->
+                    <div class="col-12">
+                      <textarea type="text" rows="4" [(ngModel)]="selectedPlan.motif"
+                        [ngModelOptions]="{standalone: true}" class="form-control"
+                        placeholder="Saisir votre motif"></textarea>
                     </div>
                   </div>
-                  <div class="form-group row" *ngIf="selectedPlan.typeDeclenchement==0">
-                    <label class="col-md-4 col-form-label" for="compteurDate">Valeur *</label>
-                    <div class="col-8">
-                      <input type="date" id="compteurDate" [(ngModel)]="selectedPlan.decDateValueString" [ngModelOptions]="{standalone: true}"
-                        class="form-control" placeholder="Saisir une date">
-                      </div>
-                      </div>
-                  <div class="form-group row">
-                    <label class="col-md-4 col-form-label" for="beforeValue">Déclencher avant par</label>
-                    <div class="col-8 input-group">
-                      <input type="number" *ngIf="selectedPlan.typeDeclenchement==1" [(ngModel)]="selectedPlan.kmValue"
-                        [ngModelOptions]="{standalone: true}" id="beforeValue" class="form-control" placeholder="Saisir le nombre de KM">
-                      <input type="number" *ngIf="selectedPlan.typeDeclenchement==0" [(ngModel)]="selectedPlan.dateValue"
-                        [ngModelOptions]="{standalone: true}" id="beforeValue" class="form-control" placeholder="Saisir le nombre de jours">
-                      <div class="input-group-append">
-                        <span class="input-group-text">
-                          {{selectedPlan.typeDeclenchement==0?'Jours':'KM'}}
-                        </span>
-                      </div>
-                    </div>
-                    </div>
                 </div>
-                </div>
-                <div class="form-group row">
-                  <!-- <label class="col-md-3 col-form-label" for="text-input">Motif</label> -->
-                  <div class="col-12">
-                    <textarea type="text" rows="4" [(ngModel)]="selectedPlan.motif" [ngModelOptions]="{standalone: true}"
-                      class="form-control" placeholder="Saisir votre motif"></textarea>
-                </div>
-                </div>
-                </div>
-                </div>
-                </div>
-                </div>
-      <div class="modal-footer" style="justify-content: left;display: initial;">
-        <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
-        <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
-        <button type="button" class="btn btn-secondary float-right" (click)="primaryModal.hide()">Fermer</button>
-      </div>
-    </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="justify-content: left;display: initial;">
+            <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
+            <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
+            <button type="button" class="btn btn-secondary float-right" (click)="primaryModal.hide()">Fermer</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+    =======
+    <div class="form-group row" *ngIf="selectedPlan.decKm == '0'">
+      <label class="col-md-4 col-form-label" for="compteurDate">Valeur *</label>
+      <div class="col-8">
+        <input type="date" id="compteurDate" [(ngModel)]="selectedPlan.decDateValue"
+          [ngModelOptions]="{ standalone: true }" class="form-control" placeholder="Saisir une date" />
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body">
+    <div class="form-group row">
+      <label class="col-md-4 col-form-label" for="beforeValue">Déclencher avant par</label>
+      <div class="col-8">
+        <input type="number" id="beforeValue" class="form-control" placeholder="Saisir un chiffre" />
+        <div class="input-group-append">
+          <span class="input-group-text">
+            {{ selectedPlan.decKm == "0" ? "Jours" : "KM" }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="modal-footer" style="justify-content: left; display: initial">
+  <mat-hint class="text-danger">{{ errorMsg }}</mat-hint>
+  <button type="button" class="btn btn-primary float-right" (click)="submit()">
+    {{ mode }}
+  </button>
+  <button type="button" class="btn btn-secondary float-right" (click)="primaryModal.hide()">
+    Fermer
+  </button>
+</div>
+</div>
+<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+>>>>>>> 03e3d40e069668bbb2469555b139d230d7db0048

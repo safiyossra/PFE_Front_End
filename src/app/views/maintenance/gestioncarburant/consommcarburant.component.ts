@@ -1,8 +1,12 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { combineLatest } from 'rxjs';
+import { util } from './../../../tools/utils';
+import { Consommation } from './../../../models/Consommation';
+import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   templateUrl: 'consommcarburant.component.html',
@@ -11,73 +15,60 @@ export class ConsommcarburantComponent {
 
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  @ViewChild('id') id: ElementRef;
-  @ViewChild('pushpin') pushpin: ElementRef;
-  @ViewChild('report') report: ElementRef;
-  @ViewChild('description') description: ElementRef;
 
-  constructor(private dataService: DataService, private router: Router) { }
+  constructor(private dataService: DataService, private router: Router, private tools: util, private dateAdapter: DateAdapter<Date>) {
+  }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
   isCollapsed: boolean = false;
   isCollapsedData: boolean = false;
-  iconCollapse: string = 'icon-arrow-up';
   data = [];
-  datatrajet = [];
-  public isnotNum: boolean = false
-
 
   public devices: any = [];
+  public drivers: any = [];
   selectedDevices = null;
   selectedDevice = this.selectedDevices;
+
+  selectedDriverOption = null;
+  selectedDriver = this.selectedDriverOption;
+
   showErrorDevice = false;
   errorMessageDevice = "";
 
   selectedDevicesModal = null;
-  selectedDeviceModal = this.selectedDevicesModal;
+  selectedDeviceModalOption = this.selectedDevicesModal;
   showErrorDeviceModal = false;
-  errorMessageDeviceModal = "";
 
+  consommation: Consommation = new Consommation();
+  kilometrageErr = false;
+  qteZeroErr = false;
 
-  selectedCiternes = null;
-  selectedCiterne = this.selectedCiternes;
+  mode = "Ajouter";
 
-  public citernes = [
-    {
-      label: "Tout",
-      data: "0"
-    },
-    {
-      label: "Citerne 1",
-      data: "1"
-    },
-    {
-      label: "Citerne 2",
-      data: "2"
-    },
+  qteTotal = 0;
 
-  ];
-  getSelectedDevicesModal(selected) {
-    // console.log(selected);
-    this.selectedDeviceModal = selected;
-  }
+  errorMsg = "";
 
-  getSelectedCiternes(selected) {
-    // console.log(selected);
-    this.selectedCiterne = selected;
-  }
+  editKmEncours = false;
+  editKmPrecedent = false;
 
-  resetValidator() {
-    this.showErrorDevice = false;
-    this.errorMessageDevice = "";
-  }
+  tvas = [{ value: '5' }, { value: '10' }, { value: '15' }, { value: '20' }];
+
+  // set tva to 10
+  tvaOption: any;
+  selectedTva = 10;
+
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
+
   ngOnInit() {
+    this.dateAdapter.setLocale('en-GB');
+
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
+
     this.myDateRangePickerOptions = {
       theme: 'default',
       labels: ['Start', 'End'],
@@ -119,32 +110,27 @@ export class ConsommcarburantComponent {
       }
     };
 
-    this.getDev();
+    this.tasks$.push(this.devices$, this.drivers$);
+
+    this.loadData(true);
   }
 
-  toggleCollapse(): void {
-    this.isCollapsed = !this.isCollapsed;
-    this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
+  tasks$ = [];
 
-  }
+  devices$ = this.dataService.getVehicule("?extra=true");
+  drivers$ = this.dataService.getDriverData("?minimum=true");
+
 
   getSelectedDevices(selected) {
-    // console.log(selected);
     this.selectedDevice = selected;
   }
 
-  onValidateDevice() {
-    this.showErrorDevice = !this.showErrorDevice;
-    this.errorMessageDevice = "This field is required";
-  }
-
-
+  // La list des vehicules
   getDev() {
     var route = this.router
-    this.dataService.getVehicule().subscribe({
+    this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
         this.devices = res;
-        // console.log(res)
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -153,28 +139,350 @@ export class ConsommcarburantComponent {
     })
   }
 
+  getDrivers() {
+    var route = this.router
+    this.dataService.getDriverData("?minimum=true").subscribe({
+      next: (res) => {
+        console.log(res)
+        this.drivers = res;
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    })
+  }
+
+  // get drivers and devices in the same time
+  getDevicesAndDrivers() {
+    return combineLatest([
+      this.devices$,
+      this.drivers$
+    ])
+  }
+
+  // Modal functions
+
+  calculMontantHT() {
+    this.consommation.montant = (this.consommation.montantTTC / (1 + this.selectedTva / 100)).toFixed(2);
+  }
+
+  calculMontantTTC() {
+    this.consommation.montantTTC = (this.consommation.montant * (1 + this.selectedTva / 100)).toFixed(2);
+  }
+
+  submit() {
+    this.mode == 'Ajouter' ? this.ajouter() : this.modifier();
+  }
+
+  dateToTimeStamp(date) {
+    return Date.parse(date) / 1000 as number;
+  }
+
+  timestampToDate(myTimestamp) {
+    return Date.parse(myTimestamp) / 1000 as number;
+  }
+
+  dateSelected() {
+    this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
+
+    if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '') {
+      this.getKmPrecedent(this.consommation.dateFill, this.consommation.deviceID);
+    }
+  }
+
+  getSelectedDeviceModal(selected) {
+    this.consommation.deviceID = selected;
+    this.consommation.kmEncours = this.getCurrentKm(selected);
+    if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '')
+      this.getKmPrecedent(this.consommation.dateFill, this.consommation.deviceID);
+  }
+
+  getSelectedDriver(selected) {
+    this.consommation.driverID = selected;
+  }
+
+  getKmPrecedent(date, vehID) {
+    this.dataService.getConsommation("?date=" + date + "&vehId=" + vehID).subscribe({
+      next: (res) => {
+        this.consommation.kmPrecedent = (res as any)?.kmEncours ?? 0;
+
+        if (this.consommation.pleinOn == 1)
+          this.getQteTotale(this.consommation.dateFill);
+
+      }, error(err) {
+        if (err.status == 401) {
+          this.route.navigate(['login']);
+        }
+      }
+    });
+  }
+
+  getCurrentKm(id) {
+    for (let i = 0; i < this.devices.length; i++) {
+      if (this.devices[i].dID == id) {
+        return this.devices[i].km
+      }
+    }
+    return 0
+  }
+
+  pleincheckbox() {
+    if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '' && this.consommation.pleinOn == 1)
+      this.getQteTotale(this.consommation.dateFill);
+  }
+
+  // get qte total => plein
+  getQteTotale(date) {
+    this.dataService.getConsommation("?date=" + date + "&plein=true").subscribe({
+      next: (res) => {
+
+        this.qteTotal = res as number;
+
+        this.calculateQteMoy();
+
+      }, error(err) {
+        if (err.status == 401) {
+          this.route.navigate(['login']);
+        }
+      }
+    });
+  }
+
+  calculateQteMoy() {
+    if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '' && this.consommation.pleinOn == 1) {
+      this.kilometrageValidate();
+      this.qteValidate();
+
+      if (this.kilometrageValidate() && this.qteValidate())
+        if (this.consommation.kmPrecedent > 0)
+          this.consommation.consoM = (this.qteTotal + this.consommation.qte) / (this.consommation.kmEncours - this.consommation.kmPrecedent) * 100;
+        else
+          this.consommation.consoM = 0
+    }
+  }
+
+  kilometrageValidate() {
+    if (this.consommation.kmEncours <= this.consommation.kmPrecedent) {
+      this.kilometrageErr = true;
+      return false;
+    }
+    this.kilometrageErr = false;
+    return true;
+  }
+
+  qteValidate() {
+    if (this.consommation.qte <= 0) {
+      this.qteZeroErr = true;
+      return false;
+    }
+    this.qteZeroErr = false;
+    return true;
+  }
+
+  verifyConsommationFields() {
+    return (
+      this.qteValidate()
+      &&
+      this.kilometrageValidate()
+      &&
+      this.consommation.deviceID != '-'
+      &&
+      this.consommation.driverID != '-'
+      &&
+      this.consommation.montant != 0
+      &&
+      this.consommation.montantTTC != 0
+      &&
+      this.consommation.dateFill != ''
+      &&
+      this.consommation.fournisseur != ''
+      &&
+      this.consommation.numCarte != ''
+      &&
+      this.consommation.numBon != ''
+    )
+  }
 
   ajouter() {
+    var route = this.router
+    this.errorMsg = ""
 
-
-    // console.log(this.input1.nativeElement.value);
-    // console.log(this.input2.nativeElement.value);
-    // console.log(this.motif.nativeElement.value);
-    // console.log(this.type.nativeElement.value);
-    // console.log(this.modele.nativeElement.value);
-
+    if (!this.verifyConsommationFields()) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      this.errorMsg = ""
+      this.dataService.addConsommation(this.consommation).subscribe({
+        next: (res) => {
+          this.loadData(true)
+          this.primaryModal.hide();
+        }
+        , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+        }
+      })
+    }
   }
 
-
-  reset() {
-    this.selectedDevices = [],
-
-      this.report.nativeElement.value = ''
-    this.id.nativeElement.value = ''
-    this.description.nativeElement.value = ''
-    this.pushpin.nativeElement.value = ''
-
+  getJsonValue(v) {
+    return JSON.parse(JSON.stringify(v))
   }
+
+  loadConsomToModify(consom) {
+    this.mode = 'Modifier';
+    this.clearModal();
+
+    this.consommation = this.getJsonValue(consom);
+    this.consommation.dateFillString = consom.dateFill.replace(' ', 'T');
+    this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
+    this.selectedDriverOption = this.consommation.driverID;
+    this.selectedDeviceModalOption = this.consommation.deviceID;
+
+    // calculate current tva from ttc and ht
+    let tva = Math.trunc((this.consommation.montantTTC / this.consommation.montant - 1) * 100);
+    // set tva in drop down
+    this.tvaOption = tva.toString();
+
+    this.primaryModal.show()
+  }
+
+  btnAjouter() {
+    this.mode = 'Ajouter';
+    this.clearModal()
+    this.primaryModal.show()
+  }
+
+  modifier() {
+    var route = this.router
+    this.errorMsg = ""
+
+    if (!this.verifyConsommationFields()) {
+      console.log(!this.verifyConsommationFields());
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      this.errorMsg = ""
+
+      console.log(this.consommation);
+
+
+      this.dataService.editConsommation(this.consommation).subscribe({
+        next: (res) => {
+          this.loadData(true)
+          this.primaryModal.hide();
+
+        }
+        , error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+        }
+      })
+    }
+  }
+
+  deleteConsommation(consommation) {
+    if (confirm("Are you sure to delete " + consommation.id)) {
+      var route = this.router
+      var id = "?id=" + consommation.id
+      this.dataService.deleteConsommation(id).subscribe({
+        next: (res) => {
+          console.log("deleted cruduser")
+          this.loadData(true)
+        }, error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            alert("Erreur, la suppression est bloqué")
+          }
+        }
+      })
+      console.log(consommation);
+
+    }
+  }
+
+  getSelectedTva(tva) {
+    this.selectedTva = parseInt(tva);
+    this.calculMontantHT();
+  }
+
+  clearModal() {
+    this.consommation = new Consommation()
+    this.selectedDeviceModalOption = [];
+    this.selectedDriverOption = [];
+
+
+    this.kilometrageErr = false;
+    this.qteZeroErr = false;
+    this.errorMsg = '';
+
+    this.editKmEncours = false;
+    this.editKmPrecedent = false;
+    // set tva to 10
+    this.tvaOption = '10';
+
+    this.selectedTva = 10;
+  }
+
+  loadData(first = false) {
+    var route = this.router
+    this.loading = true;
+    var urlParams = ""
+    if (!first) {
+      var d = this.selectedDevice == '-' || this.selectedDevice == null ? "?" : "?d=" + this.selectedDevice + "&"
+      urlParams = d + "st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
+    }
+
+    this.dataService.getConsommation(urlParams).subscribe({
+      next: (d: any) => {
+        this.data = d;
+
+        this.getDevicesAndDrivers().subscribe({
+          next: ([devices, drivers]) => {
+            this.devices = devices;
+
+            this.drivers = drivers;
+
+            this.data.forEach((e) => {
+              e.dateFill = this.tools.formatDateVer(new Date(Number.parseInt(e.dateFill) * 1000));
+
+              const d = { ...this.drivers.find(elem => elem.driverID == e.driverID) };
+              e.driverName! = d!.displayName;
+
+              const dev = { ...this.devices.find(elem => elem.dID == e.deviceID) };
+              e.deviceName! = dev!.name;
+            })
+
+          }, error(err) {
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+          }
+        });
+
+        this.loading = false;
+
+      }, error(err) {
+        this.loading = false;
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    })
+  };
+
 
 }
 

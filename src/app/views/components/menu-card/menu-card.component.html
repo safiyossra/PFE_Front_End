@@ -1,10 +1,16 @@
 <div class="card" (mouseover)="mouseover($event)" (mouseout)="mouseout($event)">
-    <div class="card-body  menu-card" [class]="background ">
-        <div class="h1 text-right mb-4">
-            <i [class]="icon +' '+ textMuted"></i>
-        </div>
-        <div class="h4 mb-0">{{title}}</div>
-        <small class="text-uppercase font-weight-bold" [class]="textMuted">{{subtitle}}</small>
-        <div class="bar mt-3 mb-0 rounded" [class]="underlineColor" style="width: 40%; height:4px;"></div>
+  <div class="card-body menu-card" [class]="background">
+    <div class="h1 text-right mb-4">
+      <i [class]="icon + ' ' + textMuted"></i>
     </div>
+    <div class="h4 mb-0">{{ title }}</div>
+    <small class="text-uppercase font-weight-bold" [class]="textMuted">{{
+      subtitle
+    }}</small>
+    <div
+      class="bar mt-3 mb-0 rounded"
+      [class]="underlineColor"
+      style="width: 40%; height: 4px"
+    ></div>
+  </div>
 </div>

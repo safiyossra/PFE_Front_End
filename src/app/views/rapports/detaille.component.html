@@ -100,6 +100,7 @@
             <!--/.col-->
           </div>
         </tab>
+
         <tab style="min-height: 600px" (selectTab)="selectTab(1)" [active]="selectedTab==1">
           <ng-template tabHeading>
             <i class="icon-list mr-1"></i>
@@ -114,6 +115,7 @@
             [data]="isArret?reportData:reportDataTrajet" [columnNames]="displayedColumns" [columns]="columns">
           </my-data-table>
         </tab>
+
         <tab style="min-height: 600px" (selectTab)="showTrajet()" [active]="selectedTab==4">
           <ng-template tabHeading class="card-header-action btn-secondary">
             <i class="fa fa-map mr-1"></i> Afficher Trajet &nbsp;
@@ -126,6 +128,7 @@
             [endTime]="trajetEndTime" [ToInvalidate]="ToInvalidate">
           </modal-map>
         </tab>
+
         <tab style="min-height: 600px" (selectTab)="selectTab(5)" [active]="selectedTab==5">
           <ng-template tabHeading>
             <i class="icon-list mr-2"></i>Parking &nbsp;
@@ -136,6 +139,7 @@
             [data]="reportDataArrets" [columnNames]="displayedColumnsArrets" [columns]="columnsArrets">
           </my-data-table>
         </tab>
+
         <tab style="min-height: 600px" (selectTab)="getEvolution()" [active]="selectedTab==2">
           <ng-template tabHeading>
             <i class="icon-pie-chart mr-1"></i> Evolution &nbsp;<i class="fa fa-refresh" (click)="getEvolution(true)"></i>
@@ -166,6 +170,7 @@
             </div>
           </div>
         </tab>
+
         <tab style="min-height: 600px" (selectTab)="selectTab(3)" [active]="selectedTab==3">
           <ng-template tabHeading class="card-header-action btn-secondary">
             <i class="fa fa-list-alt mr-1"></i> Evenements Détaillés &nbsp;
@@ -176,6 +181,7 @@
 
           </details-table>
         </tab>
+
         <tab style="min-height: 600px" (selectTab)="selectTab(6)" [active]="selectedTab==6">
           <ng-template tabHeading>
             <i class="icon-list mr-2"></i>Pose Carburant &nbsp;
