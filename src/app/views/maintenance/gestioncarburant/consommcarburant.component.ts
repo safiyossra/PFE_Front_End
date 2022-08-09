@@ -1,3 +1,4 @@
+import { combineLatest } from 'rxjs';
 import { util } from './../../../tools/utils';
 import { Consommation } from './../../../models/Consommation';
 import { Component, ViewChild } from '@angular/core';
@@ -42,6 +43,21 @@ export class ConsommcarburantComponent {
   consommation: Consommation = new Consommation();
   kilometrageErr = false;
   qteZeroErr = false;
+
+  mode = "Ajouter";
+
+  qteTotal = 0;
+
+  errorMsg = "";
+
+  editKmEncours = false;
+  editKmPrecedent = false;
+
+  tvas = [{ value: '5' }, { value: '10' }, { value: '15' }, { value: '20' }];
+
+  // set tva to 10
+  tvaOption: any;
+  selectedTva = 10;
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -94,12 +110,16 @@ export class ConsommcarburantComponent {
       }
     };
 
-    this.getDev();
-
-    this.getDrivers();
+    this.tasks$.push(this.devices$, this.drivers$);
 
     this.loadData(true);
   }
+
+  tasks$ = [];
+
+  devices$ = this.dataService.getVehicule("?extra=true");
+  drivers$ = this.dataService.getDriverData("?minimum=true");
+
 
   getSelectedDevices(selected) {
     this.selectedDevice = selected;
@@ -111,45 +131,12 @@ export class ConsommcarburantComponent {
     this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
         this.devices = res;
-        // this.devices.unshift({ dID: '-', name: 'sélectionner une vehicule' })
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
         }
       }
     })
-  }
-
-  // Modal functions
-
-  tvas = [{ value: '5' }, { value: '10' }, { value: '15' }, { value: '20' }];
-  tvaOption = '10';
-  selectedTva = parseInt(this.tvaOption);
-
-  getSelectedTva(tva) {
-    this.selectedTva = parseInt(tva);
-    this.calculMontantHT();
-  }
-
-  calculMontantHT() {
-    this.consommation.montant = (this.consommation.montantTTC / (1 + this.selectedTva / 100)).toFixed(2);
-  }
-
-  mode = "Ajouter";
-
-  submit() {
-    this.mode == 'Ajouter' ? this.ajouter() : this.modifier();
-  }
-
-  editKmEncours = false;
-  editKmPrecedent = false;
-
-  dateToTimeStamp(date) {
-    return Date.parse(date) / 1000 as number;
-  }
-
-  timestampToDate(myTimestamp) {
-    return Date.parse(myTimestamp) / 1000 as number;
   }
 
   getDrivers() {
@@ -158,13 +145,42 @@ export class ConsommcarburantComponent {
       next: (res) => {
         console.log(res)
         this.drivers = res;
-        // this.drivers.unshift({ driverID: '-', displayName: 'sélectionner un chauffeur' })
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
         }
       }
     })
+  }
+
+  // get drivers and devices in the same time
+  getDevicesAndDrivers() {
+    return combineLatest([
+      this.devices$,
+      this.drivers$
+    ])
+  }
+
+  // Modal functions
+
+  calculMontantHT() {
+    this.consommation.montant = (this.consommation.montantTTC / (1 + this.selectedTva / 100)).toFixed(2);
+  }
+
+  calculMontantTTC() {
+    this.consommation.montantTTC = (this.consommation.montant * (1 + this.selectedTva / 100)).toFixed(2);
+  }
+
+  submit() {
+    this.mode == 'Ajouter' ? this.ajouter() : this.modifier();
+  }
+
+  dateToTimeStamp(date) {
+    return Date.parse(date) / 1000 as number;
+  }
+
+  timestampToDate(myTimestamp) {
+    return Date.parse(myTimestamp) / 1000 as number;
   }
 
   dateSelected() {
@@ -186,7 +202,6 @@ export class ConsommcarburantComponent {
     this.consommation.driverID = selected;
   }
 
-  // get km precedent
   getKmPrecedent(date, vehID) {
     this.dataService.getConsommation("?date=" + date + "&vehId=" + vehID).subscribe({
       next: (res) => {
@@ -203,7 +218,6 @@ export class ConsommcarburantComponent {
     });
   }
 
-  // km_actuel
   getCurrentKm(id) {
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].dID == id) {
@@ -219,7 +233,6 @@ export class ConsommcarburantComponent {
   }
 
   // get qte total => plein
-  qteTotal = 0;
   getQteTotale(date) {
     this.dataService.getConsommation("?date=" + date + "&plein=true").subscribe({
       next: (res) => {
@@ -267,8 +280,6 @@ export class ConsommcarburantComponent {
     return true;
   }
 
-  errorMsg = "";
-
   verifyConsommationFields() {
     return (
       this.qteValidate()
@@ -293,7 +304,6 @@ export class ConsommcarburantComponent {
     )
   }
 
-  // save button function
   ajouter() {
     var route = this.router
     this.errorMsg = ""
@@ -326,12 +336,19 @@ export class ConsommcarburantComponent {
 
   loadConsomToModify(consom) {
     this.mode = 'Modifier';
-    this.clearModal()
+    this.clearModal();
+
     this.consommation = this.getJsonValue(consom);
     this.consommation.dateFillString = consom.dateFill.replace(' ', 'T');
     this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
     this.selectedDriverOption = this.consommation.driverID;
     this.selectedDeviceModalOption = this.consommation.deviceID;
+
+    // calculate current tva from ttc and ht
+    let tva = Math.trunc((this.consommation.montantTTC / this.consommation.montant - 1) * 100);
+    // set tva in drop down
+    this.tvaOption = tva.toString();
+
     this.primaryModal.show()
   }
 
@@ -357,7 +374,6 @@ export class ConsommcarburantComponent {
       this.dataService.editConsommation(this.consommation).subscribe({
         next: (res) => {
           this.loadData(true)
-          // this.clearModal();
           this.primaryModal.hide();
 
         }
@@ -397,11 +413,16 @@ export class ConsommcarburantComponent {
     }
   }
 
+  getSelectedTva(tva) {
+    this.selectedTva = parseInt(tva);
+    this.calculMontantHT();
+  }
+
   clearModal() {
     this.consommation = new Consommation()
     this.selectedDeviceModalOption = [];
     this.selectedDriverOption = [];
-    this.tvaOption = '10';
+
 
     this.kilometrageErr = false;
     this.qteZeroErr = false;
@@ -409,6 +430,10 @@ export class ConsommcarburantComponent {
 
     this.editKmEncours = false;
     this.editKmPrecedent = false;
+    // set tva to 10
+    this.tvaOption = '10';
+
+    this.selectedTva = 10;
   }
 
   loadData(first = false) {
@@ -423,14 +448,32 @@ export class ConsommcarburantComponent {
     this.dataService.getConsommation(urlParams).subscribe({
       next: (d: any) => {
         this.data = d;
-        this.data.forEach((e) => {
-          e.dateFill = this.tools.formatDateVer(new Date(Number.parseInt(e.dateFill) * 1000));
 
-          const d = { ...this.drivers.find(elem => elem.driverID == e.driverID) };
+        this.getDevicesAndDrivers().subscribe({
+          next: ([devices, drivers]) => {
+            this.devices = devices;
 
-          e.driverName! = d.displayName;
-        })
+            this.drivers = drivers;
+
+            this.data.forEach((e) => {
+              e.dateFill = this.tools.formatDateVer(new Date(Number.parseInt(e.dateFill) * 1000));
+
+              const d = { ...this.drivers.find(elem => elem.driverID == e.driverID) };
+              e.driverName! = d!.displayName;
+
+              const dev = { ...this.devices.find(elem => elem.dID == e.deviceID) };
+              e.deviceName! = dev!.name;
+            })
+
+          }, error(err) {
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+          }
+        });
+
         this.loading = false;
+
       }, error(err) {
         this.loading = false;
         if (err.status == 401) {

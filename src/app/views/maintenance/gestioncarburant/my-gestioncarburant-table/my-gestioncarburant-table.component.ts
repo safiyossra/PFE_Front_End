@@ -18,20 +18,20 @@ export class MyGestioncarburantTableComponent implements OnChanges {
     "actions",
     'id',
     'driverName',
-    'driverID',
-    'deviceID',
-    'dateFill',
-    'montant',
+    'deviceName',
+    'fournisseur',
     'numCarte',
+    'numBon',
     'qte',
+    'pleinOn',
+    'montant',
+    'montantTTC',
     'kmPrecedent',
     'kmEncours',
-    'fournisseur',
+    'consoM',
+    'dateFill',
     'observation',
-    'montantTTC',
-    'numBon',
-    'pleinOn',
-    'consoM']
+  ]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
 
@@ -41,20 +41,20 @@ export class MyGestioncarburantTableComponent implements OnChanges {
     "Actions",
     'id',
     'Chauffeur',
-    'ID Chauffeur',
     'Vehicule',
-    'Date',
-    'Montant',
+    'Fournisseur',
     'N Carte',
+    'N Bon',
     'Qte',
+    'Plein',
+    'Montant',
+    'Montant TTC',
     'KM Precedent',
     'KM Encours',
-    'Fournisseur',
+    'Consommation Moy',
+    'Date',
     'Observation',
-    'Montant TTC',
-    'N Bon',
-    'Plein',
-    'Consommation Moy'];
+  ];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
