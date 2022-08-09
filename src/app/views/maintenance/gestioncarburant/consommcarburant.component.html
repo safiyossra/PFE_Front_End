@@ -149,9 +149,6 @@
                                     [(ngModel)]="editKmPrecedent"
                                     [ngModelOptions]="{ standalone: true }"
                                   />
-                                  <label for="s1" class="ml-2 my-2 my-md-0">
-                                    modifier</label
-                                  >
                                 </span>
                               </div>
                             </div>
@@ -182,9 +179,7 @@
                                     class="switch"
                                     [(ngModel)]="editKmEncours"
                                     [ngModelOptions]="{ standalone: true }"
-                                  /><label for="s1" class="ml-2 my-2 my-md-0">
-                                    modifier</label
-                                  >
+                                  />
                                 </span>
                               </div>
                             </div>
@@ -317,7 +312,7 @@
                               for="text-input"
                               >Montant T.T.C</label
                             >
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                               <input
                                 [(ngModel)]="consommation.montantTTC"
                                 type="number"
@@ -327,16 +322,42 @@
                                 name="ttc"
                                 class="form-control"
                                 placeholder="0,00"
+                                (ngModelChange)="calculMontantHT()"
                               />
                             </div>
+
+                            <!-- TVA -->
+                            <div class="col row">
+                              <label class="col-md-4 col-form-label">TVA</label>
+                              <div class="col-md">
+                                <my-dropdown-select
+                                  class="form-control"
+                                  [placeholder]="'TVA'"
+                                  [selectPlaceholder]="'search...'"
+                                  [errorMsg]="errorMessageDevice"
+                                  [showErrorMsg]="showErrorDevice"
+                                  [options]="tvas"
+                                  [value]="'value'"
+                                  [display]="'value'"
+                                  [multiple]="false"
+                                  [labelCount]="0"
+                                  [selectedOptions]="tvaOption"
+                                  (selectionChange)="getSelectedTva($event)"
+                                >
+                                </my-dropdown-select>
+                              </div>
+                            </div>
+
                             <label
-                              class="col-md-3 col-form-label"
+                              class="col-md-2 col-form-label"
                               for="text-input"
                               >Montant H.T</label
                             >
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                               <input
                                 [(ngModel)]="consommation.montant"
+                                disabled="true"
+                                readonly
                                 type="number"
                                 min="0"
                                 id="text-input"
@@ -374,7 +395,7 @@
                       </div>
                     </div>
 
-                    <div class="col text-danger">
+                    <div *ngIf="errorMsg != ''" class="col text-danger">
                       <p class="col">
                         {{ errorMsg }}
                       </p>

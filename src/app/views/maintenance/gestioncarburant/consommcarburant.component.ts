@@ -1,7 +1,6 @@
 import { util } from './../../../tools/utils';
-import { routes } from './../../../app.routing';
 import { Consommation } from './../../../models/Consommation';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -16,17 +15,14 @@ export class ConsommcarburantComponent {
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
-  constructor(private dataService: DataService, private router: Router, private tools: util, private dateAdapter: DateAdapter<Date>, private route: Router) {
+  constructor(private dataService: DataService, private router: Router, private tools: util, private dateAdapter: DateAdapter<Date>) {
   }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
   isCollapsed: boolean = false;
   isCollapsedData: boolean = false;
-  iconCollapse: string = 'icon-arrow-up';
   data = [];
-  datatrajet = [];
-  public isnotNum: boolean = false
 
   public devices: any = [];
   public drivers: any = [];
@@ -42,24 +38,10 @@ export class ConsommcarburantComponent {
   selectedDevicesModal = null;
   selectedDeviceModalOption = this.selectedDevicesModal;
   showErrorDeviceModal = false;
-  errorMessageDeviceModal = "";
-
-  selectedCiternes = null;
-  selectedCiterne = this.selectedCiternes;
 
   consommation: Consommation = new Consommation();
   kilometrageErr = false;
   qteZeroErr = false;
-
-
-  getSelectedCiternes(selected) {
-    this.selectedCiterne = selected;
-  }
-
-  resetValidator() {
-    this.showErrorDevice = false;
-    this.errorMessageDevice = "";
-  }
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -119,11 +101,6 @@ export class ConsommcarburantComponent {
     this.loadData(true);
   }
 
-  onValidateDevice() {
-    this.showErrorDevice = !this.showErrorDevice;
-    this.errorMessageDevice = "This field is required";
-  }
-
   getSelectedDevices(selected) {
     this.selectedDevice = selected;
   }
@@ -145,6 +122,19 @@ export class ConsommcarburantComponent {
 
   // Modal functions
 
+  tvas = [{ value: '5' }, { value: '10' }, { value: '15' }, { value: '20' }];
+  tvaOption = '10';
+  selectedTva = parseInt(this.tvaOption);
+
+  getSelectedTva(tva) {
+    this.selectedTva = parseInt(tva);
+    this.calculMontantHT();
+  }
+
+  calculMontantHT() {
+    this.consommation.montant = (this.consommation.montantTTC / (1 + this.selectedTva / 100)).toFixed(2);
+  }
+
   mode = "Ajouter";
 
   submit() {
@@ -159,9 +149,6 @@ export class ConsommcarburantComponent {
   }
 
   timestampToDate(myTimestamp) {
-
-    console.log(Date.parse(myTimestamp) / 1000);
-
     return Date.parse(myTimestamp) / 1000 as number;
   }
 
@@ -189,8 +176,6 @@ export class ConsommcarburantComponent {
   }
 
   getSelectedDeviceModal(selected) {
-    console.log("getSelectedDeviceModal");
-
     this.consommation.deviceID = selected;
     this.consommation.kmEncours = this.getCurrentKm(selected);
     if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '')
@@ -253,7 +238,6 @@ export class ConsommcarburantComponent {
 
   calculateQteMoy() {
     if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '' && this.consommation.pleinOn == 1) {
-
       this.kilometrageValidate();
       this.qteValidate();
 
@@ -266,7 +250,7 @@ export class ConsommcarburantComponent {
   }
 
   kilometrageValidate() {
-    if (this.consommation.kmEncours < this.consommation.kmPrecedent) {
+    if (this.consommation.kmEncours <= this.consommation.kmPrecedent) {
       this.kilometrageErr = true;
       return false;
     }
@@ -321,7 +305,6 @@ export class ConsommcarburantComponent {
       this.dataService.addConsommation(this.consommation).subscribe({
         next: (res) => {
           this.loadData(true)
-          // this.clearModal();
           this.primaryModal.hide();
         }
         , error(err) {
@@ -352,7 +335,7 @@ export class ConsommcarburantComponent {
     this.primaryModal.show()
   }
 
-  btnAjouter(){
+  btnAjouter() {
     this.mode = 'Ajouter';
     this.clearModal()
     this.primaryModal.show()
@@ -416,16 +399,16 @@ export class ConsommcarburantComponent {
 
   clearModal() {
     this.consommation = new Consommation()
-    this.selectedDeviceModalOption = null;
-    this.selectedDriverOption = null;
+    this.selectedDeviceModalOption = [];
+    this.selectedDriverOption = [];
+    this.tvaOption = '10';
+
+    this.kilometrageErr = false;
+    this.qteZeroErr = false;
+    this.errorMsg = '';
 
     this.editKmEncours = false;
     this.editKmPrecedent = false;
-
-    console.log(this.selectedDeviceModalOption);
-    console.log(this.selectedDriverOption);
-
-
   }
 
   loadData(first = false) {
