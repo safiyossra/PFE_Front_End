@@ -402,14 +402,9 @@ export class DetailleComponent implements AfterViewInit {
               "odometreConsom": 0,
               "odometrePose": 0
             };
-
-          // else {
-          //   data.date!.carburantConsom! += element.qte;
-          //   data.date!.carburantPose! += (element.fuelLevel - element.fuelstart);
-          //   data.date!.odometreConsom! += element.kmEncours;
-          //   data.date!.odometrePose! += element.odometerKM;
-          // }
         });
+
+        console.log(data);
 
         (concatLists as any[]).forEach(element => {
           let date = this.tools.formatDateForInput(new Date(element.ts * 1000));
@@ -422,12 +417,15 @@ export class DetailleComponent implements AfterViewInit {
             };
 
           else {
-            data.date!.carburantConsom! += element.qte;
-            data.date!.carburantPose! += (element.fuelLevel - element.fuelstart);
-            data.date!.odometreConsom! += element.kmEncours;
-            data.date!.odometrePose! += element.odometerKM;
+            console.log(date);
+
+            data[date]!.carburantConsom! += (element.qte ?? 0);
+            data[date]!.carburantPose! += ((element.fuelLevel - element.fuelstart) ?? 0);
+            data[date]!.odometreConsom! += (element.kmEncours ?? 0);
+            data[date]!.odometrePose! += (element.odometerKM ?? 0);
           }
         });
+
         console.log(data);
       }
     });
