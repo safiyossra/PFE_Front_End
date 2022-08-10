@@ -5,20 +5,7 @@
         <div class="card-header">
           <i class="fa fa-edit"></i> Eco Conduite Détaillés
           <div class="card-header-actions">
-            <span class="dropdown" dropdown placement="bottom">
-              <button type="button" dropdownToggle (click)="false" data-toggle="dropdown" role="button" aria-haspopup="true"
-                aria-expanded="false" class="btn btn-square btn-link">
-              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
-            </button>
-              <div class="dropdown-menu dropdown-menu-center" *dropdownMenu aria-labelledby="simple-dropdown">
-                <div class="dropdown-header text-center"><strong></strong></div>
-                <button class="dropdown-item" (click)="exporter(0)"><i class="fa fa-file-excel-o text-success"
-                    style="font-size: large;"></i> Excel</button>
-                <button class="dropdown-item" (click)="exporter(1)"><i class="fa fa-file-pdf-o text-danger"
-                    style="font-size: large;"></i>
-                  Pdf</button>
-              </div>
-              </span>
+            <app-dropdown-export (export)="exporter($event)" ></app-dropdown-export>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>

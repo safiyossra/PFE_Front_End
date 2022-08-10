@@ -13,6 +13,7 @@ import { MaterialsModule } from '../../../materials.module';
 import { MyDropdownModule } from '../../components/my-dropdown/my-dropdown.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { DropdownExportModule } from './../../components/dropdown-export/dropdown-export.module';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     MyDropdownModule,
     ModalModule.forRoot(),
     CollapseModule.forRoot(),
+    DropdownExportModule
   ],
   declarations: [
     CrudvehiculeComponent,

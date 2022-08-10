@@ -519,7 +519,11 @@ export class ConsommcarburantComponent {
         }
       }
     })
-  };
+  }
+
+  exporter(type) {
+    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+  }
 
 }
 

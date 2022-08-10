@@ -5,7 +5,8 @@
         <div class="card-header">
           <i class="fa fa-edit"></i> Rapports Détaillés
           <div class="card-header-actions">
-            <span class="dropdown" dropdown placement="bottom">
+            <app-dropdown-export (export)="exporter($event)" ></app-dropdown-export>
+            <!-- <span class="dropdown" dropdown placement="bottom">
               <button type="button" dropdownToggle (click)="false" data-toggle="dropdown" role="button" aria-haspopup="true"
                 aria-expanded="false" class="btn btn-square btn-link">
               <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
@@ -18,7 +19,7 @@
                     style="font-size: large;"></i>
                   Pdf</button>
               </div>
-              </span>
+              </span> -->
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>

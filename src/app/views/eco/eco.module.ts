@@ -16,7 +16,7 @@ import { ChartsModule } from 'ng2-charts';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { MyDataTableComponent } from './my-data-table/my-data-table.component';
-
+import { DropdownExportModule } from './../components/dropdown-export/dropdown-export.module';
 
 @NgModule({
   declarations: [
@@ -33,6 +33,8 @@ import { MyDataTableComponent } from './my-data-table/my-data-table.component';
     ChartsModule,
     ModalModule.forRoot(),
     CollapseModule.forRoot(),
+
+    DropdownExportModule,
     MaterialsModule,
     MyDateRangePickerModule,
     MyDropdownModule,

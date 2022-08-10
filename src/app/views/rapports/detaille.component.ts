@@ -613,6 +613,8 @@ export class DetailleComponent implements AfterViewInit {
   }
 
   exporter(type) {
+    console.log(type);
+
     var title = " Entre " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateFrom) * 1000)) + " et " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateTo) * 1000))
