@@ -119,18 +119,18 @@ export class DetailsComponent {
   urldetails = "";
 
   public devices: any = [];
-  selectedDevices = null;
+  selectedDevices = [];
   selectedDevice = this.selectedDevices;
   showErrorDevice = false;
   errorMessageDevice = "";
 
-  selectedDevicesModal = null;
+  selectedDevicesModal = [];
   selectedDeviceModal = this.selectedDevicesModal;
   showErrorDeviceModal = false;
   errorMessageDeviceModal = "";
 
   public operations: any = [];
-  selectedOperations = null;
+  selectedOperations = [];
   selectedOperation = this.selectedOperations;
   showErrorOperation = false;
   errorMessageOperation = "";
@@ -341,8 +341,8 @@ export class DetailsComponent {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
   }
 
-  exporter() {
-    this.exportingTool.exportexcel(this.TrajetEcoID, "Rapport Trajet")
+  exporter(type) {
+    // this.exportingTool.exportexcel(this.TrajetEcoID, "Rapport Trajet")
   }
 }
 

@@ -397,6 +397,7 @@ export class JournalierComponent {
     }
     return 0
   }
+
   getValue(v) {
     return JSON.parse(JSON.stringify(v))
   }
@@ -462,8 +463,8 @@ export class JournalierComponent {
     return p == "t" ? "°C" : p == "v" ? "Km/h" : p == "da" || p == "dc" ? "H:min:s" : p == "c" || p == "cr" ? "L" : p == "k" ? "KM" : p == "na" ? "#" : ""
   }
 
-  exporter() {
-    this.exportingTool.exportexcel(this.TrajetJournalierID, "Rapport Trajet")
+  exporter(type) {
+    // this.exportingTool.exportexcel(this.TrajetJournalierID, "Rapport Trajet")
   }
 }
 

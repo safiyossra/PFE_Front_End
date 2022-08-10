@@ -170,6 +170,6 @@ export class DashboardComponent implements OnInit {
     // console.log(e);
   }
   exporter() {
-    this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
   }
 }

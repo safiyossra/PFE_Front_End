@@ -31,8 +31,8 @@ export class CrudgroupeComponent {
 
 
   public devices: any = [];
-  selectedDevices = null;
-  selectedDevice = this.selectedDevices;
+  selectedDevices = [];
+  selectedDevice = null;
   showErrorDevice = false;
   errorMessageDevice = "";
 
@@ -72,11 +72,11 @@ export class CrudgroupeComponent {
     var route = this.router
     this.dataService.getGroupeVehicules("").subscribe({
       next: (d: any) => {
-        console.log(d);
         this.data = d;
-
+        console.log(d);
         this.loading = false;
       }, error(err) {
+        console.log(err);
         this.loading = false;
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -218,6 +218,8 @@ export class CrudgroupeComponent {
     this.selectedDevice = []
     this.selectedDevices = []
   }
+
+  exporter(type) { }
 
 }
 

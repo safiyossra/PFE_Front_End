@@ -6,9 +6,20 @@
           <button type="button" data-toggle="modal" (click)="showAddModal()" class="btn btn-outline-primary"><i
               class="fa fa-plus-circle"></i> Ajouter Conducteur </button>
           <div class="card-header-actions">
-            <a href="#">
-              <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Export</small>
-            </a>
+            <span class="dropdown" dropdown placement="bottom">
+              <button type="button" dropdownToggle (click)="false" data-toggle="dropdown" role="button" aria-haspopup="true"
+                aria-expanded="false" class="btn btn-square btn-link">
+                <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
+              </button>
+              <div class="dropdown-menu dropdown-menu-center" *dropdownMenu aria-labelledby="simple-dropdown">
+                <div class="dropdown-header text-center"><strong></strong></div>
+                <button class="dropdown-item" (click)="exporter(0)"><i class="fa fa-file-excel-o text-success"
+                    style="font-size: large;"></i> Excel</button>
+                <button class="dropdown-item" (click)="exporter(1)"><i class="fa fa-file-pdf-o text-danger"
+                    style="font-size: large;"></i>
+                  Pdf</button>
+              </div>
+            </span>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>
@@ -72,7 +83,8 @@
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="text-input">Date de naissance</label>
                             <div class="col-8">
-                              <input type="date" [(ngModel)]="selectedDriver.birthdate" [ngModelOptions]="{standalone: true}" class="form-control">
+                              <input type="date" [(ngModel)]="selectedDriver.birthdateString" [ngModelOptions]="{standalone: true}"
+                                class="form-control">
                             </div>
                           </div>
                           <div class="form-group row">
@@ -92,7 +104,8 @@
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="text-input">Expiration de le licence</label>
                             <div class="col-8">
-                              <input type="date" [(ngModel)]="selectedDriver.licenseExpire" [ngModelOptions]="{standalone: true}" class="form-control">
+                              <input type="date" [(ngModel)]="selectedDriver.licenseExpireString" [ngModelOptions]="{standalone: true}"
+                                class="form-control">
                             </div>
                           </div>
                           <!-- <div class="form-group row">
@@ -130,7 +143,8 @@
                           <div class="form-group row">
                             <label class=" col-md-4 col-form-label" for="text-input">Date d'expiration de l'assurance</label>
                             <div class="col-8">
-                              <input type="date" [(ngModel)]="selectedDriver.insuranceExpire" [ngModelOptions]="{standalone: true}" class="form-control"
+                              <input type="date" [(ngModel)]="selectedDriver.insuranceExpireString" [ngModelOptions]="{standalone: true}"
+                                class="form-control"
                                 placeholder="Choisir la Date">
                             </div>
                           </div>

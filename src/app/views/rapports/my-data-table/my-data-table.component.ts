@@ -19,7 +19,7 @@ export class MyDataTableComponent implements OnChanges {
   @Input() isTrajet?= 1;
   @Input() tableID?= "myTable";
   @Input() selectedMapDevice: any; //displayColumns,
-  @Input() columnNames?= ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)"]
+  @Input() columnNames?= ["Départ", "Arrivé", "Adresse Départ", "Adresse Arivée", "Km Parcourue", "Duree de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)"]
   @Input() columns?= ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct"]
 
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
@@ -52,7 +52,7 @@ export class MyDataTableComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
       let d = changes['data'].currentValue
-      if (d && d.length > 0) {
+      if (d) {//&& d.length > 0
         // console.log("ngOnChanges data");
         // console.log(d);
         this.dataSource = new MatTableDataSource(d)

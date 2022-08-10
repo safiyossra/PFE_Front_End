@@ -105,7 +105,7 @@ export class DataService {
 
   // fonction de AlertPlanEntretien
   getPlanEntretien(urlplan) {
-    let SERVER_URL = environment.apiUrl + "planentretien" + urlplan;
+    let SERVER_URL = environment.apiUrl + "planEntretien" + urlplan;
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
@@ -116,6 +116,57 @@ export class DataService {
     })
   }
 
+  addPlanEntretien(plan) {
+    let SERVER_URL = environment.apiUrl + "addPlanEntretien";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(plan) }
+
+    })
+  }
+
+  updatePlanEntretien(plan) {
+    let SERVER_URL = environment.apiUrl + "editPlanEntretien";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(plan) }
+
+    })
+  }
+
+  delPlanEntretien(plan) {
+    let SERVER_URL = environment.apiUrl + "deletePlanEntretien" + plan;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  updateStatusPlanEntretien(plan) {
+    let SERVER_URL = environment.apiUrl + "updateStatusPlanEntretien" + plan;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
   // fonction de notifications
   getNotifications(urlNotif) {
     let SERVER_URL = environment.apiUrl + "notif" + urlNotif;

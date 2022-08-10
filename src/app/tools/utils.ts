@@ -102,8 +102,9 @@ export class util {
   formatPopUpContent(v) {
     let img = this.getImage(v.icon)
     let time = this.formatDate(new Date(v.timestamp * 1000))
-    let now = Math.round(new Date().getTime() / 1000)
-    let age = this.formatAge(v.timestamp > 0 ? (now - v.timestamp) : "nan")
+
+    let age = this.getAge(v.timestamp)
+    let ageString = this.formatAge(age)
     return `<table class="infoBoxTable">
             <tbody>
               <tr class="infoBoxRow"
@@ -117,7 +118,7 @@ export class util {
               </tr>
               <tr class="infoBoxRow">
                 <td class="infoBoxCellTitle">Age:</td>
-                <td class="infoBoxCell"> ${age}</td>
+                <td class="infoBoxCell"> ${ageString}</td>
               </tr>
               <tr class="infoBoxRow">
                 <td class="infoBoxCellTitle">Date:</td>
@@ -161,19 +162,24 @@ export class util {
     return formatDate(date, 'yyyy-MM-dd', this.locale);
   }
 
+  getAge(timestamp) {
+    let now = Math.round(new Date().getTime() / 1000)
+    return timestamp > 0 ? (now - timestamp) : "nan"
+  }
+
   formatAge(seconds) {
     if (isNaN(seconds)) return "Jamais"
     // return age
-    //days
+    //days 
     let days = Math.floor(seconds / (24 * 3600));
     seconds -= days * 24 * 3600;
-    //hours
+    //hours 
     let hours = Math.floor(seconds / 3600);
     seconds -= hours * 3600;
-    //minutes
+    //minutes 
     let minutes = Math.floor(seconds / 60);
     seconds -= minutes * 60;
-    //output
+    //output 
     return `${days > 0 ? days + " Jours, " : ''}${hours > 0 ? hours + " Heurs, " : ''}${minutes > 0 ? minutes + " minutes, " : ''}${seconds > 0 ? seconds + " seconds" : ''}`;
   }
 
@@ -276,6 +282,7 @@ export class util {
     }
     L.control.zoom().addTo(map)
 
+
     if (showFullScreenControle) {
       let FullScreenControl = L.Control.extend({
         onAdd(map: L.Map) {
@@ -319,6 +326,10 @@ export class util {
       this.setMapType(e.name)
     })
     return map;
+  }
+  getImageId(vehiculeType) {
+    return this.cst.motor.includes(vehiculeType) ? "moto" : this.cst.truck.includes(vehiculeType) ? "remolque" : this.cst.sprinter.includes(vehiculeType) ? "bus" : this.cst.remorque.includes(vehiculeType) ?
+      "trailer" : this.cst.camions.includes(vehiculeType) ? "fleetGreen" : this.cst.truck_head.includes(vehiculeType) ? "volvo2" : "default"
   }
 
   getClassByAge(age) {

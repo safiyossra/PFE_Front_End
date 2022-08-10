@@ -6,6 +6,7 @@ import { util } from '../../../tools/utils';
 import { Router } from '@angular/router';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 import { PlanEntretien } from 'src/app/models/planEnretien';
+import { Constant } from 'src/app/tools/constants';
 
 @Component({
   templateUrl: 'plan.component.html',
@@ -15,10 +16,11 @@ export class PlanComponent {
   loading: boolean = false;
   modalLoading: boolean = false;
   mode = "Ajouter";
+  currentKM = 0;
   selectedPlan = new PlanEntretien();
   errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, private exportingTool: ExportingTool, private router: Router) { }
+  constructor(private dataService: DataService, private tools: util, public cts: Constant, private exportingTool: ExportingTool, private router: Router) { }
 
   myDateRangePickerOptions: MyDateRangePickerOptions;
   isCollapsed: boolean = false;
@@ -26,25 +28,19 @@ export class PlanComponent {
   iconCollapse: string = 'icon-arrow-up';
   data = [];
   public isnotNum: boolean = false
-  displayedColumns: any = ["Actions", "Véhicule", "Date de Création", "Type d'Opération", "Déclenchement", "Anticipant"]
+  displayedColumns: any = ["Actions", "Véhicule", "Type d'Opération", "Déclenchement", "Valeur", "Status", "Date de Création"]
 
 
   public devices: any = [];
-  selectedDevices = null;
+  selectedDevices = [];
   selectedDevice = this.selectedDevices;
-  showErrorDevice = false;
-  errorMessageDevice = "";
 
-  selectedDevicesModal = null;
+  selectedDevicesModal = [];
   selectedDeviceModal = this.selectedDevicesModal;
-  showErrorDeviceModal = false;
-  errorMessageDeviceModal = "";
 
   public operations: any = [];
-  selectedOperations = null;
+  selectedOperations = [];
   selectedOperation = this.selectedOperations;
-  showErrorOperation = false;
-  errorMessageOperation = "";
 
   getSelectedOperation(selected) {
     // console.log(selected);
@@ -97,7 +93,7 @@ export class PlanComponent {
         to: tomorrow
       }
     };
-    // this.loadData(true)
+    this.loadData(true)
     this.getDev();
   }
 
@@ -114,7 +110,9 @@ export class PlanComponent {
 
   getSelectedDevicesModal(selected) {
     // console.log(selected);
-    this.selectedPlan.device = selected;
+    this.selectedPlan.deviceID = selected;
+    this.currentKM = this.getVehiculeKMById(selected)
+
   }
 
   //////////////////////
@@ -122,19 +120,24 @@ export class PlanComponent {
     var route = this.router
     this.loading = true;
     var urlParams = ""
-    if (!first)
-      urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
+    if (!first) {
+      var d = this.selectedDevice == null ? "?" : "?d=" + this.selectedDevice + "&"
+      urlParams = d + "st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
+    }
     this.dataService.getPlanEntretien(urlParams).subscribe({
       next: (d: any) => {
+        this.loading = false;
         console.log(d);
         this.data = d;
         this.data.forEach((e) => {
-          e.DateCreation = this.tools.formatDate(new Date(Number.parseInt(e.DateCreation) * 1000));
-          e.DateSaisie = this.tools.formatDate(new Date(Number.parseInt(e.DateSaisie) * 1000));
+          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime ?? 0) * 1000));
+          e.decDateValueString = this.tools.formatDateForInput(new Date(Number.parseInt(e.decDateValue ?? 0) * 1000));
           // if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
         })
-        this.loading = false;
+
+        console.log(this.data);
       }, error(err) {
+        console.log(err);
         this.loading = false;
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -145,7 +148,7 @@ export class PlanComponent {
 
   getDev() {
     var route = this.router
-    this.dataService.getVehicule().subscribe({
+    this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
         this.devices = res;
       }, error(err) {
@@ -156,17 +159,37 @@ export class PlanComponent {
     })
   }
 
-  loadModify(ev) {
-    this.mode = "Modifier"
+  getVehiculeKMById(id) {
+    for (let i = 0; i < this.devices.length; i++) {
+      if (this.devices[i].dID == id) return this.devices[i].km
+    }
+    return 0
+  }
+
+  modalAjoutr() {
+    this.mode = "Ajouter"
     this.selectedPlan = new PlanEntretien();
-    // this.resetRulesAffectation()
+    this.selectedDevicesModal = []
+    this.selectedOperations = []
+    this.currentKM = null
+    this.primaryModal.show()
+  }
+
+  loadModify(ev) {
     if (ev) {
-      // this.selectedPlan...
+      this.mode = "Modifier"
+      this.selectedPlan = this.getJsonValue(ev);
+      this.selectedDevicesModal = this.selectedPlan.deviceID
+      this.selectedOperations = this.selectedPlan.operation.toString()
+      this.currentKM = this.getVehiculeKMById(this.selectedPlan.deviceID)
       this.primaryModal.show()
     }
   }
 
   submit() {
+    this.selectedPlan.decDateValue = (new Date(this.selectedPlan.decDateValueString)).getTime() / 1000
+    console.log(this.selectedPlan);
+
     if (this.mode == "Ajouter") this.ajouter()
     if (this.mode == "Modifier") this.modifier()
   }
@@ -175,10 +198,11 @@ export class PlanComponent {
     var route = this.router
     this.errorMsg = ""
     // this.this.selectedPlan.device = this.resultedRule
-    if (!this.selectedPlan.device || (!this.selectedPlan.decDate && !this.selectedPlan.decKm) || (!this.selectedPlan.decKmValue && !this.selectedPlan.decDateValue) || !this.selectedPlan.operation) {
+    if (!this.selectedPlan.deviceID || (!this.selectedPlan.decKmValue && !this.selectedPlan.decDateValue) || !this.selectedPlan.operation) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      this.dataService.addRule(this.selectedPlan).subscribe({
+
+      this.dataService.addPlanEntretien(this.selectedPlan).subscribe({
         next: (res) => {
           console.log("added", res)
           this.loadData(true)
@@ -201,10 +225,10 @@ export class PlanComponent {
   modifier() {
     var route = this.router
     this.errorMsg = ""
-    if (!this.selectedPlan.device || (!this.selectedPlan.decDate && !this.selectedPlan.decKm) || (!this.selectedPlan.decKmValue && !this.selectedPlan.decDateValue) || !this.selectedPlan.operation) {
+    if (!this.selectedPlan.deviceID || (!this.selectedPlan.decKmValue && !this.selectedPlan.decDateValue) || !this.selectedPlan.operation) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      this.dataService.updateRule(this.selectedPlan).subscribe({
+      this.dataService.updatePlanEntretien(this.selectedPlan).subscribe({
         next: (res) => {
           this.errorMsg = ""
           this.loadData(true)
@@ -224,11 +248,11 @@ export class PlanComponent {
     }
   }
 
-  delete(plan) {
-    if (confirm("Are you sure you want to delete " + plan)) {
+  close(plan) {
+    if (confirm("Are you sure you want to close " + plan)) {
       var route = this.router
-      var u = "?id=" + plan
-      this.dataService.delRule(u).subscribe({
+      var u = "?id=" + plan + "&status=closed"
+      this.dataService.updateStatusPlanEntretien(u).subscribe({
         next: (res) => {
           this.loadData()
         }, error(err) {
@@ -244,15 +268,38 @@ export class PlanComponent {
     }
   }
 
+  delete(plan) {
+    if (confirm("Are you sure you want to delete " + plan)) {
+      var route = this.router
+      var u = "?id=" + plan
+      this.dataService.delPlanEntretien(u).subscribe({
+        next: (res) => {
+          this.loadData(true)
+        }, error(err) {
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            alert("Erreur, la suppression est bloqué")
+          }
+        }
+      })
+    }
+  }
+
   reset() {
-    this.selectedDevices = null
+    this.selectedDevices = []
     this.selectedDevice = null
   }
 
-  exporter() {
-    this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+  exporter(type) {
+    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
   }
 
+  getJsonValue(v) {
+    return JSON.parse(JSON.stringify(v))
+  }
 }
 
 

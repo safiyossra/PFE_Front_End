@@ -5,6 +5,7 @@ import { Device } from '../../../models/device';
 import { VehiculeService } from 'src/app/services/vehicule.service';
 import { util } from 'src/app/tools/utils';
 import { Router } from '@angular/router';
+import { Constant } from 'src/app/tools/constants';
 
 @Component({
   templateUrl: 'crudvehicule.component.html',
@@ -17,7 +18,7 @@ export class CrudvehiculeComponent {
   selectedDevice: Device = new Device();
   errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private vehiculeService: VehiculeService, private tools: util, private router: Router) { }
+  constructor(private dataService: DataService, public cts: Constant, private tools: util, private router: Router) { }
 
   data = [];
 
@@ -35,10 +36,13 @@ export class CrudvehiculeComponent {
         let now = Math.round(new Date().getTime() / 1000)
         d.forEach(e => {
           e.age = e.age > 0 ? (now - e.age) : "jamais"
+          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime) * 1000));
         });
         this.data = d;
+        console.log(d);
         this.loading = false;
       }, error(err) {
+        console.log(err);
         this.loading = false;
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -54,18 +58,21 @@ export class CrudvehiculeComponent {
       var url = "?d=" + ev
       this.modalLoading = true;
       this.primaryModal.show()
-
       var route = this.router
       this.dataService.getDeviceData(url).subscribe({
         next: (d: any) => {
+          // console.log(d);
           if (d && d.length) {
             d.forEach(e => {
               e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime) * 1000));
+              e.fuelEconomy = e.fuelEconomy > 0 ? Math.round(100 / e.fuelEconomy) : 0;
+              e.pushpinID = this.tools.getImageId(e.pushpinID);
             });
             this.selectedDevice = d[0];
           }
           this.modalLoading = false;
         }, error(err) {
+          console.log(err);
           this.modalLoading = false;
           if (err.status == 401) {
             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -80,6 +87,7 @@ export class CrudvehiculeComponent {
     if (!this.selectedDevice.description)  {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
+      this.selectedDevice.fuelEconomy = this.selectedDevice.fuelEconomy > 0 ? Math.round(100 / this.selectedDevice.fuelEconomy) : 0;
       this.dataService.updateDevice(this.selectedDevice).subscribe({
         next: (res) => {
           this.loadData()
@@ -97,6 +105,13 @@ export class CrudvehiculeComponent {
       
     }
   }
+
+  onIconChange(e) {
+    console.log(e, this.selectedDevice);
+    this.selectedDevice.pushpinID = e.value
+  }
+
+  exporter(type) { }
 }
 
 

@@ -16,8 +16,8 @@ export class MyCarburantDataTableComponent implements OnChanges {
   @Output() openPointsClick?: EventEmitter<any> = new EventEmitter();
   @Input() data: any = [];
   @Input() selectedMapDevice: any; //displayColumns,
-  @Input() columnNames?= ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]
-  @Input() columns?= ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
+  @Input() columnNames?= ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Carburant réel (L)", "Odomètre", "Adresse"];
+  @Input() columns?= ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "cr", "odometerKM", "address"];
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 

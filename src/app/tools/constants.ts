@@ -248,7 +248,9 @@ export class Constant {
       data: " Pacific/Chatham"
     },
   ];
-
+  vehicleIcons = [{ name: "Voiture", id: "default", img: "car" }, { name: "Motor", id: "moto", img: "motor" }, { name: "Camion", id: "fleetGreen", img: "camion" },
+  { name: "Sprinter", id: "bus", img: "sprinter" }, { name: "Remorque", id: "trailer", img: "remork" }, { name: "Tracteur Remorque", id: "remolque", img: "truck" },
+  { name: "Tracteur", id: "volvo2", img: "truck-head" }]
   motor = ["moto", "grnbike",]
   camions = ['fleetGreen', 'fleet', 'ffight', 'yeltruck', 'blktruck', 'rgntruck', 'excav', 'grua', 'h100', 'mzcldr', 'pickup',]
   remorque = ["trailer"]
@@ -282,6 +284,53 @@ export class Constant {
 
   //Arrive
   RegExpArrive = /(?<=\$ARRIVE\(")[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]+|\s(?="\))/i
+
+  planOperations = [
+    { name: "Vidange complète", id: '6' },
+    { name: "Vidange partielle", id: '5' },
+    { name: "Vidange Huile Moteur", id: '10' },
+    { name: "Vidange Boite a vitesse", id: '11' },
+    { name: "Vidange Pont-arrière", id: '12' },
+    { name: "Plaquette d'avant", id: '1' },
+    { name: "Plaquette d'arrière", id: '2' },
+    { name: "Disques d'avant", id: '3' },
+    { name: "Disque d'arrières", id: '4' },
+    { name: "Courroie de distribution", id: '7' },
+    { name: "Pneus avant", id: '8' },
+    { name: "Pneu d'arrière", id: '9' },
+    { name: "Filtre à air", id: '13' },
+    { name: "Filtre sécheur", id: '14' },
+    { name: "Courroie Alternateur", id: '15' },
+    { name: "Courroie Moteur", id: '16' },
+    { name: "Tendeur courroie Alternateur", id: '17' },
+    { name: "Tendeur courroie Moteur", id: '18' },
+    { name: "Poulie de courroie", id: '19' },
+    { name: "Plaquette Avant", id: '20' },
+    { name: "Plaquette Arriere", id: '21' },
+    { name: "Disque de freins avant", id: '22' },
+    { name: "Disque de freins arrière", id: '23' },
+    { name: "Disque d'embrayage", id: '24' },
+    { name: "Butée d'embrayage", id: '25' },
+    { name: "Plateaux d'embrayage", id: '26' },
+    { name: "Kit d'embrayage", id: '27' },
+    { name: "Batterie M15", id: '28' },
+    { name: "Batterie M16", id: '29' },
+    { name: "Batterie L3", id: '30' },
+    { name: "Capteur d'huile", id: '31' },
+    { name: "Capteur batterie", id: '32' },
+    { name: "Démarreur", id: '33' },
+    { name: "Alternateur", id: '34' },
+    { name: "Tambour Avant", id: '35' },
+    { name: "Tambour Arriere", id: '36' },
+    { name: "Garniture avant", id: '37' },
+    { name: "Garniture arrière", id: '38' },
+    { name: "Eaux de refroidissement", id: '39' },
+    { name: "Echarpe de direction", id: '40' },
+    { name: "Turbo", id: '41' },
+    { name: "Reglage soupape", id: '42' },
+    { name: "Pompe à eaux", id: '43' },
+    { name: "Pompe d'embrayage / servo", id: '44' }
+  ]
 
   statusCodes = [
     { val: "0", name: "All Codes" },

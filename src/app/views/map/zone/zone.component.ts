@@ -31,6 +31,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   zones: Zone[]
   selectedZone: Zone = new Zone()
 
+  public size = [25, 75]
   default = {
     latitude: 35.75,
     longitude: -5.83,
@@ -97,6 +98,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
           zone.groupID = element.groupID
           zone.description = element.description
           zone.isActive = element.isActive
+          zone.reverseGeocode = element.reverseGeocode
           zone.iconName = element.iconName
           zone.radius = element.radius
           zone.zoneType = element.zoneType
@@ -550,5 +552,26 @@ export class ZoneComponent implements OnInit, AfterViewInit {
 
   iconExists(name: any) {
     return this.cts.zoneIcons.includes({ name: name })
+  }
+
+  onDragEnd(e) {
+    this.size = [e.sizes[0], e.sizes[1]]
+    this.invalidate()
+  }
+
+  resetSize(e) {
+    this.size[0] = 25
+    this.size[1] = 75
+    this.invalidate()
+  }
+
+  invalidate() {
+    this.map?.invalidateSize(true)
+  }
+
+  collapseClicked() {
+    this.size[0] = 0
+    this.size[1] = 100
+    this.invalidate()
   }
 }

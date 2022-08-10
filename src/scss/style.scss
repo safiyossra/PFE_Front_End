@@ -151,8 +151,7 @@ table {
 }
 
 .card-body1 {
-    flex: 1 1 auto;
-    padding: 43px;
+    padding-top: 48px;
 }
 
 .transition {
@@ -290,6 +289,9 @@ table.infoBoxTable tr:nth-child(odd) {
 
 .as-horizontal>.as-split-gutter {
     background-color: transparent !important;
+}
+.as-horizontal>.as-split-gutter {
+    height: 87vh !important;
 }
 @supports(-webkit-appearance: none) or (-moz-appearance: none) {
     input.switch[type='checkbox'] {

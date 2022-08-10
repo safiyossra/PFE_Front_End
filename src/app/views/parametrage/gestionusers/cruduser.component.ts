@@ -36,8 +36,8 @@ export class CruduserComponent {
     this.errorMessageGroup = "This field is required";
   }
 
-  selectedTimezones = null;
-  selectedTimezone = this.selectedTimezones;
+  selectedTimezones = [];
+  selectedTimezone = null;
   getSelectedTimezones(selected) {
     this.selectedTimezone = selected;
   }
@@ -79,8 +79,11 @@ export class CruduserComponent {
 
         });
         this.data = d;
+        console.log(d);
+
         this.loading = false;
       }, error(err) {
+        console.log(err);
         this.loading = false;
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -157,19 +160,25 @@ export class CruduserComponent {
 
   modifier() {
     var route = this.router
+    this.errorMsg = ""
     if (!this.selectedUser.description || !this.selectedUser.contactPhone)  {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       if (this.selectedUser.notifyEmail && !this.tools.ValidateEmail(this.selectedUser.notifyEmail)) this.errorMsg = "Vous avez saisi un email de notification invalid."
       else if (this.selectedUser.contactEmail && !this.tools.ValidateEmail(this.selectedUser.contactEmail)) this.errorMsg = "Vous avez saisi un email de contact invalid."
-      else if(this.selectedUser.password && this.selectedUser.password.length<6)this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
+      else if (this.selectedUser.password.length > 0 && this.selectedUser.password.length < 6) this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
       else{
+        console.log("dkhal");
+
+        this.modalLoading = true;
       this.dataService.updateUsers(this.selectedUser).subscribe({
         next: (res) => {
+          console.log("updateUsers");
           this.loadData()
           this.primaryModal.hide()
           this.errorMsg = ""
         } , error(err) {
+          console.log("error", err);
           this.modalLoading = false;
           if (err.status == 401) {
             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -206,12 +215,12 @@ export class CruduserComponent {
   }
 
   showAddModal() {
+    this.mode = "Ajouter"
     this.selectedUser = new User();
     this.selectedGroups = "*"
     this.errorMsg = ""
-    this.mode = "Ajouter"
     this.primaryModal.show()
   }
+
+  exporter(type) { }
 }
-
-

@@ -188,4 +188,9 @@ export class MyTableComponent implements OnChanges, OnInit {
   changeDisplayedColumn(newColumnList) {
     this.displayedColumns = newColumnList
   }
+
+  isNaN2(v) {
+    v = this.tools.getAge(v)
+    return isNaN(v) || v > 21600
+  }
 }

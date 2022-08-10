@@ -16,13 +16,13 @@ import { util } from 'src/app/tools/utils';
 export class MyGestionvehiculeTableComponent implements OnChanges {
   @Input() data = [];
   // @Input() columnNames?: any[]
-  public displayedColumns = ["actions", "deviceID", "description", "uniqueID", "lastOdometerKM", "fuel", "deviceCode", "simPhoneNumber"]
+  public displayedColumns = ["actions", "deviceID", "description", "uniqueID", "lastOdometerKM", "fuel", "deviceCode", "simPhoneNumber", "creationTime"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   @Output() modify?: EventEmitter<any> = new EventEmitter();
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
-  columnNames = ["Actions", "Device", "Véhicule", "ID unique", "Odomètre (km)", "Total Carburant (L)", "device Code", "Tel"];
+  columnNames = ["Actions", "Device", "Véhicule", "ID unique", "Odomètre (km)", "Total Carburant (L)", "device Code", "Tel", "Création date"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -34,11 +34,9 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
   @ViewChild(MatSort) sort: MatSort;
   constructor(private dataService: DataService, private tools: util) { }
 
-
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
@@ -51,7 +49,7 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
       let d = changes['data'].currentValue
-      if (d && d.length > 0) {
+      if (d) {//&& d.length > 0
         this.dataSource = new MatTableDataSource(d)
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;

@@ -90,8 +90,10 @@ export class SynthetiquesComponent implements OnInit, AfterViewInit {
           e.ct = e.fe != 0 ? (e.km / (e.fe != 0 ? e.fe : 1)).toFixed(1) : "0";
           e.cm = (100 * (e.c / (e.km != 0 ? e.km : 1))).toFixed(1);
         })
+        console.log(this.data);
         this.loading = false;
       }, error(err) {
+        console.log(err);
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
         }
@@ -99,8 +101,8 @@ export class SynthetiquesComponent implements OnInit, AfterViewInit {
     })
   }
 
-  exporter() {
-    this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+  exporter(type) {
+    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
   }
 
 }
