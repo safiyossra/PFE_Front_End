@@ -1,3 +1,4 @@
+import { DropdownExportModule } from './../components/dropdown-export/dropdown-export.module';
 // Angular
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -45,13 +46,14 @@ import { SynthetiquesComponent } from './synthetiques.component';
     CollapseModule.forRoot(),
     PaginationModule.forRoot(),
     PopoverModule.forRoot(),
-    BsDropdownModule.forRoot(),
+    // BsDropdownModule.forRoot(),
+    DropdownExportModule,
     TabsModule,
     FormsModule,
     MatSelectModule,
     ChartsModule,
     MaterialsModule,
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
     MyDateRangePickerModule,
     MyDropdownModule,
     ModalModule.forRoot(),

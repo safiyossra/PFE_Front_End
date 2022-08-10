@@ -53,6 +53,25 @@ export class DetailleComponent implements AfterViewInit {
   displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Carburant réel (L)", "Odomètre", "Adresse"]
   columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "cr", "odometerKM", "address"];
 
+  dColumnsRealCarburant: any = [
+    "ID",
+    "Carburant total (L)",
+    "Pose carburat (L)",
+    "Odometre",
+    "Difference",
+    "Date reel",
+    "Date GPS"
+  ]
+  columnsRealCarburant: any = [
+    "ID",
+    "Carburant",
+    "Pose_carburat",
+    "Odometre",
+    "Difference",
+    "Date_reel",
+    "Date_GPS"
+  ];
+
   resume = [];
   exportEvts = null
   urldetails = "";
@@ -595,6 +614,8 @@ export class DetailleComponent implements AfterViewInit {
   }
 
   exporter(type) {
+    console.log(type);
+
     var title = " Entre " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateFrom) * 1000)) + " et " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateTo) * 1000))

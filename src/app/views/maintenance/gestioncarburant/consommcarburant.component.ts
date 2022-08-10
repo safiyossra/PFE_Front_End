@@ -1,4 +1,5 @@
-import { combineLatest } from 'rxjs';
+import { combineLatest, of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { util } from './../../../tools/utils';
 import { Consommation } from './../../../models/Consommation';
 import { Component, ViewChild } from '@angular/core';
@@ -42,13 +43,12 @@ export class ConsommcarburantComponent {
 
   consommation: Consommation = new Consommation();
   kilometrageErr = false;
-  qteZeroErr = false;
 
   mode = "Ajouter";
 
   qteTotal = 0;
 
-  errorMsg = "";
+  public errorMsg = "";
 
   editKmEncours = false;
   editKmPrecedent = false;
@@ -58,6 +58,10 @@ export class ConsommcarburantComponent {
   // set tva to 10
   tvaOption: any;
   selectedTva = 10;
+
+  devices$ = this.dataService.getVehicule("?extra=true");
+  drivers$ = this.dataService.getDriverData("?minimum=true");
+
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -110,15 +114,9 @@ export class ConsommcarburantComponent {
       }
     };
 
-    this.tasks$.push(this.devices$, this.drivers$);
-
     this.loadData(true);
   }
 
-  tasks$ = [];
-
-  devices$ = this.dataService.getVehicule("?extra=true");
-  drivers$ = this.dataService.getDriverData("?minimum=true");
 
 
   getSelectedDevices(selected) {
@@ -154,6 +152,7 @@ export class ConsommcarburantComponent {
   }
 
   // get drivers and devices in the same time
+  // used in loadData function
   getDevicesAndDrivers() {
     return combineLatest([
       this.devices$,
@@ -162,7 +161,6 @@ export class ConsommcarburantComponent {
   }
 
   // Modal functions
-
   calculMontantHT() {
     this.consommation.montant = (this.consommation.montantTTC / (1 + this.selectedTva / 100)).toFixed(2);
   }
@@ -272,12 +270,7 @@ export class ConsommcarburantComponent {
   }
 
   qteValidate() {
-    if (this.consommation.qte <= 0) {
-      this.qteZeroErr = true;
-      return false;
-    }
-    this.qteZeroErr = false;
-    return true;
+    return this.consommation.qte > 0;
   }
 
   verifyConsommationFields() {
@@ -286,10 +279,10 @@ export class ConsommcarburantComponent {
       &&
       this.kilometrageValidate()
       &&
-      this.consommation.deviceID != '-'
+      this.consommation.deviceID != ''
       &&
-      this.consommation.driverID != '-'
-      &&
+      // this.consommation.driverID != ''
+      // &&
       this.consommation.montant != 0
       &&
       this.consommation.montantTTC != 0
@@ -309,24 +302,50 @@ export class ConsommcarburantComponent {
     this.errorMsg = ""
 
     if (!this.verifyConsommationFields()) {
-      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+      this.errorMsg = "Veuillez remplir tous les champs."
     } else {
-      this.errorMsg = ""
-      this.dataService.addConsommation(this.consommation).subscribe({
-        next: (res) => {
-          this.loadData(true)
-          this.primaryModal.hide();
-        }
-        , error(err) {
-          this.modalLoading = false;
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+      this.dataService.addConsommation(this.consommation)
+        .pipe(
+          catchError(err => {
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+
+            else if (err.status == 400) {
+              console.log(err);
+              this.errorMsg = "Numero de bon inseré exist deja."
+              console.log(this.errorMsg);
+            }
+
+            else if (err.status == 402) {
+              this.errorMsg = "Erreur l'ajout est bloqué."
+            }
+            return throwError(err);
+          })
+        )
+        .subscribe({
+          next: (res) => {
+            this.loadData(true)
+            this.primaryModal.hide();
           }
-          else if (err.status == 402) {
-            this.errorMsg = "Erreur l'ajout est bloqué."
-          }
-        }
-      })
+          // , error(err) {
+          //   this.modalLoading = false;
+
+          //   if (err.status == 401) {
+          //     route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          //   }
+
+          //   else if (err.status == 400) {
+          //     console.log(err);
+          //     this.errorMsg = "Numero de bon inseré exist deja."
+          //     console.log(this.errorMsg);
+          //   }
+
+          //   else if (err.status == 402) {
+          //     this.errorMsg = "Erreur l'ajout est bloqué."
+          //   }
+          // }
+        })
     }
   }
 
@@ -371,22 +390,41 @@ export class ConsommcarburantComponent {
       console.log(this.consommation);
 
 
-      this.dataService.editConsommation(this.consommation).subscribe({
-        next: (res) => {
-          this.loadData(true)
-          this.primaryModal.hide();
+      this.dataService.editConsommation(this.consommation)
+        .pipe(
+          catchError(err => {
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
 
-        }
-        , error(err) {
-          this.modalLoading = false;
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            else if (err.status == 400) {
+              console.log(err);
+              this.errorMsg = "Numero de bon inseré exist deja."
+              console.log(this.errorMsg);
+            }
+
+            else if (err.status == 402) {
+              this.errorMsg = "Erreur l'ajout est bloqué."
+            }
+            return throwError(err);
+          })
+        )
+        .subscribe({
+          next: (res) => {
+            this.loadData(true)
+            this.primaryModal.hide();
+
           }
-          else if (err.status == 402) {
-            this.errorMsg = "Erreur l'ajout est bloqué."
-          }
-        }
-      })
+          // , error(err) {
+          //   this.modalLoading = false;
+          //   if (err.status == 401) {
+          //     route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          //   }
+          //   else if (err.status == 402) {
+          //     this.errorMsg = "Erreur l'ajout est bloqué."
+          //   }
+          // }
+        })
     }
   }
 
@@ -423,9 +461,7 @@ export class ConsommcarburantComponent {
     this.selectedDeviceModalOption = [];
     this.selectedDriverOption = [];
 
-
     this.kilometrageErr = false;
-    this.qteZeroErr = false;
     this.errorMsg = '';
 
     this.editKmEncours = false;
@@ -456,6 +492,8 @@ export class ConsommcarburantComponent {
             this.drivers = drivers;
 
             this.data.forEach((e) => {
+              e.pleinOn = e.pleinOn == 1 ? 'ON' : 'OFF';
+
               e.dateFill = this.tools.formatDateVer(new Date(Number.parseInt(e.dateFill) * 1000));
 
               const d = { ...this.drivers.find(elem => elem.driverID == e.driverID) };
@@ -481,8 +519,11 @@ export class ConsommcarburantComponent {
         }
       }
     })
-  };
+  }
 
+  exporter(type) {
+    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+  }
 
 }
 
