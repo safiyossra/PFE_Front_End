@@ -52,8 +52,24 @@ export class DetailleComponent implements AfterViewInit {
   displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]
   columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
 
-  dColumnsRealCarburant: any = ["Date/Heure", "ID", "Vehicule", "Carburant total reel(L)", "Carburat total inseré (L)"]
-  columnsRealCarburant: any = ["timestamp", "deviceID", "device", "fuelTotal", "deltaFuelLevel"];
+  dColumnsRealCarburant: any = [
+    "ID",
+    "Carburant total (L)",
+    "Pose carburat (L)",
+    "Odometre",
+    "Difference",
+    "Date reel",
+    "Date GPS"
+  ]
+  columnsRealCarburant: any = [
+    "ID",
+    "Carburant",
+    "Pose_carburat",
+    "Odometre",
+    "Difference",
+    "Date_reel",
+    "Date_GPS"
+  ];
 
   resume = [];
 
