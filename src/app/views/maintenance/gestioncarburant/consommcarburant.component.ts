@@ -201,12 +201,12 @@ export class ConsommcarburantComponent {
   }
 
   getKmPrecedent(date, vehID) {
-    this.dataService.getConsommation("?date=" + date + "&vehId=" + vehID).subscribe({
+    this.dataService.getConsommation("?date=" + date + "&kmp=true" + "&d=" + vehID).subscribe({
       next: (res) => {
         this.consommation.kmPrecedent = (res as any)?.kmEncours ?? 0;
 
         if (this.consommation.pleinOn == 1)
-          this.getQteTotale(this.consommation.dateFill);
+          this.getQteTotale(this.consommation.dateFill, vehID);
 
       }, error(err) {
         if (err.status == 401) {
@@ -227,12 +227,12 @@ export class ConsommcarburantComponent {
 
   pleincheckbox() {
     if (this.consommation.dateFill != '' && !isNaN(this.consommation.dateFill) && this.consommation.deviceID != '' && this.consommation.pleinOn == 1)
-      this.getQteTotale(this.consommation.dateFill);
+      this.getQteTotale(this.consommation.dateFill, this.consommation.deviceID);
   }
 
   // get qte total => plein
-  getQteTotale(date) {
-    this.dataService.getConsommation("?date=" + date + "&plein=true").subscribe({
+  getQteTotale(date, vehID) {
+    this.dataService.getConsommation("?date=" + date + "&plein=true" + "&d=" + vehID).subscribe({
       next: (res) => {
 
         this.qteTotal = res as number;
@@ -328,23 +328,6 @@ export class ConsommcarburantComponent {
             this.loadData(true)
             this.primaryModal.hide();
           }
-          // , error(err) {
-          //   this.modalLoading = false;
-
-          //   if (err.status == 401) {
-          //     route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-          //   }
-
-          //   else if (err.status == 400) {
-          //     console.log(err);
-          //     this.errorMsg = "Numero de bon inseré exist deja."
-          //     console.log(this.errorMsg);
-          //   }
-
-          //   else if (err.status == 402) {
-          //     this.errorMsg = "Erreur l'ajout est bloqué."
-          //   }
-          // }
         })
     }
   }

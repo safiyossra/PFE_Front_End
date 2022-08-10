@@ -19,6 +19,7 @@ export class MyCarburantDataTableComponent implements OnChanges {
   @Input() columnNames?= ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Carburant réel (L)", "Odomètre", "Adresse"];
   @Input() columns?= ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "cr", "odometerKM", "address"];
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
+  @Input() showPoints ?= true;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   public displayedColumns = this.columns

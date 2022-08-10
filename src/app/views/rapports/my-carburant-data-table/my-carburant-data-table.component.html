@@ -10,7 +10,7 @@
           </div>
         </div>
       </div>
-      <div class="card-header-actions col-md-9">
+      <div *ngIf="showPoints" class="card-header-actions col-md-9">
         <button class="btn btn-outlined-primary float-right" (click)="openMapPoints()"><i class="fa fa-map mr-1"></i>
           Afficher Tous
           les Points</button>
