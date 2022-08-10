@@ -7,8 +7,8 @@
               class="fa fa-plus-circle"></i> Ajouter Plan d'entretien </button>
           <div class="card-header-actions">
             <span class="dropdown" dropdown placement="bottom">
-              <button type="button" dropdownToggle (click)="false" data-toggle="dropdown" role="button" aria-haspopup="true"
-                aria-expanded="false" class="btn btn-square btn-link">
+              <button type="button" dropdownToggle (click)="false" data-toggle="dropdown" role="button"
+                aria-haspopup="true" aria-expanded="false" class="btn btn-square btn-link">
                 <i class="icon-cloud-download mr-2"></i><small class="text-muted mr-3">Exporter</small>
               </button>
               <div class="dropdown-menu dropdown-menu-center" *dropdownMenu aria-labelledby="simple-dropdown">
@@ -19,7 +19,7 @@
                     style="font-size: large;"></i>
                   Pdf</button>
               </div>
-              </span>
+            </span>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>
@@ -52,46 +52,46 @@
                   </div>
                 </div>
                 <!--</div> -->
-                </div>
-                </div>
-                <div class="form-actions">
-                  <button class="btn btn-sm btn-primary" (click)="loadData(false)" [disabled]="loading">
-                    <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
-                    <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
-                  </button>
-                </div>
-                </div>
-                </div>
-                </div>
-                </div>
-                <!--/.col-->
-                </div>
-                <!--/.row-->
-                
-                
-                <div class="row">
-                  <div class="col-lg-12">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-sm btn-primary" (click)="loadData(false)" [disabled]="loading">
+                <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+
+
+  <div class="row">
+    <div class="col-lg-12">
       <my-planentretien-table (modify)="loadModify($event)" (cloturer)="close($event)" (delete)="delete($event)"
         [data]="data">
       </my-planentretien-table>
-      </div>
-      </div>
-      </div>
-      <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
-        role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-primary" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
+    </div>
+  </div>
+</div>
+<div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-primary" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
         <h5 class="modal-title">Ajouter Plan d'entretien</h5>
         <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        </div>
-        <div class="modal-body">
-          <div class="animated fadeIn">
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="card">
+      </div>
+      <div class="modal-body">
+        <div class="animated fadeIn">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card">
                 <div class="card-header">
                   Véhicule
                 </div>
@@ -110,9 +110,9 @@
                           <i *ngIf="selectedPlan.deviceID != null">{{
                             selectedPlan.device
                             }}</i></span>
-                            </div>
-                            </div>
-                            </div>
+                      </div>
+                    </div>
+                  </div>
                   <div class="form-group row">
                     <label class="col-md-4 col-form-label" for="kmActuel">Kilométrage actuel</label>
                     <div class="col-8 input-group">
@@ -123,31 +123,32 @@
                           KM
                         </span>
                       </div>
-                      </div>
-                      </div>
-                      </div>
                     </div>
+                  </div>
+                </div>
+              </div>
               <div class="card">
                 <div class="card-body">
                   <div class="form-group row">
                     <label class=" col-md-4 col-form-label" for="operation">Opération *</label>
                     <div class="col-8">
                       <my-dropdown-select id="operation" class="form-control" [placeholder]="'Operation Selection'"
-                        [selectPlaceholder]="'search...'" [options]="cts.planOperations" [display]="'name'" [value]="'id'" [multiple]="false"
-                        [labelCount]="0" [selectedOptions]="selectedOperations" (selectionChange)="getSelectedOperation($event)">
+                        [selectPlaceholder]="'search...'" [options]="cts.planOperations" [display]="'name'"
+                        [value]="'id'" [multiple]="false" [labelCount]="0" [selectedOptions]="selectedOperations"
+                        (selectionChange)="getSelectedOperation($event)">
                       </my-dropdown-select>
-                      </div>
-                      </div>
-                      </div>
                     </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="card">
-                        <div class="card-header">
-                          Déclenchement
-                        </div>
-                        <div class="card-body">
-                          <mat-radio-group [(ngModel)]="selectedPlan.typeDeclenchement" class="row">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  Déclenchement
+                </div>
+                <div class="card-body">
+                  <mat-radio-group [(ngModel)]="selectedPlan.typeDeclenchement" class="row">
                     <label class="col-4"></label>
                     <mat-radio-button class="col-4" [value]="1">
                       Par Kilométrage
@@ -155,53 +156,55 @@
                     <mat-radio-button class="col-4" [value]="0">
                       Par Date
                     </mat-radio-button>
-                    </mat-radio-group>
+                  </mat-radio-group>
                   <div class="form-group row" *ngIf="selectedPlan.typeDeclenchement==1">
                     <label class="col-md-4 col-form-label" for="compteurKm">Valeur *</label>
                     <div class="col-8">
-                      <input type="number" id="compteurKm" [(ngModel)]="selectedPlan.decKmValue" [ngModelOptions]="{standalone: true}"
-                        class="form-control" placeholder="Saisir un chiffre">
-                      </div>
-                      </div>
+                      <input type="number" id="compteurKm" [(ngModel)]="selectedPlan.decKmValue"
+                        [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Saisir un chiffre">
+                    </div>
+                  </div>
                   <div class="form-group row" *ngIf="selectedPlan.typeDeclenchement==0">
                     <label class="col-md-4 col-form-label" for="compteurDate">Valeur *</label>
                     <div class="col-8">
-                      <input type="date" id="compteurDate" [(ngModel)]="selectedPlan.decDateValueString" [ngModelOptions]="{standalone: true}"
-                        class="form-control" placeholder="Saisir une date">
-                      </div>
-                      </div>
+                      <input type="date" id="compteurDate" [(ngModel)]="selectedPlan.decDateValueString"
+                        [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Saisir une date">
+                    </div>
+                  </div>
                   <div class="form-group row">
                     <label class="col-md-4 col-form-label" for="beforeValue">Déclencher avant par</label>
                     <div class="col-8 input-group">
                       <input type="number" *ngIf="selectedPlan.typeDeclenchement==1" [(ngModel)]="selectedPlan.kmValue"
-                        [ngModelOptions]="{standalone: true}" id="beforeValue" class="form-control" placeholder="Saisir le nombre de KM">
-                      <input type="number" *ngIf="selectedPlan.typeDeclenchement==0" [(ngModel)]="selectedPlan.dateValue"
-                        [ngModelOptions]="{standalone: true}" id="beforeValue" class="form-control" placeholder="Saisir le nombre de jours">
+                        [ngModelOptions]="{standalone: true}" id="beforeValue" class="form-control"
+                        placeholder="Saisir le nombre de KM">
+                      <input type="number" *ngIf="selectedPlan.typeDeclenchement==0"
+                        [(ngModel)]="selectedPlan.dateValue" [ngModelOptions]="{standalone: true}" id="beforeValue"
+                        class="form-control" placeholder="Saisir le nombre de jours">
                       <div class="input-group-append">
                         <span class="input-group-text">
                           {{selectedPlan.typeDeclenchement==0?'Jours':'KM'}}
                         </span>
                       </div>
-                      </div>
-                      </div>
-                      </div>
-                      </div>
-                      <div class="form-group row">
-                        <!-- <label class="col-md-3 col-form-label" for="text-input">Motif</label> -->
-                        <div class="col-12">
-                    <textarea type="text" rows="4" [(ngModel)]="selectedPlan.motif" [ngModelOptions]="{standalone: true}"
-                      class="form-control" placeholder="Saisir votre motif"></textarea>
                     </div>
-                    </div>
+                  </div>
                 </div>
+              </div>
+              <div class="form-group row">
+                <!-- <label class="col-md-3 col-form-label" for="text-input">Motif</label> -->
+                <div class="col-12">
+                  <textarea type="text" rows="4" [(ngModel)]="selectedPlan.motif" [ngModelOptions]="{standalone: true}"
+                    class="form-control" placeholder="Saisir votre motif"></textarea>
                 </div>
-                </div>
-                </div>
-                <div class="modal-footer" style="justify-content: left;display: initial;">
-                  <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
-                  <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
-                  <button type="button" class="btn btn-secondary float-right" (click)="primaryModal.hide()">Fermer</button>
-                </div>
-                </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: left;display: initial;">
+        <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
+        <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
+        <button type="button" class="btn btn-secondary float-right" (click)="primaryModal.hide()">Fermer</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
