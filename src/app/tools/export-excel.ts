@@ -10,14 +10,16 @@ export class ExportExcel {
   ExportParking(data: any, title?: string) {
     var dataForExcel: Object[] = [];
     data.forEach((elt: any) => {
-      const tmp = [elt.timeStart, elt.timeEnd, elt.addi, elt.da];
+      const tmp = [elt.timeStart, elt.timeEnd, elt.addi, elt.da, elt.odo, elt.ft];
       dataForExcel.push(tmp);
     });
     // if (vehicule) Title = 'Rapport Parking -[' + vehicule + ']';
     let reportData = {
       title: title,
       data: dataForExcel,
-      headers: ['DEPART', 'ARRIVÉ', 'ADRESSE', 'DURÉE (MIN)'],
+      headers: ['DEPART', 'ARRIVÉ', 'ADRESSE', 'DURÉE (MIN)',
+        'Odomètre',
+        'Fuel',],
     };
     this.exportExcel(reportData);
   }
@@ -37,7 +39,7 @@ export class ExportExcel {
         elt.cd,
         elt.c,
         elt.cm,
-        elt.ct,
+        elt.ct, elt.odo, elt.ft
       ];
       dataForExcel.push(tmp);
     });
@@ -59,6 +61,8 @@ export class ExportExcel {
         'CONSOM (%)',
         'CONSOM (MAD)',
         'CONSOM THÉORIQUE (L)',
+        'Odomètre',
+        'Fuel',
       ],
     };
     this.exportExcel(reportData);
@@ -99,6 +103,169 @@ export class ExportExcel {
     this.exportExcel(reportData);
   }
 
+  ExportCarburant(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.timestamp,
+        elt.deviceID,
+        elt.device,
+        elt.latlng,
+        elt.fuelTotal,
+        elt.fuelstart,
+        elt.fuelLevel,
+        elt.deltaFuelLevel,
+        elt.odometerKM,
+        elt.address,
+      ];
+      dataForExcel.push(tmp);
+    });
+
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+        'DATE/HEURE',
+        'ID',
+        'VEHICULE',
+        'LATITUDE/LONGITUDE',
+        'CARBURANT TOTAL (L)',
+        'CARBURANT AVANT (L)',
+        'CARBURANT APRÈS (L)',
+        'CARBURANT DIFF (L)',
+        'ODOMÈTRE',
+        'ADRESSE',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
+  Export_Synthetique(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [elt.d, elt.km, elt.v, elt.c, elt.cm, elt.cd, elt.ct];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+        'VÉHICULE',
+        'KM PARCOURUE',
+        'VITESSE MAXIMALE (KM/H)',
+        'CONSOMMATION (L)',
+        'CONSOMMATION (%)',
+        'CONSOMMATION (MAD)',
+        'CONSOMMATION THÉORIQUE (L)',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
+  ////////////PARAMETRAGE
+  ExportConducteurs(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [elt.driverID, elt.contactPhone, elt.description, elt.displayName];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ['CONDUCTEURSID', 'NUMÉRO DE TÉLÉPHONE', 'DESCRIPTION', 'NOM'],
+    };
+    this.exportExcel(reportData);
+  }
+
+  Export_Vehicules(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.deviceID,
+        elt.description,
+        elt.uniqueID,
+        elt.lastOdometerKM,
+        elt.fuel,
+        elt.deviceCode,
+        elt.simPhoneNumber,
+      ];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+        'DEVICE',
+        'VÉHICULE',
+        'ID UNIQUE',
+        'ODOMÈTRE (KM)',
+        'TOTAL CARBURANT (L)',
+        'DEVICE CODE',
+        'TEL',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
+  Export_Users(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.userID,
+        elt.description,
+        elt.roleID,
+        elt.contactName,
+        elt.notifyEmail,
+        elt.timeZone,
+        elt.lastLoginTime,
+      ];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+        'IDENTIFIANT',
+        "NOM DE L'UTILISATEUR",
+        'ROLE',
+        'NOM DU CONTACT',
+        'ADRESSE EMAIL',
+        'FUSEAU HORAIRE',
+        'LAST LOGIN',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
+  Export_GroupVehicules(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [elt.groupID, elt.displayName, elt.description, elt.nbrvehicules];
+
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ['IDENTIFIANT', 'NOM', 'DESCRIPTION', 'NOMBRE DE VÉHICULES'],
+    };
+    this.exportExcel(reportData);
+  }
+
+  Export_Alerts(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [elt.ruleID, elt.description, elt.notifyEmail, elt.ruleTag];
+
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ['IDENTIFIANT', 'DESCRIPTION', 'EMAIL', 'CRON RULE'],
+    };
+    this.exportExcel(reportData);
+  }
 
 
   exportExcel(excelData: { title: any; data: any; headers: any; }) {
@@ -111,69 +278,67 @@ export class ExportExcel {
 
     //add rows and formatting
 
-    worksheet.mergeCells('D8', 'I10');
-    let titleRow = worksheet.getCell('D8');
-    titleRow.value = title;
-    titleRow.font = {
-      name: 'Calibri',
-      size: 16,
-      underline: 'single',
-      bold: true,
-      color: { argb: '366DAD' }
-    }
-    titleRow.alignment = { vertical: 'middle', horizontal: 'center' }
+    // worksheet.mergeCells('D8', 'I10');
+    // let titleRow = worksheet.getCell('D8');
+    // titleRow.value = title;
+    // titleRow.font = {
+    //   name: 'Calibri',
+    //   size: 16,
+    //   underline: 'single',
+    //   bold: true,
+    //   color: { argb: '366DAD' }
+    // }
+    // titleRow.alignment = { vertical: 'middle', horizontal: 'center' }
     //Company
 
-    worksheet.mergeCells('A5:D6');
-    let Company = 'Sendatrack.com';
-    let CompanyCell = worksheet.getCell('A6');
-    CompanyCell.value = Company;
-    CompanyCell.font = {
-      name: 'Calibri',
-      size: 14,
-      bold: true,
-      color: { argb: '033A7A' }
-    }
-    CompanyCell.alignment = { vertical: 'middle', horizontal: 'left' }
+    // worksheet.mergeCells('A5:D6');
+    // let Company = 'Sendatrack.com';
+    // let CompanyCell = worksheet.getCell('A6');
+    // CompanyCell.value = Company;
+    // CompanyCell.font = {
+    //   name: 'Calibri',
+    //   size: 14,
+    //   bold: true,
+    //   color: { argb: '033A7A' }
+    // }
+    // CompanyCell.alignment = { vertical: 'middle', horizontal: 'left' }
 
     //Adress
-    worksheet.mergeCells('H1:K3');
-    let adress1 = '7, Résidence Rami, Rue Sebta, 2º étage, 8, Casablanca – Maroc';
+    // worksheet.mergeCells('H1:K3');
+    // let adress1 = '7, Résidence Rami, Rue Sebta, 2º étage, 8, Casablanca – Maroc';
 
     //let date =d.getDate()+'-'+d.getMonth()+'-'+d.getFullYear() +':'+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-    let Adress1Cell = worksheet.getCell('H1');
-    Adress1Cell.value = adress1;
-    Adress1Cell.font = {
-      name: 'Calibri',
-      size: 10,
-      bold: true,
-      color: { argb: '033A7A' }
-    }
-    Adress1Cell.alignment = { vertical: 'middle', horizontal: 'left' }
-    worksheet.mergeCells('H4:K6');
+    // let Adress1Cell = worksheet.getCell('H1');
+    // Adress1Cell.value = adress1;
+    // Adress1Cell.font = {
+    //   name: 'Calibri',
+    //   size: 10,
+    //   bold: true,
+    //   color: { argb: '033A7A' }
+    // }
+    // Adress1Cell.alignment = { vertical: 'middle', horizontal: 'left' }
+    // worksheet.mergeCells('H4:K6');
 
-    let adress2 = 'T114 Technopark de Tanger – Maroc';
-    let Adress2Cell = worksheet.getCell('H4');
-    Adress2Cell.value = adress2;
-    Adress2Cell.font = {
-      name: 'Calibri',
-      size: 10,
-      bold: true,
-      color: { argb: '033A7A' }
-    }
-    Adress2Cell.alignment = { vertical: 'middle', horizontal: 'center' }
+    // let adress2 = 'T114 Technopark de Tanger – Maroc';
+    // let Adress2Cell = worksheet.getCell('H4');
+    // Adress2Cell.value = adress2;
+    // Adress2Cell.font = {
+    //   name: 'Calibri',
+    //   size: 10,
+    //   bold: true,
+    //   color: { argb: '033A7A' }
+    // }
+    // Adress2Cell.alignment = { vertical: 'middle', horizontal: 'center' }
 
     //Add Logo image
-    let myLogoImage = workbook.addImage({
+    // let myLogoImage = workbook.addImage({
+    //   filename: 'assets/img/brand/logo_sidenav_brand.png',
+    //   extension: 'png'
+    // });
+    // worksheet.mergeCells('A1:D4');
+    // worksheet.addImage(myLogoImage, 'A1:D4');
 
-      base64: 'assets/img/brand/logo_sidenav_brand.png',
-      extension: 'png'
-    });
-    worksheet.mergeCells('A1:D4');
-    worksheet.addImage(myLogoImage, 'A1:D4');
-
-
-    worksheet.addRow([]);
+    // worksheet.addRow([]);
     //add header Row
     let headerRow = worksheet.addRow(header);
     headerRow.eachCell((cell) => {
@@ -192,21 +357,25 @@ export class ExportExcel {
     })
 
     data.forEach((elt: any) => {
-      let row = worksheet.addRow(elt);
+      worksheet.addRow(elt);
     });
 
-
     //Footer
-    worksheet.addRow([]);
-    worksheet.addRow([]);
+    // worksheet.addRow([]);
+    // worksheet.addRow([]);
     let footerRow = worksheet.addRow([' Details: ' + Date()]);
     footerRow.getCell(1).fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'E6DD8D' }
+      fgColor: { argb: '4167B8' }
+    };
+    footerRow.getCell(1).font = {
+      bold: true,
+      color: { argb: 'FFFFFF' },
+      size: 12
     };
 
-    worksheet.mergeCells(`A${footerRow.number}:H${footerRow.number}`)
+    worksheet.mergeCells(`A${footerRow.number}:E${footerRow.number}`)
 
     //saving and exporting the excel file
     workbook.xlsx.writeBuffer().then((data) => {

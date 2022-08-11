@@ -51,7 +51,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     setTimeout(() => {
       this.map = this.tools.createMap(this.map, 'map', this.car, this.provider, this.showCollapsControle, this.showFullScreenControle, this.showPositionControle)
       this.inter = setInterval(() => {
-        // this.loadData()
+        this.loadData()
       }, 5000)
       this.loadZones()
     }, 100);
@@ -119,7 +119,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     this.vehiculeService.getData().subscribe({
       next: (res) => {
         const data = res['DeviceList']
-        // console.log("DeviceList", data);
+        console.log("DeviceList", data);
         let vehicules = []
         data.forEach(e => {
           let l = e['EventData'].length - 1 ?? -1
@@ -128,13 +128,13 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
             vehicules.push(
               new Vehicule(e["Device"] ?? "", e["Device_desc"] ?? "", vData['Timestamp'] ?? 0, vData["StatusCode"]?.toString(), vData["Address"] ?? "",
                 vData["Odometer"] ?? "", vData["acceleration"] ?? "", e["SimCard"] ?? "", e["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
-                vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, e['Icon'], e['FuelLevel'] ?? 0)
+                vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, e['Icon'], vData['FuelLevel_Liter'] ?? 0)
             )
           }
         });
         this.isFirstTime = this.vehicules.length == 0
         this.vehicules = vehicules
-        // console.log(this.vehicules)
+        console.log(this.vehicules)
         vehicules = []
         if (this.isFirstTime) {
           this.initMarkers()

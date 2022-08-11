@@ -6,7 +6,7 @@
           <button type="button" data-toggle="modal" (click)="modalAjoutr()" class="btn btn-outline-primary"><i
               class="fa fa-plus-circle"></i> Ajouter Plan d'entretien </button>
           <div class="card-header-actions">
-            <app-dropdown-export (export)="exporter($event)" ></app-dropdown-export>
+            <app-dropdown-export (export)="exporter($event)"></app-dropdown-export>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>
@@ -39,25 +39,25 @@
                   </div>
                 </div>
                 <!--</div> -->
-                </div>
-                </div>
-                <div class="form-actions">
-                  <button class="btn btn-sm btn-primary" (click)="loadData(false)" [disabled]="loading">
-                    <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
-                    <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
-                  </button>
-                </div>
-                </div>
-                </div>
-                </div>
-                </div>
-                <!--/.col-->
-                </div>
-                <!--/.row-->
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-sm btn-primary" (click)="loadData(false)" [disabled]="loading">
+                <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
 
 
-                <div class="row">
-                  <div class="col-lg-12">
+  <div class="row">
+    <div class="col-lg-12">
       <my-planentretien-table (modify)="loadModify($event)" (cloturer)="close($event)" (delete)="delete($event)"
         [data]="data">
       </my-planentretien-table>

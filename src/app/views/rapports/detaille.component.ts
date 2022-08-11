@@ -26,6 +26,8 @@ export class DetailleComponent implements AfterViewInit {
   constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private tools: util, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel, private router: Router) {
   }
   ngAfterViewInit(): void {
+    console.log("ngAfterViewInit",this.vehiculeID);
+    
     if (this.vehiculeID) {
       this.selectedTab = 3
       this.selectedDevices = this.vehiculeID;
@@ -46,12 +48,12 @@ export class DetailleComponent implements AfterViewInit {
   reportDataCarburant: any;
   reportDataConsommation: any;
   reportDetails: any;
-  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)"]
-  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct"];
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)","Odomètre","Feul"]
+  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct","odo","ft"];
 
-  displayedColumnsArrets: any = ["Début", "Fin", "Adresse", "Durée (min)"]
-  columnsArrets: any = ["timeStart", "timeEnd", "addi", "da"];
-  displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]
+  displayedColumnsArrets: any = ["Début", "Fin", "Adresse","Durée (min)", "Odomètre","fuel" ]
+  columnsArrets: any = ["timeStart", "timeEnd", "addi", "da","odo","ft"];
+  displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)",  "Odomètre", "Adresse"]
   columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
 
   dColumnsRealCarburant: any = [
@@ -240,9 +242,8 @@ export class DetailleComponent implements AfterViewInit {
 
   ////////////////////////////////////////////////////////////////
 
-  public resumeColors: Array<any> = [
-    "twitter", "google-plus", "green", "purple", "yellow", "pink", "primary", "cyan"];
-  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cd": "MAD", "ct": "L", "cm": "%", "v": "Km/h", "t": "°C", "na": " " };
+  public resumeColors: Array<any> = ["twitter", "google-plus", "green", "purple", "yellow", "pink", "primary", "cyan", "danger", "warning"];
+  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cd": "MAD", "ct": "L", "cm": "%", "v": "Km/h", "t": "°C", "na": " " , "odo": "Km", "ft": "L" };
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -291,7 +292,7 @@ export class DetailleComponent implements AfterViewInit {
         to: tomorrow
       }
     };
-    for (let index = 4; index < 12; index++) {
+    for (let index = 4; index < 14; index++) {
       this.resume.push({
         val: 0,
         label: this.displayedColumns[index],
@@ -464,6 +465,8 @@ export class DetailleComponent implements AfterViewInit {
             e.timeEnd = this.tools.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000));
             if (e.da) e.da = this.round2d(Number.parseInt(e.da) / 60);
             if (e.dc) e.dc = this.round2d(Number.parseInt(e.dc) / 60);
+            if (e.odo) e.odo = this.round2d(Number.parseInt(e.odo));
+            if (e.ft) e.ft = this.round2d(e.ft*extra.cp);
             e.cd = this.round2d(e.c * extra.fc);
             e.ct = extra.fe != 0 ? (e.k / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
             e.cm = (100 * (e.c / (e.k != 0 ? e.k : 1))).toFixed(1);
@@ -473,34 +476,36 @@ export class DetailleComponent implements AfterViewInit {
           // else
           this.reportData = d;
           this.reportDataArrets = d.filter((e) => { return e.trajet == 0 });
-          this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "st": e.st, "et": e.et, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), } });
+          this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "st": e.st, "et": e.et, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), "odo": e.odo, "ft": e.ft } });
           this.selectedMapDevice = this.selectedDevice
           console.log("trajet et parking", this.reportData);
           console.log("parking", this.reportDataArrets);
           console.log("trajet", this.reportDataTrajet);
 
           let resumetmp = [];
-          let labels = this.reportData.map((l) => { return l.timeStart })
+          let labels = this.reportDataTrajet.map((l) => { return l.timeStart })
           this.columns.forEach((e, index) => {
             if (!["timeStart", "timeEnd", "addi", "addf"].includes(e))
               resumetmp.push({
-                val: !["cm", "cd", "ct"].includes(e) ? this.reduce(this.reportData, e) : 0,//.toString() + " " + this.resumeUnits[e]
+                val: !["cm", "cd", "ct","odo","ft"].includes(e) ? this.reduce(this.reportDataTrajet, e) : 0,//.toString() + " " + this.resumeUnits[e]
                 label: this.displayedColumns[index],
                 labels: labels,
                 key: e,
                 data:
                   [
                     {
-                      data: this.reportData.map((l) => { return l[e] }),
+                      data: this.reportDataTrajet.map((l) => { return l[e] }),
                       label: this.displayedColumns[index]
                     }
                   ]
               })
           });
           var length = resumetmp.length - 1;
-          resumetmp[length].val = extra.fe != 0 ? (resumetmp[0].val / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
-          resumetmp[length - 1].val = this.round2d(resumetmp[length - 3].val * extra.fc);
-          resumetmp[length - 2].val = (100 * (resumetmp[length - 3].val / (resumetmp[0].val != 0 ? resumetmp[0].val : 1))).toFixed(1);
+          resumetmp[length].val = this.reportDataTrajet[this.reportDataTrajet.length - 1].ft ?? "0";
+          resumetmp[length-1].val = this.reportDataTrajet[this.reportDataTrajet.length - 1].odo ?? "0";
+          resumetmp[length-2].val = extra.fe != 0 ? (resumetmp[0].val / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
+          resumetmp[length - 3].val = this.round2d(resumetmp[length - 5].val * extra.fc);
+          resumetmp[length - 4].val = (100 * (resumetmp[length - 5].val / (resumetmp[0].val != 0 ? resumetmp[0].val : 1))).toFixed(1);
           this.resume = resumetmp
           this.loading = false;
         }, error(err) {
@@ -707,9 +712,9 @@ export class DetailleComponent implements AfterViewInit {
 
   getVehiculeExtraById(id) {
     for (let i = 0; i < this.devices.length; i++) {
-      if (this.devices[i].dID == id) return { "fe": this.devices[i].fe, "fc": this.devices[i].fc }
+      if (this.devices[i].dID == id) return { "fe": this.devices[i].fe, "fc": this.devices[i].fc, "cp": this.devices[i].cp }
     }
-    return { "fe": 0, "fc": 0 }
+    return { "fe": 0, "fc": 0, "cp": 0  }
   }
 
   getVehiculeCapacityById(id) {
@@ -720,8 +725,6 @@ export class DetailleComponent implements AfterViewInit {
   }
 
   exporter(type) {
-    console.log(type);
-
     var title = " Entre " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateFrom) * 1000)) + " et " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateTo) * 1000))
@@ -735,9 +738,8 @@ export class DetailleComponent implements AfterViewInit {
       type == 1 ? this.exportingPdfTool.exportPdf_Parking(this.reportDataArrets, "Rapport de Parking pour " + this.selectedDevice + " \n" + title) :
         this.exportingExcelTool.ExportParking(this.reportDataArrets, "Rapport de Parking pour " + this.selectedDevice + " \n" + title)
     else if (this.selectedTab == 6)
-      type == 1 ? this.exportingPdfTool.exportPdf_Parking(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.selectedDevice + " \n" + title) :
-        this.exportingExcelTool.ExportParking(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.selectedDevice + " \n" + title)
-
+      type == 1 ? this.exportingPdfTool.exportPdf_Carburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.selectedDevice + " \n" + title) :
+        this.exportingExcelTool.ExportCarburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.selectedDevice + " \n" + title)
   }
 
   exportEvents(v) {
@@ -746,8 +748,6 @@ export class DetailleComponent implements AfterViewInit {
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateTo) * 1000))
     v.type == 1 ? this.exportingPdfTool.exportPdf_Events(v.data, "Rapport Détaillés pour " + this.selectedDevice + " \n" + title) :
       this.exportingExcelTool.ExportEvents(v.data, "Rapport Détaillés pour " + this.selectedDevice + " \n" + title)
-
-
   }
 
   round2d(v) {
