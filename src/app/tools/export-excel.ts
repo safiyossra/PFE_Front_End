@@ -18,8 +18,8 @@ export class ExportExcel {
       title: title,
       data: dataForExcel,
       headers: ['DEPART', 'ARRIVÉ', 'ADRESSE', 'DURÉE (MIN)',
-      'Odomètre',
-      'Fuel',],
+        'Odomètre',
+        'Fuel',],
     };
     this.exportExcel(reportData);
   }
@@ -143,7 +143,7 @@ export class ExportExcel {
   Export_Synthetique(data: any[], title: string) {
     var dataForExcel: Object[] = [];
     data.forEach((elt) => {
-      const tmp = [elt.vehic, elt.kp, elt.vm, elt.cl, elt.cp, elt.cm, elt.ct];
+      const tmp = [elt.d, elt.km, elt.v, elt.c, elt.cm, elt.cd, elt.ct];
       dataForExcel.push(tmp);
     });
     let reportData = {
@@ -166,7 +166,7 @@ export class ExportExcel {
   ExportConducteurs(data: any[], title: string) {
     var dataForExcel: Object[] = [];
     data.forEach((elt) => {
-      const tmp = [elt.cond, elt.phone, elt.desc, elt.nom];
+      const tmp = [elt.driverID, elt.contactPhone, elt.description, elt.displayName];
       dataForExcel.push(tmp);
     });
     let reportData = {
@@ -181,13 +181,13 @@ export class ExportExcel {
     var dataForExcel: Object[] = [];
     data.forEach((elt) => {
       const tmp = [
-        elt.dev,
-        elt.vehic,
-        elt.id,
-        elt.odo,
-        elt.ct,
-        elt.dc,
-        elt.tel,
+        elt.deviceID,
+        elt.description,
+        elt.uniqueID,
+        elt.lastOdometerKM,
+        elt.fuel,
+        elt.deviceCode,
+        elt.simPhoneNumber,
       ];
       dataForExcel.push(tmp);
     });
@@ -211,13 +211,13 @@ export class ExportExcel {
     var dataForExcel: Object[] = [];
     data.forEach((elt) => {
       const tmp = [
-        elt.id,
-        elt.username,
-        elt.role,
-        elt.contact,
-        elt.email,
-        elt.fh,
-        elt.lastlog,
+        elt.userID,
+        elt.description,
+        elt.roleID,
+        elt.contactName,
+        elt.notifyEmail,
+        elt.timeZone,
+        elt.lastLoginTime,
       ];
       dataForExcel.push(tmp);
     });
@@ -240,7 +240,7 @@ export class ExportExcel {
   Export_GroupVehicules(data: any[], title: string) {
     var dataForExcel: Object[] = [];
     data.forEach((elt) => {
-      const tmp = [elt.id, elt.name, elt.desc, elt.nv];
+      const tmp = [elt.groupID, elt.displayName, elt.description, elt.nbrvehicules];
 
       dataForExcel.push(tmp);
     });
@@ -251,11 +251,11 @@ export class ExportExcel {
     };
     this.exportExcel(reportData);
   }
-  
+
   Export_Alerts(data: any[], title: string) {
     var dataForExcel: Object[] = [];
     data.forEach((elt) => {
-      const tmp = [elt.id, elt.desc, elt.email, elt.cr];
+      const tmp = [elt.ruleID, elt.description, elt.notifyEmail, elt.ruleTag];
 
       dataForExcel.push(tmp);
     });
@@ -278,69 +278,67 @@ export class ExportExcel {
 
     //add rows and formatting
 
-    worksheet.mergeCells('D8', 'I10');
-    let titleRow = worksheet.getCell('D8');
-    titleRow.value = title;
-    titleRow.font = {
-      name: 'Calibri',
-      size: 16,
-      underline: 'single',
-      bold: true,
-      color: { argb: '366DAD' }
-    }
-    titleRow.alignment = { vertical: 'middle', horizontal: 'center' }
+    // worksheet.mergeCells('D8', 'I10');
+    // let titleRow = worksheet.getCell('D8');
+    // titleRow.value = title;
+    // titleRow.font = {
+    //   name: 'Calibri',
+    //   size: 16,
+    //   underline: 'single',
+    //   bold: true,
+    //   color: { argb: '366DAD' }
+    // }
+    // titleRow.alignment = { vertical: 'middle', horizontal: 'center' }
     //Company
 
-    worksheet.mergeCells('A5:D6');
-    let Company = 'Sendatrack.com';
-    let CompanyCell = worksheet.getCell('A6');
-    CompanyCell.value = Company;
-    CompanyCell.font = {
-      name: 'Calibri',
-      size: 14,
-      bold: true,
-      color: { argb: '033A7A' }
-    }
-    CompanyCell.alignment = { vertical: 'middle', horizontal: 'left' }
+    // worksheet.mergeCells('A5:D6');
+    // let Company = 'Sendatrack.com';
+    // let CompanyCell = worksheet.getCell('A6');
+    // CompanyCell.value = Company;
+    // CompanyCell.font = {
+    //   name: 'Calibri',
+    //   size: 14,
+    //   bold: true,
+    //   color: { argb: '033A7A' }
+    // }
+    // CompanyCell.alignment = { vertical: 'middle', horizontal: 'left' }
 
     //Adress
-    worksheet.mergeCells('H1:K3');
-    let adress1 = '7, Résidence Rami, Rue Sebta, 2º étage, 8, Casablanca – Maroc';
+    // worksheet.mergeCells('H1:K3');
+    // let adress1 = '7, Résidence Rami, Rue Sebta, 2º étage, 8, Casablanca – Maroc';
 
     //let date =d.getDate()+'-'+d.getMonth()+'-'+d.getFullYear() +':'+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-    let Adress1Cell = worksheet.getCell('H1');
-    Adress1Cell.value = adress1;
-    Adress1Cell.font = {
-      name: 'Calibri',
-      size: 10,
-      bold: true,
-      color: { argb: '033A7A' }
-    }
-    Adress1Cell.alignment = { vertical: 'middle', horizontal: 'left' }
-    worksheet.mergeCells('H4:K6');
+    // let Adress1Cell = worksheet.getCell('H1');
+    // Adress1Cell.value = adress1;
+    // Adress1Cell.font = {
+    //   name: 'Calibri',
+    //   size: 10,
+    //   bold: true,
+    //   color: { argb: '033A7A' }
+    // }
+    // Adress1Cell.alignment = { vertical: 'middle', horizontal: 'left' }
+    // worksheet.mergeCells('H4:K6');
 
-    let adress2 = 'T114 Technopark de Tanger – Maroc';
-    let Adress2Cell = worksheet.getCell('H4');
-    Adress2Cell.value = adress2;
-    Adress2Cell.font = {
-      name: 'Calibri',
-      size: 10,
-      bold: true,
-      color: { argb: '033A7A' }
-    }
-    Adress2Cell.alignment = { vertical: 'middle', horizontal: 'center' }
+    // let adress2 = 'T114 Technopark de Tanger – Maroc';
+    // let Adress2Cell = worksheet.getCell('H4');
+    // Adress2Cell.value = adress2;
+    // Adress2Cell.font = {
+    //   name: 'Calibri',
+    //   size: 10,
+    //   bold: true,
+    //   color: { argb: '033A7A' }
+    // }
+    // Adress2Cell.alignment = { vertical: 'middle', horizontal: 'center' }
 
     //Add Logo image
-    let myLogoImage = workbook.addImage({
+    // let myLogoImage = workbook.addImage({
+    //   filename: 'assets/img/brand/logo_sidenav_brand.png',
+    //   extension: 'png'
+    // });
+    // worksheet.mergeCells('A1:D4');
+    // worksheet.addImage(myLogoImage, 'A1:D4');
 
-      base64: 'assets/img/brand/logo_sidenav_brand.png',
-      extension: 'png'
-    });
-    worksheet.mergeCells('A1:D4');
-    worksheet.addImage(myLogoImage, 'A1:D4');
-
-
-    worksheet.addRow([]);
+    // worksheet.addRow([]);
     //add header Row
     let headerRow = worksheet.addRow(header);
     headerRow.eachCell((cell) => {
@@ -359,21 +357,25 @@ export class ExportExcel {
     })
 
     data.forEach((elt: any) => {
-      let row = worksheet.addRow(elt);
+      worksheet.addRow(elt);
     });
 
-
     //Footer
-    worksheet.addRow([]);
-    worksheet.addRow([]);
+    // worksheet.addRow([]);
+    // worksheet.addRow([]);
     let footerRow = worksheet.addRow([' Details: ' + Date()]);
     footerRow.getCell(1).fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'E6DD8D' }
+      fgColor: { argb: '4167B8' }
+    };
+    footerRow.getCell(1).font = {
+      bold: true,
+      color: { argb: 'FFFFFF' },
+      size: 12
     };
 
-    worksheet.mergeCells(`A${footerRow.number}:H${footerRow.number}`)
+    worksheet.mergeCells(`A${footerRow.number}:E${footerRow.number}`)
 
     //saving and exporting the excel file
     workbook.xlsx.writeBuffer().then((data) => {

@@ -521,6 +521,7 @@ export class ExportingTool {
         doc.save(title);
     }
 
+    
     addFooters = doc => {
         const pageCount = doc.internal.getNumberOfPages()
         doc.setFont('helvetica', 'italic')
