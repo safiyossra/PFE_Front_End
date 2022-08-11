@@ -391,7 +391,7 @@ export class DetailleComponent implements AfterViewInit {
             data[`${date}`] = {
               "carburantConsom": 0,
               "carburantPose": 0,
-              "difference":0,
+              "difference": 0,
               "odometreConsom": 0,
               "odometrePose": 0
             };
@@ -399,19 +399,26 @@ export class DetailleComponent implements AfterViewInit {
 
         (concatLists as any[]).forEach(element => {
           let date = this.tools.formatDateForInput(new Date(element.ts * 1000));
+          if (data.hasOwnProperty(date)) {
             data[date]!.carburantConsom! += (element.qte ?? 0);
-            data[date]!.carburantPose! += (((element.fuelLevel??0) - (element.fuelstart??0)) ?? 0);
+            data[date]!.carburantPose! += (((element.fuelLevel ?? 0) - (element.fuelstart ?? 0)) ?? 0);
             data[date]!.difference! += ((data[date]!.carburantPose ?? 0) - (data[date]!.carburantConsom ?? 0));
             data[date]!.odometreConsom! += (element.kmEncours ?? 0);
             data[date]!.odometrePose! += (element.odometerKM ?? 0);
-
             data[date]!.date = date;
 
-            data_.push({ ...data[date] })
+            let index = (data_ as any[]).indexOf((data_ as any[]).find(e => e.date == date));
+
+            if (index == -1)
+              data_.push(data[date]);
+            else
+              data_[index!] = data[date];
+          }
+
+
         });
 
-        console.log("Analysis result");
-        console.log(data_);
+        console.log("Analysis result", data_);
         this.reportDataConsommation = data_;
       }
     });
@@ -609,7 +616,7 @@ export class DetailleComponent implements AfterViewInit {
     var route = this.router
     this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
-        console.log("getDev",res);
+        console.log("getDev", res);
         this.devices = res;
       }, error(err) {
         if (err.status == 401) {
