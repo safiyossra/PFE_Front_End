@@ -1,3 +1,4 @@
+import { DropdownExportModule } from './../components/dropdown-export/dropdown-export.module';
 // Angular
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -15,6 +16,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyNotificationTableComponent } from './my-notification-table/my- notification-table.component';
 import { MaterialsModule } from 'src/app/materials.module';
 
+import { TabsModule } from 'ngx-bootstrap/tabs';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -25,11 +28,12 @@ import { MaterialsModule } from 'src/app/materials.module';
     MyDropdownModule,
     MyDateRangePickerModule,
     MaterialsModule,
+    DropdownExportModule,
+    TabsModule
   ],
   declarations: [
     AlertsComponent,
-    MyNotificationTableComponent
-    
+    MyNotificationTableComponent,
   ]
 })
 export class NotificationsModule { }

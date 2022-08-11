@@ -72,7 +72,6 @@ export class SynthetiquesComponent implements OnInit, AfterViewInit {
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
-
   }
   //////////////////////
   submit() {

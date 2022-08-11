@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/co
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { util } from 'src/app/tools/utils';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 
 
@@ -13,8 +13,8 @@ import { ExportingTool } from 'src/app/tools/exporting_tool';
 export class AlertsComponent {
 
   loading: boolean = false;
- 
-  constructor(private dataService: DataService, private tools: util, private exportingTool: ExportingTool, private router: Router) { }
+
+  constructor(private dataService: DataService, private activateRoute:ActivatedRoute,private tools: util, private exportingTool: ExportingTool, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -26,6 +26,8 @@ export class AlertsComponent {
   selectedDevice = null;
   showErrorDevice = false;
   errorMessageDevice = "";
+
+  selectedTab = 0;
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -73,6 +75,10 @@ export class AlertsComponent {
         to: tomorrow
       }
     };
+
+    // listen to route chages and set tab
+    this.activateRoute.params.subscribe((params) => this.selectTab(parseInt(params['tab'])));
+
     this.getDev();
     setTimeout(() => this.submit(), 100)
   }
@@ -130,6 +136,10 @@ export class AlertsComponent {
         }
       }
     })
+  }
+
+  selectTab(i) {
+    this.selectedTab = i
   }
 
   reset() {

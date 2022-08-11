@@ -623,6 +623,7 @@ export class DetailleComponent implements AfterViewInit {
     var route = this.router
     this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
+        console.log("getDev",res);
         this.devices = res;
       }, error(err) {
         if (err.status == 401) {
