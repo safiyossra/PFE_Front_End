@@ -5,6 +5,8 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { util } from 'src/app/tools/utils';
 import { Driver } from '../../../models/driver';
 import { Router } from '@angular/router';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
+import { ExportExcel } from 'src/app/tools/export-excel';
 
 @Component({
   templateUrl: 'cruddriver.component.html',
@@ -15,7 +17,7 @@ export class CruddriverComponent {
   modalLoading: boolean = false;
   selectedDriver: Driver = new Driver();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, private router: Router) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel,) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -250,8 +252,10 @@ export class CruddriverComponent {
       this.selectedDevice = null
   }
 
-  exporter(type) { }
-
+  exporter(type) {
+      type == 1 ? this.exportingPdfTool.exportPdf_Conducteurs(this.data, "Rapport de List Conducteures " ) :
+        this.exportingExcelTool.ExportConducteurs(this.data,  "Rapport de List Conducteures " )
+  }
 }
 
 

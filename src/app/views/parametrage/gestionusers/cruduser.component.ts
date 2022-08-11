@@ -5,6 +5,8 @@ import { User } from '../../../models/user';
 import { Router } from '@angular/router';
 import { util } from 'src/app/tools/utils';
 import { Constant } from 'src/app/tools/constants';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
+import { ExportExcel } from 'src/app/tools/export-excel';
 
 @Component({
   templateUrl: 'cruduser.component.html',
@@ -17,7 +19,7 @@ export class CruduserComponent {
   mode = "Ajouter";
   selectedUser: User = new User();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, private router: Router, private cst: Constant) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router, private cst: Constant,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
   data = [];
   errorMsg: string;
   public groups: any = [];
@@ -222,5 +224,9 @@ export class CruduserComponent {
     this.primaryModal.show()
   }
 
-  exporter(type) { }
+  
+  exporter(type) {
+    type == 1 ? this.exportingPdfTool.exportPdf_Users(this.data, "Rapport de List Utilisateurs" ) :
+      this.exportingExcelTool.Export_Users(this.data, "Rapport de List Utilisateurs" )
+}
 }

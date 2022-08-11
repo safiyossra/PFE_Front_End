@@ -6,7 +6,7 @@
           <button type="button" data-toggle="modal" (click)="modalAjoutr()" class="btn btn-outline-primary"><i
               class="fa fa-plus-circle"></i> Ajouter Plan d'entretien </button>
           <div class="card-header-actions">
-            <app-dropdown-export (export)="exporter($event)" ></app-dropdown-export>
+            <app-dropdown-export (export)="exporter($event)"></app-dropdown-export>
             <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()">
               <i class="{{ iconCollapse }}  transition"></i>
             </button>
@@ -39,7 +39,6 @@
                   </div>
                 </div>
                 <!--</div> -->
-<<<<<<< HEAD
               </div>
             </div>
             <div class="form-actions">
@@ -59,27 +58,6 @@
 
   <div class="row">
     <div class="col-lg-12">
-=======
-                </div>
-                </div>
-                <div class="form-actions">
-                  <button class="btn btn-sm btn-primary" (click)="loadData(false)" [disabled]="loading">
-                    <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
-                    <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
-                  </button>
-                </div>
-                </div>
-                </div>
-                </div>
-                </div>
-                <!--/.col-->
-                </div>
-                <!--/.row-->
-
-
-                <div class="row">
-                  <div class="col-lg-12">
->>>>>>> f7b8e28633b5c8ac923e9d20c28a04ada01eb36a
       <my-planentretien-table (modify)="loadModify($event)" (cloturer)="close($event)" (delete)="delete($event)"
         [data]="data">
       </my-planentretien-table>
@@ -204,7 +182,6 @@
                   <textarea type="text" rows="4" [(ngModel)]="selectedPlan.motif" [ngModelOptions]="{standalone: true}"
                     class="form-control" placeholder="Saisir votre motif"></textarea>
                 </div>
-<<<<<<< HEAD
               </div>
             </div>
           </div>
@@ -218,8 +195,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-=======
-                </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
->>>>>>> f7b8e28633b5c8ac923e9d20c28a04ada01eb36a

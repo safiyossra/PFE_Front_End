@@ -4,6 +4,8 @@ import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Groupevehicules } from '../../../models/groupevehicules';
 import { Router } from '@angular/router';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
+import { ExportExcel } from 'src/app/tools/export-excel';
 
 @Component({
   templateUrl: 'crudgroupe.component.html',
@@ -13,7 +15,7 @@ export class CrudgroupeComponent {
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
-  constructor(private dataService: DataService, private router: Router) { }
+  constructor(private dataService: DataService, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -219,7 +221,11 @@ export class CrudgroupeComponent {
     this.selectedDevices = []
   }
 
-  exporter(type) { }
+  
+  exporter(type) {
+    type == 1 ? this.exportingPdfTool.exportPdf_GroupeVehicules(this.data, "Rapport de Groupes des Vehicules " ) :
+      this.exportingExcelTool.Export_GroupVehicules(this.data, "Rapport de Groupes des Vehicules ")
+}
 
 }
 

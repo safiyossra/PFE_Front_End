@@ -6,6 +6,8 @@ import { VehiculeService } from 'src/app/services/vehicule.service';
 import { util } from 'src/app/tools/utils';
 import { Router } from '@angular/router';
 import { Constant } from 'src/app/tools/constants';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
+import { ExportExcel } from 'src/app/tools/export-excel';
 
 @Component({
   templateUrl: 'crudvehicule.component.html',
@@ -18,7 +20,7 @@ export class CrudvehiculeComponent {
   selectedDevice: Device = new Device();
   errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, public cts: Constant, private tools: util, private router: Router) { }
+  constructor(private dataService: DataService, public cts: Constant, private tools: util, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
 
   data = [];
 
@@ -84,6 +86,7 @@ export class CrudvehiculeComponent {
 
   modifier() {
     var route = this.router
+    this.errorMsg = ""
     if (!this.selectedDevice.description)  {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
@@ -111,7 +114,10 @@ export class CrudvehiculeComponent {
     this.selectedDevice.pushpinID = e.value
   }
 
-  exporter(type) { }
+  exporter(type) {
+    type == 1 ? this.exportingPdfTool.exportPdf_Vehicules(this.data, "Rapport de List de Vehicules " ) :
+      this.exportingExcelTool.Export_Vehicules(this.data, "Rapport de List de Vehicules ")
+}
 }
 
 

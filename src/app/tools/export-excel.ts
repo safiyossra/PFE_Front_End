@@ -10,14 +10,16 @@ export class ExportExcel {
   ExportParking(data: any, title?: string) {
     var dataForExcel: Object[] = [];
     data.forEach((elt: any) => {
-      const tmp = [elt.timeStart, elt.timeEnd, elt.addi, elt.da];
+      const tmp = [elt.timeStart, elt.timeEnd, elt.addi, elt.da, elt.odo, elt.ft];
       dataForExcel.push(tmp);
     });
     // if (vehicule) Title = 'Rapport Parking -[' + vehicule + ']';
     let reportData = {
       title: title,
       data: dataForExcel,
-      headers: ['DEPART', 'ARRIVÉ', 'ADRESSE', 'DURÉE (MIN)'],
+      headers: ['DEPART', 'ARRIVÉ', 'ADRESSE', 'DURÉE (MIN)',
+      'Odomètre',
+      'Fuel',],
     };
     this.exportExcel(reportData);
   }
@@ -37,7 +39,7 @@ export class ExportExcel {
         elt.cd,
         elt.c,
         elt.cm,
-        elt.ct,
+        elt.ct, elt.odo, elt.ft
       ];
       dataForExcel.push(tmp);
     });
@@ -59,6 +61,8 @@ export class ExportExcel {
         'CONSOM (%)',
         'CONSOM (MAD)',
         'CONSOM THÉORIQUE (L)',
+        'Odomètre',
+        'Fuel',
       ],
     };
     this.exportExcel(reportData);
@@ -99,6 +103,169 @@ export class ExportExcel {
     this.exportExcel(reportData);
   }
 
+  ExportCarburant(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.timestamp,
+        elt.deviceID,
+        elt.device,
+        elt.latlng,
+        elt.fuelTotal,
+        elt.fuelstart,
+        elt.fuelLevel,
+        elt.deltaFuelLevel,
+        elt.odometerKM,
+        elt.address,
+      ];
+      dataForExcel.push(tmp);
+    });
+
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+        'DATE/HEURE',
+        'ID',
+        'VEHICULE',
+        'LATITUDE/LONGITUDE',
+        'CARBURANT TOTAL (L)',
+        'CARBURANT AVANT (L)',
+        'CARBURANT APRÈS (L)',
+        'CARBURANT DIFF (L)',
+        'ODOMÈTRE',
+        'ADRESSE',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
+  Export_Synthetique(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [elt.vehic, elt.kp, elt.vm, elt.cl, elt.cp, elt.cm, elt.ct];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+        'VÉHICULE',
+        'KM PARCOURUE',
+        'VITESSE MAXIMALE (KM/H)',
+        'CONSOMMATION (L)',
+        'CONSOMMATION (%)',
+        'CONSOMMATION (MAD)',
+        'CONSOMMATION THÉORIQUE (L)',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
+  ////////////PARAMETRAGE
+  ExportConducteurs(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [elt.cond, elt.phone, elt.desc, elt.nom];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ['CONDUCTEURSID', 'NUMÉRO DE TÉLÉPHONE', 'DESCRIPTION', 'NOM'],
+    };
+    this.exportExcel(reportData);
+  }
+
+  Export_Vehicules(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.dev,
+        elt.vehic,
+        elt.id,
+        elt.odo,
+        elt.ct,
+        elt.dc,
+        elt.tel,
+      ];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+        'DEVICE',
+        'VÉHICULE',
+        'ID UNIQUE',
+        'ODOMÈTRE (KM)',
+        'TOTAL CARBURANT (L)',
+        'DEVICE CODE',
+        'TEL',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
+  Export_Users(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.id,
+        elt.username,
+        elt.role,
+        elt.contact,
+        elt.email,
+        elt.fh,
+        elt.lastlog,
+      ];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+        'IDENTIFIANT',
+        "NOM DE L'UTILISATEUR",
+        'ROLE',
+        'NOM DU CONTACT',
+        'ADRESSE EMAIL',
+        'FUSEAU HORAIRE',
+        'LAST LOGIN',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
+  Export_GroupVehicules(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [elt.id, elt.name, elt.desc, elt.nv];
+
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ['IDENTIFIANT', 'NOM', 'DESCRIPTION', 'NOMBRE DE VÉHICULES'],
+    };
+    this.exportExcel(reportData);
+  }
+  
+  Export_Alerts(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [elt.id, elt.desc, elt.email, elt.cr];
+
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ['IDENTIFIANT', 'DESCRIPTION', 'EMAIL', 'CRON RULE'],
+    };
+    this.exportExcel(reportData);
+  }
 
 
   exportExcel(excelData: { title: any; data: any; headers: any; }) {

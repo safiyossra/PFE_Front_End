@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { util } from '../../../tools/utils'
 import { ZoneService } from 'src/app/services/zone.service';
 import { Constant } from 'src/app/tools/constants';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
+import { ExportExcel } from 'src/app/tools/export-excel';
 
 @Component({
   templateUrl: 'crudnotifs.component.html',
@@ -19,7 +21,7 @@ export class CrudNotifsRulesComponent {
   selectedAlert = new AlertRule();
   errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, public cnst: Constant, private zoneService: ZoneService, private router: Router) { }
+  constructor(private dataService: DataService, private tools: util, public cnst: Constant, private zoneService: ZoneService, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
   crons_rule = [{ name: "Non", val: "0" }, { name: "Oui", val: "1" }, { name: "5 Minutes", val: "5min" },
   { name: "15 Minutes", val: "15min" }, { name: "30 Minute", val: "30min" }, { name: "Hourly", val: "hourly" },
   { name: "Daily", val: "daily" }, { name: "Weekly", val: "weekly" },]
@@ -401,5 +403,9 @@ export class CrudNotifsRulesComponent {
     this.selectedAlert.v = this.selectedVs
   }
 
-  exporter(type) { }
+ 
+  exporter(type) {
+    type == 1 ? this.exportingPdfTool.exportPdf_Alerts(this.data, "Rapport de Notifications Rules " ) :
+      this.exportingExcelTool.Export_Alerts(this.data, "Rapport de Notifications Rules ")
+}
 }
