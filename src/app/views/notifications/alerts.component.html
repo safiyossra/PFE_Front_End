@@ -67,11 +67,21 @@
         <tab style="min-height: 600px" (selectTab)="selectTab(0)" [active]="selectedTab==0">
           <ng-template tabHeading><i class="icon-calculator"></i> Alerte &nbsp;</ng-template>
           <div class="row">
+            <div class="col-lg-12">
+              <mat-progress-bar mode="indeterminate" *ngIf="loading" class="bg-primary"></mat-progress-bar>
+              <my-notification-table [data]="data">
+                </my-notification-table>
+            </div>
           </div>
         </tab>
         <tab style="min-height: 600px" (selectTab)="selectTab(1)" [active]="selectedTab==1">
           <ng-template tabHeading><i class="icon-calculator"></i> Alerte Maintenance &nbsp;</ng-template>
           <div class="row">
+            <div class="col-lg-12">
+              <mat-progress-bar mode="indeterminate" *ngIf="loading" class="bg-primary"></mat-progress-bar>
+              <my-notification-table [data]="data">
+                </my-notification-table>
+            </div>
           </div>
         </tab>
       </tabset>
@@ -80,11 +90,5 @@
     <!--/.col-->
   </div>
 
-  <div class="row">
-    <div class="col-lg-12">
-      <mat-progress-bar mode="indeterminate" *ngIf="loading" class="bg-primary"></mat-progress-bar>
-      <my-notification-table [data]="data">
-        </my-notification-table>
-    </div>
-  </div>
+
 </div>

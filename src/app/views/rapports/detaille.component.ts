@@ -55,21 +55,23 @@ export class DetailleComponent implements AfterViewInit {
   columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
 
   dColumnsRealCarburant: any = [
-    "Carburant consommation (L)",
-    "Pose carburat (L)",
-    "Difference",
-    "Odometre Consommation",
-    "Odometre GPS",
-    "Date"
+    "date",
+    "Pose Carburant gps (L)",
+    "Pose carburat réel (L)",
+    "Difference (L)",
+    "Difference (%)",
+    "Odometre GPS (KM)",
+    "Odometre réel (KM)",
   ]
 
   columnsRealCarburant: any = [
-    "carburantConsom",
+    "date",
     "carburantPose",
+    "carburantConsom",
     "difference",
-    "odometreConsom",
+    "diffPercentage",
     "odometrePose",
-    "date"
+    "odometreConsom",
   ];
 
   resume = [];
@@ -367,8 +369,7 @@ export class DetailleComponent implements AfterViewInit {
         });
 
         this.reportDataConsommation = d;
-        console.log("Consommations");
-        console.log(this.reportDataConsommation);
+        console.log("Consommations", this.reportDataConsommation);
 
         // concatinate the lists
         let concatLists = this.reportDataConsommation.concat(this.reportDataCarburant);
@@ -378,8 +379,7 @@ export class DetailleComponent implements AfterViewInit {
           return a - b;
         });
 
-        // console.log("Concatination of consommation and pose carburant");
-        // console.log(concatLists);
+        console.log("Concatination of consommation and pose carburant", concatLists);
 
         const fromDb = undefined;
         var data = fromDb || {};
@@ -402,20 +402,33 @@ export class DetailleComponent implements AfterViewInit {
           if (data.hasOwnProperty(date)) {
             data[date]!.carburantConsom! += (element.qte ?? 0);
             data[date]!.carburantPose! += (((element.fuelLevel ?? 0) - (element.fuelstart ?? 0)) ?? 0);
-            data[date]!.difference! += ((data[date]!.carburantPose ?? 0) - (data[date]!.carburantConsom ?? 0));
             data[date]!.odometreConsom! += (element.kmEncours ?? 0);
             data[date]!.odometrePose! += (element.odometerKM ?? 0);
             data[date]!.date = date;
 
-            let index = (data_ as any[]).indexOf((data_ as any[]).find(e => e.date == date));
+            if (data[date]!.carburantPose == 0) {
+              data[date]!.difference += element.qte;
+              data[date]!.diffPercentage = 100;
+            }
+            else if (data[date]!.carburantConsom == 0) {
+              data[date]!.difference += ((element.fuelLevel ?? 0) - (element.fuelstart ?? 0));
+              data[date]!.diffPercentage = 100;
+            }
+            else {
+              let diff = Math.abs(data[date]!.carburantConsom - data[date]!.carburantPose);
 
+              data[date]!.difference! = diff;
+
+              data[date]!.diffPercentage = (diff / data[date]!.carburantPose * 100).toFixed(2);
+            }
+
+            // push to final list
+            let index = (data_ as any[]).indexOf((data_ as any[]).find(e => e.date == date));
             if (index == -1)
               data_.push(data[date]);
             else
               data_[index!] = data[date];
           }
-
-
         });
 
         console.log("Analysis result", data_);
