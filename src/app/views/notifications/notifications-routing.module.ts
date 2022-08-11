@@ -15,7 +15,7 @@ const routes: Routes = [
         redirectTo: 'alerts'
       },
       {
-        path: 'alerts/:tab',
+        path: 'alerts',
         component: AlertsComponent,
         data: {
           title: 'Alerts'

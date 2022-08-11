@@ -28,7 +28,7 @@ export class AlertsComponent {
   errorMessageDevice = "";
 
   selectedTab = 0;
-
+  subActivateRoute:any
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
   ngOnInit() {
@@ -77,7 +77,14 @@ export class AlertsComponent {
     };
 
     // listen to route chages and set tab
-    this.activateRoute.params.subscribe((params) => this.selectTab(parseInt(params['tab'])));
+    // this.activateRoute.params.subscribe((params) => this.selectTab(parseInt(params['tab'])??0));
+    this.subActivateRoute = this.activateRoute.queryParams.subscribe(params => {
+      // Defaults to 0 if no query param provided.
+      // this.vehiculeID = params['id'] ;
+      console.log(parseInt(params['tab']));
+
+      this.selectTab(parseInt(params['tab']!=undefined?params['tab']:0))
+    });
 
     this.getDev();
     setTimeout(() => this.submit(), 100)
