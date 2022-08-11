@@ -1,3 +1,4 @@
+import { RouterModule } from '@angular/router';
 // Angular
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -25,7 +26,8 @@ import { DropdownExportModule } from './../../components/dropdown-export/dropdow
     MyDropdownModule,
     ModalModule.forRoot(),
     CollapseModule.forRoot(),
-    DropdownExportModule
+    DropdownExportModule,
+    RouterModule
   ],
   declarations: [
     CrudvehiculeComponent,
