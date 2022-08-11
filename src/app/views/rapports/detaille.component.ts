@@ -62,13 +62,14 @@ export class DetailleComponent implements AfterViewInit {
     "Odometre GPS",
     "Date"
   ]
+
   columnsRealCarburant: any = [
-    "Carburant consommation (L)",
-    "Pose carburat (L)",
-    "Difference",
-    "Odometre Consommation",
-    "Odometre GPS",
-    "Date GPS"
+    "carburantConsom",
+    "carburantPose",
+    "difference",
+    "odometreConsom",
+    "odometrePose",
+    "date"
   ];
 
   resume = [];
@@ -361,9 +362,8 @@ export class DetailleComponent implements AfterViewInit {
   getConsommationAnalysis(urlParams) {
     this.dataService.getConsommation(urlParams + "&analysis=true").subscribe({
       next: (d: any[]) => {
-        // if (d.length > 0)
         d.forEach(element => {
-          element.ts = element.dateFill
+          element.ts = element.dateFill;
         });
 
         this.reportDataConsommation = d;
@@ -376,22 +376,14 @@ export class DetailleComponent implements AfterViewInit {
         // sort by timestamp
         (concatLists as any[]).sort(function (a, b) {
           return a - b;
-        })
+        });
 
-        console.log("Concatination of consommation and pose carburant");
-        console.log(concatLists);
-
-        // get minimum and maximum dates
-        let dateMax = concatLists[0].ts;
-        let dateMin = concatLists[(concatLists as any[]).length - 1].ts;
-
-        console.log("date min: ", dateMin, " |    date max: ", dateMax);
-
-        // console.log("Dates");
-        // this.generateAnalysisData(dateMin, dateMax);
+        // console.log("Concatination of consommation and pose carburant");
+        // console.log(concatLists);
 
         const fromDb = undefined;
         var data = fromDb || {};
+        var data_ = [];
 
         (concatLists as any[]).forEach(element => {
           let date = this.tools.formatDateForInput(new Date(element.ts * 1000));
@@ -399,34 +391,28 @@ export class DetailleComponent implements AfterViewInit {
             data[`${date}`] = {
               "carburantConsom": 0,
               "carburantPose": 0,
+              "difference":0,
               "odometreConsom": 0,
               "odometrePose": 0
             };
         });
 
-        console.log(data);
-
         (concatLists as any[]).forEach(element => {
           let date = this.tools.formatDateForInput(new Date(element.ts * 1000));
-          if (!data.hasOwnProperty(date))
-            data[`${date}`] = {
-              "carburantConsom": 0,
-              "carburantPose": 0,
-              "odometreConsom": 0,
-              "odometrePose": 0
-            };
-
-          else {
-            console.log(date);
-
             data[date]!.carburantConsom! += (element.qte ?? 0);
-            data[date]!.carburantPose! += ((element.fuelLevel - element.fuelstart) ?? 0);
+            data[date]!.carburantPose! += (((element.fuelLevel??0) - (element.fuelstart??0)) ?? 0);
+            data[date]!.difference! += ((data[date]!.carburantPose ?? 0) - (data[date]!.carburantConsom ?? 0));
             data[date]!.odometreConsom! += (element.kmEncours ?? 0);
             data[date]!.odometrePose! += (element.odometerKM ?? 0);
-          }
+
+            data[date]!.date = date;
+
+            data_.push({ ...data[date] })
         });
 
-        console.log(data);
+        console.log("Analysis result");
+        console.log(data_);
+        this.reportDataConsommation = data_;
       }
     });
   }
@@ -518,8 +504,10 @@ export class DetailleComponent implements AfterViewInit {
             e.fuelstart = this.round2d(e.fuelstart * capacity)
           })
           this.reportDataCarburant = d
-
           console.log(this.reportDataCarburant);
+
+          //Consommation
+          this.getConsommationAnalysis(urlParams);
         }, error(err) {
           if (err.status == 401) {
             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -527,8 +515,6 @@ export class DetailleComponent implements AfterViewInit {
         }
       })
 
-      //Consommation
-      this.getConsommationAnalysis(urlParams);
     }
   };
 
