@@ -20,12 +20,23 @@ export class CrudvehiculeComponent {
   selectedDevice: Device = new Device();
   errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, public cts: Constant, private tools: util, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
+  constructor(private dataService: DataService, public cts: Constant, private tools: util, private router: Router, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
 
   data = [];
 
   ngOnInit() {
     this.loadData();
+    // this.testCheck();
+  }
+
+  testCheck() {
+    this.dataService.getConsommation("?check=true").subscribe(
+      {
+        next:(res: any) => {
+          console.log(res);
+        }
+      }
+    );
   }
 
   //////////////////////
@@ -87,7 +98,7 @@ export class CrudvehiculeComponent {
   modifier() {
     var route = this.router
     this.errorMsg = ""
-    if (!this.selectedDevice.description)  {
+    if (!this.selectedDevice.description) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.selectedDevice.fuelEconomy = this.selectedDevice.fuelEconomy > 0 ? Math.round(100 / this.selectedDevice.fuelEconomy) : 0;
@@ -95,7 +106,7 @@ export class CrudvehiculeComponent {
         next: (res) => {
           this.loadData()
           this.primaryModal.hide()
-        } , error(err) {
+        }, error(err) {
           this.modalLoading = false;
           if (err.status == 401) {
             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -105,7 +116,7 @@ export class CrudvehiculeComponent {
           }
         }
       })
-      
+
     }
   }
 
@@ -115,9 +126,9 @@ export class CrudvehiculeComponent {
   }
 
   exporter(type) {
-    type == 1 ? this.exportingPdfTool.exportPdf_Vehicules(this.data, "Rapport de List de Vehicules " ) :
+    type == 1 ? this.exportingPdfTool.exportPdf_Vehicules(this.data, "Rapport de List de Vehicules ") :
       this.exportingExcelTool.Export_Vehicules(this.data, "Rapport de List de Vehicules ")
-}
+  }
 }
 
 

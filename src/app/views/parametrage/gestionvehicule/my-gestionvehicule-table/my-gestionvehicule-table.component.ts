@@ -45,7 +45,7 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
   modif(ev) {
     this.modify.emit(ev)
   }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
       let d = changes['data'].currentValue
