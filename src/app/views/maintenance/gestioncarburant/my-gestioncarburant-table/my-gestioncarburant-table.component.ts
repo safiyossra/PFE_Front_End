@@ -23,7 +23,7 @@ export class MyGestioncarburantTableComponent implements OnChanges {
     'numCarte',
     'numBon',
     'qte',
-    'pleinOn',
+    'pleinOnStr',
     'montant',
     'montantTTC',
     'kmPrecedent',

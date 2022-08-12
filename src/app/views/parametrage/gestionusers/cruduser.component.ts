@@ -1,3 +1,4 @@
+import { catchError } from 'rxjs/operators';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -7,6 +8,7 @@ import { util } from 'src/app/tools/utils';
 import { Constant } from 'src/app/tools/constants';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 import { ExportExcel } from 'src/app/tools/export-excel';
+import { throwError } from 'rxjs';
 
 @Component({
   templateUrl: 'cruduser.component.html',
@@ -138,25 +140,47 @@ export class CruduserComponent {
           if (this.selectedUser.notifyEmail && !this.tools.ValidateEmail(this.selectedUser.notifyEmail)) this.errorMsg = "Vous avez saisi un email de notification invalid."
           else if (this.selectedUser.contactEmail && !this.tools.ValidateEmail(this.selectedUser.contactEmail)) this.errorMsg = "Vous avez saisi un email de contact invalid."
           else {
-            this.dataService.addUsers(this.selectedUser).subscribe({
+            this.errorMsg = "";
+
+            this.dataService.addUsers(this.selectedUser)
+            .pipe(
+              catchError(err => {
+                this.modalLoading = false;
+                if (err.status == 401) {
+                  route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+                }
+
+                else if (err.status == 400) {
+                  console.log(err);
+                  this.errorMsg = "Utilisateur avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
+                  console.log(this.errorMsg);
+                }
+
+                else if (err.status == 402) {
+                  this.errorMsg = "Erreur l'ajout est bloqué."
+                }
+                return throwError(err);
+              })
+            )
+            .subscribe({
               next: (res) => {
                 console.log("add")
                 this.loadData()
                 this.primaryModal.hide()
                 this.errorMsg = ""
               }
-              , error(err) {
-                this.modalLoading = false;
-                if (err.status == 401) {
-                  route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-                }
-                else if (err.status == 402) {
-                  this.errorMsg = "Erreur l'ajout est bloqué."
-                }
-              }
+              // , error(err) {
+              //   this.modalLoading = false;
+              //   if (err.status == 401) {
+              //     route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+              //   }
+              //   else if (err.status == 402) {
+              //     this.errorMsg = "Erreur l'ajout est bloqué."
+              //   }
+              // }
             })
           }
-        } 
+        }
   }
   }
 
@@ -224,7 +248,7 @@ export class CruduserComponent {
     this.primaryModal.show()
   }
 
-  
+
   exporter(type) {
     type == 1 ? this.exportingPdfTool.exportPdf_Users(this.data, "Rapport de List Utilisateurs" ) :
       this.exportingExcelTool.Export_Users(this.data, "Rapport de List Utilisateurs" )

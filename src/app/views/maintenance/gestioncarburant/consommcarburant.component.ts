@@ -338,13 +338,24 @@ export class ConsommcarburantComponent {
 
   loadConsomToModify(consom) {
     this.mode = 'Modifier';
+
+    console.log({ v: this.selectedDriverOption });
+
     this.clearModal();
 
     this.consommation = this.getJsonValue(consom);
     this.consommation.dateFillString = consom.dateFill.replace(' ', 'T');
     this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
+
+    console.log({ v: this.selectedDriverOption });
+
+    // dropdown not working
+    // we set it by default to test but the value in dropdown does not change
+    // this.selectedDriverOption = "test";
     this.selectedDriverOption = this.consommation.driverID;
     this.selectedDeviceModalOption = this.consommation.deviceID;
+
+    console.log({ v: this.selectedDriverOption });
 
     // calculate current tva from ttc and ht
     let tva = Math.trunc((this.consommation.montantTTC / this.consommation.montant - 1) * 100);
@@ -372,7 +383,6 @@ export class ConsommcarburantComponent {
 
       console.log(this.consommation);
 
-
       this.dataService.editConsommation(this.consommation)
         .pipe(
           catchError(err => {
@@ -398,16 +408,7 @@ export class ConsommcarburantComponent {
             this.primaryModal.hide();
 
           }
-          // , error(err) {
-          //   this.modalLoading = false;
-          //   if (err.status == 401) {
-          //     route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-          //   }
-          //   else if (err.status == 402) {
-          //     this.errorMsg = "Erreur l'ajout est bloqué."
-          //   }
-          // }
-        })
+        });
     }
   }
 
@@ -474,8 +475,10 @@ export class ConsommcarburantComponent {
 
             this.drivers = drivers;
 
+            console.log(drivers);
+
             this.data.forEach((e) => {
-              e.pleinOn = e.pleinOn == 1 ? 'ON' : 'OFF';
+              e.pleinOnStr = e.pleinOn == 1 ? 'ON' : 'OFF';
 
               e.dateFill = this.tools.formatDateVer(new Date(Number.parseInt(e.dateFill) * 1000));
 
