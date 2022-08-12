@@ -27,7 +27,7 @@ export class DetailleComponent implements AfterViewInit {
   }
   ngAfterViewInit(): void {
     console.log("ngAfterViewInit",this.vehiculeID);
-    
+
     if (this.vehiculeID) {
       this.selectedTab = 3
       this.selectedDevices = this.vehiculeID;
@@ -548,7 +548,7 @@ export class DetailleComponent implements AfterViewInit {
       if (v.length > 1) {
         return v.reduce((p, c) => {
           if (["da", "dc"].includes(e)) {
-            var f = isNaN(p) ? p[e] + c[e] : p + c[e]
+            var f = isNaN(p) ?  this.round2d(p[e]) +  this.round2d(c[e]) :  this.round2d(p) +  this.round2d(c[e])
             return f
           } else
             if (["v"].includes(e)) {
