@@ -47,12 +47,12 @@ export class CrudvehiculeComponent {
     this.dataService.getDeviceData("").subscribe({
       next: (d: any) => {
         let now = Math.round(new Date().getTime() / 1000)
+        console.log(d);
         d.forEach(e => {
-          e.age = e.age > 0 ? (now - e.age) : "jamais"
-          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime) * 1000));
+          e.age = e.age??0 > 0 ? (now - e.age) : "jamais"
+          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime??0) * 1000));
         });
         this.data = d;
-        console.log(d);
         this.loading = false;
       }, error(err) {
         console.log(err);

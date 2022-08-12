@@ -19,7 +19,7 @@ export class MyDataTableComponent implements OnChanges {
   @Input() isTrajet?= 1;
   @Input() tableID?= "myTable";
   @Input() selectedMapDevice: any; //displayColumns,
-  @Input() columnNames?= ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)","Odometre","Feul"]
+  @Input() columnNames?= ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)","Odomètre","Fuel"]
   @Input() columns?=  ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct","odo","ft"];
 
 

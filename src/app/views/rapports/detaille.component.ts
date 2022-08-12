@@ -48,10 +48,10 @@ export class DetailleComponent implements AfterViewInit {
   reportDataCarburant: any;
   reportDataConsommation: any;
   reportDetails: any;
-  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)","Odomètre","Feul"]
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)","Odomètre","Fuel"]
   columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct","odo","ft"];
 
-  displayedColumnsArrets: any = ["Début", "Fin", "Adresse","Durée (min)", "Odomètre","fuel" ]
+  displayedColumnsArrets: any = ["Début", "Fin", "Adresse","Durée (min)", "Odomètre","Fuel" ]
   columnsArrets: any = ["timeStart", "timeEnd", "addi", "da","odo","ft"];
   displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)",  "Odomètre", "Adresse"]
   columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
@@ -481,8 +481,8 @@ export class DetailleComponent implements AfterViewInit {
               })
           });
           var length = resumetmp.length - 1;
-          resumetmp[length].val = this.reportDataTrajet[this.reportDataTrajet.length - 1].ft ?? "0";
-          resumetmp[length-1].val = this.reportDataTrajet[this.reportDataTrajet.length - 1].odo ?? "0";
+          resumetmp[length].val = this.reportDataTrajet[this.reportDataTrajet.length - 1]?.ft ?? "0";
+          resumetmp[length-1].val = this.reportDataTrajet[this.reportDataTrajet.length - 1]?.odo ?? "0";
           resumetmp[length-2].val = extra.fe != 0 ? (resumetmp[0].val / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
           resumetmp[length - 3].val = this.round2d(resumetmp[length - 5].val * extra.fc);
           resumetmp[length - 4].val = (100 * (resumetmp[length - 5].val / (resumetmp[0].val != 0 ? resumetmp[0].val : 1))).toFixed(1);

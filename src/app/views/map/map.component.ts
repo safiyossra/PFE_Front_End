@@ -344,7 +344,9 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
         iconName = zone.iconName
       }
       var icon = L.icon({
-        iconUrl: 'assets/img/POI/' + iconName + '.png'
+        iconUrl: 'assets/img/POI/' + iconName + '.png',
+        iconSize:[40, 50],
+        iconAnchor: [20, 50]
       });
       layer = L.marker(new L.LatLng(zone.latitude1, zone.longitude1), { icon: icon })
     }

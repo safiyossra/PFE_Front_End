@@ -258,12 +258,14 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   }
 
   addDrawToMap() {
-    this.hideDrawControls(this.map)
-    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png' });
+    var map = this.map
+    this.hideDrawControls(map)
+    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png' ,
+    iconSize:[40, 50],
+    iconAnchor: [20, 50]});
     this.map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
     this.map.pm.setLang('fr');
-    var map = this.map
-    this.map.on('pm:create', (e: any) => {
+    map.on('pm:create', (e: any) => {
       var res: any;
       this.layer = e.layer;
       res = this.getShape(map, undefined, undefined)
@@ -280,7 +282,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     map.on('pm:remove', (e: any) => {
       this.showInitialDrawControls(map)
       this.updateZoneForm(null)
-      this.getZoneFromShape({ shape: null, coord: [], radius: 5, })
+      this.getZoneFromShape({ shape: null, coord: [], radius: 30, })
     });
     this.map.on('pm:drawstart', (e: any) => {
       var count = 10;
@@ -301,13 +303,13 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       res = {
         shape: ZoneType.Marker,
         coord: [shapeInfo._latlng],
-        radius: 5,
+        radius: 30,
       };
     } else if (shape.toString() == 'Polygon' || shape.toString() == 'Rectangle') {
       res = {
         shape: ZoneType.Polygon,
         coord: shapeInfo._latlngs[0],
-        radius: 5,
+        radius: 30,
       };
     } else if (shape.toString() == 'Circle') {
       res = {
@@ -330,9 +332,11 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       this.map.fitBounds(this.layer.getBounds())
     } else {
       var icon = L.icon({
-        iconUrl: 'assets/img/POI/' + iconString + '.png'
+        iconUrl: 'assets/img/POI/' + iconString + '.png',
+        iconSize:[40, 50],
+        iconAnchor: [20, 50]
       });
-      this.layer = L.marker(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), { icon: icon })
+      this.layer = L.marker(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), { icon: icon })//
       this.map.setView(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), 15)
     }
     this.layer.addTo(this.map)
@@ -361,20 +365,19 @@ export class ZoneComponent implements OnInit, AfterViewInit {
 
   getShapeFromZone(zone: Zone) {
     var res: any;
-
     console.log("zone.latLngs", zone.latLngs)
     var shape = zone.zoneType;
     if (shape == ZoneType.Marker) {
       res = {
         shape: shape,
         coord: [[zone.latitude1, zone.longitude1]],
-        radius: 5,
+        radius: 30,
       };
     } else if (shape == ZoneType.Polygon) {
       res = {
         shape: shape,
         coord: zone.latLngs,
-        radius: 5,
+        radius: 30,
       };
     } else if (shape == ZoneType.Circle) {
       res = {
@@ -413,9 +416,11 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       drawCircle: false,
       editControls: true,
     });
-    map.pm.enableGlobalEditMode();
-    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png' });
+    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png' ,
+    iconSize:[40, 50],
+    iconAnchor: [20, 50]});
     map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
+    map.pm.enableGlobalEditMode();
   }
 
   showInitialDrawControls(map: any) {
@@ -432,7 +437,9 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       editControls: true,
     });
     map.pm.enableGlobalEditMode();
-    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png' });
+    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png',
+    iconSize:[40, 50],
+    iconAnchor: [20, 50] });
     map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
   }
 
@@ -526,7 +533,9 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   onIconChange(e) {
     console.log(e, this.selectedZone);
     var icon = L.icon({
-      iconUrl: 'assets/img/POI/' + e.value + '.png'
+      iconUrl: 'assets/img/POI/' + e.value + '.png',
+      iconSize:[40, 50],
+      iconAnchor: [20, 50]
     });
     this.layer.setIcon(icon)
   }
