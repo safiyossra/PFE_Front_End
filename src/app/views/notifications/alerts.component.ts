@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { util } from 'src/app/tools/utils';
@@ -14,7 +14,7 @@ export class AlertsComponent {
 
   loading: boolean = false;
 
-  constructor(private dataService: DataService, private activateRoute:ActivatedRoute,private tools: util, private exportingTool: ExportingTool, private router: Router) { }
+  constructor(private dataService: DataService, private activateRoute: ActivatedRoute, private tools: util, private exportingTool: ExportingTool, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -28,7 +28,7 @@ export class AlertsComponent {
   errorMessageDevice = "";
 
   selectedTab = 0;
-  subActivateRoute:any
+  subActivateRoute: any
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
   ngOnInit() {
@@ -77,7 +77,7 @@ export class AlertsComponent {
     };
 
     this.subActivateRoute = this.activateRoute.queryParams.subscribe(params => {
-      this.selectTab(parseInt(params['tab']!=undefined?params['tab']:0))
+      this.selectedTab = (params['tab'] != undefined) ? parseInt(params['tab']) : 0;
     });
 
     this.getDev();
@@ -108,20 +108,20 @@ export class AlertsComponent {
 
     var route = this.router
     this.dataService.getNotifications(urlNotif).subscribe({
-        next: (d: any) => {
+      next: (d: any) => {
         // console.log("data");
         //   console.log(d);
         d.forEach((e) => {
           e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
-          })
+        })
         this.data = d;
-          this.loading = false;
+        this.loading = false;
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
         }
       }
-      })
+    })
 
   };
 
@@ -140,7 +140,7 @@ export class AlertsComponent {
   }
 
   selectTab(i) {
-    this.selectedTab = i
+    this.router.navigateByUrl("/notifications/alerts?tab=" + i);
   }
 
   reset() {

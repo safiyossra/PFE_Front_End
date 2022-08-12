@@ -26,7 +26,7 @@ export class CrudvehiculeComponent {
 
   ngOnInit() {
     this.loadData();
-    // this.testCheck();
+    this.testCheck();
   }
 
   testCheck() {
