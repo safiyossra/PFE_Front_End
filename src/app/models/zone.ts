@@ -38,7 +38,7 @@ export class Zone {
         this.isActive = 1
         this.reverseGeocode = 1
         this.zoneType = null
-        this.radius = 5
+        this.radius = 30
         this.iconName = null
         this.latitude1 = null
         this.latitude2 = null
