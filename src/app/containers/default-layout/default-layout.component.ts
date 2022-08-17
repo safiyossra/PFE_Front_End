@@ -10,8 +10,8 @@ import { navItems } from '../../_nav';
 export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
   public sidebarMinimized = true;
   public navItems = navItems;
-  notifs = { v: 0, z: 0, d: 0, f: 0, other: 0, total: 0 }
-  notifregx = { v: /\$Speeding/i, z1: /InZone/i, z2: /\$DEPART/i, z3: /\$Arrive/i, f: /\$FuelDelta()/i }
+  notifs = { v: 0, z: 0, d: 0, f: 0, other: 0, total: 0, maintenance: 0 }
+  notifregx = { v: /\$Speeding/i, z1: /InZone/i, z2: /\$DEPART/i, z3: /\$Arrive/i, f: /\$FuelDelta()/i, d: /demarrage/i }
   username: String
   compte: String
 
@@ -43,33 +43,42 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
 
   loadGroupedUnseenNotifs() {
     var route = this.route
+
     this.dataService.getGroupedUnseenNotifs().subscribe({
       next: (res: any) => {
-        var notifsTmp = { v: 0, z: 0, d: 0, f: 0, other: 0, total: 0 }
-        if (res && res.length) {
-          var tmp = res.map((v: any) => { return v.selector }).join("&&")
-          var tab = tmp.split(/[&&||]+/)
-          tab.forEach(e => {
-            if (this.notifregx.v.test(e)) {
-              notifsTmp.v++
-            }
-            if (this.notifregx.z1.test(e)) {
-              notifsTmp.z++
-            }
-            if (this.notifregx.z2.test(e)) {
-              notifsTmp.z++
-            }
-            if (this.notifregx.z3.test(e)) {
-              notifsTmp.z++
-            }
-            if (this.notifregx.f.test(e)) {
-              notifsTmp.f++
-            }
-          });
-          notifsTmp.other = tab.length - (notifsTmp.v + notifsTmp.z + notifsTmp.f)
-          notifsTmp.total = tab.length
+        var notifsTmp = { v: 0, z: 0, d: 0, f: 0, other: 0, total: 0, maintenance: 0 }
+
+        if (res) {
+          notifsTmp.maintenance = res.maintenanceCount;
+
+          if (res.alerts && res.alerts.length) {
+            var tmp = res.alers.map((v: any) => { return v.selector }).join("&&")
+            var tab = tmp.split(/[&&||]+/)
+
+            tab.forEach(e => {
+              if (this.notifregx.v.test(e)) {
+                notifsTmp.v++
+              }
+              if (this.notifregx.z1.test(e)) {
+                notifsTmp.z++
+              }
+              if (this.notifregx.z2.test(e)) {
+                notifsTmp.z++
+              }
+              if (this.notifregx.z3.test(e)) {
+                notifsTmp.z++
+              }
+              if (this.notifregx.f.test(e)) {
+                notifsTmp.f++
+              }
+            });
+            notifsTmp.other = tab.length - (notifsTmp.v + notifsTmp.z + notifsTmp.f)
+            notifsTmp.total = tab.length + notifsTmp.maintenance;
+          }
+
+          notifsTmp.total += notifsTmp.maintenance;
+          this.notifs = notifsTmp;
         }
-        this.notifs = notifsTmp
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });

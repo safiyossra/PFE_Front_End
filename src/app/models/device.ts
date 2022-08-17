@@ -16,9 +16,13 @@ export class Device {
     fuelCapacity: any
     fuelCapacity2: any
     lastOdometerKM: any
+    registrationExpire:any
+    insuranceExpire:any
+    registrationExpireString:any
+    insuranceExpireString:any
 
     constructor(isActive?, deviceID?, creationTime?, uniqueID?, description?, vehicleID?, vehicleMake?, vehicleModel?, serialNumber?,
-        simPhoneNumber?, speedLimitKPH?, fuelEconomy?, fuelCostPerLiter?, fuelCapacity?, fuelCapacity2?, lastOdometerKM?, pushpinID?) {
+        simPhoneNumber?, speedLimitKPH?, fuelEconomy?, fuelCostPerLiter?, fuelCapacity?, fuelCapacity2?, lastOdometerKM?, pushpinID?, registrationExpire?, insuranceExpire?) {
         this.deviceID = deviceID ?? ''
         this.isActive = isActive ?? 0
         this.creationTime = creationTime ?? ''
@@ -36,5 +40,7 @@ export class Device {
         this.fuelCapacity = fuelCapacity ?? 0
         this.fuelCapacity2 = fuelCapacity2 ?? 0
         this.lastOdometerKM = lastOdometerKM ?? 0
-    }
+        this.registrationExpire = registrationExpire ?? 0
+        this.insuranceExpire = insuranceExpire ?? 0
+      }
 }

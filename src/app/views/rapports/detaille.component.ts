@@ -341,26 +341,6 @@ export class DetailleComponent implements AfterViewInit {
     this.errorMessageDevice = "";
   }
 
-  // generateAnalysisData(dateStart, dateEnd) {
-  //   const date = new Date(dateStart * 1000);
-
-
-  //   // const dates = [];
-  //   const fromDb = undefined;
-  //   var data = fromDb || {};;
-
-  //   while (date <= new Date(dateEnd * 1000)) {
-  //     data[`${this.tools.formatDateForInput(date)}`] = {
-  //       "carburantConsom": 0,
-  //       "carburantPose": 0,
-  //       "odometreConsom": 0,
-  //       "odometrePose": 0
-  //     };
-
-  //     date.setDate(date.getDate() + 1);
-  //   }
-  //   console.log(data);
-  // }
 
   getConsommationAnalysis(urlParams) {
     this.dataService.getConsommation(urlParams + "&analysis=true").subscribe({

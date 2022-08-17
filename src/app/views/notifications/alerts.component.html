@@ -64,12 +64,22 @@
       <div class="card-header-actions">
       </div>
       <tabset>
+        <tab style="min-height: 600px" (selectTab)="setTab(6)" [active]="selectedTab==6">
+          <ng-template tabHeading><i class="fa fa-bell"></i> Alertes &nbsp;</ng-template>
+          <div class="row">
+            <div class="col-lg-12">
+              <mat-progress-bar mode="indeterminate" *ngIf="loading" class="bg-primary"></mat-progress-bar>
+              <my-notification-table [data]="data">
+                </my-notification-table>
+            </div>
+          </div>
+        </tab>
         <tab style="min-height: 600px" (selectTab)="selectTab(0)" [active]="selectedTab==0">
           <ng-template tabHeading><i class="fa fa-tachometer"></i> Vitesse &nbsp;</ng-template>
           <div class="row">
             <div class="col-lg-12">
               <mat-progress-bar mode="indeterminate" *ngIf="loading" class="bg-primary"></mat-progress-bar>
-              <my-notification-table [data]="data">
+              <my-notification-table [data]="vitessData">
                 </my-notification-table>
             </div>
           </div>
@@ -79,7 +89,7 @@
           <div class="row">
             <div class="col-lg-12">
               <mat-progress-bar mode="indeterminate" *ngIf="loading" class="bg-primary"></mat-progress-bar>
-              <my-notification-table [data]="[]">
+              <my-notification-table [data]="maintenanceData">
                 </my-notification-table>
             </div>
           </div>
@@ -90,7 +100,7 @@
           <div class="row">
             <div class="col-lg-12">
               <mat-progress-bar mode="indeterminate" *ngIf="loading" class="bg-primary"></mat-progress-bar>
-              <my-notification-table [data]="data">
+              <my-notification-table [data]="zoneData">
                 </my-notification-table>
             </div>
           </div>
@@ -101,7 +111,7 @@
           <div class="row">
             <div class="col-lg-12">
               <mat-progress-bar mode="indeterminate" *ngIf="loading" class="bg-primary"></mat-progress-bar>
-              <my-notification-table [data]="[]">
+              <my-notification-table [data]="demarrageData">
                 </my-notification-table>
             </div>
           </div>
@@ -111,7 +121,7 @@
           <div class="row">
             <div class="col-lg-12">
               <mat-progress-bar mode="indeterminate" *ngIf="loading" class="bg-primary"></mat-progress-bar>
-              <my-notification-table [data]="[]">
+              <my-notification-table [data]="autreData">
                 </my-notification-table>
             </div>
           </div>
