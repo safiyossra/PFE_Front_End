@@ -1,8 +1,7 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Device } from '../../../models/device';
-import { VehiculeService } from 'src/app/services/vehicule.service';
 import { util } from 'src/app/tools/utils';
 import { Router } from '@angular/router';
 import { Constant } from 'src/app/tools/constants';
@@ -32,7 +31,7 @@ export class CrudvehiculeComponent {
   testCheck() {
     this.dataService.getConsommation("?check=true").subscribe(
       {
-        next:(res: any) => {
+        next: (res: any) => {
           console.log(res);
         }
       }
@@ -49,8 +48,12 @@ export class CrudvehiculeComponent {
         let now = Math.round(new Date().getTime() / 1000)
         console.log(d);
         d.forEach(e => {
-          e.age = e.age??0 > 0 ? (now - e.age) : "jamais"
-          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime??0) * 1000));
+          e.age = e.age ?? 0 > 0 ? (now - e.age) : "jamais"
+          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime ?? 0) * 1000));
+          e.registrationExpireString != 0 ? e.registrationExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.registrationExpire) * 1000)) : '';
+          e.insuranceExpireString != 0 ? e.insuranceExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.insuranceExpire) * 1000)) : '';
+
+          // console.log(e.insuranceExpireString);
         });
         this.data = d;
         this.loading = false;
@@ -68,6 +71,8 @@ export class CrudvehiculeComponent {
     console.log(ev);
     this.selectedDevice = new Device();
     if (ev) {
+      console.log(ev);
+
       var url = "?d=" + ev
       this.modalLoading = true;
       this.primaryModal.show()
@@ -93,6 +98,23 @@ export class CrudvehiculeComponent {
         }
       })
     }
+  }
+
+  dateToTimeStamp(date) {
+    return Date.parse(date) / 1000 as number;
+  }
+
+  setExpDates() {
+    console.log(this.selectedDevice.insuranceExpireString);
+    console.log(this.selectedDevice.registrationExpireString);
+
+    this.selectedDevice.registrationExpire = this.dateToTimeStamp(new Date(this.selectedDevice.registrationExpireString));
+    this.selectedDevice.insuranceExpire = this.dateToTimeStamp(new Date(this.selectedDevice.insuranceExpireString));
+
+    console.log(this.selectedDevice.insuranceExpireString);
+    console.log(this.selectedDevice.registrationExpireString);
+    // console.log(this.selectedDevice.insuranceExpire);
+    // console.log(this.selectedDevice.registrationExpire);
   }
 
   modifier() {

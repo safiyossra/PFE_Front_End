@@ -173,6 +173,25 @@
                             </div>
                             <label class="col-form-label" for="text-input">Km</label>
                             </div>
+
+                            <div class="form-group row">
+                              <label class="col-md-4 col-form-label" for="text-input">Registration Date</label>
+                              <div class="col-7">
+                            <input type="date" (ngModelChange)="setExpDates()" [(ngModel)]="selectedDevice.registrationExpireString" [ngModelOptions]="{standalone: true}"
+                              class="form-control" placeholder="0,00">
+                            </div>
+                            <label class="col-form-label" for="text-input">Km</label>
+                            </div>
+
+                            <div class="form-group row">
+                              <label class="col-md-4 col-form-label" for="text-input">Insurance Date</label>
+                              <div class="col-7">
+                            <input type="date" (ngModelChange)="setExpDates()" [(ngModel)]="selectedDevice.insuranceExpireString" [ngModelOptions]="{standalone: true}"
+                              class="form-control" placeholder="0,00">
+                            </div>
+                            <label class="col-form-label" for="text-input">Km</label>
+                            </div>
+
                             </div>
                     </div>
                   </div>
