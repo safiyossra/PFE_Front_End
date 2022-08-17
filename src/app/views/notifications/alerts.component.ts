@@ -21,6 +21,15 @@ export class AlertsComponent {
   isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-down';
   data: any;
+  maintenanceData: any;
+
+  vitessData = [];
+  zoneData = [];
+  demarrageData = [];
+  autreData = [];
+
+  notifregx = { v: /\$Speeding/i, z1: /InZone/i, z2: /\$DEPART/i, z3: /\$Arrive/i, f: /\$FuelDelta()/i, d: /demarrage/i}
+
   public devices: any = [];
   selectedDevices = [];
   selectedDevice = null;
@@ -101,6 +110,40 @@ export class AlertsComponent {
     this.selectedDevice = selected;
   }
 
+  setData(data: any[]) {
+    if (data && data.length) {
+      let vitessData = [];
+      let zoneData = [];
+      let autreData = [];
+      let demarrageData = [];
+
+      data.forEach(e => {
+        if (this.notifregx.v.test(e.selector)) {
+          vitessData.push(e)
+        }
+        if (this.notifregx.z1.test(e.selector)) {
+          zoneData.push(e)
+        }
+        if (this.notifregx.z2.test(e.selector)) {
+          zoneData.push(e)
+        }
+        if (this.notifregx.z3.test(e.selector)) {
+          zoneData.push(e)
+        }
+        if (this.notifregx.d.test(e.ruleID)) {
+          demarrageData.push(e)
+        }
+        if (!this.notifregx.d.test(e.ruleID) && !this.notifregx.v.test(e.selector) && !this.notifregx.z1.test(e.selector) && !this.notifregx.z2.test(e.selector) && !this.notifregx.z3.test(e.selector)) {
+          autreData.push(e)
+        }
+        this.vitessData = vitessData;
+        this.zoneData = zoneData;
+        this.autreData = autreData;
+        this.demarrageData = demarrageData;
+      });
+    }
+  }
+
   //////////////////////
   submit() {
     this.loading = true;
@@ -120,6 +163,11 @@ export class AlertsComponent {
           e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
         })
         this.data = d;
+        this.setData(d);
+        console.log(this.zoneData);
+        console.log(this.vitessData);
+        console.log(this.demarrageData);
+        console.log(this.autreData);
         this.loading = false;
       }, error(err) {
         if (err.status == 401) {
@@ -128,6 +176,21 @@ export class AlertsComponent {
       }
     })
 
+    this.dataService.getNotifications(urlNotif+"&maintenance=true").subscribe({
+      next: (d: any) => {
+        // console.log("data");
+        //   console.log(d);
+        d.forEach((e) => {
+          e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
+        })
+        this.maintenanceData = d;
+        this.loading = false;
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    })
   };
 
 

@@ -1,3 +1,4 @@
+import { catchError } from 'rxjs/operators';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../../services/data.service';
@@ -6,6 +7,7 @@ import { Groupevehicules } from '../../../models/groupevehicules';
 import { Router } from '@angular/router';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 import { ExportExcel } from 'src/app/tools/export-excel';
+import { throwError } from 'rxjs';
 
 @Component({
   templateUrl: 'crudgroupe.component.html',
@@ -141,21 +143,33 @@ export class CrudgroupeComponent {
     if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      this.dataService.addDevicesGroup(this.selectedGroupevehicules).subscribe({
+      this.dataService.addDevicesGroup(this.selectedGroupevehicules)
+      .pipe(
+        catchError(err => {
+          console.log("res", err)
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+
+          else if (err.status == 400) {
+            console.log(err);
+            this.errorMsg = "Groupe avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
+            console.log(this.errorMsg);
+          }
+
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+          return throwError(err);
+        })
+      )
+      .subscribe({
         next: (res) => {
           console.log("add")
           this.loadData()
           this.primaryModal.hide()
           this.errorMsg = ""
-        }
-        , error(err) {
-          this.modalLoading = false;
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-          }
-          else if (err.status == 402) {
-            this.errorMsg = "Erreur l'ajout est bloqué."
-          }
         }
       })
     }
@@ -166,20 +180,33 @@ export class CrudgroupeComponent {
     if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      this.dataService.updateDevicesGroup(this.selectedGroupevehicules).subscribe({
+      this.dataService.updateDevicesGroup(this.selectedGroupevehicules)
+      .pipe(
+        catchError(err => {
+          console.log("res", err)
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+
+          else if (err.status == 400) {
+            console.log(err);
+            this.errorMsg = "Groupe avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
+            console.log(this.errorMsg);
+          }
+
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+          return throwError(err);
+        })
+      )
+      .subscribe({
         next: (res) => {
           console.log("edit groupevehivule")
           this.loadData()
           this.primaryModal.hide()
           this.errorMsg = ""
-        }, error(err) {
-          this.modalLoading = false;
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-          }
-          else if (err.status == 402) {
-            this.errorMsg = "Erreur la modification est bloqué."
-          }
         }
       })
     }
@@ -221,7 +248,7 @@ export class CrudgroupeComponent {
     this.selectedDevices = []
   }
 
-  
+
   exporter(type) {
     type == 1 ? this.exportingPdfTool.exportPdf_GroupeVehicules(this.data, "Rapport de Groupes des Vehicules " ) :
       this.exportingExcelTool.Export_GroupVehicules(this.data, "Rapport de Groupes des Vehicules ")

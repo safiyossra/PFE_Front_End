@@ -1,3 +1,4 @@
+import { catchError } from 'rxjs/operators';
 import { Component, ViewChild } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../../services/data.service';
@@ -7,6 +8,7 @@ import { Driver } from '../../../models/driver';
 import { Router } from '@angular/router';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 import { ExportExcel } from 'src/app/tools/export-excel';
+import { throwError } from 'rxjs/internal/observable/throwError';
 
 @Component({
   templateUrl: 'cruddriver.component.html',
@@ -174,22 +176,33 @@ export class CruddriverComponent {
       if (!this.tools.ValidateEmail(this.selectedDriver.contactEmail)) {
         this.errorMsg = "Vous avez saisi un email de contact invalid."
       } else {
-        this.dataService.addDriver(this.selectedDriver).subscribe({
-          next: (res: any) => {
-            console.log("res", res)
-            this.loadData()
-            this.primaryModal.hide()
-            this.errorMsg = ""
-          }
-          , error(err) {
+        this.dataService.addDriver(this.selectedDriver)
+        .pipe(
+          catchError(err => {
             console.log("res", err)
             this.modalLoading = false;
             if (err.status == 401) {
               route.navigate(['login'], { queryParams: { returnUrl: route.url } });
             }
+
+            else if (err.status == 400) {
+              console.log(err);
+              this.errorMsg = "Conducteur avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
+              console.log(this.errorMsg);
+            }
+
             else if (err.status == 402) {
               this.errorMsg = "Erreur l'ajout est bloqué."
             }
+            return throwError(err);
+          })
+        )
+        .subscribe({
+          next: (res: any) => {
+            console.log("res", res)
+            this.loadData()
+            this.primaryModal.hide()
+            this.errorMsg = ""
           }
         })
       }
@@ -206,20 +219,33 @@ export class CruddriverComponent {
       if (!this.tools.ValidateEmail(this.selectedDriver.contactEmail)) {
         this.errorMsg = "Vous avez saisi un email de contact invalid."
       } else {
-      this.dataService.updateDriver(this.selectedDriver).subscribe({
+      this.dataService.updateDriver(this.selectedDriver)
+      .pipe(
+        catchError(err => {
+          console.log("res", err)
+          this.modalLoading = false;
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+
+          else if (err.status == 400) {
+            console.log(err);
+            this.errorMsg = "Conducteur avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
+            console.log(this.errorMsg);
+          }
+
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+          return throwError(err);
+        })
+      )
+      .subscribe({
         next: (res:any) => {
           console.log("res", res)
           this.loadData()
           this.primaryModal.hide()
           this.errorMsg = ""
-        } , error(err) {
-          this.modalLoading = false;
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-          }
-          else if (err.status == 402) {
-            this.errorMsg = "Erreur la modification est bloqué."
-          }
         }
       })
       }
