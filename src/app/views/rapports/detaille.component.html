@@ -65,7 +65,7 @@
       <tabset>
         <tab style="min-height: 600px" (selectTab)="selectTab(0)" [active]="selectedTab==0">
           <ng-template tabHeading><i class="icon-calculator"></i> Resume &nbsp;</ng-template>
-          <div class="row">
+          <div class="row" id="cardResume">
             <div class="col-sm-6 col-lg-3" *ngFor="let el of resume; let index=index">
               <div class="brand-card">
                 <div class="brand-card-header bg-{{resumeColors[index]}}">
@@ -132,7 +132,7 @@
             <i class="icon-pie-chart mr-1"></i> Evolution &nbsp;<i class="fa fa-refresh" (click)="getEvolution(true)"></i>
           </ng-template>
           <mat-progress-bar mode="indeterminate" *ngIf="loadingcharts" class="bg-primary"></mat-progress-bar>
-          <div class="card">
+          <div class="card" id="cardEvolution">
             <div class="card-header">
               Graphes des evolutions <span class="text-danger"> &nbsp;[Seuls les enregistrements des 3 derniers jours au
                 maximum

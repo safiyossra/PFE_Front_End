@@ -361,6 +361,13 @@ export class util {
     }
     return (false)
   }
+
+  ValidatePhone(phone) {
+    if (/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/.test(phone)) {
+      return (true)
+    }
+    return (false)
+  }
   // fonction tranformer
 
 }

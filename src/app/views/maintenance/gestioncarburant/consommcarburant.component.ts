@@ -8,6 +8,8 @@ import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Router } from '@angular/router';
 import { DateAdapter } from '@angular/material/core';
+import { ExportingTool } from 'src/app/tools/exporting_tool';
+import { ExportExcel } from 'src/app/tools/export-excel';
 
 @Component({
   templateUrl: 'consommcarburant.component.html',
@@ -17,7 +19,7 @@ export class ConsommcarburantComponent {
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
-  constructor(private dataService: DataService, private router: Router, private tools: util, private dateAdapter: DateAdapter<Date>) {
+  constructor(private dataService: DataService, private router: Router, private tools: util, private dateAdapter: DateAdapter<Date>,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) {
   }
 
   value: string | Object;
@@ -504,8 +506,10 @@ export class ConsommcarburantComponent {
     })
   }
 
+  
   exporter(type) {
-    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+    type == 1 ? this.exportingPdfTool.exportPdf_Consommation(this.data, "Rapport de Consommation " ) :
+    this.exportingExcelTool.Export_Consommaton(this.data, "Rapport de Consommation ")
   }
 
 }

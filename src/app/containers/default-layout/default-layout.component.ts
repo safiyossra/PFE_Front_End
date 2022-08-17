@@ -77,6 +77,7 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
       }
     })
   }
+  
   ngOnDestroy(): void {
     this.destroy()
   }

@@ -24,8 +24,8 @@ table {
 th.mat-header-cell,
 td.mat-cell,
 td.mat-footer-cell {
-    border: 0 solid #ebebeb;
-    border-width: 0px 0px 0px 1px;
+    border: 1px solid #ebebeb;
+    // border-width: 1px;
     padding: inherit;
     padding-left: 15px;
 }
@@ -33,7 +33,7 @@ td.mat-footer-cell {
 th.mat-header-cell:first-child,
 td.mat-cell:first-child,
 td.mat-footer-cell:first-child {
-    border: 0;
+    border: 1px solid #ebebeb;
 }
 
 .mat-header-row {

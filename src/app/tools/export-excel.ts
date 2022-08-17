@@ -268,6 +268,81 @@ export class ExportExcel {
   }
 
 
+  Export_Consommaton(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.id,
+        elt.driverName,
+        elt.deviceName,
+        elt.fournisseur,
+        elt.numCarte,
+        elt.numBon,
+        elt.qte,
+        elt.pleinOn,
+        elt.montant,
+        elt.montantTTC,
+        elt.kmPrecedent,
+        elt.kmEncours,
+        elt.consoM,
+        elt.dateFill,
+        elt.observation,];
+
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ['ID', 'CHAUFFEUR', 'VEHICULE', 'FOURNISSEUR', 'N CARTE', 'N BON', 'QTE', 'PLEIN', 'MONTANT', 'MONTANT TTC', 'KM PRECEDENT', 'KM ENCOURS', 'CONSOMMATION MOY', 'DATE', 'OBSERVATION'],
+    };
+    this.exportExcel(reportData);
+  }
+
+  Export_Entretien(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.deviceID,
+        elt.operation,
+        elt.typeDeclenchement,
+        elt.value,
+        elt.status,
+        elt.creationTime,
+      ];
+
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ['VÉHICULE', "TYPE D'OPÉRATION", 'DÉCLENCHEMENT', 'VALEUR', 'STATUS', 'DATE DE CRÉATION'],
+    };
+    this.exportExcel(reportData);
+
+  }
+
+  Export_Notification(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.timestamp,
+        elt.description,
+        elt.subject,
+        elt.message
+      ];
+
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ['DATE', "VÉHICULE", 'DESCRIPTION', 'MESSAGE'],
+    };
+    this.exportExcel(reportData);
+
+  }
+
+
   exportExcel(excelData: { title: any; data: any; headers: any; }) {
     const title = excelData.title;
     const header = excelData.headers;

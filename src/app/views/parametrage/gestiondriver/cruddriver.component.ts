@@ -173,6 +173,8 @@ export class CruddriverComponent {
     } else {
       if (!this.tools.ValidateEmail(this.selectedDriver.contactEmail)) {
         this.errorMsg = "Vous avez saisi un email de contact invalid."
+      } else if (!this.tools.ValidatePhone(this.selectedDriver.contactPhone)) {
+        this.errorMsg = "Vous avez saisi un telephone de contact invalid."
       } else {
         this.dataService.addDriver(this.selectedDriver).subscribe({
           next: (res: any) => {
@@ -205,6 +207,8 @@ export class CruddriverComponent {
     } else {
       if (!this.tools.ValidateEmail(this.selectedDriver.contactEmail)) {
         this.errorMsg = "Vous avez saisi un email de contact invalid."
+      } else if (!this.tools.ValidatePhone(this.selectedDriver.contactPhone)) {
+        this.errorMsg = "Vous avez saisi un telephone de contact invalid."
       } else {
       this.dataService.updateDriver(this.selectedDriver).subscribe({
         next: (res:any) => {

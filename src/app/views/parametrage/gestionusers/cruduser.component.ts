@@ -19,14 +19,13 @@ export class CruduserComponent {
   mode = "Ajouter";
   selectedUser: User = new User();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, private router: Router, private cst: Constant,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router, public cst: Constant,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
   data = [];
   errorMsg: string;
   public groups: any = [];
   selectedGroups = "*";
   showErrorGroup = false;
   errorMessageGroup = "";
-  timezone = this.cst.timezone
   getSelectedGroups(selected) {
     this.selectedUser.groups = selected;
     console.log(this.selectedUser);
@@ -38,10 +37,9 @@ export class CruduserComponent {
     this.errorMessageGroup = "This field is required";
   }
 
-  selectedTimezones = [];
-  selectedTimezone = null;
+  selectedTimezones = "GMT+01:00";
   getSelectedTimezones(selected) {
-    this.selectedTimezone = selected;
+    this.selectedUser.timeZone = selected;
   }
 
 
@@ -130,7 +128,7 @@ export class CruduserComponent {
 
   ajouter() {
     var route = this.router
-    if (!this.selectedUser.userID || !this.selectedUser.description || !this.selectedUser.password || !this.selectedUser.contactPhone) {
+    if (!this.selectedUser.userID || !this.selectedUser.description || !this.selectedUser.password ) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     }else {
         if(this.selectedUser.password && this.selectedUser.password.length<6)this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
@@ -147,6 +145,7 @@ export class CruduserComponent {
               }
               , error(err) {
                 this.modalLoading = false;
+                this.errorMsg = "Erreur "+err
                 if (err.status == 401) {
                   route.navigate(['login'], { queryParams: { returnUrl: route.url } });
                 }
@@ -163,7 +162,7 @@ export class CruduserComponent {
   modifier() {
     var route = this.router
     this.errorMsg = ""
-    if (!this.selectedUser.description || !this.selectedUser.contactPhone)  {
+    if (!this.selectedUser.description)  {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       if (this.selectedUser.notifyEmail && !this.tools.ValidateEmail(this.selectedUser.notifyEmail)) this.errorMsg = "Vous avez saisi un email de notification invalid."
@@ -182,6 +181,7 @@ export class CruduserComponent {
         } , error(err) {
           console.log("error", err);
           this.modalLoading = false;
+          this.errorMsg = "Erreur "+err
           if (err.status == 401) {
             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
           }

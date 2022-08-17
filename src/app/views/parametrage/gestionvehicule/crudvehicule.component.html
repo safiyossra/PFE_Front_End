@@ -115,7 +115,7 @@
                           <label class="col-md-4 col-form-label" for="text-input">Série Number</label>
                           <div class="col-8">
                             <input type="number" [(ngModel)]="selectedDevice.serialNumber" [ngModelOptions]="{standalone: true}"
-                              class="form-control" placeholder="0,00">
+                              class="form-control" min="0" placeholder="0,00">
                           </div>
                         </div>
                         <div class="form-group row">
@@ -129,14 +129,14 @@
                           <label class="col-md-4 col-form-label" for="text-input">Maximum Speed</label>
                           <div class="col-7">
                             <input type="number" [(ngModel)]="selectedDevice.speedLimitKPH" [ngModelOptions]="{standalone: true}"
-                              class="form-control" placeholder="0,00">
+                              class="form-control" min="0"  placeholder="0,00">
                             </div>
                             <label class="col-form-label" for="text-input">Km/H</label>
                             </div>
                             <div class="form-group row">
                               <label class="col-md-4 col-form-label" for="text-input">Carburant Economie</label>
                               <div class="col-7">
-                            <input type="number" [(ngModel)]="selectedDevice.fuelEconomy" [ngModelOptions]="{standalone: true}" class="form-control"
+                            <input type="number" min="0"  [(ngModel)]="selectedDevice.fuelEconomy" [ngModelOptions]="{standalone: true}" class="form-control"
                               placeholder="0,00">
                             </div>
                             <label class="col-form-label" for="text-input">mg</label>
@@ -145,14 +145,14 @@
                               <label class="col-md-4 col-form-label" for="text-input">Carburant Cout</label>
                               <div class="col-7">
                             <input type="number" [(ngModel)]="selectedDevice.fuelCostPerLiter" [ngModelOptions]="{standalone: true}"
-                              class="form-control" placeholder="0,00">
+                              class="form-control" min="0"  placeholder="0,00">
                             </div>
                             <label class="col-form-label" for="text-input">MAD/L</label>
                             </div>
                             <div class="form-group row">
                               <label class="col-md-4 col-form-label" for="text-input">Carburant Capacite (#1)</label>
                               <div class="col-7">
-                            <input type="number" [(ngModel)]="selectedDevice.fuelCapacity" [ngModelOptions]="{standalone: true}"
+                            <input type="number" min="0"  [(ngModel)]="selectedDevice.fuelCapacity" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="0,00">
                             </div>
                             <label class="col-form-label" for="text-input">Litre</label>
@@ -160,7 +160,7 @@
                             <div class="form-group row">
                               <label class="col-md-4 col-form-label" for="text-input">Carburant Capacite (#2)</label>
                               <div class="col-7">
-                            <input type="number" [(ngModel)]="selectedDevice.fuelCapacity2" [ngModelOptions]="{standalone: true}"
+                            <input type="number" min="0"  [(ngModel)]="selectedDevice.fuelCapacity2" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="0,00">
                             </div>
                             <label class="col-form-label" for="text-input">Litre</label>
@@ -168,7 +168,7 @@
                             <div class="form-group row">
                               <label class="col-md-4 col-form-label" for="text-input">Reporterd Odometer</label>
                               <div class="col-7">
-                            <input type="number" [(ngModel)]="selectedDevice.lastOdometerKM" [ngModelOptions]="{standalone: true}"
+                            <input type="number" min="0"  [(ngModel)]="selectedDevice.lastOdometerKM" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="0,00">
                             </div>
                             <label class="col-form-label" for="text-input">Km</label>
@@ -178,9 +178,10 @@
                   </div>
                 </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
-                  <button type="button" class="btn btn-primary" (click)="modifier()">Modifier</button>
+                <div class="modal-footer" style="justify-content: left;display: initial;">
+                  <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
+                  <button type="button" class="btn btn-primary float-right" (click)="modifier()">Modifier</button>
+                  <button type="button" class="btn btn-secondary float-right" (click)="primaryModal.hide()">Fermer</button>
                 </div>
                 </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->

@@ -26,7 +26,7 @@ export class DetailleComponent implements AfterViewInit {
   constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private tools: util, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel, private router: Router) {
   }
   ngAfterViewInit(): void {
-    console.log("ngAfterViewInit",this.vehiculeID);
+    console.log("ngAfterViewInit", this.vehiculeID);
 
     if (this.vehiculeID) {
       this.selectedTab = 3
@@ -48,12 +48,12 @@ export class DetailleComponent implements AfterViewInit {
   reportDataCarburant: any;
   reportDataConsommation: any;
   reportDetails: any;
-  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)","Odomètre","Fuel"]
-  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct","odo","ft"];
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)", "Odomètre", "Fuel"]
+  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct", "odo", "ft"];
 
-  displayedColumnsArrets: any = ["Début", "Fin", "Adresse","Durée (min)", "Odomètre","Fuel" ]
-  columnsArrets: any = ["timeStart", "timeEnd", "addi", "da","odo","ft"];
-  displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)",  "Odomètre", "Adresse"]
+  displayedColumnsArrets: any = ["Début", "Fin", "Adresse", "Durée (min)", "Odomètre", "Fuel"]
+  columnsArrets: any = ["timeStart", "timeEnd", "addi", "da", "odo", "ft"];
+  displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]
   columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
 
   dColumnsRealCarburant: any = [
@@ -243,7 +243,7 @@ export class DetailleComponent implements AfterViewInit {
   ////////////////////////////////////////////////////////////////
 
   public resumeColors: Array<any> = ["twitter", "google-plus", "green", "purple", "yellow", "pink", "primary", "cyan", "danger", "warning"];
-  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cd": "MAD", "ct": "L", "cm": "%", "v": "Km/h", "t": "°C", "na": " " , "odo": "Km", "ft": "L" };
+  public resumeUnits: any = { "k": "KM", "da": "MIN", "dc": "MIN", "c": "L", "cd": "MAD", "ct": "L", "cm": "%", "v": "Km/h", "t": "°C", "na": " ", "odo": "Km", "ft": "L" };
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -466,7 +466,7 @@ export class DetailleComponent implements AfterViewInit {
             if (e.da) e.da = this.round2d(Number.parseInt(e.da) / 60);
             if (e.dc) e.dc = this.round2d(Number.parseInt(e.dc) / 60);
             if (e.odo) e.odo = this.round2d(Number.parseInt(e.odo));
-            if (e.ft) e.ft = this.round2d(e.ft*extra.cp);
+            if (e.ft) e.ft = this.round2d(e.ft * extra.cp);
             e.cd = this.round2d(e.c * extra.fc);
             e.ct = extra.fe != 0 ? (e.k / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
             e.cm = (100 * (e.c / (e.k != 0 ? e.k : 1))).toFixed(1);
@@ -487,7 +487,7 @@ export class DetailleComponent implements AfterViewInit {
           this.columns.forEach((e, index) => {
             if (!["timeStart", "timeEnd", "addi", "addf"].includes(e))
               resumetmp.push({
-                val: !["cm", "cd", "ct","odo","ft"].includes(e) ? this.reduce(this.reportDataTrajet, e) : 0,//.toString() + " " + this.resumeUnits[e]
+                val: !["cm", "cd", "ct", "odo", "ft"].includes(e) ? this.reduce(this.reportDataTrajet, e) : 0,//.toString() + " " + this.resumeUnits[e]
                 label: this.displayedColumns[index],
                 labels: labels,
                 key: e,
@@ -502,8 +502,8 @@ export class DetailleComponent implements AfterViewInit {
           });
           var length = resumetmp.length - 1;
           resumetmp[length].val = this.reportDataTrajet[this.reportDataTrajet.length - 1]?.ft ?? "0";
-          resumetmp[length-1].val = this.reportDataTrajet[this.reportDataTrajet.length - 1]?.odo ?? "0";
-          resumetmp[length-2].val = extra.fe != 0 ? (resumetmp[0].val / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
+          resumetmp[length - 1].val = this.reportDataTrajet[this.reportDataTrajet.length - 1]?.odo ?? "0";
+          resumetmp[length - 2].val = extra.fe != 0 ? (resumetmp[0].val / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
           resumetmp[length - 3].val = this.round2d(resumetmp[length - 5].val * extra.fc);
           resumetmp[length - 4].val = (100 * (resumetmp[length - 5].val / (resumetmp[0].val != 0 ? resumetmp[0].val : 1))).toFixed(1);
           this.resume = resumetmp
@@ -548,7 +548,7 @@ export class DetailleComponent implements AfterViewInit {
       if (v.length > 1) {
         return v.reduce((p, c) => {
           if (["da", "dc"].includes(e)) {
-            var f = isNaN(p) ?  this.round2d(p[e]) +  this.round2d(c[e]) :  this.round2d(p) +  this.round2d(c[e])
+            var f = isNaN(p) ? this.round2d(p[e]) + this.round2d(c[e]) : this.round2d(p) + this.round2d(c[e])
             return f
           } else
             if (["v"].includes(e)) {
@@ -714,7 +714,7 @@ export class DetailleComponent implements AfterViewInit {
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].dID == id) return { "fe": this.devices[i].fe, "fc": this.devices[i].fc, "cp": this.devices[i].cp }
     }
-    return { "fe": 0, "fc": 0, "cp": 0  }
+    return { "fe": 0, "fc": 0, "cp": 0 }
   }
 
   getVehiculeCapacityById(id) {
@@ -731,15 +731,19 @@ export class DetailleComponent implements AfterViewInit {
     if (this.selectedTab == 1)
       type == 1 ? this.exportingPdfTool.exportPdf_Trajets(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " + this.selectedDevice + " \n" + title) :
         this.exportingExcelTool.ExportTrajet(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " + this.selectedDevice + " \n" + title)
-    if (this.selectedTab == 3) {
-      this.exportEvts = { type: type, force: Math.random() }
-    }
-    else if (this.selectedTab == 5)
-      type == 1 ? this.exportingPdfTool.exportPdf_Parking(this.reportDataArrets, "Rapport de Parking pour " + this.selectedDevice + " \n" + title) :
-        this.exportingExcelTool.ExportParking(this.reportDataArrets, "Rapport de Parking pour " + this.selectedDevice + " \n" + title)
-    else if (this.selectedTab == 6)
-      type == 1 ? this.exportingPdfTool.exportPdf_Carburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.selectedDevice + " \n" + title) :
-        this.exportingExcelTool.ExportCarburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.selectedDevice + " \n" + title)
+    else if (this.selectedTab == 0)
+      this.exportingPdfTool.convetToPDF("cardResume", "Rapport Resume pour " + this.selectedDevice + " \n" + title)
+     else if (this.selectedTab == 2)
+      this.exportingPdfTool.convetToPDF("cardEvolution", "Rapport d'Evolution pour " + this.selectedDevice + " \n" + title)
+    else if (this.selectedTab == 3) {
+        this.exportEvts = { type: type, force: Math.random() }
+      }
+      else if (this.selectedTab == 5)
+        type == 1 ? this.exportingPdfTool.exportPdf_Parking(this.reportDataArrets, "Rapport de Parking pour " + this.selectedDevice + " \n" + title) :
+          this.exportingExcelTool.ExportParking(this.reportDataArrets, "Rapport de Parking pour " + this.selectedDevice + " \n" + title)
+      else if (this.selectedTab == 6)
+        type == 1 ? this.exportingPdfTool.exportPdf_Carburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.selectedDevice + " \n" + title) :
+          this.exportingExcelTool.ExportCarburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.selectedDevice + " \n" + title)
   }
 
   exportEvents(v) {

@@ -4,6 +4,7 @@ import { DataService } from '../../services/data.service';
 import { util } from 'src/app/tools/utils';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
+import { ExportExcel } from 'src/app/tools/export-excel';
 
 
 @Component({
@@ -14,7 +15,7 @@ export class AlertsComponent {
 
   loading: boolean = false;
 
-  constructor(private dataService: DataService, private activateRoute:ActivatedRoute,private tools: util, private exportingTool: ExportingTool, private router: Router) { }
+  constructor(private dataService: DataService, private activateRoute:ActivatedRoute,private tools: util, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -148,6 +149,7 @@ export class AlertsComponent {
   }
 
   exporter(type) {
-    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+    type == 1 ? this.exportingPdfTool.exportPdf_Notifications(this.data, "Rapport de Notifications " ) :
+    this.exportingExcelTool.Export_Notification(this.data, "Rapport de Notifications ")
   }
 }

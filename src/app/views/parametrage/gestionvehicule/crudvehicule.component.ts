@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DataService } from '../../../services/data.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Device } from '../../../models/device';
-import { VehiculeService } from 'src/app/services/vehicule.service';
+// import { VehiculeService } from 'src/app/services/vehicule.service';
 import { util } from 'src/app/tools/utils';
 import { Router } from '@angular/router';
 import { Constant } from 'src/app/tools/constants';
@@ -100,6 +100,9 @@ export class CrudvehiculeComponent {
     this.errorMsg = ""
     if (!this.selectedDevice.description) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else 
+      if (!this.tools.ValidatePhone(this.selectedDevice.simPhoneNumber)) {
+      this.errorMsg = "Vous avez saisi un telephone invalid."
     } else {
       this.selectedDevice.fuelEconomy = this.selectedDevice.fuelEconomy > 0 ? Math.round(100 / this.selectedDevice.fuelEconomy) : 0;
       this.dataService.updateDevice(this.selectedDevice).subscribe({

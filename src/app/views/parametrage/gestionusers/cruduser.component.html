@@ -70,7 +70,7 @@
                           </div>
                         </div>
                         <div class="form-group row">
-                          <label class="col-md-4 col-form-label" for="text-input">Téléphone du contact *</label>
+                          <label class="col-md-4 col-form-label" for="text-input">Téléphone du contact</label>
                           <div class="col-8">
                             <input type="tel" class="form-control" [(ngModel)]="selectedUser.contactPhone"
                               [ngModelOptions]="{standalone: true}" placeholder="Saisir num de tel" required>
@@ -103,8 +103,8 @@
                           </div> -->
                           <div class="col-8 input-group">
                             <my-dropdown-select class="form-control" [placeholder]="'Selectionner un fuseau horaire '"
-                              [selectPlaceholder]="'Chercher...'" [options]="timezone" [display]="'label'"
-                              [value]="'data'" [multiple]="false" [labelCount]="0" [selectedOptions]="selectedTimezone"
+                              [selectPlaceholder]="'Chercher...'" [options]="cst.timezone" [display]="'label'"
+                              [value]="'data'" [multiple]="false" [labelCount]="0" [selectedOptions]="selectedTimezones"
                               (selectionChange)="getSelectedTimezones($event)">
                             </my-dropdown-select>
                           </div>

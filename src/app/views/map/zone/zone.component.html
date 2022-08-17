@@ -122,7 +122,7 @@
                             </mat-form-field>
                         </ng-container> -->
                         <div class="d-flex justify-content-end mb-4">
-                        <button class="btn btn-sm btn-success mr-2" (click)="apply()">
+                        <button class="btn btn-sm btn-success mr-2" [disabled]="isDrawing || selectedZone.latitude1 == null" (click)="apply()">
                             <i class="fa fa-check"></i>
                             Appliquer
                         </button>

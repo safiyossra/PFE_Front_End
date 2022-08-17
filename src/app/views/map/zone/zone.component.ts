@@ -30,7 +30,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   // ---------------- Zones ------------------
   zones: Zone[]
   selectedZone: Zone = new Zone()
-
+  isDrawing = false
   public size = [25, 75]
   default = {
     latitude: 35.75,
@@ -71,8 +71,8 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     if (this.selectedZoneIndex != index) {
       this.selectedZoneIndex = index
       var icon = "default"
-      if (this.iconExists(zone.shapeColor)) {
-        icon = zone.shapeColor
+      if (this.iconExists(zone.iconName)) {
+        icon = zone.iconName
       }
       this.drawShape(this.getShapeFromZone(zone), icon)
     } else {
@@ -260,9 +260,11 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   addDrawToMap() {
     var map = this.map
     this.hideDrawControls(map)
-    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png' ,
-    iconSize:[40, 50],
-    iconAnchor: [20, 50]});
+    var icon = L.icon({
+      iconUrl: 'assets/img/POI/default.png',
+      iconSize: [40, 50],
+      iconAnchor: [20, 50]
+    });
     this.map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
     this.map.pm.setLang('fr');
     map.on('pm:create', (e: any) => {
@@ -272,20 +274,24 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       this.updateZoneForm(e.shape)
       this.showAfterDrawControls(map)
       this.getZoneFromShape(res)
+      this.isDrawing = false
       console.log(res);
       this.layer.on('pm:update', (e: any) => {
         var res = this.getShape(map, undefined, undefined)
         this.getZoneFromShape(res)
+        this.isDrawing = false
         console.log(res);
       });
     });
     map.on('pm:remove', (e: any) => {
       this.showInitialDrawControls(map)
+      this.isDrawing = true
       this.updateZoneForm(null)
       this.getZoneFromShape({ shape: null, coord: [], radius: 30, })
     });
     this.map.on('pm:drawstart', (e: any) => {
       var count = 10;
+      this.isDrawing = true
       e.workingLayer.on('pm:vertexadded', (e: any) => {
         count--;
         if (count == 0) {
@@ -333,7 +339,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     } else {
       var icon = L.icon({
         iconUrl: 'assets/img/POI/' + iconString + '.png',
-        iconSize:[40, 50],
+        iconSize: [40, 50],
         iconAnchor: [20, 50]
       });
       this.layer = L.marker(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), { icon: icon })//
@@ -416,9 +422,11 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       drawCircle: false,
       editControls: true,
     });
-    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png' ,
-    iconSize:[40, 50],
-    iconAnchor: [20, 50]});
+    var icon = L.icon({
+      iconUrl: 'assets/img/POI/default.png',
+      iconSize: [40, 50],
+      iconAnchor: [20, 50]
+    });
     map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
     map.pm.enableGlobalEditMode();
   }
@@ -437,9 +445,11 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       editControls: true,
     });
     map.pm.enableGlobalEditMode();
-    var icon = L.icon({ iconUrl: 'assets/img/POI/default.png',
-    iconSize:[40, 50],
-    iconAnchor: [20, 50] });
+    var icon = L.icon({
+      iconUrl: 'assets/img/POI/default.png',
+      iconSize: [40, 50],
+      iconAnchor: [20, 50]
+    });
     map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
   }
 
@@ -518,6 +528,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
         console.log("edit mode");
         // this.clearZoneFromMap()
         this.showAfterDrawControls(this.map)
+        this.isDrawing = true
         break;
       case 'create':
         this.selectedZone = new Zone()
@@ -534,7 +545,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     console.log(e, this.selectedZone);
     var icon = L.icon({
       iconUrl: 'assets/img/POI/' + e.value + '.png',
-      iconSize:[40, 50],
+      iconSize: [40, 50],
       iconAnchor: [20, 50]
     });
     this.layer.setIcon(icon)
@@ -554,13 +565,13 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     this.layer.on('pm:update', (e: any) => {
       var res = this.getShape(undefined, e.layer, e.shape)
       this.getZoneFromShape(res)
-      console.log(res);
+      // console.log(res);
     });
     this.showAfterDrawControls(this.map)
   }
 
   iconExists(name: any) {
-    return this.cts.zoneIcons.includes({ name: name })
+    return this.cts.zoneIcons.findIndex(elem => elem.name == name) != -1
   }
 
   onDragEnd(e) {

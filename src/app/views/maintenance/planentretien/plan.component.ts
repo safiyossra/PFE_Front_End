@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 import { PlanEntretien } from 'src/app/models/planEnretien';
 import { Constant } from 'src/app/tools/constants';
+import { ExportExcel } from 'src/app/tools/export-excel';
 
 @Component({
   templateUrl: 'plan.component.html',
@@ -20,7 +21,7 @@ export class PlanComponent {
   selectedPlan = new PlanEntretien();
   errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, public cts: Constant, private exportingTool: ExportingTool, private router: Router) { }
+  constructor(private dataService: DataService, private tools: util, public cts: Constant, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
 
   myDateRangePickerOptions: MyDateRangePickerOptions;
   isCollapsed: boolean = false;
@@ -201,7 +202,6 @@ export class PlanComponent {
     if (!this.selectedPlan.deviceID || (!this.selectedPlan.decKmValue && !this.selectedPlan.decDateValue) || !this.selectedPlan.operation) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-
       this.dataService.addPlanEntretien(this.selectedPlan).subscribe({
         next: (res) => {
           console.log("added", res)
@@ -294,11 +294,38 @@ export class PlanComponent {
   }
 
   exporter(type) {
-    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+    var v = this.getJsonValue(this.data);
+    v.forEach(e => {
+     e.value = e.typeDeclenchement == 1 ? e.decKmValue : e.decDateValueString
+     e.status = this.getStatusName(e.status)
+     e.typeDeclenchement = this.getTypeDeclenchement(e.typeDeclenchement)
+     e.operation =  this.getOperationById(e.operation)
+    });
+    type == 1 ? this.exportingPdfTool.exportPdf_Entretien(v, "Rapport de Plan d'entretien " ) :
+    this.exportingExcelTool.Export_Entretien(v, "Rapport de Plan d'entretien ")
   }
 
   getJsonValue(v) {
     return JSON.parse(JSON.stringify(v))
+  }
+
+  getBgColorForStatus(s) {
+    return s == "closed" ? 'bg-success' : s == 'obsolete' ? 'bg-danger' : ''
+  }
+
+  getStatusName(s) {
+    return s == "closed" ? 'Clôturée' : s == 'obsolete' ? 'Dépassé' : 'En Cours'
+  }
+
+  getTypeDeclenchement(t) {
+    return t == 1 ? 'Par KM' : 'Par Date'
+  }
+
+  getOperationById(id) {
+    for (let i = 0; i < this.cts.planOperations.length; i++) {
+      if (this.cts.planOperations[i].id == id) return this.cts.planOperations[i].name
+    }
+    return 0
   }
 }
 

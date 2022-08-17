@@ -1,6 +1,7 @@
 // import { ExportExcel } from './export-excel';
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
+import html2canvas from 'html2canvas';
 import { Injectable } from "@angular/core";
 
 @Injectable({
@@ -521,7 +522,207 @@ export class ExportingTool {
         doc.save(title);
     }
 
-    
+    //////Maintenance
+    exportPdf_Consommation(data: any[], title: string) {
+        const doc = new jsPDF('l');
+        const rows: any = [];
+        data.forEach((elt) => {
+            const tmp = [
+                elt.id,
+                elt.driverName,
+                elt.deviceName,
+                elt.fournisseur,
+                elt.numCarte,
+                elt.numBon,
+                elt.qte,
+                elt.pleinOn,
+                elt.montant,
+                elt.montantTTC,
+                elt.kmPrecedent,
+                elt.kmEncours,
+                elt.consoM,
+                elt.dateFill,
+                elt.observation,
+            ];
+            rows.push(tmp);
+        });
+        doc.setFontSize(14);
+        doc.setDrawColor('blue');
+
+        doc.addImage(this.picture, 'png', 10, 4, 30, 30);
+        doc.setFontSize(12);
+        doc.setTextColor('#033A7A');
+        doc.text('Sendatrack.com', 10, 32);
+        doc.setFontSize(10);
+        doc.text(this.adress1, 210, 17);
+        doc.text(this.add, 210, 21);
+        doc.text(this.adress2, 210, 25);
+        doc.setFontSize(18);
+        doc.setTextColor('#366DAD');
+        doc.text(title, 150, 50, { align: 'center' });
+        (doc as any).autoTable({
+            columns: [
+                { dataKey: 'ID', header: 'ID' },
+                { dataKey: 'CHAUFFEUR', header: 'CHAUFFEUR' },
+                { dataKey: 'VEHICULE', header: 'VEHICULE' },
+                { dataKey: 'FOURNISSEUR', header: 'FOURNISSEUR' },
+                { dataKey: 'N CARTE', header: 'N CARTE' },
+                { dataKey: 'N BON', header: 'N BON' },
+                { dataKey: 'QTE', header: 'QTE' },
+                { dataKey: 'PLEIN', header: 'PLEIN' },
+                { dataKey: 'MONTANT', header: 'MONTANT' },
+                { dataKey: 'MONTANT TTC', header: 'MONTANT TTC' },
+                { dataKey: 'KM PRECEDENT', header: 'KM PRECEDENT' },
+                { dataKey: 'KM ENCOURS', header: 'KM ENCOURS' },
+                { dataKey: 'CONSOMMATION MOY', header: 'CONSOMMATION MOY' },
+                { dataKey: 'DATE', header: 'DATE' },
+                { dataKey: 'OBSERVATION', header: 'OBSERVATION' },
+            ],
+            body: rows,
+            theme: 'grid',
+            rowPageBreak: 'auto',
+            //specifies where to start drowing the table
+            startY: 60,
+            showHead: 'firstPage',
+            headStyles: { fillColor: [5, 97, 203] },
+            columnStyles: { text: { cellWidth: 'wrap' } },
+        });
+        this.addFooters(doc);
+        doc.save(title);
+    }
+
+    exportPdf_Entretien(data: any[], title: string) {
+        const doc = new jsPDF();
+        const rows: any = [];
+
+        data.forEach((elt) => {
+            const tmp = [
+                elt.deviceID,
+                elt.operation,
+                elt.typeDeclenchement,
+                elt.value,
+                elt.status,
+                elt.creationTime,
+            ];
+            rows.push(tmp);
+        });
+        doc.setFontSize(14);
+        doc.setDrawColor('blue');
+
+        doc.addImage(this.picture, 'png', 10, 4, 30, 30);
+        doc.setFontSize(12);
+        doc.setTextColor('#033A7A');
+        doc.text('Sendatrack.com', 10, 32);
+        doc.setFontSize(10);
+        doc.text(this.adress1, 130, 17);
+        doc.text(this.add, 130, 21);
+        doc.text(this.adress2, 130, 25);
+        doc.setFontSize(18);
+        doc.setTextColor('#366DAD');
+
+        doc.text(title, 150, 50, { align: 'center' });
+
+        (doc as any).autoTable({
+            columns: [
+                { dataKey: 'VÉHICULE', header: 'VÉHICULE' },
+                { dataKey: "TYPE D'OPÉRATION", header: "TYPE D'OPÉRATION" },
+                { dataKey: 'DÉCLENCHEMENT', header: 'DÉCLENCHEMENT' },
+                { dataKey: 'VALEUR', header: 'VALEUR' },
+                { dataKey: 'STATUS', header: 'STATUS' },
+                { dataKey: 'DATE DE CRÉATION', header: 'DATE DE CRÉATION' },
+            ],
+            body: rows,
+            theme: 'grid',
+            rowPageBreak: 'auto',
+            //specifies where to start drowing the table
+            startY: 60,
+            showHead: 'firstPage',
+            headStyles: { fillColor: [5, 97, 203] },
+            columnStyles: { text: { cellWidth: 'wrap' } },
+        });
+        doc.setFontSize(10);
+        this.addFooters(doc);
+        doc.save(title);
+    }
+
+    exportPdf_Notifications(data: any[], title: string) {
+        const doc = new jsPDF();
+        const rows: any = [];
+
+        data.forEach((elt) => {
+            const tmp = [
+                elt.timestamp,
+                elt.description,
+                elt.subject,
+                elt.message
+            ];
+            rows.push(tmp);
+        });
+        doc.setFontSize(14);
+        doc.setDrawColor('blue');
+        doc.addImage(this.picture, 'png', 10, 4, 30, 30);
+        doc.setFontSize(12);
+        doc.setTextColor('#033A7A');
+        doc.text('Sendatrack.com', 10, 32);
+        doc.setFontSize(10);
+        doc.text(this.adress1, 130, 17);
+        doc.text(this.add, 130, 21);
+        doc.text(this.adress2, 130, 25);
+        doc.setFontSize(18);
+        doc.setTextColor('#366DAD');
+
+        doc.text(title, 150, 50, { align: 'center' });
+
+        (doc as any).autoTable({
+            columns: [
+                { dataKey: 'DATE', header: 'DATE' },
+                { dataKey: 'VÉHICULE', header: 'VÉHICULE' },
+                { dataKey: 'DESCRIPTION', header: 'DESCRIPTION' },
+                { dataKey: 'MESSAGE', header: 'MESSAGE' },
+            ],
+            body: rows,
+            theme: 'grid',
+            rowPageBreak: 'auto',
+            //specifies where to start drowing the table
+            startY: 60,
+            showHead: 'firstPage',
+            headStyles: { fillColor: [5, 97, 203] },
+            columnStyles: { text: { cellWidth: 'wrap' } },
+        });
+        doc.setFontSize(10);
+        this.addFooters(doc);
+        doc.save(title);
+    }
+
+
+    convetToPDF(ElementId: string, title: string) {
+        var data: any = document.getElementById(ElementId);
+        html2canvas(data).then(canvas => {
+            var imgWidth = 500;
+            var imgHeight = canvas.height * imgWidth / canvas.width;
+            const contentDataURL = canvas.toDataURL('image/png')
+            let pdf = new jsPDF('l', 'mm', 'a4'); // ex/pc
+            pdf.setFontSize(14);
+            pdf.setDrawColor('blue');
+            pdf.addImage(this.picture, 'png', 10, 4, 30, 30);
+            pdf.setFontSize(12);
+            pdf.setTextColor('#033A7A');
+            pdf.text('Sendatrack.com', 10, 32);
+            pdf.setFontSize(10);
+            pdf.text(this.adress1, 210, 17);
+            pdf.text(this.add, 210, 21);
+            pdf.text(this.adress2, 210, 25);
+            pdf.setFontSize(18);
+            pdf.setTextColor('#366DAD');
+            pdf.text(title, 150, 50, { align: 'center' });
+            var position = 40;
+            pdf.addImage(contentDataURL, 'PNG', 10, position, imgWidth, imgHeight);
+            this.addFooters(pdf);
+            pdf.save(title + '.pdf');
+        });
+    }
+
+
     addFooters = doc => {
         const pageCount = doc.internal.getNumberOfPages()
         doc.setFont('helvetica', 'italic')
@@ -539,5 +740,4 @@ export class ExportingTool {
             })
         }
     }
-
 }

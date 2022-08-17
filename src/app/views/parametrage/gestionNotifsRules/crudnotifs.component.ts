@@ -185,7 +185,7 @@ export class CrudNotifsRulesComponent {
     var route = this.router
     this.errorMsg = ""
     this.selectedAlert.selector = this.resultedRule
-    if (!this.selectedAlert.ruleID || !this.selectedAlert.description || !this.selectedAlert.notifyEmail || !this.selectedAlert.selector) {
+    if (!this.selectedAlert.ruleID || !this.selectedAlert.description || !this.selectedAlert.selector) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       if (this.selectedAlert.selector == "") this.errorMsg = "Veuillez saisir un selector ."
@@ -218,7 +218,7 @@ export class CrudNotifsRulesComponent {
     var route = this.router
     this.errorMsg = ""
     this.selectedAlert.selector = this.resultedRule
-    if (!this.selectedAlert.description || !this.selectedAlert.notifyEmail || !this.selectedAlert.selector) {
+    if (!this.selectedAlert.description || !this.selectedAlert.selector) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       if (this.selectedAlert.notifyEmail && !this.tools.ValidateEmail(this.selectedAlert.notifyEmail)) this.errorMsg = "Vous avez saisi un email de notification invalid."
@@ -233,6 +233,7 @@ export class CrudNotifsRulesComponent {
           }, error(err) {
             console.log("error", err)
             this.modalLoading = false;
+            this.errorMsg = "Erreur "+err
             if (err.status == 401) {
               route.navigate(['login'], { queryParams: { returnUrl: route.url } });
             }

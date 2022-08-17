@@ -150,6 +150,7 @@ export class CrudgroupeComponent {
         }
         , error(err) {
           this.modalLoading = false;
+          this.errorMsg = "Erreur "+err
           if (err.status == 401) {
             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
           }
@@ -174,6 +175,7 @@ export class CrudgroupeComponent {
           this.errorMsg = ""
         }, error(err) {
           this.modalLoading = false;
+            this.errorMsg = "Erreur "+err
           if (err.status == 401) {
             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
           }
