@@ -199,7 +199,7 @@ export class util {
     if (status == 61714) { return "fa fa-circle text-green status-cercle"; } else
       if (status == 62465) { return "fa fa-dot-circle-o text-green status-cercle"; } else
         if (status == 62467) { return "fa fa-circle text-red status-cercle"; } else
-          return "fa fa-close text-dark status-cercle";
+          return "fa fa-question-circle text-dark status-cercle";
   }
 
   createMap(map, mapId, car, provider, showCollapsControle = true, showFullScreenControle = true, showPositionControle = true, showResetControle = true) {
