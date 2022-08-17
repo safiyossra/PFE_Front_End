@@ -77,11 +77,16 @@ export class AlertsComponent {
     };
 
     this.subActivateRoute = this.activateRoute.queryParams.subscribe(params => {
-      this.selectedTab = (params['tab'] != undefined) ? parseInt(params['tab']) : 0;
+      this.selectedTab = (params['tab'] != undefined) ? parseInt(params['tab']) : 6;
     });
 
     this.getDev();
     setTimeout(() => this.submit(), 100)
+  }
+
+  setTab(i) {
+    this.router.navigateByUrl("/notifications/alerts");
+    this.selectedTab = i;
   }
 
   toggleCollapse($event): void {
