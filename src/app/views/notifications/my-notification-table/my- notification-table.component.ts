@@ -14,7 +14,7 @@ import { MatTableDataSource } from '@angular/material/table';
 export class MyNotificationTableComponent implements OnChanges {
   @Input() data=[];
   // @Input() columnNames?: any[]
-  public displayedColumns =  ["timestamp","description","subject","message"]
+  public displayedColumns =  ["creationTime","description","subject","message"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
 

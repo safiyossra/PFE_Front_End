@@ -25,18 +25,8 @@ export class CrudvehiculeComponent {
 
   ngOnInit() {
     this.loadData();
-    this.testCheck();
   }
 
-  testCheck() {
-    this.dataService.getConsommation("?check=true").subscribe(
-      {
-        next: (res: any) => {
-          console.log(res);
-        }
-      }
-    );
-  }
 
   //////////////////////
   loadData() {
@@ -50,12 +40,8 @@ export class CrudvehiculeComponent {
         d.forEach(e => {
           e.age = e.age ?? 0 > 0 ? (now - e.age) : "jamais"
           e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime ?? 0) * 1000));
-
-          console.log(e.creationTime);
-
           e.registrationExpireString != 0 ? e.registrationExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.registrationExpire) * 1000)) : '';
           e.insuranceExpireString != 0 ? e.insuranceExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.insuranceExpire) * 1000)) : '';
-
           // console.log(e.insuranceExpireString);
         });
         this.data = d;

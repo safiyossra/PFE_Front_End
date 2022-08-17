@@ -112,7 +112,7 @@ export class AlertsComponent {
   }
 
   setData(data: any[]) {
-    if (data && data.length) {
+    if (data ) {//&& data.length
       let vitessData = [];
       let zoneData = [];
       let autreData = [];
@@ -158,18 +158,27 @@ export class AlertsComponent {
     var route = this.router
     this.dataService.getNotifications(urlNotif).subscribe({
       next: (d: any) => {
-        // console.log("data");
-        //   console.log(d);
         d.forEach((e) => {
-          e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
+          e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
         })
         this.data = d;
         this.setData(d);
-        console.log(this.zoneData);
-        console.log(this.vitessData);
-        console.log(this.demarrageData);
-        console.log(this.autreData);
         this.loading = false;
+        
+    this.dataService.getNotifications(urlNotif+"&maintenance=true").subscribe({
+      next: (d: any) => {
+        d.forEach((e) => {
+          e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
+        })
+        this.maintenanceData = d;
+        this.data = this.data.concat(this.maintenanceData)
+        this.loading = false;
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    })
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -177,21 +186,6 @@ export class AlertsComponent {
       }
     })
 
-    this.dataService.getNotifications(urlNotif+"&maintenance=true").subscribe({
-      next: (d: any) => {
-        // console.log("data");
-        //   console.log(d);
-        d.forEach((e) => {
-          e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
-        })
-        this.maintenanceData = d;
-        this.loading = false;
-      }, error(err) {
-        if (err.status == 401) {
-          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-        }
-      }
-    })
   };
 
 

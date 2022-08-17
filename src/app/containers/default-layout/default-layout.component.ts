@@ -50,9 +50,10 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
 
         if (res) {
           notifsTmp.maintenance = res.maintenanceCount;
+          console.log("res", res);
 
           if (res.alerts && res.alerts.length) {
-            var tmp = res.alers.map((v: any) => { return v.selector }).join("&&")
+            var tmp = res.alerts.map((v: any) => { return v.selector }).join("&&")
             var tab = tmp.split(/[&&||]+/)
 
             tab.forEach(e => {
@@ -76,7 +77,6 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
             notifsTmp.total = tab.length + notifsTmp.maintenance;
           }
 
-          notifsTmp.total += notifsTmp.maintenance;
           this.notifs = notifsTmp;
         }
       }, error(err) {
@@ -86,7 +86,7 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
       }
     })
   }
-  
+
   ngOnDestroy(): void {
     this.destroy()
   }
