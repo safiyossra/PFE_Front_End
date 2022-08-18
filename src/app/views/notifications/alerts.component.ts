@@ -1,4 +1,4 @@
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChild, ViewEncapsulation, OnChanges, SimpleChanges } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
 import { util } from 'src/app/tools/utils';
@@ -11,17 +11,21 @@ import { ExportExcel } from 'src/app/tools/export-excel';
   templateUrl: 'alerts.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class AlertsComponent {
+export class AlertsComponent implements OnChanges {
 
   loading: boolean = false;
 
-  constructor(private dataService: DataService, private activateRoute:ActivatedRoute,private tools: util, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
+  constructor(private dataService: DataService, private activateRoute: ActivatedRoute, private tools: util, private router: Router, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+  }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
   isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-down';
-  data: any;
+  data = [];
   maintenanceData: any;
 
   vitessData = [];
@@ -29,7 +33,7 @@ export class AlertsComponent {
   demarrageData = [];
   autreData = [];
 
-  notifregx = { v: /\$Speeding/i, z1: /InZone/i, z2: /\$DEPART/i, z3: /\$Arrive/i, f: /\$FuelDelta()/i, d: /demarrage/i}
+  notifregx = { v: /\$Speeding/i, z1: /InZone/i, z2: /\$DEPART/i, z3: /\$Arrive/i, f: /\$FuelDelta()/i, d: /demarrage/i }
 
   public devices: any = [];
   selectedDevices = [];
@@ -87,11 +91,11 @@ export class AlertsComponent {
     };
 
     this.subActivateRoute = this.activateRoute.queryParams.subscribe(params => {
-      this.selectedTab = (params['tab'] != undefined) ? parseInt(params['tab']) : 6;
+      this.selectedTab = (params['tab'] != undefined) ? parseInt(params['tab']) : 5;
+      this.getDev();
+      setTimeout(() => this.submit(), 100)
     });
 
-    this.getDev();
-    setTimeout(() => this.submit(), 100)
   }
 
   setTab(i) {
@@ -112,7 +116,7 @@ export class AlertsComponent {
   }
 
   setData(data: any[]) {
-    if (data ) {//&& data.length
+    if (data) {//&& data.length
       let vitessData = [];
       let zoneData = [];
       let autreData = [];
@@ -147,44 +151,75 @@ export class AlertsComponent {
 
   //////////////////////
   submit() {
+    console.log("==== submit =====");
+
     this.loading = true;
     var urlNotif = "?st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
     // console.log(this.selectedDevice);
     if (this.selectedDevice != null) {
       urlNotif += "&d=" + this.selectedDevice
     }
-    // console.log(urlNotif);
 
     var route = this.router
-    this.dataService.getNotifications(urlNotif).subscribe({
-      next: (d: any) => {
-        d.forEach((e) => {
-          e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
-        })
-        this.data = d;
-        this.setData(d);
-        this.loading = false;
-        
-    this.dataService.getNotifications(urlNotif+"&maintenance=true").subscribe({
-      next: (d: any) => {
-        d.forEach((e) => {
-          e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
-        })
-        this.maintenanceData = d;
-        this.data = this.data.concat(this.maintenanceData)
-        this.loading = false;
-      }, error(err) {
-        if (err.status == 401) {
-          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+    if (this.selectedTab != 1)
+      this.dataService.getNotifications(urlNotif).subscribe({
+        next: (d: any) => {
+          console.log("==== all =====");
+          d.forEach((e) => {
+            e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
+          })
+          this.data = d;
+          this.setData(d);
+          this.loading = false;
+
+          this.dataService.getNotifications(urlNotif + "&maintenance=true").subscribe({
+            next: (d: any) => {
+              d.forEach((e) => {
+                e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
+              })
+              this.maintenanceData = d;
+              this.data = this.data.concat(this.maintenanceData)
+
+              this.data.sort(function (a, b) {
+                return (new Date(b.creationTime)).getTime() - (new Date(a.creationTime)).getTime();
+              });
+
+              this.loading = false;
+            }, error(err) {
+              if (err.status == 401) {
+                route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+              }
+            }
+          })
+        }, error(err) {
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
         }
-      }
-    })
-      }, error(err) {
-        if (err.status == 401) {
-          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+      })
+
+    if (this.selectedTab == 1)
+      this.dataService.getNotifications(urlNotif + "&maintenance=true").subscribe({
+        next: (d: any) => {
+
+          console.log("==== maintenance =====");
+          d.forEach((e) => {
+            e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
+          })
+          this.maintenanceData = d;
+          this.data = this.data.concat(this.maintenanceData)
+
+          this.data.sort(function (a, b) {
+            return (new Date(b.creationTime)).getTime() - (new Date(a.creationTime)).getTime();
+          });
+
+          this.loading = false;
+        }, error(err) {
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
         }
-      }
-    })
+      })
 
   };
 
@@ -211,7 +246,7 @@ export class AlertsComponent {
   }
 
   exporter(type) {
-    type == 1 ? this.exportingPdfTool.exportPdf_Notifications(this.data, "Rapport de Notifications " ) :
-    this.exportingExcelTool.Export_Notification(this.data, "Rapport de Notifications ")
+    type == 1 ? this.exportingPdfTool.exportPdf_Notifications(this.data, "Rapport de Notifications ") :
+      this.exportingExcelTool.Export_Notification(this.data, "Rapport de Notifications ")
   }
 }

@@ -19,7 +19,7 @@ export class CruddriverComponent {
   modalLoading: boolean = false;
   selectedDriver: Driver = new Driver();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel,) { }
+  constructor(private dataService: DataService, private tools: util, private router: Router, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel,) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -41,6 +41,7 @@ export class CruddriverComponent {
 
   selectedDevicesModal = [];
   selectedDeviceModal = null;
+  selectedDeviceModalOption = this.selectedDevicesModal;
   showErrorDeviceModal = false;
   errorMessageDeviceModal = "";
 
@@ -49,6 +50,7 @@ export class CruddriverComponent {
   selectedOperation = null;
   showErrorOperation = false;
   errorMessageOperation = "";
+
 
   getSelectedOperations(selected) {
     this.selectedOperation = selected;
@@ -112,6 +114,7 @@ export class CruddriverComponent {
   loadModify(ev) {
     this.mode = "Modifier"
     this.selectedDriver = new Driver();
+    this.selectedDeviceModalOption = [];
     if (ev) {
       var url = "?d=" + ev
       this.modalLoading = true;
@@ -126,8 +129,9 @@ export class CruddriverComponent {
               e.insuranceExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.insuranceExpire ?? 0) * 1000));
             });
             this.selectedDriver = d[0];
+            this.selectedDeviceModalOption = this.selectedDriver.deviceID;
           }
-          console.log("d", d);
+          // console.log("d", d);
 
           this.modalLoading = false;
         }, error(err) {
@@ -159,6 +163,11 @@ export class CruddriverComponent {
       }
     })
   }
+
+  getSelectedDeviceModal(selected) {
+    this.selectedDriver.deviceID = selected
+  }
+
   submit() {
     this.selectedDriver.birthdate = Math.round((new Date(this.selectedDriver.birthdateString).getTime()) / 1000);
     this.selectedDriver.licenseExpire = Math.round((new Date(this.selectedDriver.licenseExpireString).getTime()) / 1000);
@@ -223,35 +232,35 @@ export class CruddriverComponent {
       } else if (!this.tools.ValidatePhone(this.selectedDriver.contactPhone)) {
         this.errorMsg = "Vous avez saisi un telephone de contact invalid."
       } else {
-      this.dataService.updateDriver(this.selectedDriver)
-      .pipe(
-        catchError(err => {
-          console.log("res", err)
-          this.modalLoading = false;
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-          }
+        this.dataService.updateDriver(this.selectedDriver)
+          .pipe(
+            catchError(err => {
+              console.log("res", err)
+              this.modalLoading = false;
+              if (err.status == 401) {
+                route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+              }
 
-          else if (err.status == 400) {
-            console.log(err);
-            this.errorMsg = "Conducteur avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
-            console.log(this.errorMsg);
-          }
+              else if (err.status == 400) {
+                console.log(err);
+                this.errorMsg = "Conducteur avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
+                console.log(this.errorMsg);
+              }
 
-          else if (err.status == 402) {
-            this.errorMsg = "Erreur l'ajout est bloqué."
-          }
-          return throwError(err);
-        })
-      )
-      .subscribe({
-        next: (res:any) => {
-          console.log("res", res)
-          this.loadData()
-          this.primaryModal.hide()
-          this.errorMsg = ""
-        }
-      })
+              else if (err.status == 402) {
+                this.errorMsg = "Erreur l'ajout est bloqué."
+              }
+              return throwError(err);
+            })
+          )
+          .subscribe({
+            next: (res: any) => {
+              console.log("res", res)
+              this.loadData()
+              this.primaryModal.hide()
+              this.errorMsg = ""
+            }
+          })
       }
     }
   }
@@ -283,8 +292,8 @@ export class CruddriverComponent {
   }
 
   exporter(type) {
-      type == 1 ? this.exportingPdfTool.exportPdf_Conducteurs(this.data, "Rapport de List Conducteures " ) :
-        this.exportingExcelTool.ExportConducteurs(this.data,  "Rapport de List Conducteures " )
+    type == 1 ? this.exportingPdfTool.exportPdf_Conducteurs(this.data, "Rapport de List Conducteures ") :
+      this.exportingExcelTool.ExportConducteurs(this.data, "Rapport de List Conducteures ")
   }
 }
 
