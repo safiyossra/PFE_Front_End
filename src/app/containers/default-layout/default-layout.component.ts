@@ -69,6 +69,9 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
               if (this.notifregx.z3.test(e)) {
                 notifsTmp.z++
               }
+              if (this.notifregx.d.test(e)) {
+                notifsTmp.d++
+              }
               if (this.notifregx.f.test(e)) {
                 notifsTmp.f++
               }
