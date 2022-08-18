@@ -164,7 +164,7 @@
             <!-- <i class="fa fa-refresh" (click)="getdetails()"></i>-->
           </ng-template>
           <details-table [url]="urldetails" [exportEvts]="exportEvts" [tableID]="DetaillID" (positionClick)="openMap($event)"
-            [selectedMapDevice]="selectedMapDevice" (exportEvents)="exportEvents($event)">
+          [selectedMapDevice]="selectedMapDevice" [capacity]="getVehiculeCapacityById(selectedMapDevice)" (exportEvents)="exportEvents($event)">
 
           </details-table>
         </tab>

@@ -19,6 +19,7 @@ export class DetailsTableComponent implements OnChanges {
   @Output() exportEvents?: EventEmitter<any> = new EventEmitter();
   @Input() url: string
   @Input() selectedMapDevice: any;
+  @Input() capacity: any;
   @Input() exportEvts: any;
   @Input() tableID = "Detaill";
   // public columnNames = ["Date","Status","Pushpin Code","Lat/Lon","Vitesse(km/h)","Distance en kilométrage","Carburant %","Fuel Vol(L)","Carburant Total(L)","Adresse","Insert Date"]
@@ -88,6 +89,7 @@ export class DetailsTableComponent implements OnChanges {
           e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
           e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
           e.status = this.tools.getStatusName(e.statusCode)
+          e.fuelLevel = this.round2d(e.fuelLevel * this.capacity)
         })
         console.log("events", this.loadDonnee);
         setTimeout(() => {
@@ -105,7 +107,9 @@ export class DetailsTableComponent implements OnChanges {
     })
 
   }
-
+  round2d(v) {
+    return Math.round((v + Number.EPSILON) * 100) / 100;
+  }
   pageChanged(event: PageEvent) {
     // console.log({ event })
     this.selectedPageSize = event.pageSize
