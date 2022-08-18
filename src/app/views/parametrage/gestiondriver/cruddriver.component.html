@@ -165,9 +165,22 @@
                           </div>
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Véhicule ID</label>
-                            <div class="col-8">
-                              <input type="text" [(ngModel)]="selectedDriver.deviceID" [ngModelOptions]="{standalone: true}" class="form-control"
-                                placeholder="Saisir ID de Véhicule">
+                            <div class="col input-group">
+                              <my-dropdown-select
+                                class="form-control"
+                                [placeholder]="'Vehicules Selection'"
+                                [selectPlaceholder]="'search...'"
+                                [options]="devices"
+                                [display]="'name'"
+                                [value]="'dID'"
+                                [multiple]="false"
+                                [labelCount]="0"
+                                [selectedOptions]="selectedDeviceModalOption"
+                                (selectionChange)="
+                                  getSelectedDeviceModal($event)
+                                "
+                              >
+                              </my-dropdown-select>
                             </div>
                           </div>
                         </div>

@@ -50,7 +50,7 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
 
         if (res) {
           notifsTmp.maintenance = res.maintenanceCount;
-          console.log("res", res);
+          // console.log("res", res);
 
           if (res.alerts && res.alerts.length) {
             var tmp = res.alerts.map((v: any) => { return v.selector }).join("&&")
@@ -68,6 +68,9 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
               }
               if (this.notifregx.z3.test(e)) {
                 notifsTmp.z++
+              }
+              if (this.notifregx.d.test(e)) {
+                notifsTmp.d++
               }
               if (this.notifregx.f.test(e)) {
                 notifsTmp.f++

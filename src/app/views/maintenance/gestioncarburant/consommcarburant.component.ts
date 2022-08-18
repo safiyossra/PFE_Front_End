@@ -61,7 +61,7 @@ export class ConsommcarburantComponent {
   tvaOption: any;
   selectedTva = 10;
 
-  devices$ = this.dataService.getVehicule("?extra=true");
+  devices$ = this.dataService.getVehicule();
   drivers$ = this.dataService.getDriverData("?minimum=true");
 
 
@@ -341,15 +341,13 @@ export class ConsommcarburantComponent {
   loadConsomToModify(consom) {
     this.mode = 'Modifier';
 
-    console.log({ v: this.selectedDriverOption });
-
     this.clearModal();
 
     this.consommation = this.getJsonValue(consom);
     this.consommation.dateFillString = consom.dateFill.replace(' ', 'T');
     this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
 
-    console.log({ v: this.selectedDriverOption });
+    console.log(this.selectedDriverOption);
 
     // dropdown not working
     // we set it by default to test but the value in dropdown does not change
@@ -357,7 +355,8 @@ export class ConsommcarburantComponent {
     this.selectedDriverOption = this.consommation.driverID;
     this.selectedDeviceModalOption = this.consommation.deviceID;
 
-    console.log({ v: this.selectedDriverOption });
+    console.log(this.consommation);
+    console.log(this.selectedDriverOption);
 
     // calculate current tva from ttc and ht
     let tva = Math.trunc((this.consommation.montantTTC / this.consommation.montant - 1) * 100);
@@ -509,7 +508,7 @@ export class ConsommcarburantComponent {
     })
   }
 
-  
+
   exporter(type) {
     type == 1 ? this.exportingPdfTool.exportPdf_Consommation(this.data, "Rapport de Consommation " ) :
     this.exportingExcelTool.Export_Consommaton(this.data, "Rapport de Consommation ")

@@ -398,7 +398,7 @@ export class DetailleComponent implements AfterViewInit {
             else {
               let diff = Math.abs(data[date]!.carburantConsom - data[date]!.carburantPose);
 
-              data[date]!.difference! = diff;
+              data[date]!.difference! = this.round2d(diff);
 
               data[date]!.diffPercentage = (diff / data[date]!.carburantPose * 100).toFixed(2);
             }
