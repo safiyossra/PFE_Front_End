@@ -11,15 +11,11 @@ import { ExportExcel } from 'src/app/tools/export-excel';
   templateUrl: 'alerts.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class AlertsComponent implements OnChanges {
+export class AlertsComponent {
 
   loading: boolean = false;
 
   constructor(private dataService: DataService, private activateRoute: ActivatedRoute, private tools: util, private router: Router, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
