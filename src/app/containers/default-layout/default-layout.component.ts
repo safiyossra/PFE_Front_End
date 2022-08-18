@@ -50,7 +50,7 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
 
         if (res) {
           notifsTmp.maintenance = res.maintenanceCount;
-          console.log("res", res);
+          // console.log("res", res);
 
           if (res.alerts && res.alerts.length) {
             var tmp = res.alerts.map((v: any) => { return v.selector }).join("&&")

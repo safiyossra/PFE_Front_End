@@ -96,18 +96,19 @@ export class CruduserComponent {
 
   loadModify(ev) {
     this.mode = "Modifier"
-    this.selectedUser = new User(ev[0], ev[1], ev[2], ev[3], ev[4], ev[5], ev[6], ev[7], ev[8], "*", ev[9]);
     if (ev) {
-      var url = "?u=" + ev[0]
+      var url = "?id=" + ev[0]
       this.modalLoading = true;
       this.primaryModal.show()
 
       var route = this.router
       this.dataService.getUsers(url).subscribe({
-        next: (d: any) => {
-          console.log(d);
-          if (d && d.length) {
-            this.selectedGroups = d[0].groupID
+        next: (result: any) => {
+          this.selectedUser = new User(result.user.userID, result.user.isActive, result.user.description,  result.user.password, result.user.contactName,  result.user.contactPhone,   result.user.contactEmail,  result.user.notifyEmail,  result.user.timeZone, "*",  result.user.notes)
+          // console.log(this.selectedUser);
+
+          if (result.groups && result.groups.length) {
+            this.selectedGroups = result.groups[0].groupID
           } else {
             this.selectedGroups = "*"
           }

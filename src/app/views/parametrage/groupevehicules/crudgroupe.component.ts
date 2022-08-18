@@ -91,17 +91,18 @@ export class CrudgroupeComponent {
 
   loadModify(ev) {
     this.mode = "Modifier"
-    this.selectedGroupevehicules = new Groupevehicules(ev[0], ev[1], ev[2]);
     if (ev) {
-      var url = "?g=" + ev[0]
+      var url = "?id=" + ev[0]
       this.modalLoading = true;
       this.primaryModal.show()
 
       var route = this.router
       this.dataService.getGroupeVehicules(url).subscribe({
-        next: (d: any) => {
-          console.log(d);
-          this.selectedGroupevehicules.vehiclues = d.map(e => { return e.deviceID });
+        next: (res: any) => {
+          // console.log(res);
+          this.selectedGroupevehicules = new Groupevehicules(res.group.groupID,res.group.description,res.group.displayName);
+
+          this.selectedGroupevehicules.vehiclues = res.vehicules.map(e => { return e.deviceID });
           this.selectedDevices = this.selectedGroupevehicules.vehiclues
           this.selectedDevice = this.selectedDevices
           this.modalLoading = false;
@@ -111,7 +112,7 @@ export class CrudgroupeComponent {
             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
           }
         }
-      })
+      });
     }
   }
 
