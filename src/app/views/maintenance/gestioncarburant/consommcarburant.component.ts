@@ -119,8 +119,6 @@ export class ConsommcarburantComponent {
     this.loadData(true);
   }
 
-
-
   getSelectedDevices(selected) {
     this.selectedDevice = selected;
   }
@@ -508,12 +506,10 @@ export class ConsommcarburantComponent {
     })
   }
 
-
   exporter(type) {
     type == 1 ? this.exportingPdfTool.exportPdf_Consommation(this.data, "Rapport de Consommation " ) :
     this.exportingExcelTool.Export_Consommaton(this.data, "Rapport de Consommation ")
   }
-
 }
 
 

@@ -39,10 +39,9 @@ export class CrudvehiculeComponent {
         console.log(d);
         d.forEach(e => {
           e.age = e.age ?? 0 > 0 ? (now - e.age) : "jamais"
-          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime ?? 0) * 1000));
-          e.registrationExpireString != 0 ? e.registrationExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.registrationExpire) * 1000)) : '';
-          e.insuranceExpireString != 0 ? e.insuranceExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.insuranceExpire) * 1000)) : '';
-          // console.log(e.insuranceExpireString);
+          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime ?? 0)));
+          e.registrationExpireString != 0 ? e.registrationExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.registrationExpire)) : '';
+          e.insuranceExpireString != 0 ? e.insuranceExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.insuranceExpire)) : '';
         });
         this.data = d;
         this.loading = false;
@@ -66,11 +65,11 @@ export class CrudvehiculeComponent {
       this.dataService.getDeviceData(url).subscribe({
         next: (d: any) => {
           // console.log(d[0]);
-          d[0].creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(d[0].creationTime) * 1000));
+          d[0].creationTime = this.tools.formatDateForInput(this.tools.timeStampToDate(d[0].creationTime));
           d[0].fuelEconomy = d[0].fuelEconomy > 0 ? Math.round(100 / d[0].fuelEconomy) : 0;
           d[0].pushpinID = this.tools.getImageId(d[0].pushpinID);
-          d[0].registrationExpireString != 0 ? d[0].registrationExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(d[0].registrationExpire) * 1000)) : '';
-          d[0].insuranceExpireString != 0 ? d[0].insuranceExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(d[0].insuranceExpire) * 1000)) : '';
+          d[0].registrationExpireString != 0 ? d[0].registrationExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(d[0].registrationExpire)) : '';
+          d[0].insuranceExpireString != 0 ? d[0].insuranceExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(d[0].insuranceExpire)) : '';
           this.selectedDevice = d[0];
           this.modalLoading = false;
         }, error(err) {
@@ -84,13 +83,9 @@ export class CrudvehiculeComponent {
     }
   }
 
-  dateToTimeStamp(date) {
-    return Date.parse(date) / 1000 as number;
-  }
-
   setExpDates() {
-    this.selectedDevice.registrationExpire = this.dateToTimeStamp(new Date(this.selectedDevice.registrationExpireString));
-    this.selectedDevice.insuranceExpire = this.dateToTimeStamp(new Date(this.selectedDevice.insuranceExpireString));
+    this.selectedDevice.registrationExpire = this.tools.dateToTimestamp(new Date(this.selectedDevice.registrationExpireString));
+    this.selectedDevice.insuranceExpire = this.tools.dateToTimestamp(new Date(this.selectedDevice.insuranceExpireString));
   }
 
   modifier() {

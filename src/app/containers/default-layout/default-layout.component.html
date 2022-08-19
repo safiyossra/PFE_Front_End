@@ -25,15 +25,15 @@
       <!-- route param: tab is the index of tab in notifications page -->
       <div class="dropdown-menu dropdown-menu-center" *dropdownMenu aria-labelledby="simple-dropdown">
         <div class="dropdown-header text-center"><strong>Alerts</strong></div>
-        <a class="dropdown-item" [routerLink]="['/notifications/alerts']" (click)="loadGroupedUnseenNotifs()" [queryParams]="{ tab: 0 }"><i class="fa fa-tachometer"></i> Vitesse<span
+        <a class="dropdown-item" [routerLink]="['/notifications/alerts']" [queryParams]="{ tab: 0 }"><i class="fa fa-tachometer"></i> Vitesse<span
           class="badge badge-info">{{notifs.v}}</span></a>
-          <a class="dropdown-item" [routerLink]="['/notifications/alerts']" (click)="loadGroupedUnseenNotifs()" [queryParams]="{ tab: 1 }"><i class="fa fa-wrench"></i> Maintenance<span
+          <a class="dropdown-item" [routerLink]="['/notifications/alerts']" [queryParams]="{ tab: 1 }"><i class="fa fa-wrench"></i> Maintenance<span
               class="badge badge-warning">{{notifs.maintenance}}</span></a>
-        <a class="dropdown-item" [routerLink]="['/notifications/alerts']" (click)="loadGroupedUnseenNotifs()" [queryParams]="{ tab: 2 }"><i class="fa fa-map-signs"></i>Zone<span
+        <a class="dropdown-item" [routerLink]="['/notifications/alerts']" [queryParams]="{ tab: 2 }"><i class="fa fa-map-signs"></i>Zone<span
             class="badge badge-danger">{{notifs.z}}</span></a>
-        <a class="dropdown-item" [routerLink]="['/notifications/alerts']" (click)="loadGroupedUnseenNotifs()" [queryParams]="{ tab: 3 }"><i class="fa fa-key"></i> Démarrage<span
+        <a class="dropdown-item" [routerLink]="['/notifications/alerts']" [queryParams]="{ tab: 3 }"><i class="fa fa-key"></i> Démarrage<span
             class="badge badge-success">{{notifs.d}}</span></a>
-        <a class="dropdown-item" [routerLink]="['/notifications/alerts']" (click)="loadGroupedUnseenNotifs()" [queryParams]="{ tab: 4 }"><i class="fa fa-bell"></i> Autres<span
+        <a class="dropdown-item" [routerLink]="['/notifications/alerts']" [queryParams]="{ tab: 4 }"><i class="fa fa-bell"></i> Autres<span
             class="badge badge-warning">{{notifs.other}}</span></a>
       </div>
     </li>
