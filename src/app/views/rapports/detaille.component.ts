@@ -481,11 +481,16 @@ export class DetailleComponent implements AfterViewInit {
               })
           });
           var length = resumetmp.length - 1;
-          resumetmp[length].val = this.reportDataTrajet[this.reportDataTrajet.length - 1]?.ft ?? "0";
-          resumetmp[length - 1].val = this.reportDataTrajet[this.reportDataTrajet.length - 1]?.odo ?? "0";
-          resumetmp[length - 2].val = extra.fe != 0 ? (resumetmp[0].val / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
-          resumetmp[length - 3].val = this.round2d(resumetmp[length - 5].val * extra.fc);
-          resumetmp[length - 4].val = (100 * (resumetmp[length - 5].val / (resumetmp[0].val != 0 ? resumetmp[0].val : 1))).toFixed(1);
+          resumetmp[length].val = this.reportData[this.reportData.length - 1]?.ft ?? "0";
+          resumetmp[length - 1].val = this.reportData[this.reportData.length - 1]?.odo ?? "0";
+          resumetmp[length - 2].val = extra.fe != 0 ? (resumetmp[0].val / (extra.fe != 0 ? extra.fe : 1)).toFixed(2) : "0";
+          resumetmp[length - 3].val = (resumetmp[length - 5].val * extra.fc).toFixed(2);
+          resumetmp[length - 4].val = (100 * (resumetmp[length - 5].val / (resumetmp[0].val != 0 ? resumetmp[0].val : 1))).toFixed(2);
+          resumetmp[length - 5].val = (resumetmp[length - 5].val).toFixed(2);
+          // resumetmp[length - 6].val = (resumetmp[length - 6].val).toFixed(2);
+          resumetmp[length - 7].val = (resumetmp[length - 7].val).toFixed(2);
+          resumetmp[length - 8].val = this.round2d(resumetmp[length - 8].val);
+          resumetmp[length - 9].val = (resumetmp[length - 9].val).toFixed(2);
           this.resume = resumetmp
           this.loading = false;
         }, error(err) {
@@ -528,14 +533,14 @@ export class DetailleComponent implements AfterViewInit {
       if (v.length > 1) {
         return v.reduce((p, c) => {
           if (["da", "dc"].includes(e)) {
-            var f = isNaN(p) ? this.round2d(p[e]) + this.round2d(c[e]) : this.round2d(p) + this.round2d(c[e])
+            var f = isNaN(p) ? p[e] + c[e] : p + c[e]
             return f
           } else
             if (["v"].includes(e)) {
               if (isNaN(p)) return p[e] > c[e] ? p[e] : c[e]
               else return p > c[e] ? p : c[e]
             }
-          return isNaN(p) ? this.round2d(p[e] + c[e]) : this.round2d(p + c[e])
+          return isNaN(p) ? p[e] + c[e] :p + c[e]
         })
       }
       return v[0][e]
@@ -709,29 +714,29 @@ export class DetailleComponent implements AfterViewInit {
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateFrom) * 1000)) + " et " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateTo) * 1000))
     if (this.selectedTab == 1)
-      type == 1 ? this.exportingPdfTool.exportPdf_Trajets(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " + this.selectedDevice + " \n" + title) :
-        this.exportingExcelTool.ExportTrajet(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " + this.selectedDevice + " \n" + title)
+      type == 1 ? this.exportingPdfTool.exportPdf_Trajets(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " + this.getVehiculeNameById(this.selectedDevice) + " \n" + title) :
+        this.exportingExcelTool.ExportTrajet(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " +this.getVehiculeNameById(this.selectedDevice) + " \n" + title)
     else if (this.selectedTab == 0)
-      this.exportingPdfTool.convetToPDF("cardResume", "Rapport Resume pour " + this.selectedDevice + " \n" + title)
+      this.exportingPdfTool.convetToPDF("cardResume", "Rapport Resume pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
      else if (this.selectedTab == 2)
-      this.exportingPdfTool.convetToPDF("cardEvolution", "Rapport d'Evolution pour " + this.selectedDevice + " \n" + title)
+      this.exportingPdfTool.convetToPDF("cardEvolution", "Rapport d'Evolution pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
     else if (this.selectedTab == 3) {
         this.exportEvts = { type: type, force: Math.random() }
       }
       else if (this.selectedTab == 5)
-        type == 1 ? this.exportingPdfTool.exportPdf_Parking(this.reportDataArrets, "Rapport de Parking pour " + this.selectedDevice + " \n" + title) :
-          this.exportingExcelTool.ExportParking(this.reportDataArrets, "Rapport de Parking pour " + this.selectedDevice + " \n" + title)
+        type == 1 ? this.exportingPdfTool.exportPdf_Parking(this.reportDataArrets, "Rapport de Parking pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title) :
+          this.exportingExcelTool.ExportParking(this.reportDataArrets, "Rapport de Parking pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
       else if (this.selectedTab == 6)
-        type == 1 ? this.exportingPdfTool.exportPdf_Carburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.selectedDevice + " \n" + title) :
-          this.exportingExcelTool.ExportCarburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.selectedDevice + " \n" + title)
+        type == 1 ? this.exportingPdfTool.exportPdf_Carburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title) :
+          this.exportingExcelTool.ExportCarburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
   }
 
   exportEvents(v) {
     var title = " Entre " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateFrom) * 1000)) + " et " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateTo) * 1000))
-    v.type == 1 ? this.exportingPdfTool.exportPdf_Events(v.data, "Rapport Détaillés pour " + this.selectedDevice + " \n" + title) :
-      this.exportingExcelTool.ExportEvents(v.data, "Rapport Détaillés pour " + this.selectedDevice + " \n" + title)
+    v.type == 1 ? this.exportingPdfTool.exportPdf_Events(v.data, "Rapport Détaillés pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title) :
+      this.exportingExcelTool.ExportEvents(v.data, "Rapport Détaillés pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
   }
 
   round2d(v) {
