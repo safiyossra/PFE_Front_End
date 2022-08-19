@@ -16,9 +16,12 @@ export class CrudvehiculeComponent {
 
   loading: boolean = false;
   modalLoading: boolean = false;
+  offModalLoading: boolean = false;
+  newOdo: any;
   selectedDevice: Device = new Device();
   errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
+  @ViewChild('offsetModal') public offsetModal: ModalDirective;
   constructor(private dataService: DataService, public cts: Constant, private tools: util, private router: Router, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
 
   data = [];
@@ -54,6 +57,53 @@ export class CrudvehiculeComponent {
       }
     })
   };
+
+  loadOffset(ev) {
+    this.offModalLoading = true;
+    this.newOdo = 0;
+    var url = "?d=" + ev
+    this.offsetModal.show();
+    var route = this.router
+    this.dataService.getDeviceData(url).subscribe({
+      next: (d: any) => {
+        this.selectedDevice = d[0];
+        this.offModalLoading = false;
+        this.newOdo = this.selectedDevice.lastOdometerKM;
+      }, error(err) {
+        console.log(err);
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    })
+  }
+
+  modifierOffset() {
+    var route = this.router
+    this.errorMsg = ""
+
+    this.dataService.updateDeviceOffset({
+      odometerOffsetKM: this.selectedDevice.odometerOffsetKM,
+      deviceID: this.selectedDevice.deviceID
+    }).subscribe({
+      next: (res) => {
+        this.loadData()
+        this.offsetModal.hide()
+      }, error(err) {
+        this.modalLoading = false;
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+        else if (err.status == 402) {
+          this.errorMsg = "Erreur la modification est bloqué."
+        }
+      }
+    })
+  }
+
+  calculateOffset(v) {
+    this.selectedDevice.odometerOffsetKM = parseFloat((v - this.selectedDevice.lastOdometerKM).toFixed(2));
+  }
 
   loadModify(ev) {
     this.selectedDevice = new Device();
@@ -95,26 +145,26 @@ export class CrudvehiculeComponent {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else
       if (!this.tools.ValidatePhone(this.selectedDevice.simPhoneNumber)) {
-      this.errorMsg = "Vous avez saisi un telephone invalid."
-    } else {
-      this.setExpDates()
-      this.selectedDevice.fuelEconomy = this.selectedDevice.fuelEconomy > 0 ? Math.round(100 / this.selectedDevice.fuelEconomy) : 0;
-      this.dataService.updateDevice(this.selectedDevice).subscribe({
-        next: (res) => {
-          this.loadData()
-          this.primaryModal.hide()
-        }, error(err) {
-          this.modalLoading = false;
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        this.errorMsg = "Vous avez saisi un telephone invalid."
+      } else {
+        this.setExpDates()
+        this.selectedDevice.fuelEconomy = this.selectedDevice.fuelEconomy > 0 ? Math.round(100 / this.selectedDevice.fuelEconomy) : 0;
+        this.dataService.updateDevice(this.selectedDevice).subscribe({
+          next: (res) => {
+            this.loadData()
+            this.primaryModal.hide()
+          }, error(err) {
+            this.modalLoading = false;
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+            else if (err.status == 402) {
+              this.errorMsg = "Erreur la modification est bloqué."
+            }
           }
-          else if (err.status == 402) {
-            this.errorMsg = "Erreur la modification est bloqué."
-          }
-        }
-      })
+        })
 
-    }
+      }
   }
 
   onIconChange(e) {

@@ -20,6 +20,7 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   @Output() modify?: EventEmitter<any> = new EventEmitter();
+  @Output() offset?: EventEmitter<any> = new EventEmitter();
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnNames = ["Actions", "Device", "Véhicule", "ID unique", "Odomètre (km)", "Total Carburant (L)", "device Code", "Tel", "Création date"];
@@ -44,6 +45,10 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
 
   modif(ev) {
     this.modify.emit(ev)
+  }
+
+  modifyOffset(ev){
+    this.offset.emit(ev);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

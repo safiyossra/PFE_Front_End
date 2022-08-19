@@ -346,6 +346,20 @@ export class DataService {
     })
   }
 
+  updateDeviceOffset(vehicule: any) {
+    let SERVER_URL = environment.apiUrl + "editVehicule?offset=true";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { v: JSON.stringify(vehicule) }
+
+    })
+  }
+
   addDriver(driver: Driver) {
     let SERVER_URL = environment.apiUrl + "addDrivers";
     let jwt = this.JWT.get();

@@ -150,7 +150,7 @@
                             <label class="col-form-label" for="text-input">MAD/L</label>
                             </div>
                             <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Carburant Capacite (#1)</label>
+                              <label class="col-md-4 col-form-label" for="text-input">Carburant Capacité (#1)</label>
                               <div class="col-7">
                             <input type="number" min="0"  [(ngModel)]="selectedDevice.fuelCapacity" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="0,00">
@@ -158,7 +158,7 @@
                             <label class="col-form-label" for="text-input">Litre</label>
                             </div>
                             <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Carburant Capacite (#2)</label>
+                              <label class="col-md-4 col-form-label" for="text-input">Carburant Capacité (#2)</label>
                               <div class="col-7">
                             <input type="number" min="0"  [(ngModel)]="selectedDevice.fuelCapacity2" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="0,00">
@@ -166,16 +166,16 @@
                             <label class="col-form-label" for="text-input">Litre</label>
                             </div>
                             <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Reporterd Odometer</label>
+                              <label class="col-md-4 col-form-label" for="text-input">Odometre</label>
                               <div class="col-7">
-                            <input type="number" min="0"  [(ngModel)]="selectedDevice.lastOdometerKM" [ngModelOptions]="{standalone: true}"
+                            <input type="number" min="0" disabled [(ngModel)]="selectedDevice.lastOdometerKM" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="0,00">
                             </div>
                             <label class="col-form-label" for="text-input">Km</label>
                             </div>
 
                             <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Registration Date</label>
+                              <label class="col-md-4 col-form-label" for="text-input">Expiration d'abonnement</label>
                               <div class="col-7">
                             <input type="date" [(ngModel)]="selectedDevice.registrationExpireString" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="0,00">
@@ -183,7 +183,7 @@
                             </div>
 
                             <div class="form-group row">
-                              <label class="col-md-4 col-form-label" for="text-input">Insurance Date</label>
+                              <label class="col-md-4 col-form-label" for="text-input">Expiration d'assurance</label>
                               <div class="col-7">
                             <input type="date" [(ngModel)]="selectedDevice.insuranceExpireString" [ngModelOptions]="{standalone: true}"
                               class="form-control" placeholder="0,00">
@@ -203,18 +203,68 @@
                 </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
+
+        <!-- offset modal -->
+        <div bsModal #offsetModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade modalWidth" tabindex="-1"
+          role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-primary row justify-content-center" role="document">
+            <div class="modal-content col-md-6 p-0">
+              <div class="modal-header">
+                <h5 class="modal-title">Modifier Décalage</h5>
+                <button type="button" class="close" (click)="offsetModal.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+                <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
+                <div class="animated fadeIn px-4">
+                    <div class="form-group row">
+                      <label class="col-md-4 col-form-label" for="text-input">Odometre Signalé</label>
+                      <div class="col-7">
+                        <input type="number" min="0" disabled [(ngModel)]="selectedDevice.lastOdometerKM" class="form-control" placeholder="0,00">
+                      </div>
+                      <label class="col-form-label" for="text-input">Km</label>
+                    </div>
+
+                    <div class="form-group row">
+                      <label class="col-md-4 col-form-label" for="text-input">Nouveau Odometre</label>
+                      <div class="col-7">
+                        <input type="number" min="0" (ngModelChange)="calculateOffset($event)" [(ngModel)]="newOdo" class="form-control" placeholder="0,00">
+                      </div>
+                      <label class="col-form-label" for="text-input">Km</label>
+                    </div>
+
+                    <div *ngIf="selectedDevice.odometerOffsetKM != 0" class="form-group row">
+                      <label class="col-md-4 col-form-label" for="text-input">Difference</label>
+                      <div class="col-7">
+                        <input type="number" min="0" [(ngModel)]="selectedDevice.odometerOffsetKM" disabled class="form-control" placeholder="0,00">
+                      </div>
+                      <label class="col-form-label" for="text-input">Km</label>
+                    </div>
+                  </div>
+              </div>
+
+              <div class="modal-footer" style="justify-content: left;display: initial;">
+                  <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
+                  <button type="button" class="btn btn-primary float-right" (click)="modifierOffset()">Modifier</button>
+                  <button type="button" class="btn btn-secondary float-right" (click)="offsetModal.hide()">Fermer</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div>
       </div>
     </div>
     <!--/.col-->
-    </div>
+  </div>
     <!--/.row-->
 
 
-    <div class="row">
-      <div class="col-lg-12">
-        <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
-        <my-gestionvehicule-table (modify)="loadModify($event)" [data]="data">
-        </my-gestionvehicule-table>
-      </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+      <my-gestionvehicule-table (offset)="loadOffset($event)" (modify)="loadModify($event)" [data]="data">
+      </my-gestionvehicule-table>
     </div>
-    </div>
+  </div>
+</div>
