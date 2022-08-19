@@ -18,6 +18,7 @@ export class CrudvehiculeComponent {
   modalLoading: boolean = false;
   offModalLoading: boolean = false;
   newOdo: any;
+  offset: any;
   selectedDevice: Device = new Device();
   errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
@@ -60,13 +61,13 @@ export class CrudvehiculeComponent {
 
   loadOffset(ev) {
     this.offModalLoading = true;
-    this.newOdo = 0;
     var url = "?d=" + ev
     this.offsetModal.show();
     var route = this.router
     this.dataService.getDeviceData(url).subscribe({
       next: (d: any) => {
         this.selectedDevice = d[0];
+        this.offset = 0;
         this.offModalLoading = false;
         this.newOdo = this.selectedDevice.lastOdometerKM;
       }, error(err) {
@@ -83,7 +84,7 @@ export class CrudvehiculeComponent {
     this.errorMsg = ""
 
     this.dataService.updateDeviceOffset({
-      odometerOffsetKM: this.selectedDevice.odometerOffsetKM,
+      odometerOffsetKM: this.offset,
       deviceID: this.selectedDevice.deviceID
     }).subscribe({
       next: (res) => {
@@ -102,7 +103,7 @@ export class CrudvehiculeComponent {
   }
 
   calculateOffset(v) {
-    this.selectedDevice.odometerOffsetKM = parseFloat((v - this.selectedDevice.lastOdometerKM).toFixed(2));
+    this.offset = parseFloat((v - this.selectedDevice.lastOdometerKM).toFixed(2));
   }
 
   loadModify(ev) {

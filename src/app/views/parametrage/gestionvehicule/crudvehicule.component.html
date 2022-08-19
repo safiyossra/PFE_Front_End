@@ -235,10 +235,10 @@
                       <label class="col-form-label" for="text-input">Km</label>
                     </div>
 
-                    <div *ngIf="selectedDevice.odometerOffsetKM != 0" class="form-group row">
+                    <div *ngIf="offset != 0" class="form-group row">
                       <label class="col-md-4 col-form-label" for="text-input">Difference</label>
                       <div class="col-7">
-                        <input type="number" min="0" [(ngModel)]="selectedDevice.odometerOffsetKM" disabled class="form-control" placeholder="0,00">
+                        <input type="number" min="0" [(ngModel)]="offset" disabled class="form-control" placeholder="0,00">
                       </div>
                       <label class="col-form-label" for="text-input">Km</label>
                     </div>
