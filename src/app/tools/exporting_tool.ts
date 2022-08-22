@@ -694,34 +694,44 @@ export class ExportingTool {
         doc.save(title);
     }
 
-
-    convetToPDF(ElementId: string, title: string) {
-        var data: any = document.getElementById(ElementId);
-        html2canvas(data).then(canvas => {
-            var imgWidth = 500;
-            var imgHeight = canvas.height * imgWidth / canvas.width;
-            const contentDataURL = canvas.toDataURL('image/png')
-            let pdf = new jsPDF('l', 'mm', 'a4'); // ex/pc
-            pdf.setFontSize(14);
-            pdf.setDrawColor('blue');
-            pdf.addImage(this.picture, 'png', 10, 4, 30, 30);
-            pdf.setFontSize(12);
-            pdf.setTextColor('#033A7A');
-            pdf.text('Sendatrack.com', 10, 32);
-            pdf.setFontSize(10);
-            pdf.text(this.adress1, 210, 17);
-            pdf.text(this.add, 210, 21);
-            pdf.text(this.adress2, 210, 25);
-            pdf.setFontSize(18);
-            pdf.setTextColor('#366DAD');
-            pdf.text(title, 150, 50, { align: 'center' });
-            var position = 40;
-            pdf.addImage(contentDataURL, 'PNG', 10, position, imgWidth, imgHeight);
-            this.addFooters(pdf);
-            pdf.save(title + '.pdf');
+    async convetToPDF(ElementId: string, title: string) {
+        const printElement: any = document.getElementById(ElementId);
+        const test: any = window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+        const convertedCanvas = await html2canvas(printElement, {
+            allowTaint: false,
+            removeContainer: true,
+            backgroundColor: null,
+            imageTimeout: 15000,
+            // logging: true,
+            scale: 1,
+            scrollY: test,
+            useCORS: true
         });
+        const contentDataURL = convertedCanvas.toDataURL("image/png");
+        // const imgWidth = 205;
+        // const imgHeight = (convertedCanvas.height * imgWidth) / convertedCanvas.width;
+        const shouldCompress = false
+        let pdf = new jsPDF("l", "mm", "a4", shouldCompress);
+        pdf.setFontSize(14);
+        pdf.setDrawColor('blue');
+        pdf.addImage(this.picture, 'png', 10, 4, 30, 30);
+        pdf.setFontSize(12);
+        pdf.setTextColor('#033A7A');
+        pdf.text('Sendatrack.com', 10, 32);
+        pdf.setFontSize(10);
+        pdf.text(this.adress1, 210, 17, { align: 'left' });
+        pdf.text(this.add, 210, 21, { align: 'left' });
+        pdf.text(this.adress2, 210, 25, { align: 'left' });
+        pdf.setFontSize(18);
+        pdf.setTextColor('#366DAD');
+        pdf.text(title, 150, 45, { align: 'center' });
+        pdf.addImage(contentDataURL, "PNG", 10, 55, 280, 140 );
+        this.addFooters(pdf);
+        pdf.save(title + '.pdf');
     }
-
 
     addFooters = doc => {
         const pageCount = doc.internal.getNumberOfPages()
