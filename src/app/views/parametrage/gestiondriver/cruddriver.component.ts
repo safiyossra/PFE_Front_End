@@ -124,9 +124,9 @@ export class CruddriverComponent {
         next: (d: any) => {
           if (d && d.length) {
             d.forEach(e => {
-              e.birthdateString = this.tools.formatDateForInput(new Date(Number.parseInt(e.birthdate ?? 0) * 1000));
-              e.licenseExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.licenseExpire ?? 0) * 1000));
-              e.insuranceExpireString = this.tools.formatDateForInput(new Date(Number.parseInt(e.insuranceExpire ?? 0) * 1000));
+              e.birthdateString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.birthdate ?? 0));
+              e.licenseExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.licenseExpire ?? 0));
+              e.insuranceExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.insuranceExpire ?? 0));
             });
             this.selectedDriver = d[0];
             this.selectedDeviceModalOption = this.selectedDriver.deviceID;
@@ -174,6 +174,12 @@ export class CruddriverComponent {
     this.selectedDriver.insuranceExpire = Math.round((new Date(this.selectedDriver.insuranceExpireString).getTime()) / 1000);
     if (this.mode == "Ajouter") this.ajouter()
     if (this.mode == "Modifier") this.modifier()
+  }
+
+  convertDatesToTimestamp(){
+    this.selectedDriver.birthdateString = this.tools.dateToTimestamp(this.selectedDriver.birthdate);
+    this.selectedDriver.licenseExpireString = this.tools.dateToTimestamp(this.selectedDriver.licenseExpire);
+    this.selectedDriver.insuranceExpireString = this.tools.dateToTimestamp(this.selectedDriver.insuranceExpire);
   }
 
   ajouter() {

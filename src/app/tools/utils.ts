@@ -170,18 +170,40 @@ export class util {
   formatAge(seconds) {
     if (isNaN(seconds)) return "Jamais"
     // return age
-    //days 
+    //days
     let days = Math.floor(seconds / (24 * 3600));
     seconds -= days * 24 * 3600;
-    //hours 
+    //hours
     let hours = Math.floor(seconds / 3600);
     seconds -= hours * 3600;
-    //minutes 
+    //minutes
     let minutes = Math.floor(seconds / 60);
     seconds -= minutes * 60;
-    //output 
+    //output
     return `${days > 0 ? days + " Jours, " : ''}${hours > 0 ? hours + " Heurs, " : ''}${minutes > 0 ? minutes + " minutes, " : ''}${seconds > 0 ? seconds + " seconds" : ''}`;
   }
+
+  timeStampToDate(ts) {
+    if (ts / Math.pow(10, 12) >= 1) {
+     ts;
+    }
+    else if (ts / Math.pow(10, 9) >= 1) {
+     ts *= 1000
+    }
+    else if (ts / Math.pow(10, 7) >= 1) {
+     ts *= 100000
+    }
+    else if (ts / Math.pow(10, 5) >= 1) {
+     ts *= 10000000
+    }
+
+    return new Date(ts);
+  }
+
+  dateToTimestamp(date) {
+    return Date.parse(date) / 1000 as number;
+  }
+
 
   getStatusName(status: any) {
     if (status == 61714) { return "En Route"; } else

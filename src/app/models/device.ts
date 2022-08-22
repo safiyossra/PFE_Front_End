@@ -20,6 +20,7 @@ export class Device {
     insuranceExpire:any
     registrationExpireString:any
     insuranceExpireString:any
+    odometerOffsetKM:any
 
     constructor(isActive?, deviceID?, creationTime?, uniqueID?, description?, vehicleID?, vehicleMake?, vehicleModel?, serialNumber?,
         simPhoneNumber?, speedLimitKPH?, fuelEconomy?, fuelCostPerLiter?, fuelCapacity?, fuelCapacity2?, lastOdometerKM?, pushpinID?, registrationExpire?, insuranceExpire?) {
