@@ -55,6 +55,8 @@ export class MySynthetiquesTableComponent implements OnChanges {
       this.totalItems = this.dataSource.data.length
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
+      this.selectedPageSize = 15;
+      this.currentPage = 0;
 
     }
   }

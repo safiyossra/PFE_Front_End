@@ -18,6 +18,7 @@ export class CrudvehiculeComponent {
   modalLoading: boolean = false;
   offModalLoading: boolean = false;
   newOdo: any;
+  oldOdo: any;
   offset: any;
   selectedDevice: Device = new Device();
   errorMsg: string;
@@ -66,10 +67,12 @@ export class CrudvehiculeComponent {
     var route = this.router
     this.dataService.getDeviceData(url).subscribe({
       next: (d: any) => {
+        console.log(d);
         this.selectedDevice = d[0];
-        this.offset = 0;
+        this.offset = this.selectedDevice.odometerOffsetKM;
         this.offModalLoading = false;
-        this.newOdo = this.selectedDevice.lastOdometerKM;
+        this.oldOdo = this.selectedDevice.lastOdometerKM + this.selectedDevice.odometerOffsetKM;
+        this.newOdo = this.oldOdo;
       }, error(err) {
         console.log(err);
         if (err.status == 401) {

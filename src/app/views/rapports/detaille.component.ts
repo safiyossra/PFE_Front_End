@@ -503,8 +503,8 @@ export class DetailleComponent implements AfterViewInit {
       // pose carburant data
       this.dataService.getPoseFuel(urlParams).subscribe({
         next: (d: any) => {
-          console.log("Pose carburant data");
-          console.log(d);
+          // console.log("Pose carburant data");
+          // console.log(d);
           d.forEach((e) => {
             e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
             e.device = this.getVehiculeNameById(e.deviceID)
@@ -514,7 +514,7 @@ export class DetailleComponent implements AfterViewInit {
             e.fuelstart = this.round2d(e.fuelstart * capacity)
           })
           this.reportDataCarburant = d
-          console.log(this.reportDataCarburant);
+          // console.log(this.reportDataCarburant);
 
           //Consommation
           this.getConsommationAnalysis(urlParams);
