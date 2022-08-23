@@ -188,6 +188,18 @@
             [columns]="columnsRealCarburant" [showPoints]="false">
           </my-carburant-data-table>
         </tab>
+
+        <tab style="min-height: 600px" (selectTab)="selectTab(8)" [active]="selectedTab==8">
+          <ng-template tabHeading class="card-header-action btn-secondary">
+            <i class="fa fa-list-alt mr-1"></i> Geozone &nbsp;
+            <!-- <i class="fa fa-refresh" (click)="getdetails()"></i>-->
+          </ng-template>
+          <details-table [geo]="true" [url]="urldetails" [exportEvts]="exportEvts" [tableID]="DetaillID" (positionClick)="openMap($event)"
+          [selectedMapDevice]="selectedMapDevice" [capacity]="getVehiculeCapacityById(selectedMapDevice)" (exportEvents)="exportEvents($event)">
+
+          </details-table>
+        </tab>
+
       </tabset>
 
     </div>
