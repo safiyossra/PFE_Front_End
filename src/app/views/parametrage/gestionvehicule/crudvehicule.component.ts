@@ -44,9 +44,9 @@ export class CrudvehiculeComponent {
         console.log(d);
         d.forEach(e => {
           e.age = e.age ?? 0 > 0 ? (now - e.age) : "jamais"
-          e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime ?? 0)));
-          e.registrationExpireString != 0 ? e.registrationExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.registrationExpire)) : '';
-          e.insuranceExpireString != 0 ? e.insuranceExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.insuranceExpire)) : '';
+          e.creationTime = this.tools.formatDateForInput(this.tools.timeStampToDate(e.creationTime ?? 0));
+          e.registrationExpireString != 0 ? e.registrationExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.registrationExpire??0)) : '';
+          e.insuranceExpireString != 0 ? e.insuranceExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.insuranceExpire??0)) : '';
         });
         this.data = d;
         this.loading = false;
@@ -71,10 +71,11 @@ export class CrudvehiculeComponent {
         this.selectedDevice = d[0];
         this.offset = this.selectedDevice.odometerOffsetKM;
         this.offModalLoading = false;
-        this.oldOdo = this.selectedDevice.lastOdometerKM + this.selectedDevice.odometerOffsetKM;
+        this.oldOdo = this.round2d(this.selectedDevice.lastOdometerKM + this.selectedDevice.odometerOffsetKM);
         this.newOdo = this.oldOdo;
       }, error(err) {
         console.log(err);
+        this.offModalLoading = false;
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
         }
@@ -85,7 +86,6 @@ export class CrudvehiculeComponent {
   modifierOffset() {
     var route = this.router
     this.errorMsg = ""
-
     this.dataService.updateDeviceOffset({
       odometerOffsetKM: this.offset,
       deviceID: this.selectedDevice.deviceID
@@ -174,6 +174,10 @@ export class CrudvehiculeComponent {
   onIconChange(e) {
     console.log(e, this.selectedDevice);
     this.selectedDevice.pushpinID = e.value
+  }
+
+  round2d(v) {
+    return Math.round((v + Number.EPSILON) * 100) / 100;
   }
 
   exporter(type) {
