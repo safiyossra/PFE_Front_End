@@ -27,9 +27,17 @@
           <button *ngIf="column=='latlon'" type="button" [ngClass]="tools.getStatusColor(salle['statusCode'])"
             (click)="openLocation(salle['ts'])" class="btn btn-link p-1 pt-2 m-0" style="font-size: large;line-height: 1;"><i
               class="cil-location-pin"></i></button>
+
+          <button *ngIf="column=='addressArr'" type="button" [ngClass]="tools.getStatusColor(salle['statusCode'])"
+            (click)="openLocation(salle['dateArr'])" class="btn btn-link p-1 pt-2 m-0" style="font-size: large;line-height: 1;"><i
+              class="cil-location-pin"></i></button>
+
+          <button *ngIf="column=='addressDep'" type="button" [ngClass]="tools.getStatusColor(salle['statusCode'])"
+            (click)="openLocation(salle['dateDep'])" class="btn btn-link p-1 pt-2 m-0" style="font-size: large;line-height: 1;"><i
+              class="cil-location-pin"></i></button>
+
 					{{ salle[column] }}
 				</td>
-
 			</ng-container>
 
 			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

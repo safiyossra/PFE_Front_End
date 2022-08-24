@@ -27,12 +27,12 @@ export class DetailsTableComponent implements OnChanges, OnInit {
   @Input() geo:boolean = false;
   // public columnNames = ["Date","Status","Pushpin Code","Lat/Lon","Vitesse(km/h)","Distance en kilométrage","Carburant %","Fuel Vol(L)","Carburant Total(L)","Adresse","Insert Date"]
   // Pushpin Code , Carburant %,
-  public columnNames = this.geo ? ["date", "zone debut", "zone arrivé"] : ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
+  public columnNames = this.geo ? ["Zone", "date entré", "adresse avant", "odometre avant", "date sortie", "adresse aprés", "odometre aprés", "durée dans la zone"] : ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
   public pageSizeOptions = [10, 15, 20, 30, 50, 100, 200, 500, 1000, 2000];
   // public data: any;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   public isLoading: boolean = false
-  public displayedColumns: any = this.geo ?  ["creationTime", "zonDebut", "zonArrive"] :  ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
+  public displayedColumns: any = this.geo ?  ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr"] :  ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalRows: number = 0;
@@ -47,8 +47,8 @@ export class DetailsTableComponent implements OnChanges, OnInit {
   constructor(private dataService: DataService, private tools: util, private router: Router) { }
 
   ngOnInit(): void {
-    this.columnNames = this.geo ? ["date", "zone debut", "zone arrivé"] : ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
-    this.displayedColumns = this.geo ?  ["creationTime", "zonDebut", "zonArrive"] :  ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
+    this.columnNames = this.geo ? ["Zone", "date entré", "adresse avant", "odometre avant", "date sortie", "adresse aprés", "odometre aprés", "durée dans la zone"] : ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
+    this.displayedColumns = this.geo ?  ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr"] :  ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
   }
 
   applyFilter(event: Event) {
@@ -72,7 +72,6 @@ export class DetailsTableComponent implements OnChanges, OnInit {
       let change = changes['url'].currentValue
       if (change != "") {
         this.url = change;
-        this.selectedPageSize = 15;
         this.currentPage = 0;
         this.loadData();
       }
@@ -93,7 +92,7 @@ export class DetailsTableComponent implements OnChanges, OnInit {
 
     var route = this.router
 
-    var urlTmp = this.url + "&limE=" + this.selectedPageSize + "&page=" + this.currentPage
+    var urlTmp = this.url + "&limE=" + this.selectedPageSize + "&page=" + (this.currentPage+1)
 
     this.geo ? this.dataService.getDetails(urlTmp+"&geozone=true")
     .pipe(
@@ -113,12 +112,10 @@ export class DetailsTableComponent implements OnChanges, OnInit {
         this.dataSource = new MatTableDataSource(d.data)
         this.loadDonnee = d.data;
         this.loadDonnee.forEach((e) => {
-          // e.timestamp = this.tools.formatDate(new Date(Number.parseInt(e.timestamp) * 1000));
-          e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
-          // e.status = this.tools.getStatusName(e.statusCode)
-          // e.fuelLevel = this.round2d(e.fuelLevel * this.capacity)
+          e.dateDepStr = e.dateDep != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateDep)) : '';
+          e.dateArrStr = e.dateArr != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateArr)) : '';
+          e.dureeStr = (new Date(e.duree).toISOString().slice(11, 19));
         })
-        // // console.log("events", this.loadDonnee);
         setTimeout(() => {
           this.paginator.pageIndex = this.currentPage;
           this.paginator.length = d.total

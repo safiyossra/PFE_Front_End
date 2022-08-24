@@ -612,6 +612,7 @@ export class DetailleComponent implements AfterViewInit {
     } else {
       this.selectedMapDevice = this.selectedDevice
       this.urldetails = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo + "&all"
+      // this.urldetails = "?d=" + this.selectedDevice + "&st=" + 1640953432 + "&et=" + 1640960000 + "&all"
     }
   }
 
