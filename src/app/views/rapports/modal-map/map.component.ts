@@ -329,7 +329,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   addMarker(ev: any) {
     this.invalidate()
     this.map.setView([ev.latitude, ev.longitude], this.OneZoomLevel)
-    this.layer = L.layerGroup([this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park'))])
+    this.layer = L.layerGroup([this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : (ev.statusCode == 61714 ? this.tools.myDetailsIcon('moving') : this.tools.myDetailsIcon('park')))])
     this.layer.addTo(this.map)
   }
 
@@ -344,7 +344,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     else {
       this.map.setView([ev[0].latitude, ev[0].longitude], this.OneZoomLevel)
     }
-    let markers = ev.map(e => { return this.createMarker(e, e.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park')) })
+    let markers = ev.map(e => { return this.createMarker(e, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : (ev.statusCode == 61714 ? this.tools.myDetailsIcon('moving') : this.tools.myDetailsIcon('park'))) })
     this.layer = L.layerGroup(markers)
     this.layer.addTo(this.map)
   }

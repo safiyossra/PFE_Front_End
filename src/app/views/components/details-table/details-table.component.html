@@ -28,11 +28,11 @@
             (click)="openLocation(salle['ts'])" class="btn btn-link p-1 pt-2 m-0" style="font-size: large;line-height: 1;"><i
               class="cil-location-pin"></i></button>
 
-          <button *ngIf="column=='addressArr'" type="button" [ngClass]="tools.getStatusColor(salle['statusCode'])"
+          <button *ngIf="column=='addressArr'" type="button" [ngClass]="tools.getStatusColor(salle['statusArr'])"
             (click)="openLocation(salle['dateArr'])" class="btn btn-link p-1 pt-2 m-0" style="font-size: large;line-height: 1;"><i
               class="cil-location-pin"></i></button>
 
-          <button *ngIf="column=='addressDep'" type="button" [ngClass]="tools.getStatusColor(salle['statusCode'])"
+          <button *ngIf="column=='addressDep'" type="button" [ngClass]="tools.getStatusColor(salle['statusDep'])"
             (click)="openLocation(salle['dateDep'])" class="btn btn-link p-1 pt-2 m-0" style="font-size: large;line-height: 1;"><i
               class="cil-location-pin"></i></button>
 
