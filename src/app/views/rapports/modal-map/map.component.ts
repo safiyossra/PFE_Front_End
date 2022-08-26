@@ -85,7 +85,6 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
             console.log("===== -1- here", events);
             this.resetPolyline();
             this.loadData(url + (this.selectedEndTime != "" ? "&et=" + this.selectedEndTime : ""), this.selectedEndTime == "")
-            this.events = [];
           }
           else {
             console.log("===== -2- here", events);
