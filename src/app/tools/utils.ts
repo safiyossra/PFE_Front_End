@@ -79,6 +79,7 @@ export class util {
       className: 'marker-transition my-div-icon' + (isSelected ? ' marker-selected' : ''),
     })
   }
+  
   myTrajetIcon(status: string) {
     let icon = `assets/img/markers/${status}.png`
     return L.divIcon({

@@ -22,8 +22,8 @@
             <button type="button" title="Modifier Offset" (click)="modifyOffset(salle['deviceID'])" class="btn rounded m-1 btn-info"><i
                 class="fa fa-road" style="color: #fff;"></i></button>
             <a *ngIf="salle['isActive']==1" title="Rapport" [routerLink]="['/rapports/detaille']" [queryParams]="{ id: salle['deviceID']}" target="_blank"
-              class="btn rounded btn-secondary"><i class="cil-list"></i> </a>
-            <i *ngIf="salle['isActive']==1" [ngClass]="(tools.getClassByAge(salle['age']))" class="rounded-circle p-2 h5 m-1 ml-4 align-middle"
+              class="btn rounded btn-secondary m-1"><i class="cil-list"></i> </a>
+            <i *ngIf="salle['isActive']==1" [ngClass]="(tools.getClassByAge(salle['age']))" class="rounded-circle p-2 h5 m-1 align-middle"
               [title]="tools.formatAge(salle['age'])"></i>
           </div>
           {{ column!='actions'?salle[column]:'' }}
