@@ -47,7 +47,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     // console.log("map changes");
     // console.log(changes);
     if (changes['vehiculeID'] || changes['startTime'] || changes['endTime'] || changes['timestamps']) {
-      this.resetPolyline()
+      this.resetPolyline();
       // if (changes['timestamps'])
       this.selectedTimestamps = changes['timestamps']?.currentValue
       if (changes['vehiculeID'])
@@ -67,9 +67,37 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     }
 
     if (changes['positionChanged']) {
-      this.resetPolyline()
-      var url = this.selectedVid + "&st=" + this.selectedStartTime + "&3days=true"
-      this.loadData(url + (this.selectedEndTime != "" ? "&et=" + this.selectedEndTime : ""), this.selectedEndTime == "")
+      // this.resetPolyline();
+      // if (this.events)
+      //   if (this.events.length > 0) {
+      //     let events = this.events;
+      //     // this.addMarker(events[0]);
+      //     this.map.setView([events[0].latitude, events[0].longitude], this.OneZoomLevel)
+      //   // var url = this.selectedVid + "&st=" + this.selectedStartTime + "&3days=true"
+      //   // this.loadData(url + (this.selectedEndTime != "" ? "&et=" + this.selectedEndTime : ""), this.selectedEndTime == "")
+      //   }
+      if (this.events) {
+        console.log("center layer");
+
+        if (this.events.length > 0) {
+          let events = this.events;
+          if (events.length > 1) {
+            console.log("===== -1- here", events);
+            this.resetPolyline();
+            this.loadData(url + (this.selectedEndTime != "" ? "&et=" + this.selectedEndTime : ""), this.selectedEndTime == "")
+            this.events = [];
+          }
+          else {
+            console.log("===== -2- here", events);
+            this.map.setView([events[0].latitude, events[0].longitude], this.OneZoomLevel)
+          }
+        }
+        else{
+          console.log("===== -3- here");
+          this.map.setView([this.events[0].latitude, this.events[0].longitude], this.OneZoomLevel);
+}
+          // this.map.setView([ev[0].latitude, ev[0].longitude], this.OneZoomLevel)
+        }
     }
 
     setTimeout(() => {
