@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { util } from 'src/app/tools/utils';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 import { ExportExcel } from 'src/app/tools/export-excel';
+import { position } from 'html2canvas/dist/types/css/property-descriptors/position';
 
 @Component({
   templateUrl: 'detaille.component.html',
@@ -96,7 +97,7 @@ export class DetailleComponent implements AfterViewInit {
   showErrorDevice = false;
   errorMessageDevice = "";
   selectedTab = 0
-  // barChart
+  positionChanged = 0;
 
   /////////////////////////////////////////////////////////////////
   public brandBoxChartOptions: any = {
@@ -540,7 +541,7 @@ export class DetailleComponent implements AfterViewInit {
               if (isNaN(p)) return p[e] > c[e] ? p[e] : c[e]
               else return p > c[e] ? p : c[e]
             }
-          return isNaN(p) ? p[e] + c[e] :p + c[e]
+          return isNaN(p) ? p[e] + c[e] : p + c[e]
         })
       }
       return v[0][e]
@@ -612,6 +613,7 @@ export class DetailleComponent implements AfterViewInit {
     } else {
       this.selectedMapDevice = this.selectedDevice
       this.urldetails = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo + "&all"
+      // this.urldetails = "?d=" + this.selectedDevice + "&st=" + 1640953432 + "&et=" + 1640960000 + "&all"
     }
   }
 
@@ -639,12 +641,14 @@ export class DetailleComponent implements AfterViewInit {
     this.endTime = v.timeEnd ? v.timeEnd : "";
     this.selectedMapDevice = v.selectedMapDevice ? v.selectedMapDevice : "";
     if (this.startTime != "" && this.selectedMapDevice != "") {
+      this.positionChanged = Math.random();
+      // console.log("positionChanged -> 1 ",this.positionChanged)
       this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
       this.interval = this.tools.formatDate(new Date(Number.parseInt(this.startTime) * 1000))
       if (this.endTime != "") {
         this.interval += " - " + this.tools.formatDate(new Date(Number.parseInt(this.endTime) * 1000))
       }
-      this.primaryModal.show()
+      this.primaryModal.show();
     }
   }
 
@@ -674,6 +678,19 @@ export class DetailleComponent implements AfterViewInit {
       this.interval = " Parkings"
       this.timestamps = this.reportDataArrets.map((e) => { return e.st })
       // console.log(this.timestamps);
+      this.primaryModal.show()
+    }
+  }
+
+  openMapGeozone(d: any) {
+    // console.log(d);
+
+    this.selectedMapDevice = d.device ? d.device : "";
+    if (d.data?.length && this.selectedMapDevice != "") {
+      this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
+      this.interval = " Geozone"
+      this.timestamps = d.data.map((e) => { return e.dateArr });
+      this.timestamps = this.timestamps.concat(d.data.map((e) => { return e.dateDep }));
       this.primaryModal.show()
     }
   }
@@ -715,20 +732,20 @@ export class DetailleComponent implements AfterViewInit {
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateTo) * 1000))
     if (this.selectedTab == 1)
       type == 1 ? this.exportingPdfTool.exportPdf_Trajets(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " + this.getVehiculeNameById(this.selectedDevice) + " \n" + title) :
-        this.exportingExcelTool.ExportTrajet(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " +this.getVehiculeNameById(this.selectedDevice) + " \n" + title)
+        this.exportingExcelTool.ExportTrajet(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " + this.getVehiculeNameById(this.selectedDevice) + " \n" + title)
     else if (this.selectedTab == 0)
       this.exportingPdfTool.convetToPDF("cardResume", "Rapport Resume pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
-     else if (this.selectedTab == 2)
+    else if (this.selectedTab == 2)
       this.exportingPdfTool.convetToPDF("cardEvolution", "Rapport d'Evolution pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
     else if (this.selectedTab == 3) {
-        this.exportEvts = { type: type, force: Math.random() }
-      }
-      else if (this.selectedTab == 5)
-        type == 1 ? this.exportingPdfTool.exportPdf_Parking(this.reportDataArrets, "Rapport de Parking pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title) :
-          this.exportingExcelTool.ExportParking(this.reportDataArrets, "Rapport de Parking pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
-      else if (this.selectedTab == 6)
-        type == 1 ? this.exportingPdfTool.exportPdf_Carburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title) :
-          this.exportingExcelTool.ExportCarburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
+      this.exportEvts = { type: type, force: Math.random() }
+    }
+    else if (this.selectedTab == 5)
+      type == 1 ? this.exportingPdfTool.exportPdf_Parking(this.reportDataArrets, "Rapport de Parking pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title) :
+        this.exportingExcelTool.ExportParking(this.reportDataArrets, "Rapport de Parking pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
+    else if (this.selectedTab == 6)
+      type == 1 ? this.exportingPdfTool.exportPdf_Carburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title) :
+        this.exportingExcelTool.ExportCarburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
   }
 
   exportEvents(v) {

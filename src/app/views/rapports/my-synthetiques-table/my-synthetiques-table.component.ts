@@ -22,7 +22,7 @@ export class MySynthetiquesTableComponent implements OnChanges {
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
-  public currentPage: number = 0;
+  public currentPage: number = 1;
   public numPages: number = 0;
 
 
@@ -55,8 +55,7 @@ export class MySynthetiquesTableComponent implements OnChanges {
       this.totalItems = this.dataSource.data.length
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-      this.selectedPageSize = 15;
-      this.currentPage = 0;
+      this.currentPage = 1;
 
     }
   }

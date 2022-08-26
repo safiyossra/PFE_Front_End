@@ -26,6 +26,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   @Input() startTime: string
   @Input() endTime: string
   @Input() timestamps?: any
+  @Input() positionChanged?: any
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
   layer: any
@@ -39,13 +40,14 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   selectedTimestamps: string
   OneZoomLevel = 17
   timer: any
+  events: any;
   constructor(private vehiculeService: VehiculeService, private router: Router, private tools: util,) {
   }
   ngOnChanges(changes: SimpleChanges): void {
     // console.log("map changes");
     // console.log(changes);
     if (changes['vehiculeID'] || changes['startTime'] || changes['endTime'] || changes['timestamps']) {
-      this.resetPolyline()
+      this.resetPolyline();
       // if (changes['timestamps'])
       this.selectedTimestamps = changes['timestamps']?.currentValue
       if (changes['vehiculeID'])
@@ -64,6 +66,31 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       }
     }
 
+    if (changes['positionChanged']) {
+      if (changes['positionChanged']) {
+        if (this.events) {
+          console.log("center layer");
+
+          if (this.events.length > 0) {
+            let events = this.events;
+            if (events.length > 1) {
+              var latlngs = events.map(events => [events.latitude, events.longitude]);
+              if (latlngs.length > 0) {
+                this.map.fitBounds(latlngs);
+              }
+            }
+            else {
+              this.map.setView([events[0].latitude, events[0].longitude], this.OneZoomLevel)
+            }
+          }
+          else
+            this.map.setView([this.events[0].latitude, this.events[0].longitude], this.OneZoomLevel);
+
+            // this.map.setView([ev[0].latitude, ev[0].longitude], this.OneZoomLevel)
+          }
+      }
+    }
+
     setTimeout(() => {
       this.invalidate()
     }, 200);
@@ -79,6 +106,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       next: (res: any) => {
         // console.log("getVehiculeEvents");
         // console.log(res);
+        this.events = res;
         let events = res
         if (events.length == 1)
           this.addMarker(events[0])
@@ -105,6 +133,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
         next: (res: any) => {
           // console.log("getVehiculeEvents");
           // console.log("res ", res);
+          this.events = res;
           let events = res
           if (events.length > 0)
             this.addMarkers(events)
@@ -137,7 +166,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     this.map = L.map(this.mapID, { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
       .setView([this.car.lat, this.car.lng], zoomLevel)
 
-    // dark map 
+    // dark map
     const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       subdomains: 'abcd',
@@ -147,7 +176,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
-    // google street 
+    // google street
     const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
@@ -290,7 +319,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     return L.marker([ev.latitude, ev.longitude], {
       icon: icon
     }).bindPopup(`` +
-    `<div>Heure: ${this.tools.formatedTime(time)}</div>` +
+      `<div>Heure: ${this.tools.formatedTime(time)}</div>` +
       `<div>Status: ${ev.statusCode} </div>` +
       `<div>Carburant: ${ev.fuelTotal} </div>`
       , {
@@ -302,7 +331,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   addMarker(ev: any) {
     this.invalidate()
     this.map.setView([ev.latitude, ev.longitude], this.OneZoomLevel)
-    this.layer = L.layerGroup([this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park'))])
+    this.layer = L.layerGroup([this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : (ev.statusCode == 61714 ? this.tools.myDetailsIcon('moving') : this.tools.myDetailsIcon('park')))])
     this.layer.addTo(this.map)
   }
 
@@ -317,14 +346,16 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     else {
       this.map.setView([ev[0].latitude, ev[0].longitude], this.OneZoomLevel)
     }
-    let markers = ev.map(e => { return this.createMarker(e, e.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park')) })
+    let markers = ev.map(e => {
+      return this.createMarker(e, e.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : (e.statusCode == 61714 ? this.tools.myDetailsIcon('moving') : this.tools.myDetailsIcon('park')))
+    })
     this.layer = L.layerGroup(markers)
     this.layer.addTo(this.map)
   }
   invalidate() {
     if (this.map) {
       // if (!this.timer) {
-      //   this.timer = setInterval(() => 
+      //   this.timer = setInterval(() =>
       this.map?.invalidateSize(true);
       // , 2000);
       // }

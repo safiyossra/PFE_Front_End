@@ -46,7 +46,6 @@ export class MyCarburantDataTableComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
-      this.selectedPageSize = 15;
       this.currentPage = 0;
       let d = changes['data'].currentValue;
       if (d) {
