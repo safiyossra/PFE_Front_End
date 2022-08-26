@@ -16,7 +16,7 @@
     <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 
       <table mat-table [dataSource]="dataSource" matSort>
-        <ng-container
+      <ng-container
 				*ngFor="let column of displayedColumns; let index = index"
 				[matColumnDef]="column"
 			>
