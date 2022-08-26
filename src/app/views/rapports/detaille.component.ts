@@ -682,6 +682,19 @@ export class DetailleComponent implements AfterViewInit {
     }
   }
 
+  openMapGeozone(d: any) {
+    // console.log(d);
+
+    this.selectedMapDevice = d.device ? d.device : "";
+    if (d.data?.length && this.selectedMapDevice != "") {
+      this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
+      this.interval = " Geozone"
+      this.timestamps = d.data.map((e) => { return e.dateArr });
+      this.timestamps = this.timestamps.concat(d.data.map((e) => { return e.dateDep }));
+      this.primaryModal.show()
+    }
+  }
+
   openMapPoints(d: any) {
     this.selectedMapDevice = d ? d : "";
     if (this.reportDataCarburant?.length && this.selectedMapDevice != "") {

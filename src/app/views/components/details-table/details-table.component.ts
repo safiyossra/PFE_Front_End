@@ -19,6 +19,7 @@ import { throwError } from 'rxjs';
 export class DetailsTableComponent implements OnChanges, OnInit {
   @Output() positionClick?: EventEmitter<any> = new EventEmitter();
   @Output() exportEvents?: EventEmitter<any> = new EventEmitter();
+  @Output() openPointsClick?: EventEmitter<any> = new EventEmitter();
   @Input() url: string
   @Input() selectedMapDevice: any;
   @Input() capacity: any;
@@ -165,6 +166,10 @@ export class DetailsTableComponent implements OnChanges, OnInit {
     // console.log(e);
     let out = { "timeStart": e, "selectedMapDevice": this.selectedMapDevice }
     this.positionClick.emit(out)
+  }
+
+  openMapPoints() {
+    this.openPointsClick.emit({"device":this.selectedMapDevice, "data":this.loadDonnee})
   }
 
   export(type) {

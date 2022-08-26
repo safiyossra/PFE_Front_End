@@ -116,7 +116,7 @@
           </modal-map>
         </tab>
 
-        <tab style="min-height: 600px" (selectTab)="selectTab(5)" [active]="selectedTab==5">
+          <tab style="min-height: 600px" (selectTab)="selectTab(5)" [active]="selectedTab==5">
           <ng-template tabHeading>
             <i class="icon-list mr-2"></i>Parking &nbsp;
           </ng-template>
@@ -195,7 +195,7 @@
             <!-- <i class="fa fa-refresh" (click)="getdetails()"></i>-->
           </ng-template>
           <details-table [geo]="true" [url]="urldetails" [exportEvts]="exportEvts" [tableID]="DetaillID" (positionClick)="openMap($event)"
-          [selectedMapDevice]="selectedMapDevice" [capacity]="getVehiculeCapacityById(selectedMapDevice)" (exportEvents)="exportEvents($event)">
+          [selectedMapDevice]="selectedMapDevice" [capacity]="getVehiculeCapacityById(selectedMapDevice)" (openPointsClick)="openMapGeozone($event)" (exportEvents)="exportEvents($event)">
 
           </details-table>
         </tab>

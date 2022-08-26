@@ -67,26 +67,9 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     }
 
     if (changes['positionChanged']) {
-      if (this.events) {
-        console.log("center layer");
-
-        if (this.events.length > 0) {
-          let events = this.events;
-          if (events.length > 1) {
-            var latlngs = events.map(events => [events.latitude, events.longitude]);
-            if (latlngs.length > 0) {
-              this.map.fitBounds(latlngs);
-            }
-          }
-          else {
-            this.map.setView([events[0].latitude, events[0].longitude], this.OneZoomLevel)
-          }
-        }
-        else
-          this.map.setView([this.events[0].latitude, this.events[0].longitude], this.OneZoomLevel);
-
-          // this.map.setView([ev[0].latitude, ev[0].longitude], this.OneZoomLevel)
-        }
+      this.resetPolyline()
+      var url = this.selectedVid + "&st=" + this.selectedStartTime + "&3days=true"
+      this.loadData(url + (this.selectedEndTime != "" ? "&et=" + this.selectedEndTime : ""), this.selectedEndTime == "")
     }
 
     setTimeout(() => {
@@ -344,7 +327,9 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     else {
       this.map.setView([ev[0].latitude, ev[0].longitude], this.OneZoomLevel)
     }
-    let markers = ev.map(e => { return this.createMarker(e, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : (ev.statusCode == 61714 ? this.tools.myDetailsIcon('moving') : this.tools.myDetailsIcon('park'))) })
+    let markers = ev.map(e => {
+      return this.createMarker(e, e.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : (e.statusCode == 61714 ? this.tools.myDetailsIcon('moving') : this.tools.myDetailsIcon('park')))
+    })
     this.layer = L.layerGroup(markers)
     this.layer.addTo(this.map)
   }

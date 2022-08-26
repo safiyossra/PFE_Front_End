@@ -1,6 +1,11 @@
 table {
     width: 100%;
     padding-bottom: 20px;
+    tbody {
+      padding-left: 5px;
+      padding-right: 5px;
+      line-height: 1.5;
+  }
 }
 
 .card-body {
@@ -27,21 +32,21 @@ td.mat-footer-cell {
     border: 0 solid silver;
     border-width: 0px 0px 0px 1px;
     padding: inherit;
-    padding-left: 4px;
+    padding-left: 15px;
+    font-size: 12px;
 }
 
 th.mat-header-cell:first-child,
 td.mat-cell:first-child,
 td.mat-footer-cell:first-child {
     border: 0;
-    padding-left: 5px;
-    }
-    
-    .mat-cell,
-    .mat-footer-cell {
-        font-size: 12px;
-        font-weight: 500;
 }
+
+    // .mat-cell,
+    // .mat-footer-cell {
+    //     font-size: 12px;
+    //     font-weight: 500;
+// }
 
 .mat-header-row {
     // height: auto;
@@ -64,10 +69,51 @@ td.mat-footer-cell:first-child {
 }
 
 .mat-row {
-    height: auto;
-    line-height: 2.5;
+  height: auto;
+  line-height: 2.5;
 }
 
+.mat-sort-header-arrow {
+height: 12px;
+width: 12px;
+min-width: 12px;
+position: relative;
+display: flex;
+color: #fff!important;
+opacity: 0;
+}
+
+tr.mat-row{
+border-bottom: 3px solid #f8f9fd;
+}
+table.mat-table thead th {
+padding-top: 8px;
+padding-bottom: 1px;
+padding-left: 8px;
+// border-left: 1px solid #b1aeaebd
+}
+
+table.mat-table th {
+/* font-family: Lato-Bold; */
+// font-size: 12px !important;
+// color: #fff !important;
+// line-height: 1.4  ; //1
+background-color: #28a6ff;
+}
+
+table>thead>tr>th>div>div{
+  color: #fff !important;
+}
+
+
+
+div#Detaill {
+/*margin-bottom: 110px;*/
+border-radius: 12px;
+overflow: hidden;
+position: relative;
+background-color: #fff;}
+
 .mat-row:nth-child(even) {
-    background-color: #f4f4f4;
+  background-color: #fff;
 }
