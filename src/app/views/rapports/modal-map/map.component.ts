@@ -68,8 +68,6 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     }
 
     else if (changes['positionChanged']) {
-      console.log("2 --> center layer");
-
       if (this.events && this.events.length > 1) {
         this.resetPolyline();
         var url = this.selectedVid + "&st=" + this.selectedStartTime + "&3days=true"
@@ -78,11 +76,6 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       else {
         this.map.setView([this.events[0].latitude, this.events[0].longitude], this.OneZoomLevel)
       }
-      // else {
-      //     console.log("here == 2 ==");
-      //     this.map.setView([this.events[0].latitude, this.events[0].longitude], this.OneZoomLevel);
-      //     // this.map.setView([ev[0].latitude, ev[0].longitude], this.OneZoomLevel)
-      //   }
     }
 
     setTimeout(() => {
