@@ -175,23 +175,25 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.isLoading = true
-      this.zoneService.addZone(this.selectedZone).subscribe({
-        next: (res) => {
-          this.isLoading = false
-          this.mode = 'list'
-          this.loadZones()
-        }
-        , error(err) {
-          console.log("err", err)
-          this.isLoading = false
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-          }
-          else if (err.status == 402) {
-            this.errorMsg = "Erreur l'ajout est bloqué."
-          }
-        }
-      })
+      console.log(this.selectedZone);
+
+      // this.zoneService.addZone(this.selectedZone).subscribe({
+      //   next: (res) => {
+      //     this.isLoading = false
+      //     this.mode = 'list'
+      //     this.loadZones()
+      //   }
+      //   , error(err) {
+      //     console.log("err", err)
+      //     this.isLoading = false
+      //     if (err.status == 401) {
+      //       route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+      //     }
+      //     else if (err.status == 402) {
+      //       this.errorMsg = "Erreur l'ajout est bloqué."
+      //     }
+      //   }
+      // })
     }
   }
 

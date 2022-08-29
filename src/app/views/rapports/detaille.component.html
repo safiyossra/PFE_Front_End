@@ -192,12 +192,16 @@
         <tab style="min-height: 600px" (selectTab)="selectTab(8)" [active]="selectedTab==8">
           <ng-template tabHeading class="card-header-action btn-secondary">
             <i class="fa fa-list-alt mr-1"></i> Geozone &nbsp;
-            <!-- <i class="fa fa-refresh" (click)="getdetails()"></i>-->
           </ng-template>
-          <details-table [geo]="true" [url]="urldetails" [exportEvts]="exportEvts" [tableID]="DetaillID" (positionClick)="openMap($event)"
+          <!-- <details-table [geo]="true" [url]="urldetails" [exportEvts]="exportEvts" [tableID]="DetaillID" (positionClick)="openMap($event)"
           [selectedMapDevice]="selectedMapDevice" [capacity]="getVehiculeCapacityById(selectedMapDevice)" (openPointsClick)="openMapGeozone($event)" (exportEvents)="exportEvents($event)">
+          </details-table> -->
 
-          </details-table>
+          <my-data-table class="detailtable" [tableID]="GeoDetaillID" (positionClick)="openMap($event)" [isTrajet]="0"
+          (openPointsClick)="openMapGeozone($event)"
+          [selectedMapDevice]="selectedMapDevice"
+          [data]="geozonesData" [columnNames]="displayedColumnsGeo" [columns]="columnNamesGeo">
+          </my-data-table>
         </tab>
 
       </tabset>

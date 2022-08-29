@@ -20,6 +20,7 @@ export class DetailleComponent implements AfterViewInit {
   isArret: boolean = false
   loadingcharts: boolean = false
   TrajetDetaillID = "TrajetDetaill"
+  GeoDetaillID = "GeoDetaill"
   ParkingDetaillID = "ParkingDetaill"
   DetaillID = "Detaill"
 
@@ -44,6 +45,7 @@ export class DetailleComponent implements AfterViewInit {
   iconCollapse: string = 'icon-arrow-up';
   iconCollapseD: string = 'icon-arrow-up';
   reportDataTrajet: any;
+  geozonesData: any;
   reportData: any;
   reportDataArrets: any;
   reportDataCarburant: any;
@@ -56,6 +58,10 @@ export class DetailleComponent implements AfterViewInit {
   columnsArrets: any = ["timeStart", "timeEnd", "addi", "da", "odo", "ft"];
   displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]
   columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
+
+  displayedColumnsGeo = ["Zone", "date entré", "adresse entré", "odometre entré", "date sortie", "adresse sortie", "odometre sortie", "durée dans la zone"]
+  columnNamesGeo = ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr"]
+
 
   dColumnsRealCarburant: any = [
     "date",
@@ -438,7 +444,20 @@ export class DetailleComponent implements AfterViewInit {
       var route = this.router
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
-          // console.log(d);
+          console.log(d);
+
+          var geoz = d.geozones;
+
+          console.log("geozone", geoz);
+          geoz.forEach((e) => {
+            e.dateDepStr = e.dateDep != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateDep)) : '';
+            e.dateArrStr = e.dateArr != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateArr)) : '';
+            e.dureeStr = (new Date(e.duree).toISOString().slice(11, 19));
+          });
+
+          this.geozonesData = geoz;
+
+          d = d.trajets
           d.forEach((e) => {
             e.st = e.timeStart;
             e.et = e.timeEnd;
@@ -671,7 +690,6 @@ export class DetailleComponent implements AfterViewInit {
 
   openMapArrets(d: any) {
     // console.log(d);
-
     this.selectedMapDevice = d ? d : "";
     if (this.reportDataArrets?.length && this.selectedMapDevice != "") {
       this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
@@ -684,13 +702,12 @@ export class DetailleComponent implements AfterViewInit {
 
   openMapGeozone(d: any) {
     // console.log(d);
-
-    this.selectedMapDevice = d.device ? d.device : "";
-    if (d.data?.length && this.selectedMapDevice != "") {
+    this.selectedMapDevice = d ? d : "";
+    if (this.geozonesData.length && this.selectedMapDevice != "") {
       this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
       this.interval = " Geozone"
-      this.timestamps = d.data.map((e) => { return e.dateArr });
-      this.timestamps = this.timestamps.concat(d.data.map((e) => { return e.dateDep }));
+      this.timestamps = this.geozonesData.map((e) => { return e.dateArr });
+      this.timestamps = this.timestamps.concat(this.geozonesData.map((e) => { return e.dateDep }));
       this.primaryModal.show()
     }
   }
