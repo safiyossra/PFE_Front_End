@@ -175,7 +175,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.isLoading = true
-      console.log(this.selectedZone);
+      // console.log(this.selectedZone);
 
       this.zoneService.addZone(this.selectedZone).subscribe({
         next: (res) => {
@@ -200,14 +200,14 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   updateZone() {
     var route = this.router
     this.errorMsg = ""
-    console.log("this.selectedZone", this.selectedZone)
+    // console.log("this.selectedZone", this.selectedZone)
     if (!this.selectedZone.description || !this.selectedZone.latitude1 || !this.selectedZone.longitude1 || !this.selectedZone.radius) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.isLoading = true
       this.zoneService.updateZone(this.selectedZone).subscribe({
         next: (res) => {
-          console.log("updateZone", res)
+          // console.log("updateZone", res)
           this.isLoading = false
           this.mode = 'list'
           this.loadZones()
@@ -233,7 +233,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       var u = "?id=" + id
       this.zoneService.delZone(u).subscribe({
         next: (res) => {
-          console.log("delZone", res)
+          // console.log("delZone", res)
           this.isLoading = false
           this.loadZones()
         }, error(err) {
@@ -260,7 +260,6 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   }
 
   addDrawToMap() {
-    console.log("here 0 ===");
     var map = this.map
     this.hideDrawControls(map)
     var icon = L.icon({
@@ -271,8 +270,6 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     this.map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
     this.map.pm.setLang('fr');
     map.on('pm:create', (e: any) => {
-      console.log("here 1 ===");
-
       var res: any;
       this.layer = e.layer;
       res = this.getShape(map, undefined, undefined)
@@ -286,7 +283,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
         this.selectedZone.setMinMax(bounds);
       }
       this.isDrawing = false
-      console.log(res);
+      // console.log(res);
       this.layer.on('pm:update', (e: any) => {
         var res = this.getShape(map, undefined, undefined)
         this.getZoneFromShape(res)
@@ -297,7 +294,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
           this.selectedZone.setMinMax(bounds);
         }
         this.isDrawing = false
-        console.log(res);
+        // console.log(res);
       });
     });
     map.on('pm:remove', (e: any) => {
@@ -345,14 +342,9 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   }
 
   markerBounds(myLatLng:L.LatLng, radius:any){
-    // var circle = L.circle(myLatLng, radius).addTo(this.map);
-    // var bounds = circle.getBounds();
-    // console.log("bounds 1 circle => ", bounds);
-    // circle.removeFrom(this.map);
-
     var bounds2 = myLatLng.toBounds(radius * 2);
     // var rectangle = L.rectangle(bounds2).addTo(this.map);
-    console.log("bounds 2 center => ", bounds2);
+    // console.log("bounds 2 center => ", bounds2);
 
     return bounds2;
   }
@@ -401,7 +393,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
 
   getShapeFromZone(zone: Zone) {
     var res: any;
-    console.log("zone.latLngs", zone.latLngs)
+    // console.log("zone.latLngs", zone.latLngs)
     var shape = zone.zoneType;
     if (shape == ZoneType.Marker) {
       res = {
@@ -602,11 +594,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
         var bounds = this.markerBounds(new L.LatLng(this.selectedZone.latitude1, this.selectedZone.longitude1), this.selectedZone.radius);
         this.selectedZone.setMinMax(bounds);
       }
-      console.log("minlat",this.selectedZone.minLatitude);
-      console.log("maxlat",this.selectedZone.maxLatitude);
-      console.log("minlng",this.selectedZone.minLongitude);
-      console.log("maxlng",this.selectedZone.maxLongitude);
-
+      this.isDrawing = false
     });
     this.showAfterDrawControls(this.map)
   }
