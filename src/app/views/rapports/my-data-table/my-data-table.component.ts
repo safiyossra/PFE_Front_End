@@ -1,3 +1,4 @@
+import { util } from 'src/app/tools/utils';
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -39,8 +40,8 @@ export class MyDataTableComponent implements OnChanges {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor() {
-  }
+  constructor(private tools: util) { }
+
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

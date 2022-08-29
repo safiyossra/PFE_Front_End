@@ -16,7 +16,7 @@ import { throwError } from 'rxjs';
   styleUrls: ['details-table.component.scss'],
   templateUrl: 'details-table.component.html',
 })
-export class DetailsTableComponent implements OnChanges, OnInit {
+export class DetailsTableComponent implements OnChanges {
   @Output() positionClick?: EventEmitter<any> = new EventEmitter();
   @Output() exportEvents?: EventEmitter<any> = new EventEmitter();
   @Output() openPointsClick?: EventEmitter<any> = new EventEmitter();
@@ -25,15 +25,14 @@ export class DetailsTableComponent implements OnChanges, OnInit {
   @Input() capacity: any;
   @Input() exportEvts: any;
   @Input() tableID = "Detaill";
-  @Input() geo: boolean = false;
   // public columnNames = ["Date","Status","Pushpin Code","Lat/Lon","Vitesse(km/h)","Distance en kilométrage","Carburant %","Fuel Vol(L)","Carburant Total(L)","Adresse","Insert Date"]
   // Pushpin Code , Carburant %,
-  public columnNames = this.geo ? ["Zone", "date entré", "adresse avant", "odometre avant", "date sortie", "adresse aprés", "odometre aprés", "durée dans la zone"] : ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
+  public columnNames = ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
   public pageSizeOptions = [10, 15, 20, 30, 50, 100, 200, 500, 1000, 2000];
   // public data: any;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   public isLoading: boolean = false
-  public displayedColumns: any = this.geo ? ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr"] : ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
+  public displayedColumns: any = ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalRows: number = 0;
@@ -46,11 +45,6 @@ export class DetailsTableComponent implements OnChanges, OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private dataService: DataService, private tools: util, private router: Router) { }
-
-  ngOnInit(): void {
-    this.columnNames = this.geo ? ["Zone", "date entré", "adresse entré", "odometre entré", "date sortie", "adresse sortie", "odometre sortie", "durée dans la zone"] : ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
-    this.displayedColumns = this.geo ? ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr"] : ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
-  }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -95,38 +89,7 @@ export class DetailsTableComponent implements OnChanges, OnInit {
 
     var urlTmp = this.url + "&limE=" + this.selectedPageSize + "&page=" + (this.currentPage + 1)
 
-    this.geo ?
-      this.dataService.getAllTrajets(this.url + "&geozone=true")
-        .pipe(
-          catchError(err => {
-            if (err.status == 401) {
-              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-            }
-            else if (err.status == 400) {
-              console.log(err);
-            }
-            return throwError(err);
-          })
-        ).subscribe({
-          next: (d: any) => {
-            console.log("geozone", d);
-            this.dataSource = new MatTableDataSource(d)
-            this.loadDonnee = d;
-            this.loadDonnee.forEach((e) => {
-              e.dateDepStr = e.dateDep != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateDep)) : '';
-              e.dateArrStr = e.dateArr != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateArr)) : '';
-              e.dureeStr = (new Date(e.duree).toISOString().slice(11, 19));
-            });
-            setTimeout(() => {
-              this.paginator.pageIndex = this.currentPage;
-              this.paginator.length = d.total
-            });
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            this.isLoading = false;
-          }
-        })
-      : this.dataService.getDetails(urlTmp).subscribe({
+      this.dataService.getDetails(urlTmp).subscribe({
         next: (d: any) => {
           this.dataSource = new MatTableDataSource(d.data)
           this.loadDonnee = d.data;
@@ -166,10 +129,6 @@ export class DetailsTableComponent implements OnChanges, OnInit {
     // console.log(e);
     let out = { "timeStart": e, "selectedMapDevice": this.selectedMapDevice }
     this.positionClick.emit(out)
-  }
-
-  openMapPoints() {
-    this.openPointsClick.emit({"device":this.selectedMapDevice, "data":this.loadDonnee})
   }
 
   export(type) {
