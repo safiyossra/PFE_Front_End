@@ -177,23 +177,23 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       this.isLoading = true
       console.log(this.selectedZone);
 
-      // this.zoneService.addZone(this.selectedZone).subscribe({
-      //   next: (res) => {
-      //     this.isLoading = false
-      //     this.mode = 'list'
-      //     this.loadZones()
-      //   }
-      //   , error(err) {
-      //     console.log("err", err)
-      //     this.isLoading = false
-      //     if (err.status == 401) {
-      //       route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-      //     }
-      //     else if (err.status == 402) {
-      //       this.errorMsg = "Erreur l'ajout est bloqué."
-      //     }
-      //   }
-      // })
+      this.zoneService.addZone(this.selectedZone).subscribe({
+        next: (res) => {
+          this.isLoading = false
+          this.mode = 'list'
+          this.loadZones()
+        }
+        , error(err) {
+          console.log("err", err)
+          this.isLoading = false
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+          else if (err.status == 402) {
+            this.errorMsg = "Erreur l'ajout est bloqué."
+          }
+        }
+      })
     }
   }
 
@@ -260,6 +260,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   }
 
   addDrawToMap() {
+    console.log("here 0 ===");
     var map = this.map
     this.hideDrawControls(map)
     var icon = L.icon({
@@ -270,17 +271,31 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     this.map.pm.setGlobalOptions({ hideMiddleMarkers: true, finishOn: 'dblclick', markerStyle: { icon: icon } });
     this.map.pm.setLang('fr');
     map.on('pm:create', (e: any) => {
+      console.log("here 1 ===");
+
       var res: any;
       this.layer = e.layer;
       res = this.getShape(map, undefined, undefined)
       this.updateZoneForm(e.shape)
       this.showAfterDrawControls(map)
       this.getZoneFromShape(res)
+      if(this.selectedZone.zoneType != 4)
+        this.selectedZone.setMinMax(this.layer.getBounds());
+      else{
+        var bounds = this.markerBounds(new L.LatLng(this.selectedZone.latitude1, this.selectedZone.longitude1), this.selectedZone.radius);
+        this.selectedZone.setMinMax(bounds);
+      }
       this.isDrawing = false
       console.log(res);
       this.layer.on('pm:update', (e: any) => {
         var res = this.getShape(map, undefined, undefined)
         this.getZoneFromShape(res)
+        if(this.selectedZone.zoneType != 4)
+          this.selectedZone.setMinMax(this.layer.getBounds());
+        else{
+          var bounds = this.markerBounds(new L.LatLng(this.selectedZone.latitude1, this.selectedZone.longitude1), this.selectedZone.radius);
+          this.selectedZone.setMinMax(bounds);
+        }
         this.isDrawing = false
         console.log(res);
       });
@@ -329,6 +344,19 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     return res
   }
 
+  markerBounds(myLatLng:L.LatLng, radius:any){
+    // var circle = L.circle(myLatLng, radius).addTo(this.map);
+    // var bounds = circle.getBounds();
+    // console.log("bounds 1 circle => ", bounds);
+    // circle.removeFrom(this.map);
+
+    var bounds2 = myLatLng.toBounds(radius * 2);
+    // var rectangle = L.rectangle(bounds2).addTo(this.map);
+    console.log("bounds 2 center => ", bounds2);
+
+    return bounds2;
+  }
+
   drawShape(shape: any, iconString) {
     if (shape.shape == ZoneType.Circle) {
       var center = new L.LatLng(shape.coord[0][0], shape.coord[0][1])
@@ -345,7 +373,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
         iconAnchor: [20, 50]
       });
       this.layer = L.marker(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), { icon: icon })//
-      this.map.setView(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), 15)
+      this.map.fitBounds(this.markerBounds(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), 30));
     }
     this.layer.addTo(this.map)
   }
@@ -565,9 +593,20 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     }
     this.drawShape(this.getShapeFromZone(zone), icon)
     this.layer.on('pm:update', (e: any) => {
+      // update09
       var res = this.getShape(undefined, e.layer, e.shape)
       this.getZoneFromShape(res)
-      // console.log(res);
+      if(this.selectedZone.zoneType != 4)
+        this.selectedZone.setMinMax(this.layer.getBounds());
+      else{
+        var bounds = this.markerBounds(new L.LatLng(this.selectedZone.latitude1, this.selectedZone.longitude1), this.selectedZone.radius);
+        this.selectedZone.setMinMax(bounds);
+      }
+      console.log("minlat",this.selectedZone.minLatitude);
+      console.log("maxlat",this.selectedZone.maxLatitude);
+      console.log("minlng",this.selectedZone.minLongitude);
+      console.log("maxlng",this.selectedZone.maxLongitude);
+
     });
     this.showAfterDrawControls(this.map)
   }

@@ -30,6 +30,11 @@ export class Zone {
     longitude10: any
     creationTime: any
 
+    minLongitude: any
+    maxLongitude: any
+    minLatitude: any
+    maxLatitude: any
+
     constructor() {
         this.geozoneID = null
         this.clientID = null
@@ -60,6 +65,11 @@ export class Zone {
         this.longitude8 = null
         this.longitude9 = null
         this.longitude10 = null
+
+        this.minLongitude = null
+        this.maxLongitude = null
+        this.minLatitude = null
+        this.maxLatitude = null
     }
 
     get latLngs() {
@@ -79,6 +89,16 @@ export class Zone {
         var filtered = latlngs.filter(elem => elem[0] != null && elem[1] != null && elem[0] != 0 && elem[1] != 0);
 
         return filtered
+    }
+
+    setMinMax(bounds:any){
+      if(bounds){
+        this.maxLatitude = bounds.getNorthEast().lat;
+        this.minLatitude = bounds.getSouthWest().lat;
+
+        this.maxLongitude = bounds.getNorthEast().lng;
+        this.minLongitude = bounds.getSouthWest().lng;
+      }
     }
 
     setLatLngs(latlng: any) {
