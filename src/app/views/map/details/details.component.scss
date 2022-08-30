@@ -26,8 +26,13 @@
             max-height: 215px;
             overflow: scroll;
         }
+        .mat-sort-header-content{
+            color: black;
+        }
     }
-
+    table.mat-table th {
+        background-color: #28a6ff;
+        }
     .trajets-card {
         display: flex;
     }

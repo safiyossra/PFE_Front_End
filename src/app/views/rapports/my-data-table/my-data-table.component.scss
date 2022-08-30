@@ -31,8 +31,7 @@ td.mat-cell,
 td.mat-footer-cell {
     border: 0 solid silver;
     border-width: 0px 0px 0px 1px;
-    padding: inherit;
-    padding-left: 15px;
+    padding: 9px 5px;
     font-size: 12px;
 }
 
@@ -53,7 +52,7 @@ td.mat-footer-cell:first-child {
         // line-height: 3;
         // background-image: -webkit-linear-gradient(top, #fff, #e3e3e3);
         height: auto;
-        line-height: 2.8;
+        line-height: 1.2;
             background-color: #f6f6f6;
             background-image: -webkit-gradient(linear, 50% 0, 50% 100%, color-stop(0%, #fff), color-stop(100%, #f6f6f6));
             background-image: -moz-linear-gradient(top, #fff, #f6f6f6);
@@ -70,7 +69,7 @@ td.mat-footer-cell:first-child {
 
 .mat-row {
   height: auto;
-  line-height: 2.5;
+  line-height: 1.2;
 }
 
 .mat-sort-header-arrow {
@@ -93,13 +92,13 @@ padding-left: 8px;
 // border-left: 1px solid #b1aeaebd
 }
 
-table.mat-table th {
-/* font-family: Lato-Bold; */
-// font-size: 12px !important;
-// color: #fff !important;
-// line-height: 1.4  ; //1
-background-color: #28a6ff;
-}
+// table.mat-table th {
+// /* font-family: Lato-Bold; */
+// // font-size: 12px !important;
+// // color: #fff !important;
+// // line-height: 1.4  ; //1
+// background-color: #28a6ff;
+// }
 
 table>thead>tr>th>div>div{
   color: #fff !important;
