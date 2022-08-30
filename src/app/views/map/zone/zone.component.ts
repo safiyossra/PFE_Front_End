@@ -175,6 +175,8 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.isLoading = true
+      // console.log(this.selectedZone);
+
       this.zoneService.addZone(this.selectedZone).subscribe({
         next: (res) => {
           this.isLoading = false
@@ -198,14 +200,14 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   updateZone() {
     var route = this.router
     this.errorMsg = ""
-    console.log("this.selectedZone", this.selectedZone)
+    // console.log("this.selectedZone", this.selectedZone)
     if (!this.selectedZone.description || !this.selectedZone.latitude1 || !this.selectedZone.longitude1 || !this.selectedZone.radius) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.isLoading = true
       this.zoneService.updateZone(this.selectedZone).subscribe({
         next: (res) => {
-          console.log("updateZone", res)
+          // console.log("updateZone", res)
           this.isLoading = false
           this.mode = 'list'
           this.loadZones()
@@ -231,7 +233,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       var u = "?id=" + id
       this.zoneService.delZone(u).subscribe({
         next: (res) => {
-          console.log("delZone", res)
+          // console.log("delZone", res)
           this.isLoading = false
           this.loadZones()
         }, error(err) {
@@ -274,13 +276,25 @@ export class ZoneComponent implements OnInit, AfterViewInit {
       this.updateZoneForm(e.shape)
       this.showAfterDrawControls(map)
       this.getZoneFromShape(res)
+      if(this.selectedZone.zoneType != 4)
+        this.selectedZone.setMinMax(this.layer.getBounds());
+      else{
+        var bounds = this.markerBounds(new L.LatLng(this.selectedZone.latitude1, this.selectedZone.longitude1), this.selectedZone.radius);
+        this.selectedZone.setMinMax(bounds);
+      }
       this.isDrawing = false
-      console.log(res);
+      // console.log(res);
       this.layer.on('pm:update', (e: any) => {
         var res = this.getShape(map, undefined, undefined)
         this.getZoneFromShape(res)
+        if(this.selectedZone.zoneType != 4)
+          this.selectedZone.setMinMax(this.layer.getBounds());
+        else{
+          var bounds = this.markerBounds(new L.LatLng(this.selectedZone.latitude1, this.selectedZone.longitude1), this.selectedZone.radius);
+          this.selectedZone.setMinMax(bounds);
+        }
         this.isDrawing = false
-        console.log(res);
+        // console.log(res);
       });
     });
     map.on('pm:remove', (e: any) => {
@@ -327,6 +341,14 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     return res
   }
 
+  markerBounds(myLatLng:L.LatLng, radius:any){
+    var bounds2 = myLatLng.toBounds(radius * 2);
+    // var rectangle = L.rectangle(bounds2).addTo(this.map);
+    // console.log("bounds 2 center => ", bounds2);
+
+    return bounds2;
+  }
+
   drawShape(shape: any, iconString) {
     if (shape.shape == ZoneType.Circle) {
       var center = new L.LatLng(shape.coord[0][0], shape.coord[0][1])
@@ -343,7 +365,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
         iconAnchor: [20, 50]
       });
       this.layer = L.marker(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), { icon: icon })//
-      this.map.setView(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), 15)
+      this.map.fitBounds(this.markerBounds(new L.LatLng(shape.coord[0][0], shape.coord[0][1]), 30));
     }
     this.layer.addTo(this.map)
   }
@@ -371,7 +393,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
 
   getShapeFromZone(zone: Zone) {
     var res: any;
-    console.log("zone.latLngs", zone.latLngs)
+    // console.log("zone.latLngs", zone.latLngs)
     var shape = zone.zoneType;
     if (shape == ZoneType.Marker) {
       res = {
@@ -563,9 +585,16 @@ export class ZoneComponent implements OnInit, AfterViewInit {
     }
     this.drawShape(this.getShapeFromZone(zone), icon)
     this.layer.on('pm:update', (e: any) => {
+      // update09
       var res = this.getShape(undefined, e.layer, e.shape)
       this.getZoneFromShape(res)
-      // console.log(res);
+      if(this.selectedZone.zoneType != 4)
+        this.selectedZone.setMinMax(this.layer.getBounds());
+      else{
+        var bounds = this.markerBounds(new L.LatLng(this.selectedZone.latitude1, this.selectedZone.longitude1), this.selectedZone.radius);
+        this.selectedZone.setMinMax(bounds);
+      }
+      this.isDrawing = false
     });
     this.showAfterDrawControls(this.map)
   }
