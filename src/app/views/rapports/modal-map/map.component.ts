@@ -92,7 +92,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     this.vehiculeService.getVehiculeEvents(url).subscribe({
       next: (res: any) => {
         // console.log("getVehiculeEvents");
-        // console.log(res);
+        console.log(res);
         this.events = res;
         let events = res
         if (events.length == 1)
@@ -339,6 +339,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     this.layer = L.layerGroup(markers)
     this.layer.addTo(this.map)
   }
+
   invalidate() {
     if (this.map) {
       // if (!this.timer) {

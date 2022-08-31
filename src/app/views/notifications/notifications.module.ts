@@ -1,3 +1,5 @@
+import { RapportModule } from './../rapports/rapport.module';
+import { ModalMapComponent } from '../rapports/modal-map/map.component';
 import { DropdownExportModule } from './../components/dropdown-export/dropdown-export.module';
 // Angular
 import { CommonModule } from '@angular/common';
@@ -17,6 +19,8 @@ import { MyNotificationTableComponent } from './my-notification-table/my- notifi
 import { MaterialsModule } from 'src/app/materials.module';
 
 import { TabsModule } from 'ngx-bootstrap/tabs';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   imports: [
@@ -29,7 +33,9 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     MyDateRangePickerModule,
     MaterialsModule,
     DropdownExportModule,
-    TabsModule
+    TabsModule,
+    RapportModule,
+    ModalModule.forRoot(),
   ],
   declarations: [
     AlertsComponent,
