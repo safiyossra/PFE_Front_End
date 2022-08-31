@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -55,8 +55,19 @@ export class MyDataTableComponent implements OnChanges {
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.currentPage = 0;
       }
     }
   }
+
+  pageChanged(event: PageEvent) {
+    this.currentPage = event.pageIndex
+
+    if(event.pageSize != this.selectedPageSize)
+      this.currentPage = 0;
+
+    this.selectedPageSize = event.pageSize
+  }
+
 }
 

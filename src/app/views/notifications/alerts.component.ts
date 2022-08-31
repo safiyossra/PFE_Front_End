@@ -43,8 +43,8 @@ export class AlertsComponent {
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
 
-  timestamps:any;
   startTime:any;
+  endTime:any;
   positionChanged:any;
   selectedMapDevice : any;
   interval : any;
@@ -157,11 +157,8 @@ export class AlertsComponent {
 
   //////////////////////
   submit() {
-    console.log("==== submit =====");
-
     this.loading = true;
     var urlNotif = "?st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
-    // console.log(this.selectedDevice);
     if (this.selectedDevice != null) {
       urlNotif += "&d=" + this.selectedDevice
     }
@@ -261,12 +258,16 @@ export class AlertsComponent {
 
   openPositionInMap(v:any){
     console.log(v);
-    this.startTime = v.timestamp;
-    this.selectedDevice = v.deviceID;
+    this.startTime = v.timestamp ? v.timestamp : "";
+    this.endTime = v.timeEnd ? v.timeEnd : "";
+    this.selectedMapDevice = v.deviceID ? v.deviceID : "";
     if (this.startTime != "" && this.selectedMapDevice != "") {
       this.positionChanged = Math.random();
       this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
-      this.interval = this.tools.formatDate(this.tools.timeStampToDate(this.startTime));
+      this.interval = this.tools.formatDate(new Date(Number.parseInt(this.startTime) * 1000))
+      if (this.endTime != "") {
+        this.interval += " - " + this.tools.formatDate(new Date(Number.parseInt(this.endTime) * 1000))
+      }
       this.primaryModal.show();
     }
   }

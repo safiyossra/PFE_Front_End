@@ -47,7 +47,6 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     // console.log("map changes");
     // console.log(changes);
     if (changes['vehiculeID'] || changes['startTime'] || changes['endTime'] || changes['timestamps']) {
-      console.log("1 --> we have changes")
       this.resetPolyline();
       // if (changes['timestamps'])
       this.selectedTimestamps = changes['timestamps']?.currentValue
@@ -91,8 +90,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     var route = this.router
     this.vehiculeService.getVehiculeEvents(url).subscribe({
       next: (res: any) => {
-        // console.log("getVehiculeEvents");
-        console.log(res);
+        // console.log(res);
         this.events = res;
         let events = res
         if (events.length == 1)

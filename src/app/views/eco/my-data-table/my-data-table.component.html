@@ -20,5 +20,5 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClicked(row)"></tr>
 </table>
-<mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [pageSize]="selectedPageSize">
+<mat-paginator [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage" (page)="pageChanged($event)" showFirstLastButtons [pageSize]="selectedPageSize">
 </mat-paginator>

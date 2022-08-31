@@ -1,6 +1,6 @@
 import { util } from 'src/app/tools/utils';
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -55,7 +55,6 @@ export class MyDataTableComponent implements OnChanges {
     if (changes['data']) {
       let d = changes['data'].currentValue
       if (d) {//&& d.length > 0
-        // console.log("ngOnChanges data");
         // console.log(d);
         this.dataSource = new MatTableDataSource(d)
         this.displayedColumns = this.columns
@@ -75,6 +74,15 @@ export class MyDataTableComponent implements OnChanges {
 
   openMapPoints() {
     this.openPointsClick.emit(this.selectedMapDevice)
+  }
+
+  pageChanged(event: PageEvent) {
+    this.currentPage = event.pageIndex
+
+    if(event.pageSize != this.selectedPageSize)
+      this.currentPage = 0;
+
+    this.selectedPageSize = event.pageSize
   }
 
   showArretcheckbox() {

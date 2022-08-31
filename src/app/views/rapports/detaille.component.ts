@@ -367,7 +367,7 @@ export class DetailleComponent implements AfterViewInit {
           return a - b;
         });
 
-        console.log("Concatination of consommation and pose carburant", concatLists);
+        // console.log("Concatination of consommation and pose carburant", concatLists);
 
         const fromDb = undefined;
         var data = fromDb || {};
@@ -419,7 +419,7 @@ export class DetailleComponent implements AfterViewInit {
           }
         });
 
-        console.log("Analysis result", data_);
+        // console.log("Analysis result", data_);
         this.reportDataConsommation = data_;
       }
     });
@@ -439,16 +439,16 @@ export class DetailleComponent implements AfterViewInit {
       if (this.selectedTab == 4) this.showTrajet()
       // this.resume = []
       var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
-      console.log(urlParams);
+      // console.log(urlParams);
 
       var route = this.router
-      this.dataService.getAllTrajets(urlParams).subscribe({
+      this.dataService.getAllTrajets(urlParams+"&geozone=true").subscribe({
         next: (d: any) => {
-          console.log(d);
+          // console.log(d);
 
           var geoz = d.geozones;
 
-          console.log("geozone", geoz);
+          // console.log("geozone", geoz);
           geoz.forEach((e) => {
             e.dateDepStr = e.dateDep != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateDep)) : '';
             e.dateArrStr = e.dateArr != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateArr)) : '';
@@ -478,9 +478,9 @@ export class DetailleComponent implements AfterViewInit {
           this.reportDataArrets = d.filter((e) => { return e.trajet == 0 });
           this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "st": e.st, "et": e.et, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), "odo": e.odo, "ft": e.ft } });
           this.selectedMapDevice = this.selectedDevice
-          console.log("trajet et parking", this.reportData);
-          console.log("parking", this.reportDataArrets);
-          console.log("trajet", this.reportDataTrajet);
+          // console.log("trajet et parking", this.reportData);
+          // console.log("parking", this.reportDataArrets);
+          // console.log("trajet", this.reportDataTrajet);
 
           let resumetmp = [];
           let labels = this.reportDataTrajet.map((l) => { return l.timeStart })

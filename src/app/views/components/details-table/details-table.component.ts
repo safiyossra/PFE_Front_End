@@ -78,10 +78,6 @@ export class DetailsTableComponent implements OnChanges {
     }
   }
 
-  pageSizeChange(ev) {
-    console.log(ev);
-  }
-
   loadData() {
     this.isLoading = true;
 
@@ -99,7 +95,7 @@ export class DetailsTableComponent implements OnChanges {
             e.status = this.tools.getStatusName(e.statusCode)
             e.fuelLevel = this.round2d(e.fuelLevel * this.capacity)
           })
-          console.log("events", this.loadDonnee);
+          // console.log("events", this.loadDonnee);
           setTimeout(() => {
             this.paginator.pageIndex = this.currentPage;
             this.paginator.length = d.total
@@ -118,9 +114,12 @@ export class DetailsTableComponent implements OnChanges {
     return Math.round((v + Number.EPSILON) * 100) / 100;
   }
   pageChanged(event: PageEvent) {
-    // console.log({ event })
-    this.selectedPageSize = event.pageSize
     this.currentPage = event.pageIndex
+
+    if(event.pageSize != this.selectedPageSize)
+      this.currentPage = 0;
+
+    this.selectedPageSize = event.pageSize
     this.loadData()
   }
 

@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -60,9 +60,17 @@ export class MyNotificationTableComponent implements OnChanges {
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-
-        console.log("data", this.data);
+        this.currentPage = 0;
       }
+    }
+  }
+
+  pageChanged(event: PageEvent) {
+    this.currentPage = event.pageIndex
+
+    if(event.pageSize != this.selectedPageSize){
+      this.selectedPageSize = event.pageSize
+      this.currentPage = 0;
     }
   }
 
