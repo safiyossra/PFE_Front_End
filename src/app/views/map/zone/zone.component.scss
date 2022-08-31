@@ -51,14 +51,18 @@ table {
     .mat-row {
         cursor: pointer;
     }
-
+    .mat-header-row{
+        height: auto;
+        line-height: 3;
+        background-image: -webkit-linear-gradient(top,#fff,#e3e3e3);
+    }
     .mat-row:hover {
         background-color: #03a9f41c;
     }
 
     .mat-cell:first-child,
     .mat-header-cell:first-child {
-        padding-left: 0;
+        padding-left: 8px;
         margin-right: 10px;
     }
 
@@ -66,4 +70,5 @@ table {
     .mat-header-cell:last-child {
         padding-right: 0;
     }
+
 }

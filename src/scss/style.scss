@@ -99,19 +99,29 @@ body {
 .mcontrol:focus {
     outline: none;
 }
-
-table {
+#list-vehicules table.mat-table {
     .mat-sort-header-content {
-        color: black;
+        color: rgb(0, 0, 0);
+    }
+}
+table.mat-table {
+    .mat-sort-header-content {
+        color: white;
         font-weight: 700;
         // font-size: smaller;
         letter-spacing: 0.4px;
     }
-
+     th {
+        background-color: #28a6ff;
+        }
+        
+    .mat-sort-header-arrow {
+        color: #ffffff;
+    }
     th.mat-header-cell:first-child,
     td.mat-cell:first-child,
     td.mat-footer-cell:first-child {
-        border: 0;
+        // border: 0;
         padding-left: 5px;
     }
 
@@ -119,6 +129,9 @@ table {
     .mat-footer-cell {
         font-size: smaller;
         font-weight: 500;
+    }
+    .mat-row:nth-child(even) {
+        background-color: #f4f4f4;
     }
 }
 
