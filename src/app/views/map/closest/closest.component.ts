@@ -39,6 +39,10 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     {
       name: 'Point d\'intérêt',
       val: 'poi'
+    },
+    {
+      name: 'Vehicules',
+      val: 'vehicules'
     }
   ]
   radius = 1000
@@ -46,6 +50,10 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   selectedType = 'poc'
   POIs = []
   selectedPoi = []
+
+  vehicules = []
+  selectedVehicule = []
+
   myMarkers = []
   selectedVehicleIndex: -1;
   POIForm: FormGroup
@@ -73,6 +81,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadPOIs()
+    this.loadVehicules()
     this.radiusChange()
   }
 
@@ -113,7 +122,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true
     })
 
-    // dark map 
+    // dark map
     const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       subdomains: 'abcd',
@@ -123,7 +132,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
-    // google street 
+    // google street
     const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
@@ -227,7 +236,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   }
 
-
   clearRoutesFromMap() {
     this.directionControl?.remove()
   }
@@ -328,6 +336,41 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     if (this.layerMarkers && this.map.hasLayer(this.layerMarkers)) {
       this.layerMarkers.removeFrom(this.map)
     }
+  }
+
+  loadVehicules() {
+    var route = this.router
+    this.vehiculeService.getData().subscribe({
+      next: (res) => {
+        const data = res['DeviceList']
+        console.log(data);
+
+        data.forEach(e => {
+          let l = e['EventData'].length - 1 ?? -1
+          if (l > -1) {
+            const vData = e['EventData'][l]
+            this.vehicules.push({ name: e["Device_desc"], val: vData["GPSPoint_lat"] + ';' + vData["GPSPoint_lon"] })
+          }
+        });
+        console.log(this.vehicules);
+        this.createMarkers(this.vehicules)
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    });
+  }
+
+  onVehiculeChange(ev: any){
+
+    if (this.selectedType == 'vehicules') {
+      this.clearZoneFromMap()
+      let latlng = ev.split(';')
+      this.searchedPosition = { address: "", lat: Number.parseFloat(latlng[0]), lng: Number.parseFloat(latlng[1]) }
+      this.paintZone(this.searchedPosition)
+    } else
+      this.searchedPosition = { address: "", lat: null, lng: null }
   }
 
   onPoiChange(ev: any) {
