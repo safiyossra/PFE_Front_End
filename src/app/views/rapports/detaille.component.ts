@@ -438,7 +438,7 @@ export class DetailleComponent implements AfterViewInit {
       if (this.selectedTab == 2) this.getEvolution(true)
       if (this.selectedTab == 4) this.showTrajet()
       // this.resume = []
-      var urlParams = "?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
+      var urlParams = "?geozone=&d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
       console.log(urlParams);
 
       var route = this.router

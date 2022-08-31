@@ -10,8 +10,8 @@ import { JwtService } from './jwt.service';
 export class ZoneService {
   constructor(private http: HttpClient, private JWT: JwtService) { }
 
-  getData() {
-    let SERVER_URL = environment.apiUrl + "zones";
+  getData(param="") {
+    let SERVER_URL = environment.apiUrl + "zones"+param;
     let jwt = this.JWT.get();
 
     let headers = new HttpHeaders({

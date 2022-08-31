@@ -31,6 +31,7 @@
           {{ columnNames[index] | uppercase }}
         </th>
         <td mat-cell *matCellDef="let salle">
+         <div  [ngClass]="(column=='timeStart' || column =='timeEnd')? 'badge f-100':'f-100'">
           <button *ngIf="column=='timeStart'" type="button" (click)="openLocation(salle['st'],salle['et'])"
             class="btn btn-link p-1 pt-2 m-0" [ngClass]="salle['trajet']=='0'? 'text-danger': ''"
             style="font-size: large;line-height: 1;padding: 0px !important;"><i class="cil-location-pin"></i></button>
@@ -52,6 +53,7 @@
               class="cil-location-pin"></i></button>
 
           {{ salle[column] }}
+         </div> 
         </td>
 
 

@@ -244,8 +244,8 @@ export class DetailsComponent {
       var route = this.router
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
-          // console.log(d);
-          this.reportData = d;
+          console.log(d);
+          this.reportData = d.trajets.filter((e) => { return e.trajet == 1 });
           this.reportData.forEach((e) => {
             e.timeStart = this.tools.formatDate(new Date(Number.parseInt(e.timeStart) * 1000))
             e.timeEnd = this.tools.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000))
@@ -257,12 +257,12 @@ export class DetailsComponent {
           this.columns.forEach((e, index) => {
             if (["v", "c"].includes(e))
               resumetmp.push({
-                val: this.reduce(d, e).toString() + " " + this.resumeUnits[e],
+                val: this.reduce(this.reportData, e).toString() + " " + this.resumeUnits[e],
                 // label: this.displayedColumns[index],
                 // labels: labels,
                 data:
                 {
-                  data: d.map((l) => { return l[e] }),
+                  data: this.reportData.map((l) => { return l[e] }),
                   label: this.displayedColumns[index]
                 }
               })

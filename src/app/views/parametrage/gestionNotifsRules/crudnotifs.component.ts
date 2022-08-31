@@ -268,7 +268,7 @@ export class CrudNotifsRulesComponent {
 
   loadPOIs() {
     var route = this.router
-    this.zoneService.getPoi().subscribe({
+    this.zoneService.getData("?min").subscribe({
       next: (res: any) => {
         var POIs = []
         res.map((e: any) => {

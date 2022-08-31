@@ -23,11 +23,13 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           {{ columnNames[index] | uppercase }}
         </th>
-        <td mat-cell *matCellDef="let salle" style="border:0px;padding-top: 16px; padding-bottom: 16px;">
+        <td mat-cell *matCellDef="let salle">
+          <div  class="f-100">
           <button *ngIf="column=='timestamp'" type="button" (click)="openLocation(salle['ts'])"
             class="btn btn-link p-1 pt-2 m-0" style="font-size: large;line-height: 1;padding: 0px !important;"><i
               class="cil-location-pin"></i></button>
           {{ salle[column] }}
+        </div>
         </td>
       </ng-container>
 

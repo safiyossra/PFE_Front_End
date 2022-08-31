@@ -11,11 +11,11 @@ import { RegisterComponent } from './views/register/register.component';
 import { BasicGuard } from './guards/basic.guard';
 
 export const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'map',
-    pathMatch: 'full',
-  },
+  // {
+  //   path: '',
+  //   redirectTo: 'map',
+  //   pathMatch: 'full',
+  // },
   {
     path: '404',
     component: P404Component,
@@ -80,10 +80,6 @@ export const routes: Routes = [
         path: 'notifications',
         loadChildren: () => import('./views/notifications/notifications.module').then(m => m.NotificationsModule)
       },
-      // {
-      //   path: 'notif-ruls',
-      //   loadChildren: () => import('./views/notificationsRules/notif-rules.module').then(m => m.NotifRulesModule)
-      // },
     ]
   },
   { path: '**', component: P404Component }

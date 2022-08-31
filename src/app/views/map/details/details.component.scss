@@ -41,16 +41,6 @@
         height: auto;
     }
 
-    // #trajets-table {
-    //     max-height: 150px;
-    //     overflow: scroll;
-    //     width: 100%;
-    // }
-
-    // table {
-    //     width: 100%;
-    // }
-
 }
 
 
@@ -63,15 +53,15 @@
 
 
 // table styling 
-.mat-header-row {
-    height: auto;
-    line-height: 3;
-    background-image: -webkit-linear-gradient(top, #fff, #e3e3e3);
-}
+// .mat-header-row {
+//     height: auto;
+//     line-height: 3;
+//     background-image: -webkit-linear-gradient(top, #fff, #e3e3e3);
+// }
 
 .mat-row {
-    height: auto;
-    line-height: 3;
+    // height: auto;
+    // line-height: 3;
     cursor: pointer;
 }
 
