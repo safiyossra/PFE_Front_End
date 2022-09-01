@@ -452,7 +452,9 @@ export class DetailleComponent implements AfterViewInit {
           geoz.forEach((e) => {
             e.dateDepStr = e.dateDep != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateDep)) : '';
             e.dateArrStr = e.dateArr != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateArr)) : '';
-            e.dureeStr = (new Date(e.duree).toISOString().slice(11, 19));
+            console.log(e.duree);
+
+            e.dureeStr = (new Date(e.duree*1000).toISOString().slice(11, 19));
           });
 
           this.geozonesData = geoz;
