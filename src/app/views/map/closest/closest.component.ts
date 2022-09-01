@@ -1,3 +1,4 @@
+import { DataService } from 'src/app/services/data.service';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { util } from '../../../tools/utils'
 import { ZoneService } from '../../../services/zone.service'
@@ -73,7 +74,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   directionControl: any
 
   // ---------------- Zones ------------------
-  constructor(private tools: util, private zoneService: ZoneService, private vehiculeService: VehiculeService, private fb: FormBuilder, private router: Router) {
+  constructor(private dataService:DataService ,private tools: util, private zoneService: ZoneService, private vehiculeService: VehiculeService, private fb: FormBuilder, private router: Router) {
     this.POIForm = fb.group({
       radius: new FormControl(this.radius)
     })
@@ -95,7 +96,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
           POIs.push(poi)
         });
         this.POIs = POIs
-        console.log(this.POIs);
+        // console.log(this.POIs);
 
       }, error(err) {
         if (err.status == 401) {
@@ -352,39 +353,47 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   loadVehicules() {
     var route = this.router
-    this.vehiculeService.getData().subscribe({
+    this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
-        const data = res['DeviceList']
-        data.forEach(e => {
-          let l = e['EventData'].length - 1 ?? -1
-          if (l > -1) {
-            const vData = e['EventData'][l]
-            this.vehicules.push({
-              name: e["Device_desc"], val: vData["GPSPoint_lat"] + ';' + vData["GPSPoint_lon"],
-              device: e["Device"] ?? "", timestamp : vData['Timestamp'] ?? 0, statusCode: vData["StatusCode"]?.toString(), address: vData["Address"] ?? "",
-              deviceCode: e["DeviceCode"] ?? "", icon: e["Icon"] ?? "", headin:vData["Heading"] ?? ""
-            });
-          }
-        });
-        // console.log("vehicules", this.vehicules);
-
+        this.vehicules = res as [];
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
         }
       }
-    });
+    })
   }
 
   onVehiculeChange(ev: any){
     if (this.selectedType == 'vehicules') {
       this.clearZoneFromMap()
       if (ev != null) {
-        this.selectedVehicule = this.vehicules.find(veh => veh.device == ev);
-        // console.log("selected vehicule", this.selectedVehicule);
-        let latlng = this.selectedVehicule.val.split(';')
-        this.searchedPosition = { address: this.selectedVehicule.address, lat: Number.parseFloat(latlng[0]), lng: Number.parseFloat(latlng[1])}
-        this.paintZone(this.searchedPosition, true)
+        var route = this.router
+        this.vehiculeService.getData("extra=true&d="+ev).subscribe({
+          next: (res) => {
+            let device = res['DeviceList'][0]
+
+            let l = device.EventData.length - 1 ?? -1
+            if (l > -1) {
+              const vData = device.EventData[l]
+              this.selectedVehicule = new Vehicule(device["Device"] ?? "", device["Device_desc"] ?? "", vData['Timestamp'] ?? 0, vData["StatusCode"]?.toString(), vData["Address"] ?? "",
+                    vData["Odometer"] ?? "", vData["acceleration"] ?? "", device["SimCard"] ?? "", device["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
+                    vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, device['Icon'], device['FuelLevel'] ?? 0)
+
+              this.searchedPosition = { address: this.selectedVehicule.address, lat: this.selectedVehicule.lat, lng: this.selectedVehicule.lng}
+              this.paintZone(this.searchedPosition, true)
+            }
+            else
+              this.searchedPosition = { address: "", lat: null, lng: null}
+
+            // console.log(this.selectedVehicule);
+          }, error(err) {
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+          }
+        })
+
     } else
       this.searchedPosition = { address: "", lat: null, lng: null}
     }
@@ -412,7 +421,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       this.vehiculeService.getData().subscribe({
         next: (res) => {
           const data = res['DeviceList']
-          console.log(data);
+          // console.log(data);
 
           let vehicules = []
           data.forEach(e => {
@@ -426,7 +435,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
                     vData["Odometer"] ?? "", vData["acceleration"] ?? "", e["SimCard"] ?? "", e["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
                     vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, e['Icon'], e['FuelLevel'] ?? 0)
                 );
-              else if(e["Device"] != this.selectedVehicule.device)
+              else if(e["Device"] != this.selectedVehicule.id)
                 vehicules.push(
                   new Vehicule(e["Device"] ?? "", e["Device_desc"] ?? "", vData['Timestamp'] ?? 0, vData["StatusCode"]?.toString(), vData["Address"] ?? "",
                     vData["Odometer"] ?? "", vData["acceleration"] ?? "", e["SimCard"] ?? "", e["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
@@ -435,7 +444,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
             }
           });
 
-          console.log(vehicules);
+          // console.log(vehicules);
           this.createMarkers(vehicules)
         }, error(err) {
           if (err.status == 401) {

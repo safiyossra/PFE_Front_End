@@ -43,10 +43,15 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fa fa-map-pin fa-sm"></i></span>
                             </div>
-                            <my-dropdown-select class="form-control" [selectPlaceholder]="'Chercher...'" [options]="vehicules" [display]="'name'"
+                            <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule'"
+                              [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
+                              [options]="vehicules" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
+                              [selectedOptions]="selectedDevices" (selectionChange)="onVehiculeChange($event)">
+                            </my-dropdown-select>
+                            <!-- <my-dropdown-select class="form-control" [selectPlaceholder]="'Chercher...'" [options]="vehicules" [display]="'name'"
                                 [value]="'device'" [multiple]="false" [labelCount]="1" [selectedOptions]="selectedVehicule"
                                 (selectionChange)="onVehiculeChange($event)">
-                            </my-dropdown-select>
+                            </my-dropdown-select> -->
                         </div>
                         <!--</div> -->
                     </div>
