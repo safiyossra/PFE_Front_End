@@ -168,7 +168,7 @@ export class AlertsComponent {
       this.dataService.getNotifications(urlNotif).subscribe({
         next: (d: any) => {
           d.forEach((e) => {
-            e.creationTime = this.tools.formatDate(this.tools.timeStampToDate(e.creationTime));
+            e.creationTime = this.tools.formatDate(this.tools.timeStampToDate(e.timestamp));
           })
           this.data = d;
           this.setData(d);
@@ -178,7 +178,7 @@ export class AlertsComponent {
             next: (d: any) => {
               d.forEach((e) => {
 
-                e.creationTime = this.tools.formatDate(this.tools.timeStampToDate(e.creationTime));
+                e.creationTime = this.tools.formatDate(this.tools.timeStampToDate(e.timestamp));
                 e.maintenance = true
               });
               this.maintenanceData = d;
