@@ -55,7 +55,7 @@
                               [ngModelOptions]="{standalone: true}" placeholder="Saisir une Description" required>
                           </div>
                         </div>
-                        <div class="form-group row">
+                        <div *ngIf="mode == 'Ajouter'" class="form-group row">
                           <label class="col-md-4 col-form-label" for="text-input">Mot de passe *</label>
                           <div class="col-8">
                             <input type="password" class="form-control" [(ngModel)]="selectedUser.password"
@@ -150,6 +150,66 @@
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+
+
+        <div bsModal #secondModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade"
+          tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-primary" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">  Modifier mot de passe </h5>
+                <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form>
+              <div class="modal-body">
+                <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
+                <div class="animated fadeIn">
+                  <div class="row">
+                    <div class="col">
+                      <div class="card-body">
+                        <div class="form-group row">
+                          <label class=" col-md-4 col-form-label">Identifiant *</label>
+                          <div class="col-8 input-group">
+                            <input type="text" class="form-control" [disabled]
+                              [(ngModel)]="selectedUser.userID" [ngModelOptions]="{standalone: true}"
+                              placeholder="Saisir un identifiant" required>
+                          </div>
+                        </div>
+
+                        <div class="form-group row">
+                          <label class="col-md-4 col-form-label" for="text-input">Mot de passe *</label>
+                          <div class="col-8">
+                            <input type="password" class="form-control" [(ngModel)]="selectedUser.password"
+                              [ngModelOptions]="{standalone: true}" placeholder="************" [required]="true">
+                          </div>
+                        </div>
+
+                        <div class="form-group row">
+                          <label class="col-md-4 col-form-label" for="text-input">Confirmer le mot de passe *</label>
+                          <div class="col-8">
+                            <input type="password" class="form-control" [(ngModel)]="selectedUser.confirmPass"
+                              [ngModelOptions]="{standalone: true}" placeholder="************" [required]="true">
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+              <div class="modal-footer" style="justify-content: left;display: initial;">
+                <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
+                <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
+                <button type="button" class="btn btn-secondary float-right" (click)="secondModal.hide()">Fermer</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
       </div>
     </div>
     <!--/.col-->
@@ -160,7 +220,7 @@
   <div class="row">
     <div class="col-lg-12">
       <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
-      <my-gestionusers-table (modify)="loadModify($event)" (delete)="delete($event)" [data]="data">
+      <my-gestionusers-table (modify)="loadModify($event)" (editPassword)="loadEditPassword($event)" (delete)="delete($event)" [data]="data">
       </my-gestionusers-table>
     </div>
   </div>
