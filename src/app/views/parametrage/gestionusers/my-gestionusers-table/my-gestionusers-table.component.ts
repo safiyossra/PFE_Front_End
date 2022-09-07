@@ -20,6 +20,7 @@ export class MyGestionusersTableComponent implements OnChanges {
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   @Output() modify?: EventEmitter<any> = new EventEmitter();
   @Output() delete?: EventEmitter<any> = new EventEmitter();
+  @Output() editPassword?: EventEmitter<any> = new EventEmitter();
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   columnNames = ["Actions", "Identifiant", "Nom de l'utilisateur", "Role", "Nom du contact", "Adresse email", "Fuseau horaire", "Last Login"];
@@ -49,9 +50,12 @@ export class MyGestionusersTableComponent implements OnChanges {
   }
   supp(ev) {
     this.delete.emit(ev)
-  
   }
-  
+
+  editPass(ev){
+    this.editPassword.emit(ev)
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
       let d = changes['data'].currentValue
@@ -67,16 +71,16 @@ export class MyGestionusersTableComponent implements OnChanges {
   formatAge(seconds) {
     if (isNaN(seconds)) return "Jamais"
     // return age
-    //days 
+    //days
     let days = Math.floor(seconds / (24 * 3600));
     seconds -= days * 24 * 3600;
-    //hours 
+    //hours
     let hours = Math.floor(seconds / 3600);
     seconds -= hours * 3600;
-    //minutes 
+    //minutes
     let minutes = Math.floor(seconds / 60);
     seconds -= minutes * 60;
-    //output 
+    //output
     return `${days > 0 ? days + " Jours, " : ''}${hours > 0 ? hours + " Heurs, " : ''}${minutes > 0 ? minutes + " minutes, " : ''}${seconds > 0 ? seconds + " seconds" : ''}`;
   }
 }

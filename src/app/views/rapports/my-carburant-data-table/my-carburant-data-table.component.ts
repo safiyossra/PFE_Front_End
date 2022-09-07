@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -56,6 +56,7 @@ export class MyCarburantDataTableComponent implements OnChanges {
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+        this.currentPage = 0;
       }
     }
   }
@@ -64,6 +65,15 @@ export class MyCarburantDataTableComponent implements OnChanges {
     // console.log(timeStart, timeEnd);
     let out = { "timeStart": timeStart, "timeEnd": timeStart, "selectedMapDevice": this.selectedMapDevice }
     this.positionClick.emit(out)
+  }
+
+  pageChanged(event: PageEvent) {
+    this.currentPage = event.pageIndex
+
+    if(event.pageSize != this.selectedPageSize)
+      this.currentPage = 0;
+
+    this.selectedPageSize = event.pageSize
   }
 
   openMapPoints() {

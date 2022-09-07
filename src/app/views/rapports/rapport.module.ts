@@ -67,6 +67,9 @@ import { SynthetiquesComponent } from './synthetiques.component';
     SynthetiquesComponent,
     DetailsTableComponent,
     ModalMapComponent
+  ],
+  exports:[
+    ModalMapComponent
   ]
 })
 export class RapportModule { }

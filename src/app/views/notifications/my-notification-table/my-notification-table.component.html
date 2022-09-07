@@ -1,5 +1,5 @@
 <div class="card card-accent-info" style="min-height: 660px">
-  <!--secondary--> 
+  <!--secondary-->
   <div class="card-body">
     <div class="form-horizontal mb-2 col-md-3">
       <div class="input-group">
@@ -19,6 +19,11 @@
 					{{ columnNames[index] | uppercase }}
 				</th>
 				<td mat-cell *matCellDef="let salle">
+          <button *ngIf="column=='creationTime' && salle['maintenance'] != true" type="button"
+          (click)="openLocation(salle)"
+          class="btn btn-link p-1 pt-2 m-0" style="font-size: large;line-height: 1;">
+            <i class="cil-location-pin"></i>
+          </button>
 					{{ salle[column] }}
 				</td>
 			</ng-container>
@@ -31,7 +36,7 @@
 			></tr>
       </table>
   </div>
-  <div class="card-footer"> 
-      <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [pageSize]="selectedPageSize"> </mat-paginator>
+  <div class="card-footer">
+      <mat-paginator [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" [pageIndex]="currentPage" showFirstLastButtons [pageSize]="selectedPageSize"> </mat-paginator>
   </div>
 </div>

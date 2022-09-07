@@ -37,7 +37,25 @@
                             </my-dropdown-select>
                         </div>
                         <!--</div> -->
+                    </div>
+                    <div class="controls" class="w-100 mb-2" *ngIf="selectedType == 'vehicules'">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
+                          </div>
+                          <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule'"
+                              [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
+                              [options]="vehicules" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
+                              [selectedOptions]="selectedDevices" (selectionChange)="onVehiculeChange($event)">
+                          </my-dropdown-select>
+                          <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-key fa-sm" *ngIf="selectedDevice == null"></i><i
+                                *ngIf="selectedDevice != null">{{
+                                selectedDevice
+                                }}</i></span>
+                          </div>
                         </div>
+                    </div>
                     <mat-form-field class="w-100" appearance="fill">
                         <mat-label>Rayon (en mètres)</mat-label>
                         <input type="number" aria-label="Number" min="100" max="20000000" matInput formControlName="radius"

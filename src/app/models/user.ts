@@ -10,6 +10,7 @@ export class User {
     isActive: any
     notes:any
     groups : any
+    confirmPass?: any
 
     constructor(userID?,isActive?,description?, password?,contactName?, contactPhone?,  contactEmail?,
            notifyEmail?, timeZone?,groups?, notes? ) {

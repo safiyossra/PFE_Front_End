@@ -1,5 +1,5 @@
-import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -18,6 +18,9 @@ export class MyNotificationTableComponent implements OnChanges {
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
 
+  @Output() positionClick:EventEmitter<any> = new EventEmitter();
+  @Output() openPointsClick?: EventEmitter<any> = new EventEmitter();
+
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   columnNames = ["Date", "Vehicule", "Description", "Message"];
@@ -32,6 +35,7 @@ export class MyNotificationTableComponent implements OnChanges {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor() {
+
   }
 
   applyFilter(event: Event) {
@@ -49,15 +53,29 @@ export class MyNotificationTableComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data']) {
-    let d = changes['data'].currentValue
+      let d = changes['data'].currentValue
       if (d) {
-    this.dataSource = new MatTableDataSource(d)
-    // this.displayedColumns = this.columns
-    this.totalItems = this.dataSource.data.length
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+        this.dataSource = new MatTableDataSource(d)
+        // this.displayedColumns = this.columns
+        this.totalItems = this.dataSource.data.length
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        this.currentPage = 0;
+      }
     }
   }
-}
+
+  pageChanged(event: PageEvent) {
+    this.currentPage = event.pageIndex
+
+    if(event.pageSize != this.selectedPageSize){
+      this.selectedPageSize = event.pageSize
+      this.currentPage = 0;
+    }
+  }
+
+  openLocation(ev:any){
+    this.positionClick.emit(ev);
+  }
 }
 

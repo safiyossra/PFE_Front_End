@@ -21,6 +21,7 @@ export class CruduserComponent {
   mode = "Ajouter";
   selectedUser: User = new User();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
+  @ViewChild('secondModal') public secondModal: ModalDirective;
   constructor(private dataService: DataService, private tools: util, private router: Router, public cst: Constant,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
   data = [];
   errorMsg: string;
@@ -81,7 +82,7 @@ export class CruduserComponent {
 
         });
         this.data = d;
-        console.log(d);
+        // console.log(d);
 
         this.loading = false;
       }, error(err) {
@@ -94,6 +95,54 @@ export class CruduserComponent {
     })
   };
 
+  loadEditPassword(ev){
+    this.mode = "Valider"
+    // ev => userID
+    this.selectedUser = new User();
+    this.selectedUser.userID = ev;
+    this.selectedUser.password = "";
+    this.selectedUser.description = "x";
+    this.selectedUser.groups = "";
+    this.selectedUser.confirmPass = "";
+    // console.log(this.selectedUser);
+    this.secondModal.show();
+    this.modalLoading = false;
+  }
+
+  editPassword(){
+    var route = this.router
+    this.errorMsg = ""
+    if (!this.selectedUser.password && !this.selectedUser.confirmPass)  {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      if (this.selectedUser.password.length > 0 && this.selectedUser.password.length < 6)
+        this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
+      else if (this.selectedUser.password !=  this.selectedUser.confirmPass)
+        this.errorMsg = "Le mot de passe et le mot de passe de confirmation ne sont pas identiques ."
+      else{
+        this.modalLoading = true;
+        // console.log(this.selectedUser);
+        this.dataService.updateUsers(this.selectedUser).subscribe({
+          next: (res) => {
+            this.loadData()
+            this.secondModal.hide()
+            this.errorMsg = ""
+          } , error(err) {
+            console.log("error", err);
+            this.modalLoading = false;
+            this.errorMsg = "Erreur "+err
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+            else if (err.status == 402) {
+              this.errorMsg = "Erreur la modification est bloqué."
+            }
+          }
+        });
+      }
+    }
+  }
+
   loadModify(ev) {
     this.mode = "Modifier"
     if (ev) {
@@ -104,7 +153,7 @@ export class CruduserComponent {
       var route = this.router
       this.dataService.getUsers(url).subscribe({
         next: (result: any) => {
-          this.selectedUser = new User(result.user.userID, result.user.isActive, result.user.description,  result.user.password, result.user.contactName,  result.user.contactPhone,   result.user.contactEmail,  result.user.notifyEmail,  result.user.timeZone, "*",  result.user.notes)
+          this.selectedUser = new User(result.user.userID, result.user.isActive, result.user.description,  "", result.user.contactName,  result.user.contactPhone,   result.user.contactEmail,  result.user.notifyEmail,  result.user.timeZone, "*",  result.user.notes)
           // console.log(this.selectedUser);
 
           if (result.groups && result.groups.length) {
@@ -127,6 +176,7 @@ export class CruduserComponent {
   submit() {
     if (this.mode == "Ajouter") this.ajouter()
     if (this.mode == "Modifier") this.modifier()
+    if (this.mode == "Valider") this.editPassword()
   }
 
   ajouter() {
@@ -192,12 +242,10 @@ export class CruduserComponent {
     } else {
       if (this.selectedUser.notifyEmail && !this.tools.ValidateEmail(this.selectedUser.notifyEmail)) this.errorMsg = "Vous avez saisi un email de notification invalid."
       else if (this.selectedUser.contactEmail && !this.tools.ValidateEmail(this.selectedUser.contactEmail)) this.errorMsg = "Vous avez saisi un email de contact invalid."
-      else if (this.selectedUser.password.length > 0 && this.selectedUser.password.length < 6) this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
+      // else if (this.selectedUser.password.length > 0 && this.selectedUser.password.length < 6) this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
       else{
-        console.log("dkhal");
-
         this.modalLoading = true;
-      this.dataService.updateUsers(this.selectedUser).subscribe({
+        this.dataService.updateUsers(this.selectedUser).subscribe({
         next: (res) => {
           console.log("updateUsers");
           this.loadData()
@@ -218,7 +266,6 @@ export class CruduserComponent {
       }
     }
   }
-
 
   delete(user) {
     if (confirm("Are you sure to delete " + user)) {
@@ -253,5 +300,5 @@ export class CruduserComponent {
   exporter(type) {
     type == 1 ? this.exportingPdfTool.exportPdf_Users(this.data, "Rapport de List Utilisateurs" ) :
       this.exportingExcelTool.Export_Users(this.data, "Rapport de List Utilisateurs" )
-}
+  }
 }

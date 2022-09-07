@@ -38,7 +38,7 @@
     </table>
   </div>
   <div class="card-footer">
-    <mat-paginator [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage" [pageSize]="selectedPageSize" showFirstLastButtons [pageSize]="selectedPageSize">
+    <mat-paginator [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" [pageIndex]="currentPage" [pageSize]="selectedPageSize" showFirstLastButtons [pageSize]="selectedPageSize">
     </mat-paginator>
   </div>
 </div>

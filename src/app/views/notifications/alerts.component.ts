@@ -1,3 +1,4 @@
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Component, ViewChild, ViewEncapsulation, OnChanges, SimpleChanges } from '@angular/core';
 import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../components/my-date-range-picker/my-daterangepicker.component';
 import { DataService } from '../../services/data.service';
@@ -41,6 +42,15 @@ export class AlertsComponent {
   subActivateRoute: any
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
+
+  startTime:any;
+  endTime:any;
+  positionChanged:any;
+  selectedMapDevice : any;
+  interval : any;
+  selectedMapDeviceName = "";
+  @ViewChild('primaryModal') public primaryModal: ModalDirective;
+
   ngOnInit() {
     const today = new Date();
     const tomorrow = new Date();
@@ -147,11 +157,8 @@ export class AlertsComponent {
 
   //////////////////////
   submit() {
-    console.log("==== submit =====");
-
     this.loading = true;
     var urlNotif = "?st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
-    // console.log(this.selectedDevice);
     if (this.selectedDevice != null) {
       urlNotif += "&d=" + this.selectedDevice
     }
@@ -160,9 +167,8 @@ export class AlertsComponent {
     if (this.selectedTab != 1)
       this.dataService.getNotifications(urlNotif).subscribe({
         next: (d: any) => {
-          console.log("==== all =====");
           d.forEach((e) => {
-            e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
+            e.creationTime = this.tools.formatDate(this.tools.timeStampToDate(e.timestamp));
           })
           this.data = d;
           this.setData(d);
@@ -171,8 +177,10 @@ export class AlertsComponent {
           this.dataService.getNotifications(urlNotif + "&maintenance=true").subscribe({
             next: (d: any) => {
               d.forEach((e) => {
-                e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
-              })
+
+                e.creationTime = this.tools.formatDate(this.tools.timeStampToDate(e.timestamp));
+                e.maintenance = true
+              });
               this.maintenanceData = d;
               this.data = this.data.concat(this.maintenanceData)
 
@@ -198,9 +206,9 @@ export class AlertsComponent {
       this.dataService.getNotifications(urlNotif + "&maintenance=true").subscribe({
         next: (d: any) => {
 
-          console.log("==== maintenance =====");
           d.forEach((e) => {
-            e.creationTime = this.tools.formatDate(new Date(Number.parseInt(e.creationTime) * 1000));
+            e.creationTime = this.tools.formatDate(this.tools.timeStampToDate(e.creationTime));
+            e.maintenance = true
           })
           this.maintenanceData = d;
           this.data = this.data.concat(this.maintenanceData)
@@ -239,6 +247,29 @@ export class AlertsComponent {
 
   reset() {
     this.selectedDevices = []
+  }
+
+  getVehiculeNameById(id) {
+    for (let i = 0; i < this.devices.length; i++) {
+      if (this.devices[i].dID == id) return this.devices[i].name
+    }
+    return ""
+  }
+
+  openPositionInMap(v:any){
+    console.log(v);
+    this.startTime = v.timestamp ? v.timestamp : "";
+    this.endTime = v.timeEnd ? v.timeEnd : "";
+    this.selectedMapDevice = v.deviceID ? v.deviceID : "";
+    if (this.startTime != "" && this.selectedMapDevice != "") {
+      this.positionChanged = Math.random();
+      this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
+      this.interval = this.tools.formatDate(new Date(Number.parseInt(this.startTime) * 1000))
+      if (this.endTime != "") {
+        this.interval += " - " + this.tools.formatDate(new Date(Number.parseInt(this.endTime) * 1000))
+      }
+      this.primaryModal.show();
+    }
   }
 
   exporter(type) {

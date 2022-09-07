@@ -1,3 +1,4 @@
+import { DataService } from 'src/app/services/data.service';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { util } from '../../../tools/utils'
 import { ZoneService } from '../../../services/zone.service'
@@ -39,6 +40,10 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     {
       name: 'Point d\'intérêt',
       val: 'poi'
+    },
+    {
+      name: 'Vehicules',
+      val: 'vehicules'
     }
   ]
   radius = 1000
@@ -46,10 +51,14 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   selectedType = 'poc'
   POIs = []
   selectedPoi = []
+
+  vehicules = []
+  selectedVehicule:any;
+
   myMarkers = []
   selectedVehicleIndex: -1;
   POIForm: FormGroup
-  searchedPosition = { address: "", lat: null, lng: null }
+  searchedPosition = { address: "", lat: null, lng: null}
 
   myZone: any
   layerMarkers: any
@@ -65,7 +74,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   directionControl: any
 
   // ---------------- Zones ------------------
-  constructor(private tools: util, private zoneService: ZoneService, private vehiculeService: VehiculeService, private fb: FormBuilder, private router: Router) {
+  constructor(private dataService:DataService ,private tools: util, private zoneService: ZoneService, private vehiculeService: VehiculeService, private fb: FormBuilder, private router: Router) {
     this.POIForm = fb.group({
       radius: new FormControl(this.radius)
     })
@@ -73,6 +82,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadPOIs()
+    this.loadVehicules()
     this.radiusChange()
   }
 
@@ -86,6 +96,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
           POIs.push(poi)
         });
         this.POIs = POIs
+        // console.log(this.POIs);
+
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -103,7 +115,8 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
   onTypeChange(event: any) {
     this.clearZoneFromMap()
-    this.searchedPosition = { address: "", lat: null, lng: null }
+    this.searchedPosition = { address: "", lat: null, lng: null}
+    this.selectedVehicule = null;
   }
 
   createMap() {
@@ -113,7 +126,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true
     })
 
-    // dark map 
+    // dark map
     const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       subdomains: 'abcd',
@@ -123,7 +136,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
-    // google street 
+    // google street
     const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
       maxZoom: 20,
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
@@ -197,10 +210,10 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       if (this.selectedType == 'poc') {
         this.clearZoneFromMap()
         if (ev.latlng.lat != null) {
-          this.searchedPosition = { address: "", lat: ev.latlng.lat, lng: ev.latlng.lng }
-          this.paintZone(this.searchedPosition)
+          this.searchedPosition = { address: "", lat: ev.latlng.lat, lng: ev.latlng.lng}
+          this.paintZone(this.searchedPosition, this.selectedType.valueOf() == 'vehicules' )
         } else {
-          this.searchedPosition = { address: "", lat: null, lng: null }
+          this.searchedPosition = { address: "", lat: null, lng: null}
         }
       }
     })
@@ -226,7 +239,6 @@ export class ClosestComponent implements OnInit, AfterViewInit {
 
 
   }
-
 
   clearRoutesFromMap() {
     this.directionControl?.remove()
@@ -285,10 +297,19 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     }
   }
 
-  paintZone(position: any) {
+  paintZone(position: any, veh:boolean) {
     let centerPoint = L.latLng(position.lat, position.lng)
-    let m = L.marker(centerPoint, { icon: L.icon({ iconUrl: 'assets/img/markers/pin_n.png', iconSize: [50, 50], iconAnchor: [25, 50] }) }).
-      bindPopup(`<div><strong>Addresse</strong>: ${position.address}</div>`, { closeButton: false, offset: L.point(0, -20) })
+    let m = L.marker(centerPoint, { icon: veh ? this.tools.myIcon(this.selectedVehicule, this.selectedVehicule.statusCode, this.selectedVehicule.icon) : L.icon({ iconUrl: 'assets/img/markers/pin_n.png', iconSize: [50, 50], iconAnchor: [25, 50] }) })
+      .bindPopup(veh ? this.tools.formatPopUpContent(this.selectedVehicule) : `<div><strong>Addresse</strong>: ${position.address}</div>`,
+      veh ? {
+        closeButton: false,
+        offset: L.point(0, -20)
+      } :
+      {
+        closeButton: false,
+        offset: L.point(0, -20)
+      })
+
     var circle = L.circle(centerPoint, { radius: this.radius, color: '#20a8d8', opacity: .8, weight: 2 })
     this.myZone = L.layerGroup([circle, m])
     this.myZone.addTo(this.map)
@@ -298,10 +319,10 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   onAddresseChange(e: any) {
     this.clearZoneFromMap()
     if (e != null) {
-      this.searchedPosition = { address: e.label, lat: e.y, lng: e.x }
-      this.paintZone(this.searchedPosition)
+      this.searchedPosition = { address: e.label, lat: e.y, lng: e.x}
+      this.paintZone(this.searchedPosition, false)
     } else {
-      this.searchedPosition = { address: "", lat: null, lng: null }
+      this.searchedPosition = { address: "", lat: null, lng: null}
     }
   }
 
@@ -310,7 +331,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       this.radius = val
       this.clearZoneFromMap()
       if (this.searchedPosition.lat != null && this.searchedPosition.lng != null) {
-        this.paintZone(this.searchedPosition)
+        this.paintZone(this.searchedPosition, this.selectedType == 'vehicules')
       }
     })
   }
@@ -330,15 +351,63 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     }
   }
 
+  loadVehicules() {
+    var route = this.router
+    this.dataService.getVehicule("?extra=true").subscribe({
+      next: (res) => {
+        this.vehicules = res as [];
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    })
+  }
+
+  onVehiculeChange(ev: any){
+    if (this.selectedType == 'vehicules') {
+      this.clearZoneFromMap()
+      if (ev != null) {
+        var route = this.router
+        this.vehiculeService.getData("extra=true&d="+ev).subscribe({
+          next: (res) => {
+            let device = res['DeviceList'][0]
+
+            let l = device.EventData.length - 1 ?? -1
+            if (l > -1) {
+              const vData = device.EventData[l]
+              this.selectedVehicule = new Vehicule(device["Device"] ?? "", device["Device_desc"] ?? "", vData['Timestamp'] ?? 0, vData["StatusCode"]?.toString(), vData["Address"] ?? "",
+                    vData["Odometer"] ?? "", vData["acceleration"] ?? "", device["SimCard"] ?? "", device["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
+                    vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, device['Icon'], device['FuelLevel'] ?? 0)
+
+              this.searchedPosition = { address: this.selectedVehicule.address, lat: this.selectedVehicule.lat, lng: this.selectedVehicule.lng}
+              this.paintZone(this.searchedPosition, true)
+            }
+            else
+              this.searchedPosition = { address: "", lat: null, lng: null}
+
+            // console.log(this.selectedVehicule);
+          }, error(err) {
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+          }
+        })
+
+    } else
+      this.searchedPosition = { address: "", lat: null, lng: null}
+    }
+  }
+
   onPoiChange(ev: any) {
     if (this.selectedType == 'poi') {
       this.clearZoneFromMap()
-      if (ev.length != 0) {
+      if (ev != null) {
         let latlng = ev.split(';')
-        this.searchedPosition = { address: "", lat: Number.parseFloat(latlng[0]), lng: Number.parseFloat(latlng[1]) }
-        this.paintZone(this.searchedPosition)
+        this.searchedPosition = { address: "", lat: Number.parseFloat(latlng[0]), lng: Number.parseFloat(latlng[1])}
+        this.paintZone(this.searchedPosition, false)
       } else {
-        this.searchedPosition = { address: "", lat: null, lng: null }
+        this.searchedPosition = { address: "", lat: null, lng: null}
       }
     }
   }
@@ -352,22 +421,30 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       this.vehiculeService.getData().subscribe({
         next: (res) => {
           const data = res['DeviceList']
-          console.log(data);
+          // console.log(data);
 
           let vehicules = []
           data.forEach(e => {
             let l = e['EventData'].length - 1 ?? -1
             if (l > -1) {
               const vData = e['EventData'][l]
-              vehicules.push(
-                new Vehicule(e["Device"] ?? "", e["Device_desc"] ?? "", vData['Timestamp'] ?? 0, vData["StatusCode"]?.toString(), vData["Address"] ?? "",
-                  vData["Odometer"] ?? "", vData["acceleration"] ?? "", e["SimCard"] ?? "", e["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
-                  vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, e['Icon'], e['FuelLevel'] ?? 0)
-              )
+
+              if(this.selectedType != 'vehicules')
+                vehicules.push(
+                  new Vehicule(e["Device"] ?? "", e["Device_desc"] ?? "", vData['Timestamp'] ?? 0, vData["StatusCode"]?.toString(), vData["Address"] ?? "",
+                    vData["Odometer"] ?? "", vData["acceleration"] ?? "", e["SimCard"] ?? "", e["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
+                    vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, e['Icon'], e['FuelLevel'] ?? 0)
+                );
+              else if(e["Device"] != this.selectedVehicule.id)
+                vehicules.push(
+                  new Vehicule(e["Device"] ?? "", e["Device_desc"] ?? "", vData['Timestamp'] ?? 0, vData["StatusCode"]?.toString(), vData["Address"] ?? "",
+                    vData["Odometer"] ?? "", vData["acceleration"] ?? "", e["SimCard"] ?? "", e["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
+                    vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, e['Icon'], e['FuelLevel'] ?? 0)
+                );
             }
           });
 
-          console.log(vehicules);
+          // console.log(vehicules);
           this.createMarkers(vehicules)
         }, error(err) {
           if (err.status == 401) {
