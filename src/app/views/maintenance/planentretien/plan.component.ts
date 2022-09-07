@@ -254,7 +254,7 @@ export class PlanComponent {
       var u = "?id=" + plan + "&status=closed"
       this.dataService.updateStatusPlanEntretien(u).subscribe({
         next: (res) => {
-          this.loadData()
+          this.loadData(true)
         }, error(err) {
           this.modalLoading = false;
           if (err.status == 401) {

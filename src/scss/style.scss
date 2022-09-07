@@ -190,9 +190,10 @@ table.mat-table {
 
 .loadinger {
     position: absolute;
-    top: calc(50% - 20vh);
-    left: calc(50% - 15vw);
-    width: 30vw;
+    top: calc(50% - 14vh);
+    left: calc(50% - 9vw);
+    width: 20vw;
+    z-index: 77777;
 }
 
 .detaisTabs {

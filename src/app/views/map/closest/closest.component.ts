@@ -333,7 +333,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   onPoiChange(ev: any) {
     if (this.selectedType == 'poi') {
       this.clearZoneFromMap()
-      if (ev != []) {
+      if (ev.length != 0) {
         let latlng = ev.split(';')
         this.searchedPosition = { address: "", lat: Number.parseFloat(latlng[0]), lng: Number.parseFloat(latlng[1]) }
         this.paintZone(this.searchedPosition)

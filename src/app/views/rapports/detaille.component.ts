@@ -51,16 +51,16 @@ export class DetailleComponent implements AfterViewInit {
   reportDataCarburant: any;
   reportDataConsommation: any;
   reportDetails: any;
-  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée de conduite (min)", "Max Vitesse (km/h)", "# Arrets", "Consom Fuel (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)", "Odomètre", "Fuel"]
-  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct", "odo", "ft"];
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée (min)", "Max Vitesse (km/h)", "# Arrets", "Consom (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)", "Odomètre", "Carburant"]//,"Conducteur"
+  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct", "odo", "ft"];//,"driver"
 
   displayedColumnsArrets: any = ["Début", "Fin", "Adresse", "Durée (min)", "Odomètre", "Fuel"]
   columnsArrets: any = ["timeStart", "timeEnd", "addi", "da", "odo", "ft"];
   displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]
   columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
 
-  displayedColumnsGeo = ["Zone", "date entré", "adresse entré", "odometre entré", "date sortie", "adresse sortie", "odometre sortie", "durée dans la zone"]
-  columnNamesGeo = ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr"]
+  displayedColumnsGeo = ["Zone", "date entré", "adresse entré", "odometre entré", "date sortie", "adresse sortie", "odometre sortie", "durée dans la zone"]//,"Conducteur"
+  columnNamesGeo = ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr"]//,"driver"
 
 
   dColumnsRealCarburant: any = [
