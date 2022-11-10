@@ -10,14 +10,31 @@ export const navItems: INavData[] = [
     //   text: 'NEW'
     // }
   },
-  {
-    title: true,
-    name: 'Map'
-  },
+  // {
+  //   title: true,
+  //   name: 'Map'
+  // },
+  // {
+  //   name: 'Map',
+  //   url: '/map/vehicule',
+  //   icon: 'cil-map'
+  // },
   {
     name: 'Map',
-    url: '/map/vehicule',
-    icon: 'cil-map'
+    url: '/Map',
+    icon: 'cil-map',
+    children: [
+      {
+        name: 'Map',
+        url: '/map/vehicule',
+        icon: 'cil-map'
+      },
+      {
+        name: 'Comparer Trajets',
+        url: '/map/comparer',
+        icon: 'cil-map'
+      }
+    ]
   },
   {
     name: 'Zones',
@@ -50,7 +67,6 @@ export const navItems: INavData[] = [
       }
     ]
   },
-
   {
     name: 'Eco',
     url: '/eco',
@@ -68,7 +84,6 @@ export const navItems: INavData[] = [
       }
     ]
   },
-
   {
     name: 'Paramétrage',
     url: '/parametrage',

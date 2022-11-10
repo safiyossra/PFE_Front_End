@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { util } from 'src/app/tools/utils';
 import { AuthenticateService } from '../../services/authenticate.service'
 
 @Component({
@@ -17,12 +18,12 @@ export class LoginComponent {
   password: string;
   accountid: string;
 
-  constructor(private route: Router, private authenticate: AuthenticateService) { }
+  constructor(private route: Router, private authenticate: AuthenticateService, private tools: util) { }
 
   ngOnInit(): void {
     // this.JWT = localStorage.getItem('JWT')
     // if (this.JWT) {
-      // this.route.navigate(['map']);
+    // this.route.navigate(['map']);
     // }
   }
 
@@ -40,6 +41,14 @@ export class LoginComponent {
           localStorage.setItem('JWT', response.token)
           localStorage.setItem('username', response.user)
           localStorage.setItem('compte', this.accountid)
+          console.log("setPermissions",response.p);
+          if (response.p == "") {
+            this.tools.setPermissions(response.p)
+          }
+          else { this.tools.setPermissions(JSON.parse(response.p)) ;console.log('permi',JSON.parse(response.p));
+          }
+         
+
           this.route.navigate(['map']);
           this.loading = false;
         },

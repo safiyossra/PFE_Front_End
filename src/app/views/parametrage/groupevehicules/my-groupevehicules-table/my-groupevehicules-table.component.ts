@@ -14,9 +14,10 @@ import { MatTableDataSource } from '@angular/material/table';
 export class MyGroupevehiculesTableComponent implements OnChanges {
   @Input() data=[];
   // @Input() columnNames?: any[]
-  public displayedColumns =  ["actions","groupID","displayName","description","nbrvehicules"]
+  public displayedColumns = ["actions","groupID","displayName","description","nbrvehicules"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
+  @Input() isEditPermission? = false
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
@@ -61,13 +62,20 @@ export class MyGroupevehiculesTableComponent implements OnChanges {
     if (changes['data']) {
     let d = changes['data'].currentValue
     if (d && d.length>0) {
-      console.log("data");
-      console.log(d);
-      
     this.dataSource = new MatTableDataSource(d)
     this.totalItems = this.dataSource.data.length
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    }
+  }
+  if(changes['isEditPermission']){
+    this.isEditPermission = changes['isEditPermission'].currentValue
+    if(this.isEditPermission){
+      this.displayedColumns = ["actions","groupID","displayName","description","nbrvehicules"]
+      this.columnNames = ["Actions","Identifiant","Nom","Description","Nombre de Véhicules"];
+    }else{
+      this.displayedColumns = ["groupID","displayName","description","nbrvehicules"]
+      this.columnNames = ["Identifiant","Nom","Description","Nombre de Véhicules"];
     }
   }
 }

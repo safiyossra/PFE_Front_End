@@ -7,7 +7,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { util } from 'src/app/tools/utils';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 import { ExportExcel } from 'src/app/tools/export-excel';
-import { position } from 'html2canvas/dist/types/css/property-descriptors/position';
 
 @Component({
   templateUrl: 'detaille.component.html',
@@ -18,6 +17,7 @@ export class DetailleComponent implements AfterViewInit {
   vehiculeID: any
   loading: boolean = false
   isArret: boolean = false
+  showAllPoints: boolean = false
   loadingcharts: boolean = false
   TrajetDetaillID = "TrajetDetaill"
   GeoDetaillID = "GeoDetaill"
@@ -51,17 +51,16 @@ export class DetailleComponent implements AfterViewInit {
   reportDataCarburant: any;
   reportDataConsommation: any;
   reportDetails: any;
-  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée (min)", "Max Vitesse (km/h)", "# Arrets", "Consom (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)", "Odomètre", "Carburant"]//,"Conducteur"
-  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct", "odo", "ft"];//,"driver"
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée (min)", "Max Vitesse (km/h)", "# Arrets", "Consom (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)", "Odomètre", "Carburant","Conducteur"]//,"Conducteur"
+  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct", "odo", "ft","driverID"];//,"driver"
 
-  displayedColumnsArrets: any = ["Début", "Fin", "Adresse", "Durée (min)", "Odomètre", "Fuel"]
-  columnsArrets: any = ["timeStart", "timeEnd", "addi", "da", "odo", "ft"];
-  displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]
-  columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];
+  displayedColumnsArrets: any = ["Début", "Fin", "Adresse", "Durée (min)", "Odomètre", "Fuel","Conducteur"]
+  columnsArrets: any = ["timeStart", "timeEnd", "addi", "da", "odo", "ft","driverID"];
+  displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]//,"Conducteur"
+  columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];//,"driverID"
 
-  displayedColumnsGeo = ["Zone", "date entré", "adresse entré", "odometre entré", "date sortie", "adresse sortie", "odometre sortie", "durée dans la zone"]//,"Conducteur"
-  columnNamesGeo = ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr"]//,"driver"
-
+  displayedColumnsGeo = ["Zone", "date entré", "adresse entré", "odometre entré", "date sortie", "adresse sortie", "odometre sortie", "durée dans la zone","Conducteur"]//,"Conducteur"
+  columnNamesGeo = ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr","driverID"]//,"driver"
 
   dColumnsRealCarburant: any = [
     "date",
@@ -88,6 +87,7 @@ export class DetailleComponent implements AfterViewInit {
   urldetails = "";
   urlEvolution = "";
   devices: any = [];
+  drivers: any = [];
   selectedDevices = [];
   selectedDevice = null;
   ToInvalidate = "0"
@@ -319,6 +319,7 @@ export class DetailleComponent implements AfterViewInit {
       this.vehiculeID = params['id'] || null;
     });
     this.getDev();
+    this.getDrivers();
   }
 
   toggleCollapse(): void {
@@ -453,6 +454,7 @@ export class DetailleComponent implements AfterViewInit {
             e.dateDepStr = e.dateDep != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateDep)) : '';
             e.dateArrStr = e.dateArr != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateArr)) : '';
             e.dureeStr = (new Date(e.duree*1000).toISOString().slice(11, 19));
+            e.driverID = this.tools.getDriverName(this.drivers,e.driverID);
           });
 
           this.geozonesData = geoz;
@@ -465,18 +467,19 @@ export class DetailleComponent implements AfterViewInit {
             e.timeEnd = this.tools.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000));
             if (e.da) e.da = this.round2d(Number.parseInt(e.da) / 60);
             if (e.dc) e.dc = this.round2d(Number.parseInt(e.dc) / 60);
-            if (e.odo) e.odo = this.round2d(Number.parseInt(e.odo));
+            if (e.odo) e.odo = this.round2d(Number.parseInt(e.odo)+extra.offset);
             if (e.ft) e.ft = this.round2d(e.ft * extra.cp);
             e.cd = this.round2d(e.c * extra.fc);
             e.ct = extra.fe != 0 ? (e.k / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
             e.cm = (100 * (e.c / (e.k != 0 ? e.k : 1))).toFixed(1);
+            e.driverID = this.tools.getDriverName(this.drivers,e.driverID);
           })
           // if (!this.isArret)
           this.reportDataTrajet = d.filter((e) => { return e.trajet == 1 });
           // else
           this.reportData = d;
           this.reportDataArrets = d.filter((e) => { return e.trajet == 0 });
-          this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "st": e.st, "et": e.et, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), "odo": e.odo, "ft": e.ft } });
+          this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "st": e.st, "et": e.et, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), "odo": e.odo, "ft": e.ft,"driverID":e.driverID } });
           this.selectedMapDevice = this.selectedDevice
           // console.log("trajet et parking", this.reportData);
           // console.log("parking", this.reportDataArrets);
@@ -485,7 +488,7 @@ export class DetailleComponent implements AfterViewInit {
           let resumetmp = [];
           let labels = this.reportDataTrajet.map((l) => { return l.timeStart })
           this.columns.forEach((e, index) => {
-            if (!["timeStart", "timeEnd", "addi", "addf"].includes(e))
+            if (!["timeStart", "timeEnd", "addi", "addf","driverID"].includes(e))
               resumetmp.push({
                 val: !["cm", "cd", "ct", "odo", "ft"].includes(e) ? this.reduce(this.reportDataTrajet, e) : 0,//.toString() + " " + this.resumeUnits[e]
                 label: this.displayedColumns[index],
@@ -530,6 +533,7 @@ export class DetailleComponent implements AfterViewInit {
             e.device = this.getVehiculeNameById(e.deviceID)
             var capacity = this.getVehiculeCapacityById(e.deviceID)
             e.fuelLevel = this.round2d(e.fuelLevel * capacity)
+            // e.driverID = this.tools.getDriverName(this.drivers,e.driverID)
             e.deltaFuelLevel = this.round2d(e.deltaFuelLevel * capacity)
             e.fuelstart = this.round2d(e.fuelstart * capacity)
           })
@@ -640,8 +644,22 @@ export class DetailleComponent implements AfterViewInit {
     var route = this.router
     this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
-        console.log("getDev", res);
+        // console.log("getDev", res);
         this.devices = res;
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    })
+  }
+
+  getDrivers() {
+    var route = this.router
+    this.dataService.getDriverData("?minimum=true").subscribe({
+      next: (res) => {
+        // console.log(res)
+        this.drivers = res;
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -731,9 +749,9 @@ export class DetailleComponent implements AfterViewInit {
 
   getVehiculeExtraById(id) {
     for (let i = 0; i < this.devices.length; i++) {
-      if (this.devices[i].dID == id) return { "fe": this.devices[i].fe, "fc": this.devices[i].fc, "cp": this.devices[i].cp }
+      if (this.devices[i].dID == id) return { "fe": this.devices[i].fe, "fc": this.devices[i].fc, "cp": this.devices[i].cp, "offset": this.devices[i].offset }
     }
-    return { "fe": 0, "fc": 0, "cp": 0 }
+    return { "fe": 0, "fc": 0, "cp": 0,"offset": 0 }
   }
 
   getVehiculeCapacityById(id) {
@@ -743,6 +761,12 @@ export class DetailleComponent implements AfterViewInit {
     return 0
   }
 
+  getVehiculeOffsetById(id) {
+    for (let i = 0; i < this.devices.length; i++) {
+      if (this.devices[i].dID == id) return this.devices[i].offset
+    }
+    return 0
+  }
   exporter(type) {
     var title = " Entre " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateFrom) * 1000)) + " et " +
@@ -757,6 +781,8 @@ export class DetailleComponent implements AfterViewInit {
     else if (this.selectedTab == 3) {
       this.exportEvts = { type: type, force: Math.random() }
     }
+    else if (this.selectedTab == 4)
+      this.exportingPdfTool.convetToPDF("trajetMap", "Trajet carte pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
     else if (this.selectedTab == 5)
       type == 1 ? this.exportingPdfTool.exportPdf_Parking(this.reportDataArrets, "Rapport de Parking pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title) :
         this.exportingExcelTool.ExportParking(this.reportDataArrets, "Rapport de Parking pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)

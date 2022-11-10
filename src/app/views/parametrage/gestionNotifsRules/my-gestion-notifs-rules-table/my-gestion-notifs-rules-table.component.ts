@@ -17,6 +17,7 @@ export class MyGestionNotifsRulesTableComponent implements OnChanges {
   public displayedColumns = ["actions", "ruleID", "description", "notifyEmail", "ruleTag"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
+  @Input() isEditPermission? = false
   @Output() modify?: EventEmitter<any> = new EventEmitter();
   @Output() delete?: EventEmitter<any> = new EventEmitter();
 
@@ -59,6 +60,16 @@ export class MyGestionNotifsRulesTableComponent implements OnChanges {
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+      }
+    }
+    if(changes['isEditPermission']){
+      this.isEditPermission = changes['isEditPermission'].currentValue
+      if(this.isEditPermission){
+        this.displayedColumns = ["actions", "ruleID", "description", "notifyEmail", "ruleTag"]
+        this.columnNames = ["Actions", "Identifiant", "Description", "Email", "Cron Rule"]
+      }else{
+        this.displayedColumns =  ["ruleID", "description", "notifyEmail", "ruleTag"]
+        this.columnNames =["Identifiant", "Description", "Email", "Cron Rule"]
       }
     }
   }

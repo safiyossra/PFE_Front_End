@@ -14,8 +14,9 @@ export class Vehicule {
     speed: any  // EventData.Speed,
     icon: any
     fuelLevel: any // EventData.fuelLevel
+    driverID: any 
 
-    constructor(id?, name?, timestamp?, statusCode?, address?, odometer?, acceleration?, simCard?, deviceCode?, lat?, lng?, heading?, speed?, icon?, fuelLevel?) {
+    constructor(id?, name?, timestamp?, statusCode?, address?, odometer?, acceleration?, simCard?, deviceCode?, lat?, lng?, heading?, speed?, icon?, fuelLevel?,driverID?) {
         this.id = id ?? ''
         this.name = name ?? ''
         this.timestamp = timestamp ?? 0
@@ -32,5 +33,6 @@ export class Vehicule {
         this.speed = speed ?? 0
         this.icon = icon ?? 0
         this.fuelLevel = fuelLevel ?? 0
+        this.driverID = driverID ?? ''
     }
 }

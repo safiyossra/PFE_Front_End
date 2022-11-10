@@ -26,6 +26,9 @@ export class CrudNotifsRulesComponent {
   { name: "15 Minutes", val: "15min" }, { name: "30 Minute", val: "30min" }, { name: "Hourly", val: "hourly" },
   { name: "Daily", val: "daily" }, { name: "Weekly", val: "weekly" },]
 
+  isEditPermission = false
+  isAddPermission = false
+
   selectedCrons = '0';
   data = [];
   POIs = []
@@ -78,6 +81,8 @@ export class CrudNotifsRulesComponent {
   }
 
   ngOnInit() {
+    this.isEditPermission = this.tools.isAuthorized('Parametrage_Alertes','Mettre a jour')
+    this.isAddPermission = this.tools.isAuthorized('Parametrage_Alertes','Ajouter')
     this.loadData();
     this.loadPOIs();
     this.getGroup();

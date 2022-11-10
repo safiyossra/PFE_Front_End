@@ -2,7 +2,7 @@
 #mapTrajet,
 .mapcontainer {
     height: 100%;
-    min-height: 75vh;
+    min-height: 72vh;
     max-height: 75vh;
     border-radius: 10px;
     width: 100%;
@@ -11,11 +11,11 @@
 .control-fullscreen-button,
 .control-position-button {
     background: #fff no-repeat 0 0;
-    background-size: 26px 52px;
+    background-size: 28px 52px;
     border-radius: 5px;
-    border: 1px solid rgb(0 0 0 / 50%);
-    width: 26px;
-    height: 26px;
+    border: 1px solid rgb(0 0 0 / 75%);
+    width: 28px;
+    height: 28px;
     background-repeat: no-repeat;
     -webkit-tap-highlight-color: rgba(51, 181, 229, .4);
 }

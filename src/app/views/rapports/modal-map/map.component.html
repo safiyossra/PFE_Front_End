@@ -5,6 +5,15 @@
   <button id="{{mapID}}positionControl" *ngIf="showPositionControle" title="My Postion"
     class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
   <div class="my-map">
+    <div class="row" *ngIf="showAllPointsVisible">
+      <div class="text-danger mb-2 col-md-10"> &nbsp;[Seuls les enregistrements des 3 derniers jours au maximum de la
+        période sélectionnée sont affichés]</div>
+      <div class="col-md-2">
+        <label for="s1111" class="ml-2 float-right">Afficher tous les points &nbsp;</label>
+        <input id="s1111" type="checkbox" class="switch float-right" [(ngModel)]="showAllPoints"
+          [ngModelOptions]="{standalone: true}" (ngModelChange)="showAllPointscheckbox()">
+      </div>
+    </div>
     <div class="card-body" id="{{mapID}}"></div>
   </div>
 </div>

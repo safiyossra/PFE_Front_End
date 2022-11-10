@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 import { ExportExcel } from 'src/app/tools/export-excel';
 import { throwError } from 'rxjs';
+import { util } from 'src/app/tools/utils';
 
 @Component({
   templateUrl: 'crudgroupe.component.html',
@@ -17,7 +18,7 @@ export class CrudgroupeComponent {
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
-  constructor(private dataService: DataService, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
+  constructor(private dataService: DataService, private router: Router,public tools: util,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -26,14 +27,13 @@ export class CrudgroupeComponent {
   iconCollapse: string = 'icon-arrow-up';
   data = [];
   mode = "Ajouter"
+  isEditPermission = false
+  isAddPermission = false
   errorMsg: string;
   public isnotNum: boolean = false
   displayedColumns: any = ["Véhicule", "Device", "Num de Tel"]
   modalLoading: boolean = false;
   selectedGroupevehicules: Groupevehicules = new Groupevehicules();
-
-
-
   public devices: any = [];
   selectedDevices = [];
   selectedDevice = null;
@@ -48,6 +48,8 @@ export class CrudgroupeComponent {
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
   ngOnInit() {
+    this.isEditPermission = this.tools.isAuthorized('Parametrage_GroupeVehicules','Mettre a jour')
+    this.isAddPermission = this.tools.isAuthorized('Parametrage_GroupeVehicules','Ajouter')
     this.getDev();
     this.loadData();
   }

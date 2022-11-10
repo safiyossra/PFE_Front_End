@@ -12,12 +12,15 @@ import { throwError } from 'rxjs/internal/observable/throwError';
 
 @Component({
   templateUrl: 'cruddriver.component.html',
+  styleUrls: ['./cruddriver.component.scss']
 })
 export class CruddriverComponent {
 
   loading: boolean = false;
   modalLoading: boolean = false;
   selectedDriver: Driver = new Driver();
+  isEditPermission = false
+  isAddPermission = false
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   constructor(private dataService: DataService, private tools: util, private router: Router, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel,) { }
 
@@ -51,6 +54,8 @@ export class CruddriverComponent {
   showErrorOperation = false;
   errorMessageOperation = "";
 
+  /////////////
+
 
   getSelectedOperations(selected) {
     this.selectedOperation = selected;
@@ -66,6 +71,8 @@ export class CruddriverComponent {
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
   ngOnInit() {
+    this.isEditPermission = this.tools.isAuthorized('Parametrage_Conducteur','Mettre a jour')
+    this.isAddPermission = this.tools.isAuthorized('Parametrage_Conducteur','Ajouter')
     this.getDev();
     this.loadData();
   }
@@ -301,6 +308,8 @@ export class CruddriverComponent {
     type == 1 ? this.exportingPdfTool.exportPdf_Conducteurs(this.data, "Rapport de List Conducteures ") :
       this.exportingExcelTool.ExportConducteurs(this.data, "Rapport de List Conducteures ")
   }
+
+  /////////////////
 }
 
 

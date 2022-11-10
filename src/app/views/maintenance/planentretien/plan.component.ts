@@ -28,6 +28,8 @@ export class PlanComponent {
   isCollapsedData: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
   data = [];
+  isEditPermission = false
+  isAddPermission = false
   public isnotNum: boolean = false
   displayedColumns: any = ["Actions", "Véhicule", "Type d'Opération", "Déclenchement", "Valeur", "Status", "Date de Création"]
 
@@ -51,6 +53,8 @@ export class PlanComponent {
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
   ngOnInit() {
+    this.isEditPermission = this.tools.isAuthorized('Maintenance_PlanEntretien','Mettre a jour')
+    this.isAddPermission = this.tools.isAuthorized('Maintenance_PlanEntretien','Ajouter')
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);

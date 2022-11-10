@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { PermissionsGuard } from 'src/app/guards/permissions.guard';
 
 import { AlertsComponent } from './alerts.component';
 
@@ -17,7 +18,9 @@ const routes: Routes = [
       {
         path: 'alerts',
         component: AlertsComponent,
+        canActivate: [PermissionsGuard],
         data: {
+          permissionKey:'Notifications',
           title: 'Alerts'
         }
       },

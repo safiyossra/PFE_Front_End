@@ -19,7 +19,7 @@ export class ConsommcarburantComponent {
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
-  constructor(private dataService: DataService, private router: Router, private tools: util, private dateAdapter: DateAdapter<Date>,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) {
+  constructor(private dataService: DataService, private router: Router, private tools: util, private dateAdapter: DateAdapter<Date>, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) {
   }
 
   value: string | Object;
@@ -28,6 +28,8 @@ export class ConsommcarburantComponent {
   isCollapsedData: boolean = false;
   data = [];
 
+  isEditPermission = false
+  isAddPermission = false
   public devices: any = [];
   public drivers: any = [];
   selectedDevices = null;
@@ -71,6 +73,8 @@ export class ConsommcarburantComponent {
   ngOnInit() {
     this.dateAdapter.setLocale('en-GB');
 
+    this.isEditPermission = this.tools.isAuthorized('Maintenance_Consommation','Mettre a jour')
+    this.isAddPermission = this.tools.isAuthorized('Maintenance_Consommation','Ajouter')
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
@@ -507,8 +511,8 @@ export class ConsommcarburantComponent {
   }
 
   exporter(type) {
-    type == 1 ? this.exportingPdfTool.exportPdf_Consommation(this.data, "Rapport de Consommation " ) :
-    this.exportingExcelTool.Export_Consommaton(this.data, "Rapport de Consommation ")
+    type == 1 ? this.exportingPdfTool.exportPdf_Consommation(this.data, "Rapport de Consommation ") :
+      this.exportingExcelTool.Export_Consommaton(this.data, "Rapport de Consommation ")
   }
 }
 

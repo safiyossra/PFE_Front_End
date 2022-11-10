@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card card-accent-info">
         <div class="card-header">
-          <button type="button" data-toggle="modal" (click)="modalAjoutr()" class="btn btn-outline-primary"><i
+          <button type="button" data-toggle="modal" (click)="modalAjoutr()" *ngIf="isAddPermission" class="btn btn-outline-primary"><i
               class="fa fa-plus-circle"></i> Ajouter Plan d'entretien </button>
           <div class="card-header-actions">
             <app-dropdown-export (export)="exporter($event)"></app-dropdown-export>
@@ -59,12 +59,12 @@
   <div class="row">
     <div class="col-lg-12">
       <my-planentretien-table (modify)="loadModify($event)" (cloturer)="close($event)" (delete)="delete($event)"
-        [data]="data">
+        [data]="data" [isEditPermission]="isEditPermission">
       </my-planentretien-table>
     </div>
   </div>
 </div>
-<div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
+<div bsModal #primaryModal="bs-modal" *ngIf="isEditPermission" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
   role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-primary" role="document">
     <div class="modal-content">

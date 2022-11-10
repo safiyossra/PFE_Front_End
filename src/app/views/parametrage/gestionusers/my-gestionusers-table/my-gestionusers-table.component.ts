@@ -18,6 +18,7 @@ export class MyGestionusersTableComponent implements OnChanges {
   public displayedColumns = ["actions", "userID", "description", "roleID", "contactName", "contactEmail", "timeZone", "lastLoginTime"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
+  @Input() isEditPermission? = false
   @Output() modify?: EventEmitter<any> = new EventEmitter();
   @Output() delete?: EventEmitter<any> = new EventEmitter();
   @Output() editPassword?: EventEmitter<any> = new EventEmitter();
@@ -64,6 +65,16 @@ export class MyGestionusersTableComponent implements OnChanges {
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+      }
+    }
+    if(changes['isEditPermission']){
+      this.isEditPermission = changes['isEditPermission'].currentValue
+      if(this.isEditPermission){
+        this.displayedColumns = ["actions", "userID", "description", "roleID", "contactName", "contactEmail", "timeZone", "lastLoginTime"]
+        this.columnNames = ["Actions", "Identifiant", "Nom de l'utilisateur", "Role", "Nom du contact", "Adresse email", "Fuseau horaire", "Last Login"];
+      }else{
+        this.displayedColumns = ["userID", "description", "roleID", "contactName", "contactEmail", "timeZone", "lastLoginTime"]
+        this.columnNames = ["Identifiant", "Nom de l'utilisateur", "Role", "Nom du contact", "Adresse email", "Fuseau horaire", "Last Login"];
       }
     }
   }

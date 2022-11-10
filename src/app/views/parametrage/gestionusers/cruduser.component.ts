@@ -9,6 +9,8 @@ import { Constant } from 'src/app/tools/constants';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 import { ExportExcel } from 'src/app/tools/export-excel';
 import { throwError } from 'rxjs';
+import { JsonEditorComponent, JsonEditorOptions } from './jsoneditor/jsoneditor.component'
+import { schema } from 'src/app/tools/schema.value';
 
 @Component({
   templateUrl: 'cruduser.component.html',
@@ -16,23 +18,57 @@ import { throwError } from 'rxjs';
 })
 export class CruduserComponent {
 
+  role = "admin";
   loading: boolean = false;
   modalLoading: boolean = false;
   mode = "Ajouter";
   selectedUser: User = new User();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   @ViewChild('secondModal') public secondModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, private router: Router, public cst: Constant,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
+  @ViewChild('editor', { static: false }) editor: JsonEditorComponent;
+
+  public editorOptions: JsonEditorOptions;
+  public permissionData: any;
+  public oldPermissionData:any;
+  isEditPermission = false
+  isAddPermission = false
+
+  constructor(private dataService: DataService, public tools: util, private router: Router, public cst: Constant,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { 
+    this.editorOptions = new JsonEditorOptions();
+    this.editorOptions.schema = schema;
+    this.initEditorOptions(this.editorOptions);
+  }
+
   data = [];
   errorMsg: string;
   public groups: any = [];
   selectedGroups = "*";
   showErrorGroup = false;
   errorMessageGroup = "";
+  selectedTimezones = "GMT+00:00";
+
   getSelectedGroups(selected) {
     this.selectedUser.groups = selected;
     console.log(this.selectedUser);
+  }
+  
+  editorJsonChangeLog(event = null) {
+    const editorJson = this.editor.getEditor()
+    editorJson.validate()
+    const errors = editorJson.validateSchema.errors
+    if (errors && errors.length > 0) {
+      console.log('Errors found', errors)
+      editorJson.set(this.oldPermissionData);
+    } else {
+      this.oldPermissionData = this.editor.get();
+    }
+  }
 
+  initEditorOptions(editorOptions) {
+    // this.editorOptions.mode = 'code'; // set only one mode
+    editorOptions.modes = []; //'code', 'text', 'tree', 'view' set all allowed modes
+    // code, text, tree, form and view
+    editorOptions.mode = 'tree'
   }
 
   onValidateGroup() {
@@ -40,19 +76,19 @@ export class CruduserComponent {
     this.errorMessageGroup = "This field is required";
   }
 
-  selectedTimezones = "GMT+01:00";
   getSelectedTimezones(selected) {
     this.selectedUser.timeZone = selected;
   }
 
-
   ngOnInit() {
     this.getGroup();
     this.loadData();
+    this.oldPermissionData = this.permissionData = this.cst.userPermissions;
+    this.isEditPermission = this.tools.isAuthorized('Parametrage_Utilisateur','Mettre a jour')
+    this.isAddPermission = this.tools.isAuthorized('Parametrage_Utilisateur','Ajouter')
   }
 
   getGroup() {
-
     var route = this.router
     this.dataService.getGroupeVehicules("").subscribe({
       next: (res) => {
@@ -153,9 +189,19 @@ export class CruduserComponent {
       var route = this.router
       this.dataService.getUsers(url).subscribe({
         next: (result: any) => {
-          this.selectedUser = new User(result.user.userID, result.user.isActive, result.user.description,  "", result.user.contactName,  result.user.contactPhone,   result.user.contactEmail,  result.user.notifyEmail,  result.user.timeZone, "*",  result.user.notes)
-          // console.log(this.selectedUser);
-
+          console.log(result);
+          this.selectedUser = new User(result.user.userID, result.user.isActive, result.user.description, "", result.user.contactName, result.user.contactPhone, result.user.contactEmail, result.user.notifyEmail, result.user.timeZone, "*", result.user.notes,'')
+          const editorJson = this.editor.getEditor()
+          editorJson.set(JSON.parse(result.p))
+          editorJson.validate()
+          const errors = editorJson.validateSchema.errors
+          if (errors && errors.length > 0) {
+            console.log('Errors found', errors)
+            editorJson.set(this.oldPermissionData);
+          } else {
+            this.oldPermissionData = this.editor.get();
+          }
+          this.selectedUser.permissions = JSON.stringify(this.editor.get())
           if (result.groups && result.groups.length) {
             this.selectedGroups = result.groups[0].groupID
           } else {
@@ -189,8 +235,9 @@ export class CruduserComponent {
           if (this.selectedUser.notifyEmail && !this.tools.ValidateEmail(this.selectedUser.notifyEmail)) this.errorMsg = "Vous avez saisi un email de notification invalid."
           else if (this.selectedUser.contactEmail && !this.tools.ValidateEmail(this.selectedUser.contactEmail)) this.errorMsg = "Vous avez saisi un email de contact invalid."
           else {
+            this.selectedUser.permissions = JSON.stringify(this.editor.get())
+            console.log(this.selectedUser);
             this.errorMsg = "";
-
             this.dataService.addUsers(this.selectedUser)
             .pipe(
               catchError(err => {
@@ -199,7 +246,6 @@ export class CruduserComponent {
                 if (err.status == 401) {
                   route.navigate(['login'], { queryParams: { returnUrl: route.url } });
                 }
-
                 else if (err.status == 400) {
                   console.log(err);
                   this.errorMsg = "Utilisateur avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
@@ -238,13 +284,15 @@ export class CruduserComponent {
     var route = this.router
     this.errorMsg = ""
     if (!this.selectedUser.description)  {
-      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*)."
     } else {
       if (this.selectedUser.notifyEmail && !this.tools.ValidateEmail(this.selectedUser.notifyEmail)) this.errorMsg = "Vous avez saisi un email de notification invalid."
       else if (this.selectedUser.contactEmail && !this.tools.ValidateEmail(this.selectedUser.contactEmail)) this.errorMsg = "Vous avez saisi un email de contact invalid."
       // else if (this.selectedUser.password.length > 0 && this.selectedUser.password.length < 6) this.errorMsg = "Veuillez saisir un mot de passe de 6 caractères minimum ."
       else{
         this.modalLoading = true;
+        this.selectedUser.permissions = JSON.stringify(this.editor.get())
+        console.log(this.selectedUser);
         this.dataService.updateUsers(this.selectedUser).subscribe({
         next: (res) => {
           console.log("updateUsers");

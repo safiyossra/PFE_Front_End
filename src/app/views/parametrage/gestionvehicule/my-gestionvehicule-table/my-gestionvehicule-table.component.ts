@@ -18,6 +18,7 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
   // @Input() columnNames?: any[]
   public displayedColumns = ["actions", "deviceID", "description", "uniqueID", "lastOdometerKM", "fuel", "deviceCode", "simPhoneNumber", "creationTime"]
   @Input() columns?: any[]
+  @Input() isEditPermission? = false
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   @Output() modify?: EventEmitter<any> = new EventEmitter();
   @Output() offset?: EventEmitter<any> = new EventEmitter();
@@ -59,6 +60,16 @@ export class MyGestionvehiculeTableComponent implements OnChanges {
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+      }
+    }
+    if(changes['isEditPermission']){
+      this.isEditPermission = changes['isEditPermission'].currentValue
+      if(this.isEditPermission){
+        this.displayedColumns = ["actions", "deviceID", "description", "uniqueID", "lastOdometerKM", "fuel", "deviceCode", "simPhoneNumber", "creationTime"]
+        this.columnNames =["Actions", "Device", "Véhicule", "ID unique", "Odomètre (km)", "Total Carburant (L)", "device Code", "Tel", "Création date"];
+      }else{
+        this.displayedColumns =["deviceID", "description", "uniqueID", "lastOdometerKM", "fuel", "deviceCode", "simPhoneNumber", "creationTime"]
+        this.columnNames = ["Device", "Véhicule", "ID unique", "Odomètre (km)", "Total Carburant (L)", "device Code", "Tel", "Création date"];
       }
     }
   }

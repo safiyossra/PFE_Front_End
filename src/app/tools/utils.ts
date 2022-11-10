@@ -6,14 +6,62 @@ import { GeoSearchControl } from 'leaflet-geosearch';
 
 import { Constant } from 'src/app/tools/constants';
 
+var userPermissions: any;
 @Injectable({
   providedIn: 'root'
 })
-
 export class util {
   isFullScreen: boolean;
   constructor(@Inject(DOCUMENT) private document: any, @Inject(LOCALE_ID) private locale: string, private cst: Constant) {
-    document.onfullscreenchange = ($event) => this.chkScreenMode($event.target['id']);
+    document.onfullscreenchange = ($event: any) => this.chkScreenMode($event.target['id']);
+  }
+
+  public isAuthorized(key: any, permission: any) {
+    key = key.split("_");
+    var val = undefined
+    if (!userPermissions) {
+      this.getPermissions()
+    }
+    if (key.length > 1)
+      val = userPermissions[key[0]][key[1]]
+    else if (key.length == 1) val = userPermissions[key[0]];
+    if (val == undefined) return true;
+    var index = this.cst.permissions.indexOf(val);
+    var indexP = this.cst.permissions.indexOf(permission);
+    if (index >= indexP && indexP != 0)
+      return true;
+    return false;
+  };
+
+  public setPermissions(userPermissions: any) {
+    this.resetPermissions()
+    userPermissions = this.encodePermissions(userPermissions);
+    localStorage.setItem('rm', userPermissions);
+  }
+
+  resetPermissions() {
+    userPermissions = null
+  }
+
+  public getPermissions() {
+    var permissions = this.decodePermissions(localStorage.getItem('rm') ?? '');
+    if (permissions == undefined || !permissions || permissions == '') {
+      permissions = this.cst.defaultPermissions;
+    }
+    userPermissions = permissions;
+  }
+
+  public encodePermissions(userPermissions: any) {
+    return btoa(JSON.stringify(userPermissions));
+  }
+
+  public decodePermissions(userPermissions: any) {
+    try {
+      return JSON.parse(atob(userPermissions));
+    } catch (error) {
+      return undefined
+    }
+
   }
 
   public openFullscreen(elem: any) {
@@ -67,7 +115,7 @@ export class util {
     }
   }
 
-  myIcon(vehicule: any, status: number, vehiculeType: string, isSelected: boolean = false) {
+  myIcon(vehicule: any, status: number, vehiculeType: string, isSelected: boolean = false, noTransition: boolean = false) {
     let img = this.getImage(vehiculeType)
     let icon = status == 61714 ? `assets/img/vehicules/${img}-on.png` : `assets/img/vehicules/${img}-off.png`
     return L.divIcon({
@@ -76,7 +124,7 @@ export class util {
         `<span class="my-icon-title">${vehicule.name}</span>`,
       iconSize: [60, 60],
       // iconAnchor: [25, 20],
-      className: 'marker-transition my-div-icon' + (isSelected ? ' marker-selected' : ''),
+      className: (noTransition ? '' : 'marker-transition ') + 'my-div-icon' + (isSelected ? ' marker-selected' : ''),
     })
   }
 
@@ -101,7 +149,7 @@ export class util {
   }
 
   formatPopUpContent(v) {
-    let img = this.getImage(v.icon)
+    let img = v.icon!=undefined?'<img src="assets/img/vehicules/'+this.getImage(v.icon)+'-img.png">':"Info"
     let time = this.formatDate(new Date(v.timestamp * 1000))
 
     let age = this.getAge(v.timestamp)
@@ -110,9 +158,9 @@ export class util {
             <tbody>
               <tr class="infoBoxRow"
                 style="background-color: #3598dc !important;color: #FFFFFF !important;">
-                <td><img src="assets/img/vehicules/${img}-img.png">&nbsp; </td>
+                <td>${img}&nbsp; </td>
                 <td class="infoBoxCell" style="vertical-align: bottom;">
-                <b style='vertical-align: sub;'>${v.name},</b>
+                <b style='vertical-align: sub;'>${v.name}</b>
                 <a href='https://www.google.com/maps/?q=${v.lat},${v.lng}' class='float-right' target='_blank'> <i class="fa fa-share text-light" style="font-size: x-large;"></i></a>
                 <b style="margin-right: 10px;" class="float-right" >
                 <i class="${this.getStatusClass(v.statusCode)}" style="vertical-align: bottom;"></i>${(this.getStatusName(v.statusCode))}</b></td>
@@ -180,22 +228,39 @@ export class util {
     //minutes
     let minutes = Math.floor(seconds / 60);
     seconds -= minutes * 60;
+
     //output
-    return `${days > 0 ? days + " Jours, " : ''}${hours > 0 ? hours + " Heurs, " : ''}${minutes > 0 ? minutes + " minutes, " : ''}${seconds > 0 ? seconds + " seconds" : ''}`;
+    return `${days > 0 ? days + " Jours " : ''}${hours > 0 ? hours + " Heurs " : ''}${minutes > 0 ? minutes + " minutes " : ''}${Math.floor(seconds) > 0 ? Math.floor(seconds) + " seconds" : ''}`;
+  }
+
+  formatDuree(seconds,_default = "Expiré") {
+    if (isNaN(seconds)) return _default
+    // return age
+    //days
+    let days = Math.floor(seconds / (24 * 3600));
+    seconds -= days * 24 * 3600;
+    //hours
+    let hours = Math.floor(seconds / 3600);
+    seconds -= hours * 3600;
+    //minutes
+    let minutes = Math.floor(seconds / 60);
+    seconds = Math.floor(seconds - minutes * 60);
+    //output
+    return `${days > 0 ? days + " Jours, " : ''}${(hours < 10 ? '0' + hours : hours) + "h "}${(minutes < 10 ? '0' + minutes : minutes) + "min "}${seconds < 10 ? '0' + seconds : seconds + "s"}`;
   }
 
   timeStampToDate(ts) {
     if (ts / Math.pow(10, 12) >= 1) {
-     ts;
+      ts;
     }
     else if (ts / Math.pow(10, 9) >= 1) {
-     ts *= 1000
+      ts *= 1000
     }
     else if (ts / Math.pow(10, 7) >= 1) {
-     ts *= 100000
+      ts *= 100000
     }
     else if (ts / Math.pow(10, 5) >= 1) {
-     ts *= 10000000
+      ts *= 10000000
     }
 
     return new Date(ts);
@@ -205,6 +270,12 @@ export class util {
     return Date.parse(date) / 1000 as number;
   }
 
+  getDriverName(drivers, driverID) {
+    for (let i = 0; i < drivers.length; i++) {
+      if (drivers[i].driverID == driverID) return drivers[i].displayName
+    }
+    return ""
+  }
 
   getStatusName(status: any) {
     if (status == 61714) { return "En Route"; } else
@@ -225,7 +296,7 @@ export class util {
           return "fa fa-question-circle text-dark status-cercle";
   }
 
-  createMap(map, mapId, car, provider, showCollapsControle = true, showFullScreenControle = true, showPositionControle = true, showResetControle = true) {
+  createMap(map, mapId, car, provider, showCollapsControle = true, showFullScreenControle = true, showPositionControle = true, showClusterControle = false, showResetControle = false) {
     const zoomLevel = 12
     map = L.map(mapId, { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
       .setView([car.lat, car.lng], zoomLevel)
@@ -343,6 +414,18 @@ export class util {
     }).addTo(map)
 
     ////////////////////////////////////////////////////////////
+
+    if (showClusterControle) {
+      let ResetControl = L.Control.extend({
+        onAdd(map: L.Map) {
+          return L.DomUtil.get('clusterConrtol');
+        },
+        onRemove(map: L.Map) { }
+      });
+      new ResetControl({
+        position: "topleft"
+      }).addTo(map);
+    }
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(map);
     L.control.scale().addTo(map);
     map.on('baselayerchange', (e) => {
@@ -386,11 +469,37 @@ export class util {
   }
 
   ValidatePhone(phone) {
-    if (/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{6})(?: *x(\d+))?\s*$/.test(phone)) {
-      return (true)
+    // if (/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{6})(?: *x(\d+))?\s*$/.test(phone)) {
+      if (/\d{10,15}/.test(phone)) {
+        return (true)
     }
     return (false)
   }
   // fonction tranformer
 
+  formatAge2(seconds) {
+    let table = []
+    if (isNaN(seconds)) return "Jamais"
+    // return age
+    //days
+    let days = Math.floor(seconds / (24 * 3600));
+    if (days > 0) table.push(days + 'J,')
+    seconds -= days * 24 * 3600;
+    //hours
+    let hours = Math.floor(seconds / 3600);
+    if (hours > 0) table.push(hours + 'H')
+    seconds -= hours * 3600;
+    //minutes
+    let minutes = Math.floor(seconds / 60);
+    if (minutes > 0) table.push(minutes + 'min')
+    seconds -= minutes * 60;
+
+    if (seconds > 0) table.push(seconds + 's')
+    //output
+    // console.log("table =======> ", table);
+    if (table.length > 2)
+      return table[0] + table[1];
+    else
+      return table[0];
+  }
 }

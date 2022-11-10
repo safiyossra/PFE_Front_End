@@ -19,7 +19,7 @@ export class ExportingTool {
         const doc = new jsPDF();
         const rows: any = [];
         data.forEach((elt) => {
-            const tmp = [elt.timeStart, elt.timeEnd, elt.addi, elt.da, elt.odo, elt.ft];
+            const tmp = [elt.timeStart, elt.timeEnd, elt.addi, elt.da, elt.odo, elt.ft,elt.driverID];
             rows.push(tmp);
         });
         doc.setFontSize(14);
@@ -45,6 +45,7 @@ export class ExportingTool {
                 { dataKey: 'DURÉE (MIN)', header: 'DURÉE (MIN)' },
                 { dataKey: 'Odomètre', header: 'Odomètre' },
                 { dataKey: 'Fuel', header: 'Fuel' },
+                { dataKey: 'Conducteur', header: 'Conducteur' },
             ],
             body: rows,
             theme: 'grid',
@@ -66,7 +67,7 @@ export class ExportingTool {
         data.forEach((elt) => {
             const tmp = [
                 elt.timeStart, elt.timeEnd, elt.addi, elt.addf, elt.k, elt.dc, elt.v, elt.na,
-                elt.cd, elt.c, elt.cm, elt.ct, elt.odo, elt.ft
+                elt.cd, elt.c, elt.cm, elt.ct, elt.odo, elt.ft,elt.driverID
             ];
             rows.push(tmp);
         });
@@ -93,15 +94,16 @@ export class ExportingTool {
                 { dataKey: 'ADRESSE DEPART', header: 'ADRESSE DEPART' },
                 { dataKey: 'ADRESSE ARIVÉE', header: 'ADRESSE ARIVÉE' },
                 { dataKey: 'KM PARCOURUE', header: 'KM PARCOURUE' },
-                { dataKey: 'DURÉE DE CONDUITE (MIN)', header: 'DURÉE DE CONDUITE (MIN)' },
+                { dataKey: 'DURÉE (MIN)', header: 'DURÉE (MIN)' },
                 { dataKey: 'MAX VITESSE (KM/H)', header: 'MAX VITESSE (KM/H)' },
                 { dataKey: '# ARRETS', header: '# ARRETS' },
-                { dataKey: 'CONSOM FUEL (L)', header: 'CONSOM FUEL (L)' },
+                { dataKey: 'CONSOM (L)', header: 'CONSOM (L)' },
                 { dataKey: 'CONSOM (%)', header: 'CONSOM (%)' },
                 { dataKey: 'CONSOM (MAD)', header: 'CONSOM (MAD)' },
                 { dataKey: 'CONSOM THÉORIQUE (L)', header: 'CONSOM THÉORIQUE (L)' },
                 { dataKey: 'Odomètre', header: 'Odomètre' },
                 { dataKey: 'Fuel', header: 'Fuel' },
+                { dataKey: 'Conducteur', header: 'Conducteur' },
             ],
             body: rows,
             theme: 'grid',
@@ -131,7 +133,7 @@ export class ExportingTool {
                 elt.fuelLevel,
                 elt.fuelTotal,
                 elt.address,
-                elt.creationTime,
+                elt.driverID,
             ];
             rows.push(tmp);
         });
@@ -160,7 +162,7 @@ export class ExportingTool {
                 { dataKey: 'FUEL VOL(L)', header: 'FUEL VOL(L)' },
                 { dataKey: 'CARBURANT TOTAL(L)', header: 'CARBURANT TOTAL(L)' },
                 { dataKey: 'ADRESSE', header: 'ADRESSE' },
-                { dataKey: 'INSERT DATE', header: 'INSERT DATE' }
+                { dataKey: 'Conducteur', header: 'Conducteur' }
             ],
             body: rows,
             theme: 'grid',

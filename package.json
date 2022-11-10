@@ -4,20 +4,16 @@
   "description": "Sendatrack GPS",
   "author": {
     "name": "EZOUAGH YOUNESS",
-    "url": "http://my.sendatrack.com",
+    "url": "http://track.sendatrack.com",
     "github": "https://github.com/yezouagh"
   },
   "contributors": [
     {
       "name": "AYMANE Oulad Benhamou",
       "url": "https://github.com/aymane2799"
-    },
-    {
-      "name": "Hasnae Chihi",
-      "url": "https://github.com/HasnaeChihi"
     }
   ],
-  "homepage": "http://my.sendatrack.com",
+  "homepage": "http://track.sendatrack.com",
   "copyright": "Senda Track © 2022. All Rights Reserved.",
   "license": "",
   "scripts": {
@@ -49,17 +45,23 @@
     "@geoman-io/leaflet-geoman-free": "^2.7.0",
     "@types/date-fns": "^2.6.0",
     "@types/leaflet": "^1.7.10",
+    "@types/leaflet.markercluster": "^1.5.1",
     "angular-split": "^13.2.0",
     "bootstrap": "^4.6.1",
     "chart.js": "^2.9.4",
     "core-js": "^3.21.1",
+    "jsoneditor": "^9.9.0",
     "date-fns": "^2.28.0",
     "exceljs": "^4.3.0",
     "file-saver": "^2.0.5",
     "flag-icon-css": "^3.5.0",
     "font-awesome": "^4.7.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.25",
     "leaflet-geosearch": "^3.6.1",
     "leaflet-routing-machine": "^3.2.12",
+    "leaflet.markercluster": "^1.5.3",
     "ng2-charts": "^2.4.3",
     "ngx-bootstrap": "^6.2.0",
     "ngx-perfect-scrollbar": "^10.1.1",
@@ -67,10 +69,7 @@
     "simple-line-icons": "^2.5.5",
     "ts-helpers": "^1.1.2",
     "tslib": "^2.3.1",
-    "zone.js": "~0.11.4",
-    "jspdf": "^2.5.1",
-    "html2canvas": "^1.4.1",
-    "jspdf-autotable": "^3.5.25"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^13.3.0",

@@ -11,9 +11,10 @@ export class User {
     notes:any
     groups : any
     confirmPass?: any
+    permissions?: any
 
     constructor(userID?,isActive?,description?, password?,contactName?, contactPhone?,  contactEmail?,
-           notifyEmail?, timeZone?,groups?, notes? ) {
+           notifyEmail?, timeZone?,groups?, notes? ,permissions?) {
         this.userID = userID ?? ''
         this.description = description ?? ''
         this.contactPhone = contactPhone ?? ''
@@ -24,6 +25,7 @@ export class User {
         this.timeZone = timeZone ?? ''
         this.isActive = isActive ?? 0
         this.notes = notes ?? ''
+        this.permissions = permissions ?? ''
         this.groups = groups ?? '*'
     }
 }

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PermissionsGuard } from 'src/app/guards/permissions.guard';
 import { DetailsComponent } from './details.component';
 import { RankComponent } from './rank.component';
 
@@ -17,14 +18,18 @@ const routes: Routes = [
       {
         path: 'rank',
         component: RankComponent,
+        canActivate: [PermissionsGuard],
         data: {
+          permissionKey:'Eco_EcoConduite',
           title: 'Ranking'
         }
       },
       {
         path: 'details',
         component: DetailsComponent,
+        canActivate: [PermissionsGuard],
         data: {
+          permissionKey:'Eco_EcoDetailles',
           title: 'Details'
         }
       },

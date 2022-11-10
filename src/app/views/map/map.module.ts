@@ -15,12 +15,16 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { EventsTableComponent } from './events-table/events-table.component';
 import { ZoneComponent } from './zone/zone.component';
 import { ClosestComponent } from './closest/closest.component';
+import { TrackComponent } from './track/track.component';
+import { CompareComponent } from './compare/compare.component';
 import { MatIconModule } from '@angular/material/icon';
 import { PointFormComponent } from './zone/point-form/point-form.component';
 import { AngularSplitModule } from "angular-split";
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
 import { MyPlacesDropdownModule } from './my-places-dropdown/my-places-dropdown.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-daterangepicker.module';
 
  
 @NgModule({
@@ -31,6 +35,8 @@ import { MyPlacesDropdownModule } from './my-places-dropdown/my-places-dropdown.
     DropdownCheckboxComponent,
     EventsTableComponent,
     ZoneComponent,
+    TrackComponent,
+    CompareComponent,
     ClosestComponent,
     PointFormComponent,
   ],
@@ -45,11 +51,12 @@ import { MyPlacesDropdownModule } from './my-places-dropdown/my-places-dropdown.
     MyDropdownModule,
     // BsDropdownModule,
     BsDropdownModule.forRoot(),
+    MyDateRangePickerModule,
     MatIconModule,
     AngularSplitModule,
     TabsModule,
     MyPlacesDropdownModule,
-
+    ModalModule.forRoot(),
   ]
 })
 export class MapModule { }

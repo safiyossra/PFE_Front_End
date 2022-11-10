@@ -22,6 +22,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   loadingTrajet = false
   @Input() mapID: string
   @Input() ToInvalidate?: string
+  @Input() showAllPointsVisible?: Boolean = false
   @Input() vehiculeID: string
   @Input() startTime: string
   @Input() endTime: string
@@ -35,17 +36,19 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   fullScreenControl: L.Control;
   positionControl: L.Control;
   selectedVid: string
+  cp: number = 0
   selectedStartTime: string
   selectedEndTime: string
   selectedTimestamps: string
   OneZoomLevel = 17
+  showAllPoints: Boolean = false
   timer: any
   events: any;
-  constructor(private vehiculeService: VehiculeService, private router: Router, private tools: util,) {
+  constructor(private vehiculeService: VehiculeService, private router: Router, public tools: util,) {
   }
   ngOnChanges(changes: SimpleChanges): void {
     // console.log("map changes");
-    // console.log(changes);
+    console.log(changes);
     if (changes['vehiculeID'] || changes['startTime'] || changes['endTime'] || changes['timestamps']) {
       this.resetPolyline();
       // if (changes['timestamps'])
@@ -90,7 +93,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     var route = this.router
     this.vehiculeService.getVehiculeEvents(url).subscribe({
       next: (res: any) => {
-        // console.log(res);
+        console.log("all events",res);
         this.events = res;
         let events = res
         if (events.length == 1)
@@ -278,6 +281,12 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  showAllPointscheckbox() {
+    if (this.events && this.events.length > 1) {
+      this.paintPolyline(this.events)
+    }
+  }
+
   paintPolyline(events: any) {
     var latlngs = []
     this.invalidate()
@@ -285,11 +294,14 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     if (latlngs.length > 0) {
       this.map.fitBounds(latlngs)
     }
+    if(this.layer)this.map.removeLayer(this.layer)
     this.layer = L.layerGroup([L.polyline(latlngs, { color: '#20a8d8', opacity: 1, weight: 4 })])
     events.forEach((ev, i) => {
       if (i != 0 && i != (events.length - 1)) {
         if (ev.statusCode == 62465 || ev.statusCode == 62467) {
           this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park')).addTo(this.layer)
+        } else if (this.showAllPoints) {
+          this.createMarker(ev, ev.speedKPH <=8 ? this.tools.myDetailsIcon('semi-stop') : ev.speedKPH <=30 ?this.tools.myDetailsIcon('semi-moving'):this.tools.myDetailsIcon('moving')).addTo(this.layer)
         }
       }
     });
@@ -300,17 +312,34 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   }
 
   createMarker(ev: any, icon: any) {
-    let time = new Date(ev.timestamp * 1000)
-    return L.marker([ev.latitude, ev.longitude], {
+    // var vehiculeService = this.vehiculeService
+    // var tools = this.tools
+    // var selectedVid = this.selectedVid
+    var v = { name: "", timestamp: ev.timestamp, statusCode: ev.statusCode, fuelLevel: ev.fuelLevel , address: ev.address, odometer: ev.odometerKM, speed: ev.speedKPH, lat: ev.latitude, lng: ev.longitude }
+    var marker = L.marker([ev.latitude, ev.longitude], {
       icon: icon
-    }).bindPopup(`` +
-      `<div>Heure: ${this.tools.formatedTime(time)}</div>` +
-      `<div>Status: ${ev.statusCode} </div>` +
-      `<div>Carburant: ${ev.fuelTotal} </div>`
-      , {
+    }).bindPopup(this.tools.formatPopUpContent(v), {
         closeButton: false,
         offset: L.point(0, -20)
       })
+    // marker.on('click', function () {
+    //   // ev.timestamp, ev.deviceID
+    //   vehiculeService.getVehiculeEvents("oneEvent?d=" + selectedVid + "&st=" + ev.timestamp).subscribe({
+    //     next: (res: any) => {
+    //       console.log("res", res[0]);
+    //       if (res && res.length > 0) {
+    //         console.log(Number.parseInt(res[0].fuelLevel), cp);
+
+    //         var v = { name: "", timestamp: ev.timestamp, statusCode: res[0].statusCode, fuelLevel: res[0].fuelLevel * cp, address: res[0].address, odometer: res[0].odometerKM, speed: res[0].speedKPH, lat: res[0].latitude, lng: res[0].longitude }
+    //         marker.getPopup().setContent(tools.formatPopUpContent(v)).update();
+    //       }
+
+    //     }
+    //   });
+
+    // });
+    return marker;
+
   }
 
   addMarker(ev: any) {

@@ -17,7 +17,6 @@ import { ChartsModule } from 'ng2-charts';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { DropdownExportModule } from './../../components/dropdown-export/dropdown-export.module';
-
 @NgModule({
   imports: [
     CommonModule,

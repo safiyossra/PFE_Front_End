@@ -9,13 +9,14 @@ import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 import { BasicGuard } from './guards/basic.guard';
+import { TrackComponent } from './views/map/track/track.component';
 
 export const routes: Routes = [
-  // {
-  //   path: '',
-  //   redirectTo: 'map',
-  //   pathMatch: 'full',
-  // },
+  {
+    path: '',
+    redirectTo: 'map',
+    pathMatch: 'full',
+  },
   {
     path: '404',
     component: P404Component,
@@ -35,6 +36,14 @@ export const routes: Routes = [
     component: LoginComponent,
     data: {
       title: 'Login Page'
+    }
+  },
+  {
+    path: 'track/:token',
+    // canActivate: [tokenGuard],
+    component: TrackComponent,
+    data: {
+      title: 'Suivi de vehicule'
     }
   },
   {

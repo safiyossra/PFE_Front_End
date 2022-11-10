@@ -30,6 +30,18 @@ export class DataService {
     })
   }
 
+  generateTrackToken(extra = "") {
+    let SERVER_URL = environment.apiUrl + "generateTrackToken" + extra;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
   getStatistique(urlParams) {
     let SERVER_URL = environment.apiUrl + "statistique" + urlParams;
     let jwt = this.JWT.get();
@@ -492,5 +504,90 @@ export class DataService {
       headers: headers
     })
   }
+ /********** Add schema for device ******** */
+ addShema(axe: any) {
+  let SERVER_URL = environment.apiUrl + "addSchema";
+  let jwt = this.JWT.get();
+  let headers = new HttpHeaders({
+    'Authorization': 'Bearer ' + jwt,
+    'Accept': 'application/json'
+  });
+  return this.http.get(SERVER_URL, {
+    headers: headers,
+    params: { schema: JSON.stringify(axe) }
+
+  })
+}
+
+/********** Get schema for device ******** */
+getSchema(url) {
+  let SERVER_URL = environment.apiUrl + "schema" + url;
+  let jwt = this.JWT.get();
+  let headers = new HttpHeaders({
+    'Authorization': 'Bearer ' + jwt,
+    'Accept': 'application/json'
+  });
+  return this.http.get(SERVER_URL, {
+    headers: headers
+  })
+}
+
+/********** Delete axe for device ******** */
+deleteAxe(url) {
+  let SERVER_URL = environment.apiUrl + "deleteAxe" + url;
+  let jwt = this.JWT.get();
+  let headers = new HttpHeaders({
+    'Authorization': 'Bearer ' + jwt,
+    'Accept': 'application/json'
+  });
+  return this.http.get(SERVER_URL, {
+    headers: headers
+  })
+}
+
+/******** Add Document for Device ******* */
+addDeviceDocument(doc) {
+  let SERVER_URL = environment.apiUrl + "addDeviceDocument";
+  let jwt = this.JWT.get();
+  let headers = new HttpHeaders({
+    'Authorization': 'Bearer ' + jwt,
+    'Accept': 'application/json'
+  });
+  return this.http.get(SERVER_URL, {
+    headers: headers,
+    params: { schema: JSON.stringify(doc) }
+
+  })
+}
+
+/******** Delete Document for Device ******* */
+deleteDeviceDocument(doc) {
+  let SERVER_URL = environment.apiUrl + "deleteDeviceDocument";
+  let jwt = this.JWT.get();
+  let headers = new HttpHeaders({
+    'Authorization': 'Bearer ' + jwt,
+    'Accept': 'application/json'
+  });
+  return this.http.get(SERVER_URL, {
+    headers: headers,
+    params: { schema: JSON.stringify(doc) }
+
+  })
+}
+
+/******** Update Document for Device ******* */
+updateDeviceDocument(doc) {
+  let SERVER_URL = environment.apiUrl + "editDeviceDocument";
+  let jwt = this.JWT.get();
+  let headers = new HttpHeaders({
+    'Authorization': 'Bearer ' + jwt,
+    'Accept': 'application/json'
+  });
+  return this.http.get(SERVER_URL, {
+    headers: headers,
+    params: { schema: JSON.stringify(doc) }
+
+  })
+}
 
 }

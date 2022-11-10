@@ -14,47 +14,14 @@ import { MatTableDataSource } from '@angular/material/table';
 export class MyGestioncarburantTableComponent implements OnChanges {
   @Input() data = [];
   // @Input() columnNames?: any[]
-  public displayedColumns = [
-    "actions",
-    'id',
-    'driverName',
-    'deviceName',
-    'fournisseur',
-    'numCarte',
-    'numBon',
-    'qte',
-    'pleinOnStr',
-    'montant',
-    'montantTTC',
-    'kmPrecedent',
-    'kmEncours',
-    'consoM',
-    'dateFill',
-    'observation',
-  ]
+  public displayedColumns = [ "actions", 'id', 'driverName','deviceName', 'fournisseur', 'numCarte', 'numBon',  'qte', 'pleinOnStr', 'montant',  'montantTTC', 'kmPrecedent', 'kmEncours', 'consoM', 'dateFill', 'observation', ]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100];
+  @Input() isEditPermission? = false
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  columnNames = [
-    "Actions",
-    'id',
-    'Chauffeur',
-    'Vehicule',
-    'Fournisseur',
-    'N Carte',
-    'N Bon',
-    'Qte',
-    'Plein',
-    'Montant',
-    'Montant TTC',
-    'KM Precedent',
-    'KM Encours',
-    'Consommation Moy (%)',
-    'Date',
-    'Observation',
-  ];
+  columnNames = [ "Actions",'id','Chauffeur', 'Vehicule', 'Fournisseur', 'N Carte', 'N Bon','Qte','Plein','Montant','Montant TTC', 'KM Precedent', 'KM Encours', 'Consommation Moy (%)', 'Date', 'Observation'];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -94,6 +61,16 @@ export class MyGestioncarburantTableComponent implements OnChanges {
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+      }
+    }
+    if(changes['isEditPermission']){
+      this.isEditPermission = changes['isEditPermission'].currentValue
+      if(this.isEditPermission){
+        this.displayedColumns =[ "actions", 'id', 'driverName','deviceName', 'fournisseur', 'numCarte', 'numBon',  'qte', 'pleinOnStr', 'montant',  'montantTTC', 'kmPrecedent', 'kmEncours', 'consoM', 'dateFill', 'observation' ]
+        this.columnNames = [ "Actions",'id','Chauffeur', 'Vehicule', 'Fournisseur', 'N Carte', 'N Bon','Qte','Plein','Montant','Montant TTC', 'KM Precedent', 'KM Encours', 'Consommation Moy (%)', 'Date', 'Observation'];
+      }else{
+        this.displayedColumns = ['id', 'driverName','deviceName', 'fournisseur', 'numCarte', 'numBon',  'qte', 'pleinOnStr', 'montant',  'montantTTC', 'kmPrecedent', 'kmEncours', 'consoM', 'dateFill', 'observation' ]
+        this.columnNames = ['id','Chauffeur', 'Vehicule', 'Fournisseur', 'N Carte', 'N Bon','Qte','Plein','Montant','Montant TTC', 'KM Precedent', 'KM Encours', 'Consommation Moy (%)', 'Date', 'Observation'];
       }
     }
   }

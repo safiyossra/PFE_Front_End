@@ -13,13 +13,15 @@ export class BasicGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+      // console.log("Route = ",route);
+      
     let JWT = localStorage.getItem('JWT')
     if (JWT) {
       return new Observable<boolean>((observer) => {
         this.authenticateService.isLoggedIn(JWT).toPromise().then((e) => {
           observer.next(true);
           observer.complete();
-          console.log('authenticated');
+          // console.log('authenticated');
         }).catch(error => {
           console.log('catch not authenticated', error);
           this.router.navigate(['login'], { queryParams: { returnUrl: state.url } });

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core'
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { VehiculeService } from 'src/app/services/vehicule.service'
 import { util } from '../../tools/utils'
 import * as L from 'leaflet'
@@ -8,6 +8,9 @@ import { Router } from '@angular/router'
 import { Constant } from 'src/app/tools/constants'
 import { ZoneService } from 'src/app/services/zone.service'
 import { Zone, ZoneType } from './../../models/zone'
+import { DataService } from 'src/app/services/data.service'
+import "leaflet.markercluster";
+import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-map',
@@ -20,36 +23,63 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   @Input() showFullScreenControle?: boolean = true
   @Input() showPositionControle?: boolean = true
   @Input() showCollapsControle?: boolean = true
-
+  @Input() showClusterControle?: boolean = true
+  periodOptions = [{ name: '1min', val: 1 }, { name: '5min', val: 5 }, { name: '15min', val: 15 }, { name: '30min', val: 30 }, { name: '1 Heur', val: 60 }, { name: '1H30min', val: 90 }, { name: '3 Heurs', val: 180 }, { name: '1 Jour', val: 1440 }, { name: '3 Jour', val: 4320 }];
+  isShareTrajet = false
+  generatedShareLink = ""
+  errorMsg = ""
+  period = 1
+  @ViewChild('secondModal') public secondModal: ModalDirective;
   provider = new OpenStreetMapProvider();
   isFirstTime = true
   public position_left: string = "0%"
   public size = [25, 75]
   isMyPositionVisible: boolean = false
+  isClustering: string = "1"
   MyPositionMarker: L.Marker
-  map: any
+  map: any//L.Map
   car = {
     lat: 35.75,
     lng: -5.83
   }
+  maxZoom = 20
   marker: any
   markers: L.Marker[] = []
+  markersLayerGroup: any
+  cluster: L.MarkerClusterGroup;
   vehicules: Vehicule[] = []
   typesCount = [0, 0, 0, 0]
-
+  drivers: any = [];
   inter: any
-
+  vehicle2shareIndex = -1
+  modalLoading = false;
   selectedVehiculeIndex = -1
-  constructor(private vehiculeService: VehiculeService, private tools: util, public cts: Constant, private zoneService: ZoneService, private router: Router) {
+  constructor(private dataService: DataService, private vehiculeService: VehiculeService, private tools: util, public cts: Constant, private zoneService: ZoneService, private router: Router) {
 
   }
   ngOnInit(): void {
+    this.isClustering = localStorage.getItem("isClustering") ?? "1";
+    this.getDrivers();
     this.loadData()
+  }
+
+  getDrivers() {
+    var route = this.router
+    this.dataService.getDriverData("?minimum=true").subscribe({
+      next: (res) => {
+        // console.log(res)
+        this.drivers = res;
+      }, error(err) {
+        if (err.status == 401) {
+          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+        }
+      }
+    })
   }
 
   ngAfterViewInit() {
     setTimeout(() => {
-      this.map = this.tools.createMap(this.map, 'map', this.car, this.provider, this.showCollapsControle, this.showFullScreenControle, this.showPositionControle)
+      this.map = this.tools.createMap(this.map, 'map', this.car, this.provider, this.showCollapsControle, this.showFullScreenControle, this.showPositionControle, true, true)
       this.inter = setInterval(() => {
         this.loadData()
       }, 5000)
@@ -58,6 +88,8 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   initMarkers() {
+    this.cluster = L.markerClusterGroup({ animate: false, animateAddingMarkers: false, spiderfyOnMaxZoom: false, disableClusteringAtZoom: 20 });
+    console.log( "this.vehicules", this.vehicules);
     this.vehicules.forEach((veh, index) => {
       this.markers.push(
         L.marker([veh.lat, veh.lng], {
@@ -75,14 +107,28 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
       )
     });
 
+    this.markersLayerGroup = L.layerGroup(this.markers)
     if (this.map) {
       this.centerMap()
-      L.layerGroup(this.markers).addTo(this.map)
+      if (this.isClustering == "1") {
+        this.cluster.addLayers(this.markersLayerGroup)
+      }
+      else {
+        this.markersLayerGroup.addTo(this.map)
+      }
+      this.cluster.addTo(this.map)
     } else {
       let inter = setInterval(() => {
         if (this.map) {
           this.centerMap()
-          L.layerGroup(this.markers).addTo(this.map)
+          // L.layerGroup(this.markers).addTo(this.map)
+          if (this.isClustering == "1") {
+            this.cluster.addLayers(this.markersLayerGroup)
+          }
+          else {
+            this.markersLayerGroup.addTo(this.map);
+          }
+          this.cluster.addTo(this.map)
           clearInterval(inter)
         }
       }, 100)
@@ -100,16 +146,17 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
         this.markers[i].setPopupContent(this.tools.formatPopUpContent(v))
       }
     }
-    // this.center()
+    // this.cluster.refreshClusters()
+    this.center()
   }
 
   reset() {
     this.selectedVehiculeIndex = -1
-    const elems = document.getElementsByClassName('my-div-icon')
-
-    for (let index = 0; index < elems.length; index++) {
-      elems.item(index).classList.remove('marker-transition')
-      elems.item(index).classList.remove('marker-selected')
+    for (let i = 0; i < this.markers.length; i++) {
+      if (this.vehicules[i]) {
+        let v = this.vehicules[i]
+        this.markers[i].setIcon(this.tools.myIcon(v, v.statusCode, v.icon, this.selectedVehiculeIndex == i))
+      }
     }
     this.centerMap()
   }
@@ -119,7 +166,6 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     this.vehiculeService.getData().subscribe({
       next: (res) => {
         const data = res['DeviceList']
-        console.log("DeviceList", data);
         let vehicules = []
         data.forEach(e => {
           let l = e['EventData'].length - 1 ?? -1
@@ -128,13 +174,13 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
             vehicules.push(
               new Vehicule(e["Device"] ?? "", e["Device_desc"] ?? "", vData['Timestamp'] ?? 0, vData["StatusCode"]?.toString(), vData["Address"] ?? "",
                 vData["Odometer"] ?? "", vData["acceleration"] ?? "", e["SimCard"] ?? "", e["DeviceCode"] ?? "", vData["GPSPoint_lat"] ?? 0,
-                vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, e['Icon'], vData['FuelLevel_Liter'] ?? 0)
+                vData["GPSPoint_lon"] ?? 0, vData['Heading'] ?? 0, vData['Speed'] ?? 0, e['Icon'], vData['FuelLevel_Liter'] ?? 0, this.tools.getDriverName(this.drivers, vData['DriverID'] ?? '----'))
             )
           }
         });
         this.isFirstTime = this.vehicules.length == 0
         this.vehicules = vehicules
-        console.log(this.vehicules)
+        // console.log(this.vehicules)
         vehicules = []
         if (this.isFirstTime) {
           this.initMarkers()
@@ -179,9 +225,16 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
 
   centerMap() {
     let bounds = this.markers.map((e) => {
-      return e.getLatLng()
+      return [e.getLatLng().lat, e.getLatLng().lng]
     })
+    // if (bounds.length > 0) {
+    //   if (bounds.length > 1) {
     this.map.fitBounds(bounds)
+    //   } else {
+    //     this.map.setView(new L.LatLng(bounds[0][0], bounds[0][1]))
+    //   }
+    // }
+
   }
 
   toggleMapFullscreen() {
@@ -191,6 +244,20 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     else {
       this.tools.closeFullscreen()
     }
+  }
+
+  toggleClustering() {
+    if (this.isClustering != "1") {
+      if (this.map.hasLayer(this.markersLayerGroup)) this.map.removeLayer(this.markersLayerGroup)
+      this.cluster.addLayers(this.markersLayerGroup)
+      this.isClustering = "1"
+    }
+    else {
+      this.cluster.clearLayers()
+      this.markersLayerGroup.addTo(this.map)
+      this.isClustering = "0"
+    }
+    localStorage.setItem("isClustering", this.isClustering)
   }
 
   toggleMyPosition() {
@@ -225,30 +292,64 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
+  // rowClicked(index) {
+  //   const elems = document.getElementsByClassName('my-div-icon')
+
+  //   for (let index = 0; index < elems.length; index++) {
+  //     elems.item(index).classList.remove('marker-transition')
+  //     elems.item(index).classList.remove('marker-selected')
+  //   }
+
+  //   this.selectedVehiculeIndex = index
+  //   elems.item(this.selectedVehiculeIndex).classList.add('marker-selected')
+  //   // this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
+  //   this.map.setView(this.markers[index].getLatLng(), 15)
+  // }
+
+  // rowDoubleClicked(event) {
+  //   const elems = document.getElementsByClassName('my-div-icon')
+
+  //   for (let index = 0; index < elems.length; index++) {
+  //     elems.item(index).classList.remove('marker-transition')
+  //   }
+
+  //   this.selectedVehiculeIndex = event
+  //   this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
+
+  // }
+
   rowClicked(index) {
-    const elems = document.getElementsByClassName('my-div-icon')
-
-    for (let index = 0; index < elems.length; index++) {
-      elems.item(index).classList.remove('marker-transition')
-      elems.item(index).classList.remove('marker-selected')
-    }
-
+    this.map.setView(this.markers[index].getLatLng(), this.maxZoom)
     this.selectedVehiculeIndex = index
-    elems.item(this.selectedVehiculeIndex).classList.add('marker-selected')
-    // this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
-    this.map.setView(this.markers[index].getLatLng(), 15)
+    for (let i = 0; i < this.markers.length; i++) {
+      if (this.vehicules[i]) {
+        let v = this.vehicules[i]
+        this.markers[i].setIcon(this.tools.myIcon(v, v.statusCode, v.icon, this.selectedVehiculeIndex == i, true))
+      }
+    }
+  }
+
+  shareClicked(index) {
+    if (this.vehicules[index]) {
+      this.vehicle2shareIndex = index
+      this.modalLoading = false;
+      this.isShareTrajet = false
+      this.generatedShareLink = ""
+      this.errorMsg = ""
+      this.period = 1
+      this.secondModal.show();
+    }
   }
 
   rowDoubleClicked(event) {
-    const elems = document.getElementsByClassName('my-div-icon')
-
-    for (let index = 0; index < elems.length; index++) {
-      elems.item(index).classList.remove('marker-transition')
-    }
-
+    this.map.setView(this.markers[event].getLatLng(), this.maxZoom)
     this.selectedVehiculeIndex = event
-    this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
-
+    for (let i = 0; i < this.markers.length; i++) {
+      if (this.vehicules[i]) {
+        let v = this.vehicules[i]
+        this.markers[i].setIcon(this.tools.myIcon(v, v.statusCode, v.icon, this.selectedVehiculeIndex == i, true))
+      }
+    }
   }
 
   collapseClicked() {
@@ -272,6 +373,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     this.size[1] = 75
     this.invalidate()
   }
+
   onDragEnd(e) {
     this.size = [e.sizes[0], e.sizes[1]]
     this.invalidate()
@@ -345,7 +447,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
       }
       var icon = L.icon({
         iconUrl: 'assets/img/POI/' + iconName + '.png',
-        iconSize:[40, 50],
+        iconSize: [40, 50],
         iconAnchor: [20, 50]
       });
       layer = L.marker(new L.LatLng(zone.latitude1, zone.longitude1), { icon: icon })
@@ -354,7 +456,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   iconExists(name: any) {
-    return this.cts.zoneIcons.findIndex(elem => elem.name == name)!=-1
+    return this.cts.zoneIcons.findIndex(elem => elem.name == name) != -1
   }
 
   ngOnDestroy(): void {
@@ -365,6 +467,30 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     if (this.inter) {
       clearInterval(this.inter);
       this.inter = null;
+    }
+  }
+
+  getVehicleName(i) {
+    if (i != -1 && this.vehicules[i]) return this.vehicules[i].name
+    return ""
+  }
+
+  generateShareLink() {
+    this.errorMsg = ""
+    if (this.vehicle2shareIndex != -1 && this.vehicules[this.vehicle2shareIndex] && this.period > 0) {
+      console.log("generateShareLink");
+      this.modalLoading = true
+      this.dataService.generateTrackToken("?d=" + this.vehicules[this.vehicle2shareIndex].id + "&showTrajet=" + this.isShareTrajet + "&pe=" + this.period).subscribe({
+        next: (res) => {
+          console.log(res)
+          this.modalLoading = false
+          this.generatedShareLink = "http://track.sendatrack.com/#/track/"+res["t"].toString();
+        }, error(err) {
+          console.log(err)
+          this.modalLoading = false
+          this.errorMsg = "Quelque chose s'est mal passé, Veuillez réessayer ou contacter le support!"
+        }
+      })
     }
   }
 }

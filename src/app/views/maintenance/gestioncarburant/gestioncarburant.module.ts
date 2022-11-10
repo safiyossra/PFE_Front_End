@@ -7,7 +7,6 @@ import { ConsommcarburantComponent } from './consommcarburant.component';
 
 // Forms Component
 import { MyGestioncarburantTableComponent } from './my-gestioncarburant-table/my-gestioncarburant-table.component';
-import { MyCarburantmodalTableComponent } from './my-carburantmodal-table/my-carburantmodal-table.component';
 import { MaterialsModule } from '../../../materials.module';
 // Components Routing
 import { MyDateRangePickerModule } from '../../components/my-date-range-picker/my-daterangepicker.module';
@@ -34,8 +33,7 @@ import { DropdownExportModule } from './../../components/dropdown-export/dropdow
   ],
   declarations: [
     ConsommcarburantComponent,
-    MyGestioncarburantTableComponent,
-    MyCarburantmodalTableComponent
+    MyGestioncarburantTableComponent
   ]
 })
 export class GestioncarburantModule { }

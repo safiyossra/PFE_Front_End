@@ -4,21 +4,78 @@
     class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
   <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
     class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
+  <button id="clusterConrtol" *ngIf="showClusterControle" title="Toggle Clustering" class="mcontrol cil-vector"
+    (click)="toggleClustering()"></button>
   <button id="resetConrtol" title="Default View" class="control-position-button icon-close text-danger"
     [ngClass]="selectedVehiculeIndex==-1 ? 'd-none':''" (click)="reset()"></button>
-    <button *ngIf="showCollapsControle" title="Expande list" class="mcontrol icon-arrow-right"
-                    id="list-Expand" (click)="expandClicked()"></button>
-  <as-split #mySplit direction="horizontal" [useTransition]="true" (gutterClick)="resetSize($event)" (dragEnd)="onDragEnd($event)" (transitionEnd)="invalidate()">
+  <button *ngIf="showCollapsControle" title="Expande list" class="mcontrol icon-arrow-right" id="list-Expand"
+    (click)="expandClicked()"></button>
+  <as-split #mySplit direction="horizontal" [useTransition]="true" (gutterClick)="resetSize($event)"
+    (dragEnd)="onDragEnd($event)" (transitionEnd)="invalidate()">
     <as-split-area [size]="size[0]" [order]="1" style="overflow: hidden;">
       <div class="list-vehicules">
-      <my-table [vehicules]="vehicules" (rowClicked)="rowClicked($event)"  (collapse)="collapseClicked()"></my-table>
-    </div>
+        <my-table [vehicules]="vehicules" (rowClicked)="rowClicked($event)" (shareClicked)="shareClicked($event)"
+          (collapse)="collapseClicked()"></my-table>
+      </div>
     </as-split-area>
-    <as-split-area [size]="size[1]" [order]="2" >
+    <as-split-area [size]="size[1]" [order]="2">
       <div class="my-map">
         <div class="card-body" id="map" overlay="true"></div>
-    </div>
+      </div>
     </as-split-area>
   </as-split>
 </div>
 <img src="assets/gif/loading.gif" alt="Loading" *ngIf="isFirstTime" class="loadinger" />
+
+<div bsModal #secondModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-primary row justify-content-center" role="document">
+    <div class="modal-content col-md-4 p-0">
+      <div class="modal-header">
+        <h5 class="modal-title"> Partager le Suivi de Vehicule: {{getVehicleName(vehicle2shareIndex)}}</h5>
+        <button type="button" class="close" (click)="secondModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form>
+        <div class="modal-body p-0">
+          <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
+          <div class="animated fadeIn">
+            <div class="row">
+              <div class="col">
+                <div class="card-body">
+                  <label for="sw1" class="ml-2">Partager le trajet&nbsp;</label><input
+                    class="form-check-input switch mx-2 mb-4 " type="checkbox" id="sw1" [(ngModel)]="isShareTrajet"
+                    [ngModelOptions]="{standalone: true}">
+                  <mat-form-field class="w-100" appearance="fill">
+                    <mat-label>Durée (en minutes)</mat-label>
+                    <input type="number" aria-label="Number" min="1" max="20000000" matInput [matAutocomplete]="auto"
+                      [(ngModel)]="period" [ngModelOptions]="{standalone: true}">
+                    <mat-autocomplete #auto="matAutocomplete">
+                      <mat-option *ngFor="let option of periodOptions" [value]="option.val">
+                        {{option.name}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                  <!-- <input type="text" class="w-100" disabled [(ngModel)]="generatedShareLink"
+                    [ngModelOptions]="{standalone: true}"> -->
+                    <div class="input-group mb-4">
+                      <input class="form-control" id="generatedShareLink" [(ngModel)]="generatedShareLink"
+                        [ngModelOptions]="{standalone: true}" >
+                      <div class="input-group-append" style="cursor: pointer;" title="Copier" onclick="document.querySelector('#generatedShareLink').select();document.execCommand('copy');"><span class="input-group-text"><i
+                            class="fa fa-copy"></i></span></div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="modal-footer" style="justify-content: left;display: initial;">
+        <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
+        <button type="button" class="btn btn-primary float-right" (click)="generateShareLink()">Générer</button>
+        <button type="button" class="btn btn-secondary float-right" (click)="secondModal.hide()">Fermer</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

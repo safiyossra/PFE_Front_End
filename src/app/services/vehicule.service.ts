@@ -25,6 +25,17 @@ export class VehiculeService {
     })
   }
 
+  getVehicle4Track(extra = "") {
+    let SERVER_URL = environment.apiUrl + "getVehicle4Track?" + extra;
+    let headers = new HttpHeaders({
+      'Accept': 'application/json'
+    });
+    // http://app.sendatrack.com:8080/eventsApp/data.jsonx?a=actitrans&p=senda65432&u=support&g=all&l=2
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
   getVehiculeEvents(api) {
     // + "map-events?d=" + id;
     let SERVER_URL = environment.apiUrl + api

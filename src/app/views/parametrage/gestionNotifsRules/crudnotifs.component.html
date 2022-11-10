@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="card card-accent-info">
         <div class="card-header">
-          <button type="button" data-toggle="modal" (click)="showAddModal()" class="btn btn-outline-primary"><i
+          <button type="button" data-toggle="modal" *ngIf="isAddPermission" (click)="showAddModal()" class="btn btn-outline-primary"><i
               class="fa fa-plus-circle"></i> Ajouter une Alerte</button>
           <div class="card-header-actions">
             <button class="btn text-primary mr-2" (click)="loadData()" [disabled]="loading">
@@ -23,13 +23,13 @@
     <div class="row">
       <div class="col-lg-12">
         <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
-        <my-gestion-notifs-rules-table (modify)="loadModify($event)" (delete)="delete($event)" [data]="data">
+        <my-gestion-notifs-rules-table (modify)="loadModify($event)" (delete)="delete($event)" [data]="data"  [isEditPermission]="isEditPermission">
         </my-gestion-notifs-rules-table>
       </div>
     </div>
     </div>
 
-    <div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
+    <div bsModal #primaryModal="bs-modal" *ngIf="isEditPermission" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
       role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-primary" role="document">
         <div class="modal-content">

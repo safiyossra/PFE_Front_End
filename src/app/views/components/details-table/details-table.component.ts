@@ -23,16 +23,19 @@ export class DetailsTableComponent implements OnChanges {
   @Input() url: string
   @Input() selectedMapDevice: any;
   @Input() capacity: any;
+  @Input() offset: any;
+  @Input() drivers: any;
   @Input() exportEvts: any;
   @Input() tableID = "Detaill";
   // public columnNames = ["Date","Status","Pushpin Code","Lat/Lon","Vitesse(km/h)","Distance en kilométrage","Carburant %","Fuel Vol(L)","Carburant Total(L)","Adresse","Insert Date"]
   // Pushpin Code , Carburant %,
-  public columnNames = ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Insert Date"]
+  public columnNames = ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Conducteur"]//, "Insert Date"
   public pageSizeOptions = [10, 15, 20, 30, 50, 100, 200, 500, 1000, 2000];
   // public data: any;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   public isLoading: boolean = false
-  public displayedColumns: any = ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "creationTime"]//["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
+  public displayedColumns: any = ["timestamp", "status", "latlon", "speedKPH", "odometerKM",/* "",*/"fuelLevel", "fuelTotal", "address", "driverID"]//, "creationTime"
+  //["date","status","latlon","speed","odom","fuelvol","carbtotal","address"]
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalRows: number = 0;
@@ -63,6 +66,12 @@ export class DetailsTableComponent implements OnChanges {
   // }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['drivers']) {
+      let change = changes['drivers'].currentValue
+      if (change) {
+        this.drivers = change;
+      }
+    }
     if (changes['url']) {
       let change = changes['url'].currentValue
       if (change != "") {
@@ -91,10 +100,13 @@ export class DetailsTableComponent implements OnChanges {
           this.loadDonnee = d.data;
           this.loadDonnee.forEach((e) => {
             e.timestamp = this.tools.formatDate(this.tools.timeStampToDate(e.timestamp));
-            e.creationTime = this.tools.formatDate(this.tools.timeStampToDate(e.creationTime));
+            // e.creationTime = this.tools.formatDate(this.tools.timeStampToDate(e.creationTime));
             e.status = this.tools.getStatusName(e.statusCode)
+            e.driverID = this.tools.getDriverName(this.drivers,e.driverID)
+            e.odometerKM = this.round2d(e.odometerKM + this.offset)
             e.fuelLevel = this.round2d(e.fuelLevel * this.capacity)
           })
+          console.log("events", this.loadDonnee);
           // console.log("events", this.loadDonnee);
           setTimeout(() => {
             this.paginator.pageIndex = this.currentPage;

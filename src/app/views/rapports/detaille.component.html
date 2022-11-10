@@ -107,13 +107,14 @@
           <ng-template tabHeading class="card-header-action btn-secondary">
             <i class="fa fa-map mr-1"></i> Afficher Trajet &nbsp;
             <i class="fa fa-refresh" (click)="showTrajet()"></i>
-          </ng-template>
-          <div class="text-danger mb-2"> &nbsp;[Seuls les enregistrements des 3 derniers jours au
+          </ng-template><div  id="trajetMap">
+          <!-- <div class="text-danger mb-2"> &nbsp;[Seuls les enregistrements des 3 derniers jours au
             maximum
-            de la période sélectionnée sont affichés]</div>
+            de la période sélectionnée sont affichés]</div> -->
           <modal-map [mapID]="'mapTrajet'" [vehiculeID]="trajetSelectedDevice" [startTime]="trajetStartTime"
-            [endTime]="trajetEndTime" [ToInvalidate]="ToInvalidate">
+            [endTime]="trajetEndTime" [ToInvalidate]="ToInvalidate" [showAllPointsVisible]="true">
           </modal-map>
+        </div>
         </tab>
 
           <tab style="min-height: 600px" (selectTab)="selectTab(5)" [active]="selectedTab==5">
@@ -164,8 +165,7 @@
             <!-- <i class="fa fa-refresh" (click)="getdetails()"></i>-->
           </ng-template>
           <details-table [url]="urldetails" [exportEvts]="exportEvts" [tableID]="DetaillID" (positionClick)="openMap($event)"
-          [selectedMapDevice]="selectedMapDevice" [capacity]="getVehiculeCapacityById(selectedMapDevice)" (exportEvents)="exportEvents($event)">
-
+          [selectedMapDevice]="selectedMapDevice" [drivers]="drivers" [capacity]="getVehiculeCapacityById(selectedMapDevice)" [offset]="getVehiculeOffsetById(selectedMapDevice)" (exportEvents)="exportEvents($event)">
           </details-table>
         </tab>
 

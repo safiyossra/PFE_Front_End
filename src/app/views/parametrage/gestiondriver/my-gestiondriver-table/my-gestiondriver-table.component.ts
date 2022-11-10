@@ -18,6 +18,7 @@ export class MyGestiondriverTableComponent implements OnChanges {
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
 
+  @Input() isEditPermission? = false
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   columnNames =["Actions","ConducteursID","Numéro de Téléphone","Description","Nom"];
@@ -64,6 +65,16 @@ export class MyGestiondriverTableComponent implements OnChanges {
     this.totalItems = this.dataSource.data.length
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    }
+  }
+  if(changes['isEditPermission']){
+    this.isEditPermission = changes['isEditPermission'].currentValue
+    if(this.isEditPermission){
+      this.displayedColumns = ["actions","driverID","contactPhone","description","displayName"]
+      this.columnNames = ["Actions","ConducteursID","Numéro de Téléphone","Description","Nom"];
+    }else{
+      this.displayedColumns = ["driverID","contactPhone","description","displayName"]
+      this.columnNames = ["ConducteursID","Numéro de Téléphone","Description","Nom"];
     }
   }
 }

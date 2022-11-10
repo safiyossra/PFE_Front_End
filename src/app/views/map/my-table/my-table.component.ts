@@ -12,7 +12,7 @@ import { util } from 'src/app/tools/utils';
 })
 
 
-export class MyTableComponent implements OnChanges, OnInit {
+export class MyTableComponent implements OnChanges {
 
   @Input() showFullScreenControle?: Boolean = true
   @Input() showCollapsControle?: Boolean = true
@@ -22,6 +22,7 @@ export class MyTableComponent implements OnChanges, OnInit {
 
   @Output() rowClicked: EventEmitter<any> = new EventEmitter();
   @Output() rowDoubleClicked: EventEmitter<any> = new EventEmitter();
+  @Output() shareClicked: EventEmitter<any> = new EventEmitter();
   @Output() collapse: EventEmitter<any> = new EventEmitter();
 
   displayedColumns: string[] = ['#', 'name', 'speed', 'actions'];
@@ -48,26 +49,14 @@ export class MyTableComponent implements OnChanges, OnInit {
   constructor(private tools: util) {
   }
 
-  ngOnInit(): void {
-
-  }
-
   // TODO
   customFilterPredicate() {
-    const myFilterPredicate = (
-      data: Vehicule,
-      filter: string
-    ): boolean => {
-
+    const myFilterPredicate = (data: Vehicule, filter: string): boolean => {
       let searchString = JSON.parse(filter);
-
-      // console.log('searchString');
-      // console.log(searchString);
       return (
-        data.statusCode.toString().trim().indexOf(searchString.statusCode) !== -1 &&
+        data.statusCode.toString().indexOf(searchString.statusCode) !== -1 &&
         data.name
           .toString()
-          .trim()
           .toLowerCase()
           .indexOf(searchString.name.toLowerCase()) !== -1
       );
@@ -75,48 +64,36 @@ export class MyTableComponent implements OnChanges, OnInit {
     return myFilterPredicate;
   }
 
-  // ngAfterViewInit(): void {
-  //   this.dataSource = new MatTableDataSource<Vehicule>(this.vehicules)
-  //   this.totalItems = this.dataSource.data.length
-  //   this.dataSource.paginator = this.paginator;
-  //   this.dataSource.sort = this.sort;
-  // }
-
   ngOnChanges(changes: SimpleChanges): void {
     // console.log(changes);
 
     this.dataSource = new MatTableDataSource(changes.vehicules.currentValue)
+    this.dataSource.filterPredicate = this.customFilterPredicate()
     this.totalItems = this.dataSource.data.length
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.dataSource.filter = this.filterValues['name']
-    // if (this.dataSource.filter != null) {
-    //   this.applyFilter()
-    // }
+    this.applyFilter()///////////////////////////////////////////////////////
   }
 
   applyFilter() {
     this.dataSource.filter = JSON.stringify(this.filterValues);
 
-    // if (this.dataSource.paginator) {
-    //   this.dataSource.paginator.firstPage();
-    // }
+    if (this.dataSource.paginator) {///////////////////////////////////////////////////////
+      this.dataSource.paginator.firstPage();///////////////////////////////////////////////////////
+    }///////////////////////////////////////////////////////
   }
 
   search(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
+    console.log("filterValue", filterValue);
     this.filterValues['name'] = filterValue
-
-    this.dataSource.filter = filterValue
-    // this.dataSource.filter = JSON.stringify(this.filterValues)
-
-    // this.applyFilter()
+    this.applyFilter()///////////////////////////////////////////////////////
   }
 
   applySort(status) {
     switch (status) {
       case 'moving':
-        this.filterValues['statusCode'] = '61714 | 61111'
+        this.filterValues['statusCode'] = '61714'
         break;
 
       case 'on':
@@ -127,16 +104,15 @@ export class MyTableComponent implements OnChanges, OnInit {
         this.filterValues['statusCode'] = '62467'
         break;
 
-      case 'other':
-        this.filterValues['statusCode'] = ''
-        break;
+      // case 'other':
+      //   this.filterValues['statusCode'] = ''
+      //   break;
 
       default:
         this.filterValues['statusCode'] = ''
         break;
     }
-
-    // this.applyFilter()
+    this.applyFilter()///////////////////////////////////////////////////////
   }
 
   onRowClicked(row: any) {
@@ -155,6 +131,11 @@ export class MyTableComponent implements OnChanges, OnInit {
     this.rowDoubleClicked.emit(index)
   }
 
+  share_Clicked(row: any) {
+    const isLargeNumber = (element) => element.id == row.id;
+    let index = this.vehicules.findIndex(isLargeNumber)
+    this.shareClicked.emit(index)
+  }
   get typesCount() {
     let typesCount = [0, 0, 0, 0]
     this.vehicules.map(vehicule => {
@@ -191,6 +172,6 @@ export class MyTableComponent implements OnChanges, OnInit {
 
   isNaN2(v) {
     v = this.tools.getAge(v)
-    return isNaN(v) || v > 21600
+    return isNaN(v) || v > 21600 ? "fa fa-warning text-warning status-cercle" : "rounded-circle p-1 h6 cil-check bg-success mr-1";
   }
 }

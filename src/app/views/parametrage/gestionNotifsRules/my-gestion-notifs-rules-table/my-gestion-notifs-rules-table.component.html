@@ -16,7 +16,7 @@
           {{ columnNames[index] | uppercase }}
         </th>
         <td mat-cell *matCellDef="let salle" [ngClass]="salle['isActive']==0 ? 'bg-danger':''">
-          <div *ngIf="column=='actions'">
+          <div *ngIf="column=='actions' && isEditPermission">
 
             <button type="button" title="Modifier" (click)="modif(salle['ruleID'])"
               class="btn rounded m-1 btn-primary"><i class="cil-pen"></i></button>

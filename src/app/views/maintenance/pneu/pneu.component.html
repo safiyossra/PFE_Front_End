@@ -1,0 +1,375 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card card-accent-info">
+                <div class="card-header">
+                    <button type="button" data-toggle="modal" (click)="modalAjoutr()" class="btn btn-outline-primary"><i
+                            class="fa fa-plus-circle"></i> Ajouter Changement de pneu</button>
+
+                    <div class="card-header-actions">
+                        <app-dropdown-export (export)="exporter($event)"></app-dropdown-export>
+                        <button type="button" class="card-header-action btn btn-link btn-minimize"
+                            (click)="toggleCollapse()">
+                            <i class="{{ iconCollapse }}  transition"></i>
+                        </button>
+                        <button type="button" class="card-header-action btn btn-link btn-close">
+                            <i class="icon-close"></i>
+                        </button>
+                    </div>
+
+                </div>
+                <div class="card-body" [collapse]="isCollapsed" [isAnimated]="true">
+                    <div class="form-group row">
+                        <div class="col-md-5">
+                            <my-daterangepicker #calendar [options]="myDateRangePickerOptions"></my-daterangepicker>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="controls">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
+                                    </div>
+                                    <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule'"
+                                        [selectPlaceholder]="'search...'" [options]="devices" [display]="'name'"
+                                        [value]="'dID'" [multiple]="false" [labelCount]="0"
+                                        [selectedOptions]="selectedDevices"
+                                        (selectionChange)="getSelectedDevices($event)">
+                                    </my-dropdown-select>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-key fa-sm" *ngIf="selectedDevice == null"></i>
+                                            <i *ngIf="selectedDevice != null">{{selectedDevice}}</i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!--</div> -->
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-sm btn-primary" (click)="loadData(false)" [disabled]="loading">
+                                <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                                <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> &nbsp;Appliquer
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <app-my-pneu-table (modify)="loadModify($event)" (delete)="delete($event)" [data]="data">
+            </app-my-pneu-table>
+        </div>
+    </div>
+
+</div>
+
+<!--  ************** Add Modal ************** -->
+<div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
+    role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajouter Changement de Pneu</h5>
+                <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="animated fadeIn">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    Véhicule
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label class=" col-md-4 col-form-label" for="deviceID">Véhicule <span
+                                                class="etoile"> *</span></label>
+                                        <div class="col-8 input-group">
+                                            <my-dropdown-select id="deviceID" class="form-control"
+                                                [placeholder]="'Sélection le véhicule'"
+                                                [selectPlaceholder]="'search...'" [options]="devices" name="IDVehicule"
+                                                [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
+                                                [selectedOptions]="entretienPneu.IDVehicule"
+                                                (selectionChange)="getSelectedDevicesModal($event)">
+                                            </my-dropdown-select>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-form-label" for="kmActuel">Kilométrage
+                                            acquisition<span class="etoile"> *</span></label>
+                                        <div class="input-group">
+                                            <!-- disabled [value]="currentKM" -->
+                                            <input type="number" id="kmActuel" step="0.1" class="form-control"
+                                                disabled="true" placeholder="Kilométrage Actuel"
+                                                [(ngModel)]="entretienPneu.KmAcquisition">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text"> KM </span>
+                                            </div>
+
+                                            <button class="btn btn-sm btn-warning" (click)="refreshKm()"
+                                                *ngIf="mode =='Modifier'">
+                                                <i class="fa fa-refresh fa-sm" style="color: white;"></i>
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    Fournisseur
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+
+                                        <label class="col-md-4  col-form-label" for="societe">Société<span
+                                                class="etoile"> *</span></label>
+                                        <div class="col-md-8 input-group">
+                                            <input type="text" class="form-control" name="societe" id="societe"
+                                                placeholder="Nom de société" [(ngModel)]="entretienPneu.Fournisseurs">
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label class="col-md-4  col-form-label" for="motif">Motif changement<span
+                                                class="etoile"> *</span></label>
+                                        <div class="col-md-8 input-group">
+                                            <my-dropdown-select id="motif" class="form-control"
+                                                [placeholder]="'Sélection le motif'" [selectPlaceholder]="'search...'"
+                                                [options]="motifs" [display]="'name'" [value]="'name'"
+                                                [multiple]="false" [labelCount]="0"
+                                                [selectedOptions]="entretienPneu.MotifChangPneu"
+                                                (selectionChange)="getSelectedMotif($event)">
+                                            </my-dropdown-select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-4  col-form-label" for="montage">Lieu montage<span
+                                                class="etoile"> *</span></label>
+                                        <div class="col-md-8 input-group">
+                                            <input class="col-md-8" type="text" class="form-control" name="montage"
+                                                id="montage" placeholder="Lieu de montage"
+                                                [(ngModel)]="entretienPneu.LieuMontage">
+
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-4  col-form-label" for="frais">Frais montage<span
+                                                class="etoile"> *</span></label>
+                                        <div class="col-md-8 input-group">
+                                            <input type="number" class="form-control" name="frais" id="frais"
+                                                placeholder="Frais de montage" [(ngModel)]="entretienPneu.FraisMontage">
+                                            <span class="input-group-text"> DH </span>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    Pneu
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label class=" col-md-4 col-form-label" for="marque">Marque<span class="etoile">
+                                                *</span></label>
+                                        <div class="col-8 input-group">
+                                            <my-dropdown-select id="marque" class="form-control"
+                                                [placeholder]="'Sélection la Marque'" [selectPlaceholder]="'search...'"
+                                                [options]="cts.marques" [display]="'name'" [multiple]="false"
+                                                [value]="'name'" [labelCount]="0"
+                                                [selectedOptions]="entretienPneu.MarquePneu"
+                                                (selectionChange)="getSelectedMarque($event)">
+                                            </my-dropdown-select>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-4 col-form-label" for="modele">Modele<span class="etoile">
+                                                *</span></label>
+                                        <div class="col-8 input-group">
+                                            <my-dropdown-select id="modele" class="form-control"
+                                                [placeholder]="'Sélection le Modele'" [selectPlaceholder]="'search...'"
+                                                [options]="modeles" [display]="'name'" [value]="'name'"
+                                                [multiple]="false" [labelCount]="0"
+                                                [selectedOptions]="entretienPneu.ModelePneu"
+                                                (selectionChange)="getSelectedModele($event)">
+                                            </my-dropdown-select>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class=" col-md-4 col-form-label" for="dimention">Dimention<span
+                                                class="etoile"> *</span></label>
+                                        <div class="col-8 input-group">
+                                            <my-dropdown-select id="modele" class="form-control"
+                                                [placeholder]="'Sélection la dimention'"
+                                                [selectPlaceholder]="'search...'" [options]="dimentions"
+                                                [display]="'name'" [value]="'name'" [multiple]="false" [labelCount]="0"
+                                                [selectedOptions]="entretienPneu.DimensionPneu"
+                                                (selectionChange)="getSelectedDimension($event)">
+                                            </my-dropdown-select>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class=" col-md-4 col-form-label" for="dimention">N° Série<span
+                                                class="etoile"> *</span></label>
+                                        <div class="col-md-8 input-group">
+                                            <input type="text" class="form-control"
+                                                [(ngModel)]="entretienPneu.NumSerie">
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="col-form-label" for="position">
+                                                    Position<span class="etoile"> *</span> </label>
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control" placeholder="position de pneu"
+                                                    disabled="true" [(ngModel)]="entretienPneu.PositionPneu">
+                                            </div>
+                                            <div class="col-md-2">
+
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="row align-items-center text-center ">
+                                        <div *ngFor="let ob of axes;let i=index;"
+                                            class="col-md-1 col-sm-2 align-items-center axe d-flex flex-row p-0">
+                                            <div>
+
+                                                <div alt="icone-pneu" class="pneu" *ngIf="ob.axeType" #dd id="dd"
+                                                    (click)="getPosition(dd,i)"
+                                                    [ngClass]="{'activePneu': entretienPneu.PositionPneu  === (i+1+'dd')}">
+                                                    <label for="date" class="info">{{ob.dd}}</label>
+                                                    <label for="date" class="info">{{ob.ddKm}} KM</label>
+                                                </div>
+                                                <div alt="icone-pneu" class="pneu" #dg (click)="getPosition(dg,i)"
+                                                    [ngClass]="{'activePneu': entretienPneu.PositionPneu  === (i+1+'dg')}"
+                                                    id="dg">
+                                                    <label for="date" class="info">{{ob.dg}}</label>
+                                                    <label for="date" class="info">{{ob.dgKm}} KM</label>
+                                                </div>
+                                                <img src="assets/img/graph/verticalBarre.png" alt="barre"
+                                                    class="verticalbarre">
+                                                <div alt="icone-pneu" class="pneu" #gd (click)="getPosition(gd,i)"
+                                                    [ngClass]="{'activePneu': entretienPneu.PositionPneu  === (i+1+'gd')}"
+                                                    id="gd">
+                                                    <label for="date" class="info">{{ob.gd}}</label>
+                                                    <label for="date" class="info">{{ob.gdKm}} KM</label>
+                                                </div>
+                                                <div alt="icone-pneu" class="pneu" *ngIf="ob.axeType" #gg id="gg"
+                                                    [ngClass]="{'activePneu': entretienPneu.PositionPneu  === (i+1+'gg')}"
+                                                    (click)="getPosition(gg,i)">
+                                                    <label for="date" class="info">{{ob.gg}}</label>
+                                                    <label for="date" class="info">{{ob.ggKm}} KM</label>
+                                                </div>
+                                            </div>
+                                            <div class="horizontalBarre" *ngIf="i!=0"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group ">
+                                        <div class="row">
+                                            <div class="col-6 input-grou">
+                                                <label class="col-form-label" for="dateD">Date début affectation <span
+                                                        class="etoile">*</span></label>
+                                                <!--  [ngModelOptions]="{standalone: true}" -->
+                                                <input type="date" id="compteurDate" class="form-control"
+                                                    placeholder="Saisir une date" [(ngModel)]="entretienPneu.DateDebut">
+                                            </div>
+                                            <div class="col-6 input-grou">
+                                                <label class="col-form-label" for="dateF">Date fin affectation<span
+                                                        class="etoile"> *</span></label>
+                                                <input type="date" id="compteurDate" class="form-control"
+                                                    placeholder="Saisir une date" [(ngModel)]="entretienPneu.DateFin">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group ">
+                                        <div class="row">
+                                            <div class="col-6 input-grou">
+                                                <label class="col-form-label" for="montant">Montant<span class="etoile">
+                                                        *</span></label>
+                                                <!-- [ngModelOptions]="{standalone: true}" -->
+                                                <div class="input-group">
+                                                    <input type="number" id="montant" class="form-control"
+                                                        placeholder="Saisir le montant"
+                                                        [(ngModel)]="entretienPneu.Montant">
+                                                    <span class="input-group-text"> DH</span>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-6 input-grou">
+                                                <label class="col-form-label" for="etat">Etat <span
+                                                        class="etoile">*</span></label>
+                                                <!-- [ngModelOptions]="{standalone: true}" -->
+                                                <my-dropdown-select id="etat" class="form-control"
+                                                    [placeholder]="'Sélection Etat'" [selectPlaceholder]="'search...'"
+                                                    [options]="etats" [multiple]="false" [labelCount]="0"
+                                                    [selectedOptions]="selectedPneu.EtatPneu" [display]="'name'"
+                                                    [value]="'name'" (selectionChange)="getSelectedEtat($event)">
+                                                </my-dropdown-select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <label class="col-form-label" for="observation">Observation</label>
+                                                <textarea class="form-control" placeholder="Observation"
+                                                    [(ngModel)]="entretienPneu.Observation"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: left;display: initial;">
+                <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
+                <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
+                <button type="button" class="btn btn-secondary float-right"
+                    (click)="primaryModal.hide()">Fermer</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

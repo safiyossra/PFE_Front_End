@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,700;1,100;1,300&display=swap');
 
 @import '~leaflet-geosearch/dist/geosearch.css';
+@import "~jsoneditor/dist/jsoneditor.min.css";
 
 @for $i from 0 through 359 {
     .rotate-#{$i} {
@@ -63,19 +64,19 @@
 .my-icon-title {
     position: absolute;
     white-space: nowrap;
-    // left: -25px;
-    height: 20%;
-    bottom: 0;
+    height: 30%;
+    padding: 0 4px;
+    background: #fdf5f5;
+    border-radius: 6px;
+    bottom: -12px;
     font-size: 12px;
-    color: red;
+    /* text-shadow: -1px -1px 0 #99e9ff, -1px 1px 0 #99e9ff, 1px 1px 0 #99e9ff, 1px -1px 0 #99e9ff; */
+    color: #00508f;
     font-weight: 700;
-    text-shadow: -1px -1px 0 #d0cecf, -1px 1px 0 #d0cecf, 1px 1px 0 #d0cecf, 1px -1px 0 #d0cecf;
+    font-feature-settings: "smcp";
     font-variant: small-caps;
     letter-spacing: 1.5px;
-    font-family: Verdana,
-        Arial,
-        Tahoma,
-        sans-serif;
+    font-family: Verdana,Arial,Tahoma,sans-serif;
 }
 
 .zones-tabs {
@@ -121,4 +122,29 @@
         padding-bottom: 12px;
         margin-bottom: -8px;
     }
+}
+
+div.jsoneditor-tree button.jsoneditor-contextmenu-button,div.jsoneditor-tree .jsoneditor-dragarea {
+    display: none;
+}
+
+div.jsoneditor-tree table.jsoneditor-tree{
+    margin-left: -40px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+.jsoneditor-popover, .jsoneditor-schema-error, div.jsoneditor td, div.jsoneditor textarea, div.jsoneditor th, div.jsoneditor-field, div.jsoneditor-value, pre.jsoneditor-preview {
+    font-size: 16px;
+    font-weight: 600;
+    color: grey;
+    margin-bottom: 10px;
+}
+
+.jsoneditor select, .jsoneditor-modal select {
+    padding: 2px;
+    margin-left: 15px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
 }

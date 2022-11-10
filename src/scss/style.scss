@@ -87,11 +87,11 @@ body {
 
 .mcontrol {
     background: #fff no-repeat 0 0;
-    background-size: 26px 52px;
+    background-size: 28px 52px;
     border-radius: 5px;
-    border: 1px solid rgb(0 0 0 / 48%);
-    width: 26px;
-    height: 26px;
+    border: 1px solid rgb(0 0 0 / 75%);
+    width: 28px;
+    height: 28px;
     background-repeat: no-repeat;
     -webkit-tap-highlight-color: rgba(51, 181, 229, .4);
 }
@@ -103,6 +103,13 @@ body {
 #list-vehicules table.mat-table {
     .mat-sort-header-content {
         color: rgb(0, 0, 0);
+    }
+
+    td.mat-cell,
+    td.mat-footer-cell {
+        border: 1px solid #ebebeb;
+        padding: 6px 5px 6px;
+        border-width: 0px 1px;
     }
 }
 
@@ -491,8 +498,8 @@ table.infoBoxTable tr:nth-child(odd) {
     padding: 0.2rem 0.6rem;
 }
 
-.f-100{
+.f-100 {
     font-size: 100%;
-    color:dimgrey;
+    color: dimgrey;
     font-weight: 600;
 }

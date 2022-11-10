@@ -15,6 +15,7 @@ import { Constant } from 'src/app/tools/constants';
 export class MyPlanentretienaTableComponent implements OnChanges {
   @Input() data=[];
 
+  @Input() isEditPermission? = false
   @Output() modify?: EventEmitter<any> = new EventEmitter();
   @Output() delete?: EventEmitter<any> = new EventEmitter();
   @Output() cloturer?: EventEmitter<any> = new EventEmitter();
@@ -55,6 +56,16 @@ export class MyPlanentretienaTableComponent implements OnChanges {
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+      }
+    } 
+    if(changes['isEditPermission']){
+      this.isEditPermission = changes['isEditPermission'].currentValue
+      if(this.isEditPermission){
+        this.displayedColumns = ["actions", "deviceID", "operation", "typeDeclenchement", "value", "status", "creationTime"]
+        this.columnNames =  ["Actions", "Véhicule", "Type d'Opération", "Déclenchement", "Valeur", "Status", "Date de Création"]
+      }else{
+        this.displayedColumns = [ "deviceID", "operation", "typeDeclenchement", "value", "status", "creationTime"]
+        this.columnNames =  ["Véhicule", "Type d'Opération", "Déclenchement", "Valeur", "Status", "Date de Création"]
       }
     }
   }

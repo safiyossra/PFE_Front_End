@@ -14,6 +14,7 @@ import { MyDropdownModule } from '../../components/my-dropdown/my-dropdown.modul
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { DropdownExportModule } from './../../components/dropdown-export/dropdown-export.module';
+import { NgJsonEditorModule } from './jsoneditor/jsoneditor.module';
 
 @NgModule({
   imports: [
@@ -21,7 +22,7 @@ import { DropdownExportModule } from './../../components/dropdown-export/dropdow
     FormsModule,
     ReactiveFormsModule,
     MaterialsModule,
-    // MyDateRangePickerModule,
+    NgJsonEditorModule,
     MyDropdownModule,
     ModalModule.forRoot(),
     CollapseModule.forRoot(),

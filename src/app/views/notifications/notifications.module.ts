@@ -19,7 +19,6 @@ import { MyNotificationTableComponent } from './my-notification-table/my- notifi
 import { MaterialsModule } from 'src/app/materials.module';
 
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({

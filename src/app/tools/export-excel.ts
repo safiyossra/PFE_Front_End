@@ -10,7 +10,7 @@ export class ExportExcel {
   ExportParking(data: any, title?: string) {
     var dataForExcel: Object[] = [];
     data.forEach((elt: any) => {
-      const tmp = [elt.timeStart, elt.timeEnd, elt.addi, elt.da, elt.odo, elt.ft];
+      const tmp = [elt.timeStart, elt.timeEnd, elt.addi, elt.da, elt.odo, elt.ft,elt.driverID,];
       dataForExcel.push(tmp);
     });
     // if (vehicule) Title = 'Rapport Parking -[' + vehicule + ']';
@@ -19,7 +19,7 @@ export class ExportExcel {
       data: dataForExcel,
       headers: ['DEPART', 'ARRIVÉ', 'ADRESSE', 'DURÉE (MIN)',
         'Odomètre',
-        'Fuel',],
+        'Fuel',"Conducteur"],
     };
     this.exportExcel(reportData);
   }
@@ -39,7 +39,7 @@ export class ExportExcel {
         elt.cd,
         elt.c,
         elt.cm,
-        elt.ct, elt.odo, elt.ft
+        elt.ct, elt.odo, elt.ft,elt.driverID
       ];
       dataForExcel.push(tmp);
     });
@@ -54,15 +54,16 @@ export class ExportExcel {
         'ADRESSE DEPART',
         'ADRESSE ARIVÉE',
         'KM PARCOURUE',
-        'DURÉE DE CONDUITE (MIN)',
+        'DURÉE (MIN)',
         'MAX VITESSE (KM/H)',
         '# ARRETS',
-        'CONSOM FUEL (L)',
+        'CONSOM (L)',
         'CONSOM (%)',
         'CONSOM (MAD)',
         'CONSOM THÉORIQUE (L)',
         'Odomètre',
         'Fuel',
+        'Conducteur',
       ],
     };
     this.exportExcel(reportData);
@@ -80,7 +81,7 @@ export class ExportExcel {
         elt.fuelLevel,
         elt.fuelTotal,
         elt.address,
-        elt.creationTime,
+        elt.driverID,
       ];
       dataForExcel.push(tmp);
     });
@@ -97,7 +98,7 @@ export class ExportExcel {
         'FUEL VOL(L)',
         'CARBURANT TOTAL(L)',
         'ADRESSE',
-        'INSERT DATE',
+        'Conducteur',
       ],
     };
     this.exportExcel(reportData);

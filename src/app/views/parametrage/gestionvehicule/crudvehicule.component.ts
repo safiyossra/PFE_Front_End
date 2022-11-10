@@ -12,11 +12,15 @@ import { ExportExcel } from 'src/app/tools/export-excel';
   templateUrl: 'crudvehicule.component.html',
   styleUrls: ["./style.scss"],
 })
+
 export class CrudvehiculeComponent {
 
   loading: boolean = false;
   modalLoading: boolean = false;
   offModalLoading: boolean = false;
+  isEditPermission = false
+  isAddPermission = false
+
   newOdo: any;
   oldOdo: any;
   offset: any;
@@ -29,24 +33,25 @@ export class CrudvehiculeComponent {
   data = [];
 
   ngOnInit() {
+    this.isEditPermission = this.tools.isAuthorized('Parametrage_Vehicules','Mettre a jour')
+    this.isAddPermission = this.tools.isAuthorized('Parametrage_Vehicules','Ajouter')
     this.loadData();
   }
-
 
   //////////////////////
   loadData() {
     this.loading = true;
-
     var route = this.router
     this.dataService.getDeviceData("").subscribe({
       next: (d: any) => {
         let now = Math.round(new Date().getTime() / 1000)
-        console.log(d);
+        // console.log(d);
         d.forEach(e => {
           e.age = e.age ?? 0 > 0 ? (now - e.age) : "jamais"
           e.creationTime = this.tools.formatDateForInput(this.tools.timeStampToDate(e.creationTime ?? 0));
-          e.registrationExpireString != 0 ? e.registrationExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.registrationExpire??0)) : '';
-          e.insuranceExpireString != 0 ? e.insuranceExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.insuranceExpire??0)) : '';
+          e.creationTime = this.tools.formatDateForInput(this.tools.timeStampToDate(e.creationTime ?? 0));
+          e.registrationExpireString != 0 ? e.registrationExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.registrationExpire ?? 0)) : '';
+          e.insuranceExpireString != 0 ? e.insuranceExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.insuranceExpire ?? 0)) : '';
         });
         this.data = d;
         this.loading = false;
@@ -148,9 +153,10 @@ export class CrudvehiculeComponent {
     if (!this.selectedDevice.description) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else
-      if (!this.tools.ValidatePhone(this.selectedDevice.simPhoneNumber)) {
-        this.errorMsg = "Vous avez saisi un telephone invalid."
-      } else {
+      // if (!this.tools.ValidatePhone(this.selectedDevice.simPhoneNumber)) {
+      //   this.errorMsg = "Vous avez saisi un telephone invalid."
+      // } else 
+      {
         this.setExpDates()
         this.selectedDevice.fuelEconomy = this.selectedDevice.fuelEconomy > 0 ? Math.round(100 / this.selectedDevice.fuelEconomy) : 0;
         this.dataService.updateDevice(this.selectedDevice).subscribe({

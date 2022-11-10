@@ -6,17 +6,21 @@ import { MaintenanceComponent } from './maintenance.component';
 import { SharedModule } from '../components/shared.module';
 import { PlanentretienModule } from './planentretien/planentretien.module';
 import { GestioncarburantModule } from './gestioncarburant/gestioncarburant.module';
+import { PneuModule } from './pneu/pneu.module';
+import { MenuCardComponent } from '../components/menu-card/menu-card.component';
+
 
 @NgModule({
   declarations: [
-    MaintenanceComponent,
+    MaintenanceComponent
   ],
   imports: [
     CommonModule,
+    SharedModule,
     MaintenanceRoutingModule,
     GestioncarburantModule,
     PlanentretienModule,
-    SharedModule
+    PneuModule,
   ]
 })
 export class MaintenanceModule { }
