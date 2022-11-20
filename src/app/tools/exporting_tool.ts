@@ -647,6 +647,76 @@ export class ExportingTool {
         doc.save(title);
     }
 
+    exportPdf_Pneu(data: any[], title: string) {
+        const doc = new jsPDF();
+        const rows: any = [];
+
+        data.forEach((elt) => {
+            const tmp = [
+                elt.deviceName,
+                elt.NumSerie,
+                elt.EtatPneu,
+                elt.KmAcquisition,
+                elt.DateDebut,
+                elt.DateFin,
+                elt.PositionPneu,
+                elt.Fournisseurs,
+                elt.ModelePneu,
+                elt.Montant
+            ];
+            rows.push(tmp);
+        });
+        doc.setFontSize(9);
+        doc.setDrawColor('blue');
+
+        doc.addImage(this.picture, 'png', 10, 4, 30, 30);
+        doc.setFontSize(9);
+
+        doc.setTextColor('#033A7A');
+        doc.text('Sendatrack.com', 8, 32); //10
+        doc.setFontSize(8);
+        doc.text(this.adress1, 130, 17);
+        doc.text(this.add, 130, 21);
+        doc.text(this.adress2, 130, 25);
+        doc.setFontSize(18);
+        doc.setTextColor('#366DAD');
+        console.log("title ", title);
+
+        doc.text(title, 150, 50, { align: 'center' });
+
+        (doc as any).autoTable({
+            columns: [
+                { dataKey: 'Véhicule', header: 'Véhicule' },
+                { dataKey: "N° série", header: "N° série" },
+                { dataKey: 'Etat Pneu', header: 'Etat Pneu' },
+                { dataKey: 'Km Acquisition', header: 'Km Acquisition' },
+                { dataKey: 'Date debut', header: 'Date debut' },
+                { dataKey: 'Date fin', header: 'Date fin' },
+                { dataKey: 'Position Pneu', header: 'Position Pneu' },
+                { dataKey: 'Fournisseurs', header: 'Fournisseurs' },
+                { dataKey: 'Modele Pneu', header: 'Modele Pneu' },
+                { dataKey: 'Montant', header: 'Montant' },
+
+
+            ],
+            body: rows,
+            theme: 'grid',
+            rowPageBreak: 'auto',
+            //specifies where to start drowing the table
+            startY: 60,
+            styles: {
+                fontSize: 10,
+                font: 'PTSans'
+            },
+            showHead: 'firstPage',
+            headStyles: { fillColor: [5, 97, 203] },
+            columnStyles: { text: { cellWidth: 'wrap' } },
+        });
+        doc.setFontSize(10);
+
+        this.addFooters(doc);
+        doc.save(title);
+    }
     exportPdf_Notifications(data: any[], title: string) {
         const doc = new jsPDF();
         const rows: any = [];

@@ -96,7 +96,7 @@
                                                 [placeholder]="'Sélection le véhicule'"
                                                 [selectPlaceholder]="'search...'" [options]="devices" name="IDVehicule"
                                                 [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
-                                                [selectedOptions]="entretienPneu.IDVehicule"
+                                                [selectedOptions]="entretienPneu.deviceID"
                                                 (selectionChange)="getSelectedDevicesModal($event)">
                                             </my-dropdown-select>
 
@@ -106,7 +106,7 @@
                                         <label class="col-form-label" for="kmActuel">Kilométrage
                                             acquisition<span class="etoile"> *</span></label>
                                         <div class="input-group">
-                                            <!-- disabled [value]="currentKM" -->
+
                                             <input type="number" id="kmActuel" step="0.1" class="form-control"
                                                 disabled="true" placeholder="Kilométrage Actuel"
                                                 [(ngModel)]="entretienPneu.KmAcquisition">
@@ -149,7 +149,7 @@
                                         <div class="col-md-8 input-group">
                                             <my-dropdown-select id="motif" class="form-control"
                                                 [placeholder]="'Sélection le motif'" [selectPlaceholder]="'search...'"
-                                                [options]="motifs" [display]="'name'" [value]="'name'"
+                                                [options]="cts.motifs" [display]="'name'" [value]="'name'"
                                                 [multiple]="false" [labelCount]="0"
                                                 [selectedOptions]="entretienPneu.MotifChangPneu"
                                                 (selectionChange)="getSelectedMotif($event)">
@@ -224,7 +224,7 @@
                                         <div class="col-8 input-group">
                                             <my-dropdown-select id="modele" class="form-control"
                                                 [placeholder]="'Sélection la dimention'"
-                                                [selectPlaceholder]="'search...'" [options]="dimentions"
+                                                [selectPlaceholder]="'search...'" [options]="cts.dimentions"
                                                 [display]="'name'" [value]="'name'" [multiple]="false" [labelCount]="0"
                                                 [selectedOptions]="entretienPneu.DimensionPneu"
                                                 (selectionChange)="getSelectedDimension($event)">
@@ -262,25 +262,26 @@
 
                                     </div>
                                     <div class="row align-items-center text-center ">
+                                        <div class="horizontalBarre" *ngIf="axes.length > 0"></div>
                                         <div *ngFor="let ob of axes;let i=index;"
                                             class="col-md-1 col-sm-2 align-items-center axe d-flex flex-row p-0">
                                             <div>
 
                                                 <div alt="icone-pneu" class="pneu" *ngIf="ob.axeType" #dd id="dd"
-                                                    (click)="getPosition(dd,i)"
+                                                    (click)="getPosition(dd,i,ob)"
                                                     [ngClass]="{'activePneu': entretienPneu.PositionPneu  === (i+1+'dd')}">
                                                     <label for="date" class="info">{{ob.dd}}</label>
                                                     <label for="date" class="info">{{ob.ddKm}} KM</label>
                                                 </div>
-                                                <div alt="icone-pneu" class="pneu" #dg (click)="getPosition(dg,i)"
+                                                <div alt="icone-pneu" class="pneu" #dg (click)="getPosition(dg,i,ob)"
                                                     [ngClass]="{'activePneu': entretienPneu.PositionPneu  === (i+1+'dg')}"
                                                     id="dg">
                                                     <label for="date" class="info">{{ob.dg}}</label>
                                                     <label for="date" class="info">{{ob.dgKm}} KM</label>
                                                 </div>
-                                                <img src="assets/img/graph/verticalBarre.png" alt="barre"
+                                                <img src="../../../../assets/img/graph/verticalBarre.png" alt="barre"
                                                     class="verticalbarre">
-                                                <div alt="icone-pneu" class="pneu" #gd (click)="getPosition(gd,i)"
+                                                <div alt="icone-pneu" class="pneu" #gd (click)="getPosition(gd,i,ob)"
                                                     [ngClass]="{'activePneu': entretienPneu.PositionPneu  === (i+1+'gd')}"
                                                     id="gd">
                                                     <label for="date" class="info">{{ob.gd}}</label>
@@ -288,54 +289,55 @@
                                                 </div>
                                                 <div alt="icone-pneu" class="pneu" *ngIf="ob.axeType" #gg id="gg"
                                                     [ngClass]="{'activePneu': entretienPneu.PositionPneu  === (i+1+'gg')}"
-                                                    (click)="getPosition(gg,i)">
+                                                    (click)="getPosition(gg,i,ob)">
                                                     <label for="date" class="info">{{ob.gg}}</label>
                                                     <label for="date" class="info">{{ob.ggKm}} KM</label>
                                                 </div>
                                             </div>
-                                            <div class="horizontalBarre" *ngIf="i!=0"></div>
+                                            <!-- <div class="horizontalBarre" *ngIf="i!=0"></div> -->
                                         </div>
                                     </div>
                                     <div class="form-group ">
                                         <div class="row">
-                                            <div class="col-6 input-grou">
+                                            <div class="col-6 input-group">
                                                 <label class="col-form-label" for="dateD">Date début affectation <span
                                                         class="etoile">*</span></label>
                                                 <!--  [ngModelOptions]="{standalone: true}" -->
-                                                <input type="date" id="compteurDate" class="form-control"
+                                                <input type="date" id="DateDebut" class="form-control"
                                                     placeholder="Saisir une date" [(ngModel)]="entretienPneu.DateDebut">
                                             </div>
-                                            <div class="col-6 input-grou">
+                                            <div class="col-6 input-group">
                                                 <label class="col-form-label" for="dateF">Date fin affectation<span
                                                         class="etoile"> *</span></label>
-                                                <input type="date" id="compteurDate" class="form-control"
+                                                <input type="date" id="DateFin" class="form-control"
                                                     placeholder="Saisir une date" [(ngModel)]="entretienPneu.DateFin">
                                             </div>
+                                            <input type="date" id="DateFin" class="form-control"
+                                                placeholder="Saisir une date" [(ngModel)]="testDate">
                                         </div>
 
                                     </div>
                                     <div class="form-group ">
                                         <div class="row">
-                                            <div class="col-6 input-grou">
+                                            <div class="col-6 input-group">
                                                 <label class="col-form-label" for="montant">Montant<span class="etoile">
                                                         *</span></label>
                                                 <!-- [ngModelOptions]="{standalone: true}" -->
-                                                <div class="input-group">
-                                                    <input type="number" id="montant" class="form-control"
-                                                        placeholder="Saisir le montant"
-                                                        [(ngModel)]="entretienPneu.Montant">
-                                                    <span class="input-group-text"> DH</span>
-                                                </div>
+
+                                                <input type="number" id="montant" class="form-control"
+                                                    placeholder="Saisir le montant" [(ngModel)]="entretienPneu.Montant">
+                                                <span class="input-group-text"> DH</span>
+
 
                                             </div>
-                                            <div class="col-6 input-grou">
+                                            <div class="col-6 input-group">
                                                 <label class="col-form-label" for="etat">Etat <span
                                                         class="etoile">*</span></label>
                                                 <!-- [ngModelOptions]="{standalone: true}" -->
                                                 <my-dropdown-select id="etat" class="form-control"
                                                     [placeholder]="'Sélection Etat'" [selectPlaceholder]="'search...'"
-                                                    [options]="etats" [multiple]="false" [labelCount]="0"
-                                                    [selectedOptions]="selectedPneu.EtatPneu" [display]="'name'"
+                                                    [options]="cts.etats" [multiple]="false" [labelCount]="0"
+                                                    [selectedOptions]="entretienPneu.EtatPneu" [display]="'name'"
                                                     [value]="'name'" (selectionChange)="getSelectedEtat($event)">
                                                 </my-dropdown-select>
                                             </div>

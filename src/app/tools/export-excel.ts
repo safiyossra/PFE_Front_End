@@ -321,7 +321,33 @@ export class ExportExcel {
     this.exportExcel(reportData);
 
   }
+  Export_Pneu(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.deviceName,
+        elt.NumSerie,
+        elt.EtatPneu,
+        elt.KmAcquisition,
+        elt.DateDebut,
+        elt.DateFin,
+        elt.PositionPneu,
+        elt.Fournisseurs,
+        elt.ModelePneu,
+        elt.Montant
+      ];
 
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ["Véhicule", "N° série", "Etat Pneu", "Km Acquisition", "Date debut", "Date fin", "Position Pneu", "Fournisseurs", "Modele Pneu", "Montant"],
+    };
+    this.exportExcel(reportData);
+
+  }
+  
   Export_Notification(data: any[], title: string) {
     var dataForExcel: Object[] = [];
     data.forEach((elt) => {

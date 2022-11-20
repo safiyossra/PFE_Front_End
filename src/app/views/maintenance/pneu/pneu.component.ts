@@ -1,5 +1,4 @@
-import { map } from 'rxjs/operators';
-import { position } from 'html2canvas/dist/types/css/property-descriptors/position';
+
 import { EntretienPneu } from './../../../models/entretien-pneu';
 import { Router } from '@angular/router';
 import { Component, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
@@ -28,57 +27,24 @@ export class PneuComponent implements OnInit {
   selectedDevices = [];
   selectedDevice = this.selectedDevices;
 
-  // selectedDevicesModal = [];
-  // selectedDeviceModal = this.selectedDevicesModal;
-
-
   public modeles: any = [];
-  public dimentions: any = [
-    { id: 1, name: '1' },
-    { id: 2, name: '2' }
-  ];
-  public motifs: any = [
-    { id: 'fin de vie', name: 'fin de vie' },
-    // { id: 'motif2', name: 'motif2' },
-  ]
 
 
-  public etats: any = [
-    { id: 'Neuf', name: 'Neuf' },
-    { id: 'Occasion', name: 'Occasion' },
-  ]
-
-
-
+  public axes: any[]
   selectedPneu = new EntretienPneu();
   mode = "Ajouter";
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
   errorMsg: string;
   entretienPneu: EntretienPneu = new EntretienPneu()
-  selectedOperations = [];
-  //  data = [];
-  currentKM = 0;
 
   data = [];
   data2 = []
   selectedMarque: any
-  selectedPneu1 = new EntretienPneu(1, 1224, 'Neuf', 45, '2022-09-12', '2022-12-07', 'dacia', 'F1', 'model1', 'marque1', 968, 'casa', 485, 'ob1', '2GD', 'motif1', 1, '2022-10-12');
-  selectedPneu2 = new EntretienPneu(2, 1324, 'Occasion', 45, '2022-10-30', '2022-09-12', 'v13', 'F2', 'model2', 'marque2', 25, 'tanger', 4545, 'ob1', '2DG', 'motif1', 2, '2022-09-28');
-  selectedPneu3 = new EntretienPneu(3, 1244, 'Neuf', 45, '2021-02-12', '2022-09-12', 'dacia', 'F3', 'model2', 'marque1', 898, 'casa', 3645, 'ob1', '3GD', 'motif2', 1, '2022-10-01');
-  selectedPneu4 = new EntretienPneu(4, 1204, 'Occasion', 45, '2022-08-10', '2022-09-129', 'v16', 'F4', 'model1', 'marque2', 656, 'tanger', 435, 'ob1', '1GD', 'motif1', 2, '2022-09-29');
-  selectedPneu5 = new EntretienPneu(5, 1214, 'Occasion', 45, '2022-05-10', '2022-08-12', 'v16', 'F5', 'model1', 'marque2', 565, 'casa', 825, 'ob1', '3DG', 'motif2', 2, '2022-10-02');
-  selectedPneu6 = new EntretienPneu(6, 1284, 'Neuf', 20, '2022-08-35', '2022-06-18', 'dacia', 'F6', 'model2', 'marque1', 396, 'rabat', 945, 'ob1', '1GD', 'motif1', 1, '2022-10-11');
-  selectedPneu7 = new EntretienPneu(7, 1224, 'Occasion', 45, '2022-09-10', '2022-09-12', 'v13', 'F7', 'model2', 'marque1', 356, 'casa', 325, 'ob1', '3DG', 'motif2', 2, '2022-10-14');
-  selectedPneu8 = new EntretienPneu(8, 1234, 'Neuf', 85, '2022-12-12', '2022-03-12', 'v16', 'F8', 'model1', 'marque2', 6941, 'tetouan', 145, 'ob1', '2GD', 'motif2', 2, '2022-10-01');
+
   /******************************************************* */
   constructor(private dataService: DataService, private tools: util, public cts: Constant, private router: Router,
     private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) {
-    // this.selectedMarques = this.marques[0];
-    this.data = [this.selectedPneu1, this.selectedPneu2, this.selectedPneu3, this.selectedPneu4, this.selectedPneu5, this.selectedPneu6, this.selectedPneu7, this.selectedPneu8]
-    this.data2 = [this.selectedPneu1, this.selectedPneu2, this.selectedPneu3, this.selectedPneu4, this.selectedPneu5, this.selectedPneu6, this.selectedPneu7, this.selectedPneu8]
-
-
   }
 
   ngOnInit(): void {
@@ -128,6 +94,7 @@ export class PneuComponent implements OnInit {
     };
 
     this.getDev();
+
   }
 
   getDev() {
@@ -135,12 +102,7 @@ export class PneuComponent implements OnInit {
     this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
         this.devices = res;
-        console.log("this.devices ", this.devices);
-        this.data.forEach(p => {
-          // console.log("vehicule  ", this.devices.filter(d => d.dID == p.IDVehicule));
-
-          p.deviceName = this.devices.filter(d => d.dID == p.IDVehicule)[0].name
-        })
+        this.getChangementsPneu();
 
       }, error(err) {
         if (err.status == 401) {
@@ -153,16 +115,31 @@ export class PneuComponent implements OnInit {
   }
 
 
+  getChangementsPneu() {
+    let url = "?deviceID=" + ""
+    this.dataService.getChangemantsPneu(url).subscribe({
+      next:
+        res => {
+
+          this.data2 = [].concat(res)
+          this.data2.forEach(p => {
+            p.deviceName = this.getVehiculeNameById(p.deviceID);
+            p.DateDebut = this.tools.formatDateForInput(new Date(Number.parseInt(p.DateDebut ?? 0) * 1000)).toString();
+            p.DateFin = this.tools.formatDateForInput(new Date(Number.parseInt(p.DateFin ?? 0) * 1000)).toString();
+            p.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(p.creationTime ?? 0) * 1000)).toString();
+          })
+
+          this.data = [].concat(this.data2)
+
+        },
+      error(err) {
+        console.log("err ", err);
+      }
+    })
+  }
+
   modalAjoutr() {
     this.entretienPneu = new EntretienPneu();
-    this.entretienPneu.IDVehicule = []
-    this.entretienPneu.MarquePneu = []
-    this.entretienPneu.MotifChangPneu = []
-    this.entretienPneu.ModelePneu = []
-    this.entretienPneu.DimensionPneu = []
-    this.entretienPneu.EtatPneu = []
-    console.log(" this.entretienPneu  ", this.entretienPneu);
-
     this.axes = []
     this.mode = "Ajouter"
     this.primaryModal.show()
@@ -170,16 +147,16 @@ export class PneuComponent implements OnInit {
   }
 
 
-
   exporter(type) {
     var v = this.getJsonValue(this.data);
 
-    // type == 1 ? this.exportingPdfTool.exportPdf_Pneu(v, "Rapport Entretien Pneu") :
-    //   this.exportingExcelTool.Export_Pneu(v, "Rapport Entretien Pneu")
+
+    type == 1 ? this.exportingPdfTool.exportPdf_Pneu(v, "Rapport Entretien Pneu") :
+      this.exportingExcelTool.Export_Pneu(v, "Rapport Entretien Pneu")
   }
 
 
-
+  testDate = "2022-05-12"
 
   toggleCollapse() {
     this.isCollapsed = !this.isCollapsed;
@@ -190,7 +167,6 @@ export class PneuComponent implements OnInit {
 
   getSelectedDevices(selected) {
     this.selectedDevice = selected;
-    this.entretienPneu.IDVehicule;
   }
 
   getSelectedMotif(selectedMotif) {
@@ -208,31 +184,27 @@ export class PneuComponent implements OnInit {
 
 
   loadData(first = false) {
-    var route = this.router
     this.loading = true;
-    var urlParams = ""
     if (!first) {
-      let a = this.data2.filter(e => (Date.parse(e.creationTime) / 1000) > this.myDateRangePicker.getDateFrom && (Date.parse(e.creationTime) / 1000) < this.myDateRangePicker.getDateTo && e.IDVehicule == this.selectedDevice)
-      console.log(a);
+      let a = this.data2.filter(e => (Date.parse(e.creationTime) / 1000) >= this.myDateRangePicker.getDateFrom && (Date.parse(e.creationTime) / 1000) <= this.myDateRangePicker.getDateTo && e.deviceID == this.selectedDevice)
+
       this.data = [].concat(a);
-      console.log("date from", this.myDateRangePicker.getDateFrom);
+      // console.log("date from", this.myDateRangePicker.getDateFrom);
 
     }
     this.loading = false
-    // console.log("data======>", this.data);
 
   }
 
   getSelectedDevicesModal(seletedVehicule) {
-    this.entretienPneu.IDVehicule = seletedVehicule;
-    // console.log("veheculeselected ", this.devices.filter(v => v.dID == seletedVehicule));
+    this.entretienPneu.deviceID = seletedVehicule;
     this.entretienPneu.KmAcquisition = this.devices.filter(v => v.dID == seletedVehicule)[0].km
     this.getShema(seletedVehicule)
+
   }
 
 
   getSelectedMarque(id) {
-
     this.selectedMarque = this.cts.marques.filter(m => m.name == id)
     this.entretienPneu.MarquePneu = id          //this.selectedMarque[0].name
     this.modeles = this.selectedMarque[0].models
@@ -243,16 +215,18 @@ export class PneuComponent implements OnInit {
   }
 
   submit() {
-    this.entretienPneu.indexAxe = parseInt(this.entretienPneu.PositionPneu.charAt(0))
-    this.entretienPneu.deviceName = this.devices.filter(d => d.dID == this.entretienPneu.IDVehicule)[0].name
-    console.log("1----pneu   ", this.entretienPneu);
-    if (!this.entretienPneu.IDVehicule || !this.entretienPneu.KmAcquisition || !this.entretienPneu.Fournisseurs ||
+
+    if (!this.entretienPneu.deviceID || !this.entretienPneu.KmAcquisition || !this.entretienPneu.Fournisseurs ||
       !this.entretienPneu.LieuMontage || !this.entretienPneu.FraisMontage || !this.entretienPneu.MarquePneu ||
       !this.entretienPneu.ModelePneu || !this.entretienPneu.DimensionPneu || !this.entretienPneu.PositionPneu ||
       !this.entretienPneu.DateDebut || !this.entretienPneu.DateFin || !this.entretienPneu.Montant || !this.entretienPneu.EtatPneu) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      this.errorMsg = ""
+      this.entretienPneu.indexAxe = parseInt(this.entretienPneu.PositionPneu.charAt(0))
+      // this.entretienPneu.deviceName = this.devices.filter(d => d.dID == this.entretienPneu.IDVehicule)[0].name
+      this.entretienPneu.DateDebut = (new Date(this.entretienPneu.DateDebut)).getTime() / 1000;
+      this.entretienPneu.DateFin = (new Date(this.entretienPneu.DateFin)).getTime() / 1000,
+        this.errorMsg = ""
       console.log("2-----pneu   ", this.entretienPneu);
 
       if (this.mode == "Ajouter") this.ajouter()
@@ -263,40 +237,73 @@ export class PneuComponent implements OnInit {
 
 
   ajouter() {
-    this.entretienPneu.creationTime = this.tools.formatDateForInput(new Date()).toString()
-    this.data2.push(this.entretienPneu)
-    this.data = [].concat(this.data2)
+    this.dataService.addPneu(this.entretienPneu).subscribe({
+      next:
+        res => {
+
+          this.data2 = [].concat(res[0])
+          this.data2.forEach(p => {
+            p.deviceName = this.getVehiculeNameById(p.deviceID);
+            p.DateDebut = this.tools.formatDateForInput(new Date(Number.parseInt(p.DateDebut ?? 0) * 1000)).toString();
+            p.DateFin = this.tools.formatDateForInput(new Date(Number.parseInt(p.DateFin ?? 0) * 1000)).toString();
+            p.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(p.creationTime ?? 0) * 1000)).toString();
+          });
+          this.data = [].concat(this.data2)
+
+        },
+      error(err) {
+        console.log("err ", err);
+      }
+    })
+
     this.primaryModal.hide()
     this.loading = false;
 
   }
+
   modifier() {
     this.errorMsg = ""
-    this.data2 = this.data2.map(p => p.IDPneu !== this.selectedPneu.IDPneu ? p : this.entretienPneu);
     this.data = this.data2
 
     this.primaryModal.hide()
     this.loading = false;
-    console.log("data table ", this.data);
+    this.dataService.updateCangementPneu(this.entretienPneu).subscribe({
+      next:
+        resp => {
+          console.log("response update ", resp);
+          this.data2 = [].concat(resp[0])
+          this.data2.forEach(p => {
+            p.deviceName = this.getVehiculeNameById(p.deviceID);
+            p.DateDebut = this.tools.formatDateForInput(new Date(Number.parseInt(p.DateDebut ?? 0) * 1000)).toString();
+            p.DateFin = this.tools.formatDateForInput(new Date(Number.parseInt(p.DateFin ?? 0) * 1000)).toString();
+            p.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(p.creationTime ?? 0) * 1000)).toString();
+          });
+          this.data = [].concat(this.data2)
+
+        },
+      error(err) {
+        console.log("response update ", err);
+      }
+    })
 
   }
-
   /************ table functions *********/
   loadModify(ev) {
-    console.log("event ", ev);
 
     if (ev) {
       this.mode = "Modifier"
       this.selectedPneu = this.getJsonValue(ev);
-      console.log("selectedPneu ", this.selectedPneu);
-      this.getShema(this.selectedPneu.IDVehicule)
+      // console.log("selectedPneu ", this.selectedPneu);
+      this.selectedMarque = this.cts.marques.filter(m => m.name == this.selectedPneu.MarquePneu)
+      this.modeles = this.selectedMarque[0].models.filter(m => m.name == this.selectedPneu.ModelePneu)
+      this.getShema(this.selectedPneu.deviceID)
       this.entretienPneu = this.selectedPneu;
       this.primaryModal.show()
     }
   }
 
   refreshKm() {
-    this.selectedPneu.KmAcquisition = this.devices.filter(d => d.dID == this.selectedPneu.IDVehicule)[0].km
+    this.selectedPneu.KmAcquisition = this.devices.filter(d => d.dID == this.selectedPneu.deviceID)[0].km
   }
 
   getJsonValue(v) {
@@ -305,146 +312,113 @@ export class PneuComponent implements OnInit {
 
 
 
-  delete(plan) {
-
-    if (confirm("Are you sure you want to delete " + plan)) {
-      console.log(this.data);
-      let index = this.data.findIndex(x => x.IDPneumatique === plan);
-      console.log('index', index);
-
-      console.log('splice');
+  delete(pneu) {
+    if (confirm("Vous êtes sûr que vous voulez suprimmer cette declaration ? ")) {
+      let index = this.data2.findIndex(x => x.idPneu === pneu.idPneu);
       this.data2.splice(index, 1)
-      console.log(this.data);
-      this.loadData(true)
-      this.data = [].concat(this.data2)
+      this.data = [].concat(this.data2);
+      var route = this.router
+      var url = "?idPneu=" + pneu.idPneu
 
 
+      this.dataService.deleteCangementPneu(url).subscribe({
+        next:
+          res => {
 
-      // var route = this.router
-      // var u = "?IDPneumatique=" + plan
-      // this.data.splice(index, 1)
-
-      // ?????????????????????
-      // this.dataService.delPlanEntretien(u).subscribe({
-      //   next: (res) => {
-      //     this.loadData(true)
-      //   }, error(err) {
-      //     this.modalLoading = false;
-      //     if (err.status == 401) {
-      //       route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-      //     }
-      //     else if (err.status == 402) {
-      //       alert("Erreur, la suppression est bloqué")
-      //     }
-      //   }
-      // })
+            this.data2 = [].concat(res[0])
+            this.data2.forEach(p => {
+              // console.log("vehicule  ", this.devices.filter(d => d.dID == p.IDVehicule));
+              p.deviceName = this.getVehiculeNameById(p.deviceID);
+              p.DateDebut = this.tools.formatDateForInput(new Date(Number.parseInt(p.DateDebut ?? 0) * 1000)).toString();
+              p.DateFin = this.tools.formatDateForInput(new Date(Number.parseInt(p.DateDebut ?? 0) * 1000)).toString();
+              p.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(p.DateDebut ?? 0) * 1000)).toString();
+            });
+            this.data = [].concat(this.data2)
+          }, error(err) {
+            this.modalLoading = false;
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+            else if (err.status == 402) {
+              alert("Erreur, la suppression est bloqué")
+            }
+          }
+      })
+      // this.getChangementsPneu();
     }
   }
 
-  public axes: any[]
-  shema1 = [{
-    idAxe: 0,
-    accountID: "",
-    deviceID: "",
-    axeIndex: 1,
-    type: false,
-    dd: "",
-    dg: "",
-    gd: "",
-    gg: "",
-    ddKm: 0,
-    dgKm: 0,
-    gdKm: 0,
-    ggKm: 0
-  },
-  {
-    idAxe: 0,
-    accountID: "",
-    deviceID: "",
-    axeIndex: 2,
-    type: false,
-    dd: "",
-    dg: "",
-    gd: "",
-    gg: "",
-    ddKm: 0,
-    dgKm: 0,
-    gdKm: 0,
-    ggKm: 0
-  }]
 
-  shema2 = [{
-    idAxe: 0,
-    deviceID: "",
-    accountID: "",
-    axeIndex: 1,
-    axeType: false,
-    dd: "",
-    dg: "",
-    gd: "",
-    gg: "",
-    ddKm: 0,
-    dgKm: 0,
-    gdKm: 0,
-    ggKm: 0
-  },
-  {
-    idAxe: 0,
-    accountID: "",
-    deviceID: "",
-    axeIndex: 2,
-    axeType: false,
-    dd: "",
-    dg: "",
-    gd: "",
-    gg: "",
-    ddKm: 0,
-    dgKm: 0,
-    gdKm: 0,
-    ggKm: 0
-  },
-  {
-    idAxe: 0,
-    accountID: "",
-    deviceID: "",
-    axeIndex: 3,
-    axeType: true,
-    dd: "",
-    dg: "",
-    gd: "",
-    gg: "",
-    ddKm: 0,
-    dgKm: 0,
-    gdKm: 0,
-    ggKm: 0
-  },
-  {
-    axeIndex: 4,
-    axeType: true,
-
-  },
-  {
-    axeIndex: 5,
-    axeType: true,
-
-  }]
   getShema(seletedVehicule) {
-    switch (seletedVehicule) {
-      case "dacia":
-        this.axes = this.shema1
-        break;
-      case "v13":
-        this.axes = this.shema2
-        break;
-    }
 
+    let url = "?d=" + seletedVehicule
+
+    this.dataService.getSchema(url).subscribe({
+      next:
+        res => {
+
+          this.axes = [].concat(res)
+
+          this.axes.forEach(axe => {
+            if (axe.dg) axe.dg = this.tools.formatDateForInput(new Date(Number.parseInt(axe.dg ?? 0) * 1000))
+            if (axe.dd) axe.dd = this.tools.formatDateForInput(new Date(Number.parseInt(axe.dd ?? 0) * 1000))
+            if (axe.gd) axe.gd = this.tools.formatDateForInput(new Date(Number.parseInt(axe.gd ?? 0) * 1000))
+            if (axe.gg) axe.gg = this.tools.formatDateForInput(new Date(Number.parseInt(axe.gg ?? 0) * 1000))
+          }
+
+          )
+
+          // this.getPneuInfo()
+        },
+      error(err) {
+        console.log("err ", err);
+
+      }
+    })
 
   }
 
-  getPosition(selectedPenu, index) {
+  getPneuInfo() {
+    this.axes.forEach(axe => {
+      this.data2.forEach(p => {
+        if (axe.idAxe == p.idAxe) {
+          let position = p.PositionPneu.charAt(1) + p.PositionPneu.charAt(2)
+          switch (position) {
+            case "dd":
+              axe.dd = p.DateDebut
+              axe.ddKm = p.KmAcquisition
+              break
+            case "dg":
+              axe.dg = p.DateDebut
+              axe.dgKm = p.KmAcquisition
+              break
+            case "gd":
+              axe.gd = p.DateDebut
+              axe.gdKm = p.KmAcquisition
+              break
+            case "gg":
+              axe.gg = p.DateDebut
+              axe.ggKm = p.KmAcquisition
+              break
+          }
+
+        }
+      })
+    })
+  }
+
+
+  getVehiculeNameById(id) {
+    for (let i = 0; i < this.devices.length; i++) {
+      if (this.devices[i].dID == id) return this.devices[i].name
+    }
+    return ""
+  }
+
+  getPosition(selectedPenu, index, axe) {
     index++
-    // console.log("selected pneu ", selectedPenu);
     this.entretienPneu.PositionPneu = index + selectedPenu.id;
+    this.entretienPneu.idAxe = axe.idAxe
 
   }
 

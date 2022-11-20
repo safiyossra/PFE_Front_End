@@ -1,55 +1,68 @@
-.plus{
+.plus {
     font-size: 15px;
 
 }
+
 // .modal{
 //     max-width: 400px !important;
 //     width: 400px !important;
 //     height: 300px !important;
 // }
 
-#graph{
+#graph {
     position: relative;
 }
-.p1d{
+
+.p1d {
     position: absolute;
     top: 18%;
     right: 88%;
 }
+
 .p1g {
     position: absolute;
     top: 70%;
     right: 88%;
 }
+
 .p2dd {
     position: absolute;
     right: 47%;
 }
+
 .p2dg {
     position: absolute;
     top: 30%;
     right: 47%;
 }
+
 .p2gd {
     position: absolute;
     top: 60%;
     right: 47%;
 }
+
 .p2gg {
     position: absolute;
     top: 90%;
     right: 47%;
 }
-.etoile{
+
+.etoile {
     color: red;
     font-weight: bold;
 }
 
-.modal-content{
+.modal-sm {
+    // max-width: 800px !important;
+    // width: 600px !important;
+}
+
+.modal-content {
     min-height: 550px !important;
 }
 
-.pneu{
+.pneu {
     display: block;
     background-image: url('../../../../assets/img/graph/icone-pneu.png');
     width: 100px;
@@ -58,46 +71,51 @@
     background-size: 100%;
 
 }
-.info{
+
+.info {
     color: white;
     font-size: 11px;
     display: block;
 }
 
-.verticalbarre{
+.verticalbarre {
     width: 10px;
     height: 150px;
     margin: 2px auto;
 }
-.horizontalBarre{
-    width: 185%;
+
+.horizontalBarre {
+    width: 97%;
     height: 15px;
     background-color: black;
     position: absolute;
-    right: 40%
+    // right: 40%
+    margin: 0 4px;
 }
 
-.axe{
-margin: 0px 4%;
+.axe {
+    margin: 0px 5%;
 }
 
-@media only screen and (max-width: 1400px) {
-.horizontalBarre {
-        // width: 225%;
-        height: 10px;
-        margin: 0px auto;
-        right: 50%
-    }
-}
+// @media only screen and (max-width: 1400px) {
+//     .horizontalBarre {
+//         // width: 225%;
+//         height: 10px;
+//         margin: 0px auto;
+//         right: 50%
+//     }
+// }
 
-.pneu:hover{
+.pneu:hover {
     background-color: #cdedff;
     background-blend-mode: color-burn;
 }
-.activePneu{
+
+.activePneu {
     background-color: #cdedff;
     background-blend-mode: color-burn;
 }
+
 // @media only screen and (max-width: 1255px) {
 
 //     .horizontalBarre {

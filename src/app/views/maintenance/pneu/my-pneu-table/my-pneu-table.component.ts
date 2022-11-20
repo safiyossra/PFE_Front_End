@@ -46,7 +46,6 @@ export class MyPneuTableComponent implements OnChanges, AfterViewInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log("changes ", changes);
 
     if (changes['data']) {
       // console.log("data from ngOnchange======>", this.data);
@@ -57,7 +56,7 @@ export class MyPneuTableComponent implements OnChanges, AfterViewInit {
         this.totalItems = this.dataSource.data.length
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        // console.log("dataSource  ======>", this.dataSource);
+
       }
     }
   }

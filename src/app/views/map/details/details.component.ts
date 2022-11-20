@@ -159,6 +159,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
       console.log("vehicules",vehicules);
       vehicules.forEach(element => {
         if (element.Device == id) {
+          this.vName=element.Device_desc;
           exist = true
         }
       })

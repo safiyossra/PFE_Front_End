@@ -15,6 +15,7 @@ import { MyDropdownModule } from '../../components/my-dropdown/my-dropdown.modul
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { DropdownExportModule } from '../../components/dropdown-export/dropdown-export.module';
+import { SharedModule } from '../../components/shared.module';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { DropdownExportModule } from '../../components/dropdown-export/dropdown-
     ModalModule.forRoot(),
     CollapseModule.forRoot(),
     DropdownExportModule,
-    RouterModule
+    RouterModule,
+    SharedModule
   ],
   declarations: [
     CrudvehiculeComponent,

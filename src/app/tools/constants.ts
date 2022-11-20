@@ -919,212 +919,257 @@ export class Constant {
     { val: "65287", name: "Rule_7" }
   ]
 
-    public marques: any = [
-        {
-            id: 'BARUM',
-            name: 'BARUM',
-            models: [
-                { id: 'BARUM bravuris 3', name: 'BARUM bravuris 3' },
-                { id: 'BARUM bravuris 5', name: 'BARUM bravuris 5' },
-                { id: 'BARUM bravuris 4x4', name: 'BARUM bravuris 4x4' },
-                { id: 'BARUM bravuris 2', name: 'BARUM bravuris 2' },
-                { id: 'BARUM polaris 5', name: 'BARUM polaris 5' },
-                { id: 'BARUM polaris 3', name: 'BARUM polaris 3' },
-                { id: 'BARUM quartaris 5', name: 'BARUM quartaris 5' }
-            ]
-        },
 
-        {
-            id: 'BRIDGESTONE',
-            name: 'BRIDGESTONE',
-            models: [
-                { id: 'BRIDGESTONE turanza t005', name: 'BRIDGESTONE turanza t005' },
-                { id: 'BRIDGESTONE turanza er3', name: 'BRIDGESTONE turanza er3' },
-                { id: 'BRIDGESTONE turanza er', name: 'BRIDGESTONE turanza er' },
-                { id: 'BRIDGESTONE turanza e', name: 'BRIDGESTONE turanza e' },
-                { id: 'BRIDGESTONE turanza er4', name: 'BRIDGESTONE turanza er4' },
-                { id: 'BRIDGESTONE blizzak lm-', name: 'BRIDGESTONE blizzak lm-' },
-                { id: 'BRIDGESTONE weather c', name: 'BRIDGESTONE weather c' },
-                { id: 'BRIDGESTONE potenza spo', name: 'BRIDGESTONE potenza spo' },
-                { id: 'BRIDGESTONE potenza s00', name: 'BRIDGESTONE potenza s00' },
-                { id: 'BRIDGESTONE ecopia ep15', name: 'BRIDGESTONE ecopia ep15' },
-            ]
-        },
-        {
-            id: '3',
-            name: 'CONTINENTAL',
-            models: [
-                { id: 'CONTINENTAL ecocontact', name: 'CONTINENTAL ecocontact' },
-                { id: 'CONTINENTAL premiumco', name: 'CONTINENTAL premiumco' },
-                { id: 'CONTINENTAL sportconta', name: 'CONTINENTAL sportconta' },
-                { id: 'CONTINENTAL contisportcon', name: 'CONTINENTAL contisportcon' },
-                { id: 'CONTINENTAL contiecocon', name: 'CONTINENTAL contiecocon' },
-                { id: 'CONTINENTAL contisport', name: 'CONTINENTAL contisport' },
-                { id: 'CONTINENTAL contipremiu', name: 'CONTINENTAL contipremiu' },
-                { id: 'CONTINENTAL contiecoc', name: 'CONTINENTAL contiecoc' },
-                { id: 'CONTINENTAL winterconta', name: 'CONTINENTAL winterconta' },
-                { id: 'CONTINENTAL premiumco', name: 'CONTINENTAL premiumco' },
-                { id: 'CONTINENTAL contiwinte', name: 'CONTINENTAL contiwinte' },
-                { id: 'CONTINENTAL contiwint', name: 'CONTINENTAL contiwint' },
-            ]
-        },
-        {
-            id: '4',
-            name: 'DUNLOP',
-            models: [
-                { id: 'DUNLOP sport maxx race 2', name: 'DUNLOP sport maxx race 2' },
-                { id: 'DUNLOP sport blurespons', name: 'DUNLOP sport blurespons' },
-                { id: 'DUNLOP sport classic', name: 'DUNLOP sport classic' },
-                { id: 'DUNLOP streetresponse 2', name: 'DUNLOP streetresponse 2' },
-                { id: 'DUNLOP sp sport fastrespo', name: 'DUNLOP sp sport fastrespo' },
-                { id: 'DUNLOP sp sport maxx tt', name: 'DUNLOP sp sport maxx tt' },
-                { id: 'DUNLOP sp sport 01 a', name: 'DUNLOP sp sport 01 a' },
-                { id: 'DUNLOP sp sport maxx g', name: 'DUNLOP sp sport maxx g' },
-                { id: 'DUNLOP sport maxx rt 2', name: 'DUNLOP sport maxx rt 2' },
-                { id: 'DUNLOP sp sport maxx gt', name: 'DUNLOP sp sport maxx gt' },
-                { id: 'DUNLOP sp sport maxx', name: 'DUNLOP sp sport maxx' },
-                { id: 'DUNLOP sp sport 01', name: 'DUNLOP sp sport 01' },
-                { id: 'DUNLOP sp sport 270', name: 'DUNLOP sp sport 270' },
-                { id: 'DUNLOP winter sport 5', name: 'DUNLOP winter sport 5' },
-                { id: 'DUNLOP winter response', name: 'DUNLOP winter response' },
-                { id: 'DUNLOP sp sinter respons', name: 'DUNLOP sp sinter respons' },
-                { id: 'm1DUNLOP sp wintersport 4d7', name: 'DUNLOP sp wintersport 4d' },
-                { id: 'DUNLOP sp winter sport', name: 'DUNLOP sp winter sport' },
-                { id: 'm1DUNLOP sp winter sport 3d9', name: 'DUNLOP sp winter sport 3d' },
-                { id: 'DUNLOP sport allseason', name: 'DUNLOP sport allseason' }
+  public marques: any = [
+    {
 
-            ]
-        },
-        {
-            id: 'GOODYEAR',
-            name: 'GOODYEAR',
-            models: [
-                { id: 'GOODYEAR efficientgrip p', name: 'GOODYEAR efficientgrip p' },
-                { id: 'GOODYEAR eagle f1 supe', name: 'GOODYEAR eagle f1 supe' },
-                { id: 'GOODYEAR eagle f1 super', name: 'GOODYEAR eagle f1 super' },
-                { id: 'GOODYEAR eagle f1 asy', name: 'GOODYEAR eagle f1 asy' },
-                { id: 'GOODYEAR eagle f1 asym', name: 'GOODYEAR eagle f1 asym' },
-                { id: 'GOODYEAR efficientgrip', name: 'GOODYEAR efficientgrip' },
-                { id: 'GOODYEAR excellence', name: 'GOODYEAR excellence' },
-                { id: 'GOODYEAR efficientgrip c', name: 'GOODYEAR efficientgrip c' },
-                { id: 'GOODYEAR cargo vector 2', name: 'GOODYEAR cargo vector 2' },
-                { id: 'GOODYEAR ultragrip pe', name: 'GOODYEAR ultragrip pe' },
-                { id: 'GOODYEAR ultragrip perf', name: 'GOODYEAR ultragrip perf' },
-                { id: 'GOODYEAR ultragrip perfo', name: 'GOODYEAR ultragrip perfo' },
-                { id: 'GOODYEAR ultragrip 8 p', name: 'GOODYEAR ultragrip 8 p' },
+      name: 'BARUM',
+      models: [
+        { name: 'BARUM bravuris 3' },
+        { name: 'BARUM bravuris 5' },
+        { name: 'BARUM bravuris 4x4' },
+        { name: 'BARUM bravuris 2' },
+        { name: 'BARUM polaris 5' },
+        { name: 'BARUM polaris 3' },
+        { name: 'BARUM quartaris 5' }
+      ]
+    },
 
-            ]
-        },
-        {
-            id: 'HAIDA',
-            name: 'HAIDA',
-            models: [
-                { id: 'HAIDA hd667', name: 'HAIDA hd667' },
-                { id: 'HAIDA hd927', name: 'HAIDA hd927' },
+    {
 
-            ]
-        },
-        {
-            id: 'HANKOOK',
-            name: 'HANKOOK',
-            models: [
-                { id: 'HANKOOK k715', name: 'HANKOOK k715' },
-                { id: 'HANKOOK k435', name: 'HANKOOK k435' },
-                { id: 'HANKOOK k125', name: 'HANKOOK k125' },
-                { id: 'HANKOOK k115', name: 'HANKOOK k115' },
-                { id: 'HANKOOK k117', name: 'HANKOOK k117' },
-                { id: 'HANKOOK k120', name: 'HANKOOK k120' },
-                { id: 'HANKOOK k127', name: 'HANKOOK k127' },
-                { id: 'HANKOOK k17a', name: 'HANKOOK k17a' },
+      name: 'BRIDGESTONE',
+      models: [
+        { name: 'BRIDGESTONE turanza t005' },
+        { name: 'BRIDGESTONE turanza er3' },
+        { name: 'BRIDGESTONE turanza er' },
+        { name: 'BRIDGESTONE turanza e' },
+        { name: 'BRIDGESTONE turanza er4' },
+        { name: 'BRIDGESTONE blizzak lm-' },
+        { name: 'BRIDGESTONE weather c' },
+        { name: 'BRIDGESTONE potenza spo' },
+        { name: 'BRIDGESTONE potenza s00' },
+        { name: 'BRIDGESTONE ecopia ep15' },
+      ]
+    },
+    {
 
-            ]
-        },
-        {
-            id: 'LAUFENN',
-            name: 'LAUFENN',
-            models: [
-                { id: 'LAUFENN lh71', name: 'LAUFENN lh71' },
-                { id: 'LAUFENN lk01', name: 'LAUFENN lk01' },
-                { id: 'LAUFENN lk41', name: 'LAUFENN lk41' },
+      name: 'CONTINENTAL',
+      models: [
+        { name: 'CONTINENTAL ecocontact' },
+        { name: 'CONTINENTAL premiumco' },
+        { name: 'CONTINENTAL sportconta' },
+        { name: 'CONTINENTAL contisportcon' },
+        { name: 'CONTINENTAL contiecocon' },
+        { name: 'CONTINENTAL contisport' },
+        { name: 'CONTINENTAL contipremiu' },
+        { name: 'CONTINENTAL contiecoc' },
+        { name: 'CONTINENTAL winterconta' },
+        { name: 'CONTINENTAL premiumco' },
+        { name: 'CONTINENTAL contiwinte' },
+        { name: 'CONTINENTAL contiwint' },
+      ]
+    },
+    {
 
-            ]
-        },
-        {
-            id: 'MABOR',
-            name: 'MABOR',
-            models: [
-                { id: 'MABOR sport-jet 3', name: 'MABOR sport-jet 3' },
-                { id: 'MABOR winter-jet 3', name: 'MABOR winter-jet 3' },
-            ]
-        },
-        {
-            id: 'MICHELIN',
-            name: 'MICHELIN',
-            models: [
-                { id: 'MICHELIN e primacy', name: 'MICHELIN e primacy' },
-                { id: 'MICHELIN primacy 4', name: 'MICHELIN primacy 4' },
-                { id: 'MICHELIN pilot sport 4', name: 'MICHELIN pilot sport 4' },
-                { id: 'MICHELIN primacy 3', name: 'MICHELIN primacy 3' },
-                { id: 'MICHELIN pilot sport 3', name: 'MICHELIN pilot sport 3' },
-                { id: 'MICHELIN pilot super sport', name: 'MICHELIN pilot super sport' },
-                { id: 'MICHELIN pilot sport cup', name: 'MICHELIN pilot sport cup' },
-                { id: 'MICHELIN pilot sport cup 2', name: 'MICHELIN pilot sport cup 2' },
-                { id: 'MICHELIN alpin 5', name: 'MICHELIN alpin 5' },
-                { id: 'MICHELIN pilot alpin 5', name: 'MICHELIN pilot alpin 5' },
-                { id: 'MICHELIN pilot alpin pa4', name: 'MICHELIN pilot alpin pa4' },
-                { id: 'MICHELIN pilot sport cup 2', name: 'MICHELIN pilot sport cup 2' },
-                { id: 'MICHELIN pilot sport e', name: 'MICHELIN pilot sport ev' },
-            ]
-        },
-        {
-            id: 'NEXEN',
-            name: 'NEXEN',
-            models: [
-                { id: 'NEXEN n blue hd plus', name: 'NEXEN n blue hd plus' },
-                { id: 'NEXEN n blue eco', name: 'NEXEN n blue eco' },
-                { id: 'NEXEN n fera sport', name: 'NEXEN n fera sport' },
-                { id: 'NEXEN n blue hd', name: 'NEXEN n blue hd' },
-                { id: 'NEXEN n fera ru1', name: 'NEXEN n fera ru1' },
-                { id: 'NEXEN n fera premium', name: 'NEXEN n fera premium' },
-                { id: 'NEXEN roadian hp', name: 'NEXEN roadian hp' },
-                { id: 'NEXEN n blue hd', name: 'NEXEN n blue hd' },
-                { id: 'NEXEN n fera primus', name: 'NEXEN n fera primus' },
-                { id: 'NEXEN winguard sport', name: 'NEXEN winguard sport' },
-                { id: 'NEXEN winguard sport 2', name: 'NEXEN winguard sport 2' },
-                { id: 'NEXEN n sfera su4', name: 'NEXEN n sfera su4' },
-                { id: 'NEXEN n sfera ru1', name: 'NEXEN n sfera ru1' },
+      name: 'DUNLOP',
+      models: [
+        { name: 'DUNLOP sport maxx race 2' },
+        { name: 'DUNLOP sport blurespons' },
+        { name: 'DUNLOP sport classic' },
+        { name: 'DUNLOP streetresponse 2' },
+        { name: 'DUNLOP sp sport fastrespo' },
+        { name: 'DUNLOP sp sport maxx tt' },
+        { name: 'DUNLOP sp sport 01 a' },
+        { name: 'DUNLOP sp sport maxx g' },
+        { name: 'DUNLOP sport maxx rt 2' },
+        { name: 'DUNLOP sp sport maxx gt' },
+        { name: 'DUNLOP sp sport maxx' },
+        { name: 'DUNLOP sp sport 01' },
+        { name: 'DUNLOP sp sport 270' },
+        { name: 'DUNLOP winter sport 5' },
+        { name: 'DUNLOP winter response' },
+        { name: 'DUNLOP sp sinter respons' },
+        { name: 'DUNLOP sp wintersport 4d' },
+        { name: 'DUNLOP sp winter sport' },
+        { name: 'DUNLOP sp winter sport 3d' },
+        { name: 'DUNLOP sport allseason' }
 
-            ]
-        },
-        {
-            id: 'PIRELLI',
-            name: 'PIRELLI',
-            models: [
-                { id: 'PIRELLI p zero corsa', name: 'PIRELLI p zero corsa' },
-                { id: 'PIRELLI p zero corsa system', name: 'PIRELLI p zero corsa system' },
-                { id: 'PIRELLI p zero', name: 'PIRELLI p zero' },
-                { id: 'PIRELLI p zero rosso', name: 'PIRELLI p zero rosso' },
-                { id: 'PIRELLI p zero nero gt', name: 'PIRELLI p zero nero gt' },
-                { id: 'PIRELLI cinturato p7', name: 'PIRELLI cinturato p7' },
-                { id: 'PIRELLI cinturato p7 blue', name: 'PIRELLI cinturato p7 blue' },
-                { id: 'PIRELLI p zero winter', name: 'PIRELLI p zero winter' },
-                { id: 'PIRELLI cinturato winter 2', name: 'PIRELLI cinturato winter 2' },
-                { id: 'PIRELLI cinturato all season', name: 'PIRELLI cinturato all season' },
-                { id: 'PIRELLI cinturato all seas', name: 'PIRELLI cinturato all seas' },
-                { id: 'PIRELLI cinturato all seaso', name: 'PIRELLI cinturato all seaso' },
-            ]
-        },
-        {
-            id: 'SAILUN',
-            name: 'SAILUN',
-            models: [
-                { id: 'SAILUN atrezzo eco', name: 'SAILUN atrezzo eco' },
-                { id: 'SAILUN atrezzo elite', name: 'SAILUN atrezzo elite' },
-                { id: 'SAILUN atrezzo zsr', name: 'SAILUN atrezzo zsr' },
-                { id: 'SAILUN atrezzo zsr run-flat', name: 'SAILUN atrezzo zsr run-flat' },
-                { id: 'SAILUN atrezzo 4seasons', name: 'SAILUN atrezzo 4seasons' },
-                { id: 'SAILUN atrezzo z4+as', name: 'SAILUN atrezzo z4+as' },
-            ]
-        },
-    ];
+      ]
+    },
+    {
+
+      name: 'GOODYEAR',
+      models: [
+        { name: 'GOODYEAR efficientgrip p' },
+        { name: 'GOODYEAR eagle f1 supe' },
+        { name: 'GOODYEAR eagle f1 super' },
+        { name: 'GOODYEAR eagle f1 asy' },
+        { name: 'GOODYEAR eagle f1 asym' },
+        { name: 'GOODYEAR efficientgrip' },
+        { name: 'GOODYEAR excellence' },
+        { name: 'GOODYEAR efficientgrip c' },
+        { name: 'GOODYEAR cargo vector 2' },
+        { name: 'GOODYEAR ultragrip pe' },
+        { name: 'GOODYEAR ultragrip perf' },
+        { name: 'GOODYEAR ultragrip perfo' },
+        { name: 'GOODYEAR ultragrip 8 p' },
+
+      ]
+    },
+    {
+
+      name: 'HAIDA',
+      models: [
+        { name: 'HAIDA hd667' },
+        { name: 'HAIDA hd927' },
+
+      ]
+    },
+    {
+
+      name: 'HANKOOK',
+      models: [
+        { name: 'HANKOOK k715' },
+        { name: 'HANKOOK k435' },
+        { name: 'HANKOOK k125' },
+        { name: 'HANKOOK k115' },
+        { name: 'HANKOOK k117' },
+        { name: 'HANKOOK k120' },
+        { name: 'HANKOOK k127' },
+        { name: 'HANKOOK k17a' },
+
+      ]
+    },
+    {
+
+      name: 'LAUFENN',
+      models: [
+        { name: 'LAUFENN lh71' },
+        { name: 'LAUFENN lk01' },
+        { name: 'LAUFENN lk41' },
+
+      ]
+    },
+    {
+
+      name: 'MABOR',
+      models: [
+        { name: 'MABOR sport-jet 3' },
+        { name: 'MABOR winter-jet 3' },
+      ]
+    },
+    {
+
+      name: 'MICHELIN',
+      models: [
+        { name: 'MICHELIN e primacy' },
+        { name: 'MICHELIN primacy 4' },
+        { name: 'MICHELIN pilot sport 4' },
+        { name: 'MICHELIN primacy 3' },
+        { name: 'MICHELIN pilot sport 3' },
+        { name: 'MICHELIN pilot super sport' },
+        { name: 'MICHELIN pilot sport cup' },
+        { name: 'MICHELIN pilot sport cup 2' },
+        { name: 'MICHELIN alpin 5' },
+        { name: 'MICHELIN pilot alpin 5' },
+        { name: 'MICHELIN pilot alpin pa4' },
+        { name: 'MICHELIN pilot sport cup 2' },
+        { name: 'MICHELIN pilot sport ev' },
+      ]
+    },
+    {
+
+      name: 'NEXEN',
+      models: [
+        { name: 'NEXEN n blue hd plus' },
+        { name: 'NEXEN n blue eco' },
+        { name: 'NEXEN n fera sport' },
+        { name: 'NEXEN n blue hd' },
+        { name: 'NEXEN n fera ru1' },
+        { name: 'NEXEN n fera premium' },
+        { name: 'NEXEN roadian hp' },
+        { name: 'NEXEN n blue hd' },
+        { name: 'NEXEN n fera primus' },
+        { name: 'NEXEN winguard sport' },
+        { name: 'NEXEN winguard sport 2' },
+        { name: 'NEXEN n sfera su4' },
+        { name: 'NEXEN n sfera ru1' },
+
+      ]
+    },
+    {
+
+      name: 'PIRELLI',
+      models: [
+        { name: 'PIRELLI p zero corsa' },
+        { name: 'PIRELLI p zero corsa system' },
+        { name: 'PIRELLI p zero' },
+        { name: 'PIRELLI p zero rosso' },
+        { name: 'PIRELLI p zero nero gt' },
+        { name: 'PIRELLI cinturato p7' },
+        { name: 'PIRELLI cinturato p7 blue' },
+        { name: 'PIRELLI p zero winter' },
+        { name: 'PIRELLI cinturato winter 2' },
+        { name: 'PIRELLI cinturato all season' },
+        { name: 'PIRELLI cinturato all seas' },
+        { name: 'PIRELLI cinturato all seaso' },
+      ]
+    },
+    {
+
+      name: 'SAILUN',
+      models: [
+        { name: 'SAILUN atrezzo eco' },
+        { name: 'SAILUN atrezzo elite' },
+        { name: 'SAILUN atrezzo zsr' },
+        { name: 'SAILUN atrezzo zsr run-flat' },
+        { name: 'SAILUN atrezzo 4seasons' },
+        { name: 'SAILUN atrezzo z4+as' },
+      ]
+    },
+  ];
+
+  public dimentions: any = [
+    { name: '1' },
+    { name: '2' }
+  ];
+  public motifs: any = [
+    { name: 'Fin de vie' },
+  ]
+
+
+  public etats: any = [
+    { name: 'Neuf' },
+    { name: 'Occasion' },
+  ]
+
+  typeDocuments = [{ name: "Assurance" }, { name: "Autorisation Circulation" }, { name: "Carnet Métrologique" },
+  { name: "Carte Grise" }, { name: "Carte Vert" }, { name: "Taxe" }, { name: "Vignette" }, { name: "Visites Technique" }]
+
+  permisTypes = [
+    {
+      value: 'A',
+    },
+    {
+      value: 'A1',
+    },
+    {
+      value: 'B',
+    },
+    {
+      value: 'C',
+    },
+    {
+      value: 'D',
+    },
+    {
+      value: 'EC',
+    },
+    {
+      value: 'EB',
+    },
+    {
+      value: 'ED',
+    },
+  ]
 }
