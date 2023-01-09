@@ -151,13 +151,30 @@ export class ClosestComponent implements OnInit, AfterViewInit {
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
     const baseMaps = {
+      'Google Street': googleStreets,
       "Google Hybrid": googleHybrid,
       "Google Terrain": googleTerrain,
       "Google Satellite": googleSat,
-      'Google Street': googleStreets,
       'Dark': dark,
     };
-    googleHybrid.addTo(this.map)
+    switch (this.tools.getMapType()) {
+      case 'Google Hybrid':
+        googleHybrid.addTo(this.map)
+        break;
+      case 'Google Terrain':
+        googleTerrain.addTo(this.map)
+        break;
+      case 'Google Satellite':
+        googleSat.addTo(this.map)
+        break;
+      case 'Dark':
+        dark.addTo(this.map)
+        break;
+
+      default:
+        googleStreets.addTo(this.map)
+        break;
+    }
 
     L.control.zoom().addTo(this.map)
 
@@ -204,7 +221,9 @@ export class ClosestComponent implements OnInit, AfterViewInit {
     L.control.scale().addTo(this.map);
 
     // this.initMarkers()
-
+    this.map.on('baselayerchange', (e) => {
+      this.tools.setMapType(e.name)
+    })
     this.map.doubleClickZoom.disable();
     this.map.on('dblclick', (ev) => {
       if (this.selectedType == 'poc') {
@@ -267,7 +286,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
   }
 
   toggleMyPosition() {
-    console.log("toggleMyPosition");
+    // console.log("toggleMyPosition");
     if (navigator.geolocation) {
       let options = {
         enableHighAccuracy: true,
@@ -275,7 +294,7 @@ export class ClosestComponent implements OnInit, AfterViewInit {
         maximumAge: 0
       };
       navigator.geolocation.getCurrentPosition((p) => {
-        console.log(p.coords);
+        // console.log(p.coords);
         var positionCtl = document.getElementById("positionControl")
         if (!this.isMyPositionVisible) {
           positionCtl.classList.replace("icon-target", "icon-close")

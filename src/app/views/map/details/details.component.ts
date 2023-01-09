@@ -26,7 +26,6 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     lng: -5.83
   }
 
-
   events: any = []
   trajets: any[] = []
   selection = new L.LayerGroup()
@@ -144,7 +143,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   loadingEvents = false
 
-  constructor(private activatedRoute: ActivatedRoute, private vehiculeService: VehiculeService, private router: Router, private tools: util) {
+  constructor(private activatedRoute: ActivatedRoute, private vehiculeService: VehiculeService, public router: Router, private tools: util) {
     this.vehiculeID = this.activatedRoute.snapshot.paramMap.get('id')
     this.generateDates()
   }
@@ -156,7 +155,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
     await promise.then((res) => {
       vehicules = res['DeviceList']
-      console.log("vehicules",vehicules);
+      // console.log("vehicules",vehicules);
       vehicules.forEach(element => {
         if (element.Device == id) {
           this.vName=element.Device_desc;
@@ -210,6 +209,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
         this.dataSource.sort = this.sort;
 
         this.loadingEvents = false
+        // console.log(this.lineChartData1 );
+        // console.log(this.lineChartLabels );
       },
         (err) => {
           if (err.status == 401) {
@@ -290,14 +291,30 @@ export class DetailsComponent implements OnInit, AfterViewInit {
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
     const baseMaps = {
+      'Google Street': googleStreets,
       "Google Hybrid": googleHybrid,
       "Google Terrain": googleTerrain,
       "Google Satellite": googleSat,
-      'Google Street': googleStreets,
       'Dark': dark,
     };
-    googleHybrid.addTo(this.map)
+    switch (this.tools.getMapType()) {
+      case 'Google Hybrid':
+        googleHybrid.addTo(this.map)
+        break;
+      case 'Google Terrain':
+        googleTerrain.addTo(this.map)
+        break;
+      case 'Google Satellite':
+        googleSat.addTo(this.map)
+        break;
+      case 'Dark':
+        dark.addTo(this.map)
+        break;
 
+      default:
+        googleStreets.addTo(this.map)
+        break;
+    }
 
     L.control.zoom().addTo(this.map)
 
@@ -338,7 +355,9 @@ export class DetailsComponent implements OnInit, AfterViewInit {
       // keepResult: false, // optional: true|false  - default false
       updateMap: true, // optional: true|false  - default true
     }).addTo(this.map)
-
+    this.map.on('baselayerchange', (e) => {
+      this.tools.setMapType(e.name)
+    })
     ////////////////////////////////////////////////////////////
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
     L.control.scale().addTo(this.map);

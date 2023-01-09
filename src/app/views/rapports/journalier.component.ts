@@ -363,7 +363,9 @@ export class JournalierComponent {
             var y = this.getValue(resumetmp)
             this.resume = resumetmp
             this.barChartLabels = labels
-            this.barChartData = y.map((l) => { return l.data[0] });
+            // this.barChartData = y.map((l) => { return l.data[0] });
+            // console.log(y.map((l) => { return l.data[0] }));
+            
             this.loading = false;
           }, error(err) {
             if (err.status == 401) {

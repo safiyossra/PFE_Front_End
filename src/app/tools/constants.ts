@@ -435,27 +435,28 @@ export class Constant {
     { name: "Pompe à eaux", id: '43' },
     { name: "Pompe d'embrayage / servo", id: '44' }
   ]
-
+  movingStatusCodes = [61714,61722,61723,61724,61726,61727,61728,61731,61734,61738,61792,61793,61794,61795,61796,61807,61825,61826,63792,63793,63794,63795,63799,63800,63801,63802,63840,63841,63842]
+  onStatusCodes  = [62465,61713,61715,61725,62476,63809,63810,63811,63812]
   statusCodes = [
     { val: "0", name: "All Codes" },
-    { val: "61713", name: "Start" },
-    { val: "61714", name: "EnRoute" },
-    { val: "61715", name: "Stop" },
+    { val: "61713", name: "Start" },//on
+    { val: "61714", name: "EnRoute" },//moving
+    { val: "61715", name: "Stop" },//on
     { val: "61716", name: "Dormant" },
     { val: "61717", name: "Stopped" },
     { val: "61718", name: "Idle" },
     { val: "61719", name: "Idle_End" },
     { val: "61720", name: "Excess_Idle" },
-    { val: "61722", name: "Speeding" },
-    { val: "61723", name: "Speeding_2" },
-    { val: "61724", name: "Moving" },
-    { val: "61725", name: "Stop_Pending" },
-    { val: "61726", name: "Motion_Change" },
-    { val: "61727", name: "Heading_Change" },
-    { val: "61728", name: "Accelerometer" },
-    { val: "61731", name: "Acceleration" },
-    { val: "61734", name: "Deceleration" },
-    { val: "61738", name: "Speeding_Recover" },
+    { val: "61722", name: "Speeding" },//moving
+    { val: "61723", name: "Speeding_2" },//moving
+    { val: "61724", name: "Moving" },//moving
+    { val: "61725", name: "Stop_Pending" },//on
+    { val: "61726", name: "Motion_Change" },//moving
+    { val: "61727", name: "Heading_Change" },//moving
+    { val: "61728", name: "Accelerometer" },//moving
+    { val: "61731", name: "Acceleration" },//moving
+    { val: "61734", name: "Deceleration" },//moving
+    { val: "61738", name: "Speeding_Recover" },//moving
     { val: "57603", name: "GFMI_SendMsg3" },
     { val: "57604", name: "GFMI_SendMsg4" },
     { val: "57605", name: "GFMI_SendMsg5" },
@@ -475,13 +476,13 @@ export class Constant {
     { val: "57809", name: "GFMI_DriverID" },
     { val: "57811", name: "GFMI_DriverStat" },
     { val: "61456", name: "Initialized" },
-    { val: "61472", name: "Location" },
-    { val: "61473", name: "Location_1" },
-    { val: "61474", name: "Location_2" },
-    { val: "61475", name: "Location_3" },
-    { val: "61476", name: "Location_4" },
-    { val: "61477", name: "Last_Location" },
-    { val: "61481", name: "Cell_Location" },
+    { val: "61472", name: "Location" },//off
+    { val: "61473", name: "Location_1" },//off
+    { val: "61474", name: "Location_2" },//off
+    { val: "61475", name: "Location_3" },//off
+    { val: "61476", name: "Location_4" },//off
+    { val: "61477", name: "Last_Location" },//off
+    { val: "61481", name: "Cell_Location" },//off
     { val: "61484", name: "Distance" },
     { val: "61485", name: "Distance_1" },
     { val: "61486", name: "Distance_2" },
@@ -496,27 +497,27 @@ export class Constant {
     { val: "61496", name: "Waymark_8" },
     { val: "61497", name: "Waymark_9" },
     { val: "61504", name: "Query" },
-    { val: "61508", name: "Notify" },
-    { val: "61513", name: "Log" },
-    { val: "61520", name: "Sample_0" },
-    { val: "61521", name: "Sample_1" },
-    { val: "61522", name: "Sample_2" },
-    { val: "61536", name: "Heartbeat" },
-    { val: "61546", name: "GPS_First_Fix" },
+    { val: "61508", name: "Notify" },//off
+    { val: "61513", name: "Log" },//off
+    { val: "61520", name: "Sample_0" },//off
+    { val: "61521", name: "Sample_1" },//off
+    { val: "61522", name: "Sample_2" },//off
+    { val: "61536", name: "Heartbeat" },//off
+    { val: "61546", name: "GPS_First_Fix" },//off
     { val: "61552", name: "POI_0" },
     { val: "61553", name: "POI_1" },
     { val: "61554", name: "POI_2" },
     { val: "61555", name: "POI_3" },
     { val: "61556", name: "POI_4" },
-    { val: "61568", name: "DataMessage" },
-    { val: "61569", name: "DataMessage_1" },
-    { val: "61570", name: "DataMessage_2" },
-    { val: "61584", name: "Voice" },
-    { val: "61588", name: "Voice_Outgoing" },
-    { val: "61592", name: "Voice_Incoming" },
-    { val: "61600", name: "RFID_0" },
-    { val: "61601", name: "RFID_1" },
-    { val: "61602", name: "RFID_2" },
+    { val: "61568", name: "DataMessage" },//off
+    { val: "61569", name: "DataMessage_1" },//off
+    { val: "61570", name: "DataMessage_2" },//off
+    { val: "61584", name: "Voice" },//off
+    { val: "61588", name: "Voice_Outgoing" },//off
+    { val: "61592", name: "Voice_Incoming" },//off
+    { val: "61600", name: "RFID_0" },//off
+    { val: "61601", name: "RFID_1" },//off
+    { val: "61602", name: "RFID_2" },//off
     { val: "61744", name: "Odometer_0" },
     { val: "61745", name: "Odometer_1" },
     { val: "61746", name: "Odometer_2" },
@@ -538,15 +539,15 @@ export class Constant {
     { val: "61778", name: "Maintenance_2" },
     { val: "61779", name: "Maintenance_3" },
     { val: "61780", name: "Maintenance_4" },
-    { val: "61792", name: "Speeding_Begin" },
-    { val: "61793", name: "Speeding_Limit 1" },
-    { val: "61794", name: "Speeding_Limit 2" },
-    { val: "61795", name: "Speeding_Limit 3" },
-    { val: "61796", name: "Speeding_Limit 4" },
-    { val: "61807", name: "Speeding_End" },
-    { val: "61825", name: "Track_Start" },
-    { val: "61826", name: "Track_Location" },
-    { val: "61827", name: "Track_Stop" },
+    { val: "61792", name: "Speeding_Begin" },//moving
+    { val: "61793", name: "Speeding_Limit 1" },//moving
+    { val: "61794", name: "Speeding_Limit 2" },//moving
+    { val: "61795", name: "Speeding_Limit 3" },//moving
+    { val: "61796", name: "Speeding_Limit 4" },//moving
+    { val: "61807", name: "Speeding_End" },//moving
+    { val: "61825", name: "Track_Start" },//moving
+    { val: "61826", name: "Track_Location" },//moving
+    { val: "61827", name: "Track_Stop" },//off
     { val: "61831", name: "Job_Start" },
     { val: "61832", name: "Job_Stop" },
     { val: "61968", name: "Arrive" },
@@ -570,15 +571,15 @@ export class Constant {
     { val: "62150", name: "UnParked" },
     { val: "62160", name: "AltitudeViolation" },
     { val: "62464", name: "Inputs" },
-    { val: "62465", name: "Moteur on" },
+    { val: "62465", name: "Moteur on" },//On
     { val: "62466", name: "Input_On" },
-    { val: "62467", name: "Moteur OFF" },
+    { val: "62467", name: "Moteur OFF" },//off
     { val: "62468", name: "Input_Off" },
     { val: "62470", name: "Outputs" },
     { val: "62472", name: "Output_On" },
     { val: "62474", name: "Output_Off" },
-    { val: "62476", name: "Engine_Start" },
-    { val: "62477", name: "Engine_Stop" },
+    { val: "62476", name: "Engine_Start" },//On
+    { val: "62477", name: "Engine_Stop" },//off
     { val: "62496", name: "InputOn_0" },
     { val: "62497", name: "InputOn_1" },
     { val: "62498", name: "InputOn_2" },
@@ -669,26 +670,26 @@ export class Constant {
     { val: "62645", name: "ElaLimit_5" },
     { val: "62646", name: "ElaLimit_6" },
     { val: "62647", name: "ElaLimit_7" },
-    { val: "62672", name: "DoorOpen" },
-    { val: "62673", name: "DoorOpen_1" },
-    { val: "62674", name: "DoorOpen_2" },
-    { val: "62675", name: "DoorOpen_3" },
-    { val: "62676", name: "DoorOpen_4" },
-    { val: "62677", name: "DoorOpen_5" },
+    { val: "62672", name: "DoorOpen" },//off
+    { val: "62673", name: "DoorOpen_1" },//off
+    { val: "62674", name: "DoorOpen_2" },//off
+    { val: "62675", name: "DoorOpen_3" },//off
+    { val: "62676", name: "DoorOpen_4" },//off
+    { val: "62677", name: "DoorOpen_5" },//off
     { val: "62682", name: "SeatbeltOn" },
     { val: "62683", name: "SeatbeltOn_1" },
     { val: "62684", name: "SeatbeltOn_2" },
     { val: "62685", name: "SeatbeltOn_3" },
-    { val: "62688", name: "DoorClose" },
-    { val: "62689", name: "DoorClose_1" },
-    { val: "62690", name: "DoorClose_2" },
-    { val: "62691", name: "DoorClose_3" },
-    { val: "62692", name: "DoorClose_4" },
-    { val: "62693", name: "DoorClose_5" },
-    { val: "62698", name: "SeatbeltOff" },
-    { val: "62699", name: "SeatbeltOff_1" },
-    { val: "62700", name: "SeatbeltOff_2" },
-    { val: "62701", name: "SeatbeltOff_3" },
+    { val: "62688", name: "DoorClose" },//off
+    { val: "62689", name: "DoorClose_1" },//off
+    { val: "62690", name: "DoorClose_2" },//off
+    { val: "62691", name: "DoorClose_3" },//off
+    { val: "62692", name: "DoorClose_4" },//off
+    { val: "62693", name: "DoorClose_5" },//off
+    { val: "62698", name: "SeatbeltOff" },//off
+    { val: "62699", name: "SeatbeltOff_1" },//off
+    { val: "62700", name: "SeatbeltOff_2" },//off
+    { val: "62701", name: "SeatbeltOff_3" },//off
     { val: "62976", name: "Analog_0" },
     { val: "62977", name: "Analog_1" },
     { val: "62978", name: "Analog_2" },
@@ -826,27 +827,27 @@ export class Constant {
     { val: "63788", name: "OBD_Coolant_Range" },
     { val: "63789", name: "OBD_Coolant_OK" },
     { val: "63790", name: "Harsh_Behavior" },
-    { val: "63792", name: "Braking" },
-    { val: "63793", name: "Braking_2" },
-    { val: "63794", name: "Braking_3" },
-    { val: "63795", name: "Braking_4" },
-    { val: "63799", name: "Cornering" },
-    { val: "63800", name: "Cornering_2" },
-    { val: "63801", name: "Cornering_3" },
-    { val: "63802", name: "Cornering_4" },
-    { val: "63809", name: "Impact" },
-    { val: "63810", name: "Impact_Data_1" },
-    { val: "63811", name: "Impact_Data_2" },
-    { val: "63812", name: "Impact_Data_3" },
+    { val: "63792", name: "Braking" },//moving
+    { val: "63793", name: "Braking_2" },//moving
+    { val: "63794", name: "Braking_3" },//moving
+    { val: "63795", name: "Braking_4" },//moving
+    { val: "63799", name: "Cornering" },//moving
+    { val: "63800", name: "Cornering_2" },//moving
+    { val: "63801", name: "Cornering_3" },//moving
+    { val: "63802", name: "Cornering_4" },//moving
+    { val: "63809", name: "Impact" },//on
+    { val: "63810", name: "Impact_Data_1" },//on
+    { val: "63811", name: "Impact_Data_2" },//on
+    { val: "63812", name: "Impact_Data_3" },//on
     { val: "63813", name: "FreeFall" },
     { val: "63825", name: "Fuel_Refill" },
     { val: "63826", name: "Fuel_Theft" },
     { val: "63828", name: "Fuel_Low" },
     { val: "63834", name: "Fuel_Dirty" },
     { val: "63838", name: "Fuel_Sensor" },
-    { val: "63840", name: "Excess_Accel" },
-    { val: "63841", name: "Excess_Accel_2" },
-    { val: "63842", name: "Excess_Accel_3" },
+    { val: "63840", name: "Excess_Accel" },//moving
+    { val: "63841", name: "Excess_Accel_2" },//moving
+    { val: "63842", name: "Excess_Accel_3" },//moving
     { val: "64000", name: "Day_Summary" },
     { val: "64064", name: "Trip_Summary" },
     { val: "64416", name: "Tire_Temp_Range" },
@@ -1172,4 +1173,18 @@ export class Constant {
       value: 'ED',
     },
   ]
+
+    /******* bloc added ********** */
+    degatTypes = [{
+      value: 'Dégât Matériel',
+      icon: 'materiel'
+    },
+    {
+      value: 'Dégât Corporel',
+      icon: 'corporel'
+    },
+    {
+      value: 'Dégât Mortel',
+      icon: 'mortel'
+    },]
 }

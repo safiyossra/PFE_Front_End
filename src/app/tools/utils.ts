@@ -196,6 +196,21 @@ export class util {
             </tbody>
           </table>`
   }
+  
+  formatPopUpContentPOI(v,gps) {
+    let img = '<img src="assets/img/markers/pin_n.png" style="height: 28px;">';
+    return `<table class="infoBoxTable">
+            <tbody>
+              <tr class="infoBoxRow"
+                style="background-color: #3598dc !important;color: #FFFFFF !important;">
+                <td>${img}&nbsp; </td>
+                <td class="infoBoxCell" style="vertical-align: middle;">
+                <b style='vertical-align: sub;'>${v}</b><button title="Supprimer" data-gps="${gps}" class="btn btn-sm btn-danger card-header-actions mr-1 py-0 cil-trash deleteGPS"><i></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>`
+  }
   // // 👇️ format as "YYYY-MM-DD hh:mm:ss"
   formatDate(date: Date) {
     return formatDate(date, 'Y-M-d HH:mm:ss', this.locale);
@@ -207,6 +222,7 @@ export class util {
   formatedTime(date: Date) {
     return formatDate(date, 'HH:mm:ss', this.locale);
   }
+
   formatDateForInput(date: Date) {
     return formatDate(date, 'yyyy-MM-dd', this.locale);
   }
@@ -471,9 +487,9 @@ export class util {
   ValidatePhone(phone) {
     // if (/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{6})(?: *x(\d+))?\s*$/.test(phone)) {
       if (/\d{10,15}/.test(phone)) {
-        return (true)
+        return true
     }
-    return (false)
+    return false
   }
   // fonction tranformer
   getHeadingString(heading)
@@ -496,12 +512,14 @@ export class util {
           return "";
       }
   }
+  
   formatAge2(seconds) {
     let table = []
     if (isNaN(seconds)) return "Jamais"
     // return age
     //days
-    let days = Math.floor(seconds / (24 * 3600));
+    if (seconds > 0){
+      let days = Math.floor(seconds / (24 * 3600));
     if (days > 0) table.push(days + 'J,')
     seconds -= days * 24 * 3600;
     //hours
@@ -520,5 +538,7 @@ export class util {
       return table[0] + table[1];
     else
       return table[0];
+    }else return seconds + 's'
+    
   }
 }

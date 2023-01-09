@@ -115,7 +115,7 @@ export class CruddriverComponent {
     this.dataService.getDriverData(urlParams).subscribe({
       next: (d: any) => {
         this.data = d;
-        console.log(d);
+        // console.log(d);
         this.loading = false;
       }, error(err) {
         console.log(err);
@@ -222,7 +222,7 @@ export class CruddriverComponent {
         this.dataService.addDriver(this.selectedDriver)
         .pipe(
           catchError(err => {
-            console.log("res", err)
+            // console.log("res", err)
             this.modalLoading = false;
             if (err.status == 401) {
               route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -242,7 +242,7 @@ export class CruddriverComponent {
         )
         .subscribe({
           next: (res: any) => {
-            console.log("res", res)
+            // console.log("res", res)
             this.loadData()
             this.primaryModal.hide()
             this.errorMsg = ""
@@ -257,7 +257,7 @@ export class CruddriverComponent {
     var route = this.router
     this.openAlert = false
     this.errorMsg = ""
-    console.log("selectedDriver", this.selectedDriver)
+    // console.log("selectedDriver", this.selectedDriver)
     if (!this.selectedDriver.displayName || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
@@ -289,9 +289,9 @@ export class CruddriverComponent {
           )
           .subscribe({
             next: (res: any) => {
-              console.log("res", res)
+              // console.log("res", res)
               this.loadData()
-              this.primaryModal.hide()
+              // this.primaryModal.hide()
               this.errorMsg = ""
               this.openAlert = true
             }
@@ -334,14 +334,14 @@ export class CruddriverComponent {
   /////////////////
  /******************* Driver Document Tab *************** */
  getTypePermis(event) {
-  console.log("event ", event);
+  // console.log("event ", event);
   this.driverDocument.typePermis = event.toString();
-  console.log("this.driverDocument.typePermis ", this.driverDocument.typePermis);
+  // console.log("this.driverDocument.typePermis ", this.driverDocument.typePermis);
 }
 
 saveDriverocument() {
 
-  console.log("1----driverdocument ", this.driverDocument);
+  // console.log("1----driverdocument ", this.driverDocument);
   this.driverDocument.driverID = this.selectedDriver.driverID
 
   if (this.driverDocument.dateDelivrancePermis)
@@ -364,12 +364,12 @@ saveDriverocument() {
 
   if (this.driverDocument.dateValiditeAssurance)
     this.driverDocument.dateValiditeAssurance = this.tools.dateToTimestamp(this.driverDocument.dateValiditeAssurance)
-  console.log("2----driverdocument ", this.driverDocument);
+  // console.log("2----driverdocument ", this.driverDocument);
 
   this.dataService.addDriverDocument(this.driverDocument).subscribe({
     next:
       resp => {
-        console.log("resp driver document ", resp)
+        // console.log("resp driver document ", resp)
         this.formatData(resp)
 
         // this.primaryModal.hide()
@@ -383,16 +383,16 @@ saveDriverocument() {
 }
 
 getDriverDocument(driverID) {
-  console.log("driverID ", driverID);
+  // console.log("driverID ", driverID);
 
   let url = "?driverID=" + driverID
   this.dataService.getDriverDocument(url).subscribe({
     next:
       resp => {
-        console.log("resp ", resp);
+        // console.log("resp ", resp);
 
         this.formatData(resp)
-        console.log("  this.driverDocument ", this.driverDocument);
+        // console.log("  this.driverDocument ", this.driverDocument);
 
       },
     error(err) {

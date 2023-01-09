@@ -244,7 +244,7 @@ export class DetailsComponent {
       var route = this.router
       this.dataService.getAllTrajets(urlParams).subscribe({
         next: (d: any) => {
-          console.log(d);
+          // console.log(d);
           this.reportData = d.trajets.filter((e) => { return e.trajet == 1 });
           this.reportData.forEach((e) => {
             e.timeStart = this.tools.formatDate(new Date(Number.parseInt(e.timeStart) * 1000))
@@ -280,6 +280,7 @@ export class DetailsComponent {
             },
           ]
           this.mainChartLabels = labels
+          
           this.loading = false;
         }, error(err) {
           if (err.status == 401) {

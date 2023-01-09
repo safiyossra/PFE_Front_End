@@ -3,6 +3,8 @@ import { MyDateRangePickerComponent, MyDateRangePickerOptions } from '../compone
 import { DataService } from '../../services/data.service';
 import { Router } from '@angular/router';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
+import { util } from 'src/app/tools/utils';
+import { ExportExcel } from 'src/app/tools/export-excel';
 
 @Component({
   templateUrl: 'synthetiques.component.html',
@@ -10,7 +12,7 @@ import { ExportingTool } from 'src/app/tools/exporting_tool';
 export class SynthetiquesComponent implements OnInit, AfterViewInit {
 
   loading: boolean = false;
-  constructor(private dataService: DataService, private exportingTool: ExportingTool, private router: Router) { }
+  constructor(private dataService: DataService,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel,private tools: util, private router: Router) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -89,7 +91,7 @@ export class SynthetiquesComponent implements OnInit, AfterViewInit {
           e.ct = e.fe != 0 ? (e.km / (e.fe != 0 ? e.fe : 1)).toFixed(1) : "0";
           e.cm = (100 * (e.c / (e.km != 0 ? e.km : 1))).toFixed(1);
         })
-        console.log(this.data);
+        // console.log(this.data);
         this.loading = false;
       }, error(err) {
         console.log(err);
@@ -101,7 +103,13 @@ export class SynthetiquesComponent implements OnInit, AfterViewInit {
   }
 
   exporter(type) {
-    // this.exportingTool.exportexcel("trajetTable", "Rapport Trajet")
+    // this.exportingTool.exportexcel("trajetTable", "Rapport Synthétiques")
+    var title = " Entre " +
+      this.tools.formatDate(new Date((this.myDateRangePicker.getDateFrom) * 1000)) + " et " +
+      this.tools.formatDate(new Date((this.myDateRangePicker.getDateTo) * 1000))
+      type == 1 ? this.exportingPdfTool.exportPdf_Synthetiques( this.data, "Rapport Synthétiques" + " \n" + title) :
+        this.exportingExcelTool.ExportTrajet(this.data, "Rapport Synthétiques" + " \n" + title)
+    
   }
 
 }

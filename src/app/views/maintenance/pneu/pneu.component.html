@@ -5,7 +5,6 @@
                 <div class="card-header">
                     <button type="button" data-toggle="modal" (click)="modalAjoutr()" class="btn btn-outline-primary"><i
                             class="fa fa-plus-circle"></i> Ajouter Changement de pneu</button>
-
                     <div class="card-header-actions">
                         <app-dropdown-export (export)="exporter($event)"></app-dropdown-export>
                         <button type="button" class="card-header-action btn btn-link btn-minimize"
@@ -16,7 +15,6 @@
                             <i class="icon-close"></i>
                         </button>
                     </div>
-
                 </div>
                 <div class="card-body" [collapse]="isCollapsed" [isAnimated]="true">
                     <div class="form-group row">
@@ -42,7 +40,6 @@
                                         </span>
                                     </div>
                                 </div>
-                                <!--</div> -->
                             </div>
                         </div>
 
@@ -99,28 +96,23 @@
                                                 [selectedOptions]="entretienPneu.deviceID"
                                                 (selectionChange)="getSelectedDevicesModal($event)">
                                             </my-dropdown-select>
-
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-form-label" for="kmActuel">Kilométrage
                                             acquisition<span class="etoile"> *</span></label>
                                         <div class="input-group">
-
                                             <input type="number" id="kmActuel" step="0.1" class="form-control"
                                                 disabled="true" placeholder="Kilométrage Actuel"
                                                 [(ngModel)]="entretienPneu.KmAcquisition">
                                             <div class="input-group-append">
                                                 <span class="input-group-text"> KM </span>
                                             </div>
-
                                             <button class="btn btn-sm btn-warning" (click)="refreshKm()"
                                                 *ngIf="mode =='Modifier'">
                                                 <i class="fa fa-refresh fa-sm" style="color: white;"></i>
                                             </button>
-
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -137,7 +129,6 @@
                                             <input type="text" class="form-control" name="societe" id="societe"
                                                 placeholder="Nom de société" [(ngModel)]="entretienPneu.Fournisseurs">
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -165,7 +156,6 @@
                                                 [(ngModel)]="entretienPneu.LieuMontage">
 
                                         </div>
-
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-4  col-form-label" for="frais">Frais montage<span
@@ -175,13 +165,10 @@
                                                 placeholder="Frais de montage" [(ngModel)]="entretienPneu.FraisMontage">
                                             <span class="input-group-text"> DH </span>
                                         </div>
-
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-lg-8">
                             <div class="card">
                                 <div class="card-header">
@@ -199,10 +186,8 @@
                                                 [selectedOptions]="entretienPneu.MarquePneu"
                                                 (selectionChange)="getSelectedMarque($event)">
                                             </my-dropdown-select>
-
                                         </div>
                                     </div>
-
                                     <div class="form-group row">
                                         <label class="col-md-4 col-form-label" for="modele">Modele<span class="etoile">
                                                 *</span></label>
@@ -217,7 +202,6 @@
 
                                         </div>
                                     </div>
-
                                     <div class="form-group row">
                                         <label class=" col-md-4 col-form-label" for="dimention">Dimention<span
                                                 class="etoile"> *</span></label>
@@ -241,7 +225,6 @@
 
                                         </div>
                                     </div>
-
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-4">
@@ -258,8 +241,6 @@
 
                                             </div>
                                         </div>
-
-
                                     </div>
                                     <div class="row align-items-center text-center ">
                                         <div class="horizontalBarre" *ngIf="axes.length > 0"></div>
@@ -279,7 +260,7 @@
                                                     <label for="date" class="info">{{ob.dg}}</label>
                                                     <label for="date" class="info">{{ob.dgKm}} KM</label>
                                                 </div>
-                                                <img src="../../../../assets/img/graph/verticalBarre.png" alt="barre"
+                                                <img src="assets/img/graph/verticalBarre.png" alt="barre"
                                                     class="verticalbarre">
                                                 <div alt="icone-pneu" class="pneu" #gd (click)="getPosition(gd,i,ob)"
                                                     [ngClass]="{'activePneu': entretienPneu.PositionPneu  === (i+1+'gd')}"
@@ -299,42 +280,36 @@
                                     </div>
                                     <div class="form-group ">
                                         <div class="row">
-                                            <div class="col-6 input-group">
-                                                <label class="col-form-label" for="dateD">Date début affectation <span
-                                                        class="etoile">*</span></label>
-                                                <!--  [ngModelOptions]="{standalone: true}" -->
-                                                <input type="date" id="DateDebut" class="form-control"
-                                                    placeholder="Saisir une date" [(ngModel)]="entretienPneu.DateDebut">
+                                            <div class="col-6 input-group row">
+                                                <label class="col-form-label col-md-6" for="DateDebut">Date début
+                                                    affectation <span class="etoile">*</span></label>
+                                                <input type="date" id="DateDebut" class="form-control col-md-6"
+                                                    placeholder="Saisir une date" [ngModelOptions]="{standalone: true}"
+                                                    [(ngModel)]="entretienPneu.DateDebut">
                                             </div>
-                                            <div class="col-6 input-group">
-                                                <label class="col-form-label" for="dateF">Date fin affectation<span
-                                                        class="etoile"> *</span></label>
-                                                <input type="date" id="DateFin" class="form-control"
+                                            <div class="col-6 input-group row">
+                                                <label class="col-form-label col-md-6" for="DateFin">Date fin
+                                                    affectation<span class="etoile"> *</span></label>
+                                                <input type="date" id="DateFin" class="form-control col-md-6"
                                                     placeholder="Saisir une date" [(ngModel)]="entretienPneu.DateFin">
                                             </div>
-                                            <input type="date" id="DateFin" class="form-control"
-                                                placeholder="Saisir une date" [(ngModel)]="testDate">
                                         </div>
-
                                     </div>
                                     <div class="form-group ">
                                         <div class="row">
-                                            <div class="col-6 input-group">
-                                                <label class="col-form-label" for="montant">Montant<span class="etoile">
-                                                        *</span></label>
-                                                <!-- [ngModelOptions]="{standalone: true}" -->
-
-                                                <input type="number" id="montant" class="form-control"
-                                                    placeholder="Saisir le montant" [(ngModel)]="entretienPneu.Montant">
-                                                <span class="input-group-text"> DH</span>
-
-
-                                            </div>
-                                            <div class="col-6 input-group">
-                                                <label class="col-form-label" for="etat">Etat <span
+                                            <div class="col-6 input-group row">
+                                                <label class="col-form-label col-md-6" for="montant">Montant<span
                                                         class="etoile">*</span></label>
-                                                <!-- [ngModelOptions]="{standalone: true}" -->
-                                                <my-dropdown-select id="etat" class="form-control"
+                                                <input type="number" id="montant" class="form-control col-md-6"
+                                                    placeholder="Saisir le montant"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    [(ngModel)]="entretienPneu.Montant">
+                                                <span class="input-group-text"> DH</span>
+                                            </div>
+                                            <div class="col-6 input-group row">
+                                                <label class="col-form-label col-md-6" for="etat">Etat <span
+                                                        class="etoile">*</span></label>
+                                                <my-dropdown-select id="etat" class="form-control col-md-6"
                                                     [placeholder]="'Sélection Etat'" [selectPlaceholder]="'search...'"
                                                     [options]="cts.etats" [multiple]="false" [labelCount]="0"
                                                     [selectedOptions]="entretienPneu.EtatPneu" [display]="'name'"

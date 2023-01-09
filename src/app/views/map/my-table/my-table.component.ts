@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild, OnChanges, SimpleChanges, OnInit, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -20,9 +20,11 @@ export class MyTableComponent implements OnChanges {
   @Input() vehicules: Vehicule[]
 
 
+  @ViewChild('device_actions_menu', { static: false }) device_actions_menu: ElementRef;
   @Output() rowClicked: EventEmitter<any> = new EventEmitter();
   @Output() rowDoubleClicked: EventEmitter<any> = new EventEmitter();
   @Output() shareClicked: EventEmitter<any> = new EventEmitter();
+  @Output() showReportClicked: EventEmitter<any> = new EventEmitter();
   @Output() collapse: EventEmitter<any> = new EventEmitter();
 
   displayedColumns: string[] = ['#', 'name', 'speed', 'actions'];
@@ -41,11 +43,19 @@ export class MyTableComponent implements OnChanges {
 
   @ViewChild(MatSort) sort: MatSort;
 
+  @HostListener('document:click', ['$event'])
+  clickout(event) {
+    if(!this.device_actions_menu.nativeElement.contains(event.target)) {
+      this.device_actions_menu.nativeElement.style.display = 'none';
+    }
+  }
+
   filterValues = {
     name: '',
     statusCode: ''
   }
 
+  selectedRow = undefined
   constructor(private tools: util) {
   }
 
@@ -85,7 +95,7 @@ export class MyTableComponent implements OnChanges {
 
   search(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    console.log("filterValue", filterValue);
+    // console.log("filterValue", filterValue);
     this.filterValues['name'] = filterValue
     this.applyFilter()///////////////////////////////////////////////////////
   }
@@ -123,6 +133,20 @@ export class MyTableComponent implements OnChanges {
     this.rowClicked.emit(index)
   }
 
+  menuClicked(e,row: any) {
+    const {
+      scrollX,
+      scrollY
+    } = window
+    var rect = e.target.getBoundingClientRect();
+      var x = rect.left; //x position within the element.
+      var y = rect.top;  //y position within the element.
+    this.device_actions_menu.nativeElement.style.display = 'block';
+    this.device_actions_menu.nativeElement.style.top = (e.target.offsetHeight+y+4+scrollY)+'px';
+    this.device_actions_menu.nativeElement.style.left = (x+scrollX+2)+'px';
+    this.selectedRow = row
+  }
+
   onRowDoubleClicked(row: any) {
     // console.log('Row double clicked: ', row);
     const isLargeNumber = (element) => element.id == row.id;
@@ -131,11 +155,20 @@ export class MyTableComponent implements OnChanges {
     this.rowDoubleClicked.emit(index)
   }
 
-  share_Clicked(row: any) {
-    const isLargeNumber = (element) => element.id == row.id;
+  share_Clicked() {
+    const isLargeNumber = (element) => element.id == this.selectedRow.id;
     let index = this.vehicules.findIndex(isLargeNumber)
+    this.device_actions_menu.nativeElement.style.display = 'none';
     this.shareClicked.emit(index)
   }
+
+  showReport_Clicked() {
+    const isLargeNumber = (element) => element.id == this.selectedRow.id;
+    let index = this.vehicules.findIndex(isLargeNumber)
+    this.device_actions_menu.nativeElement.style.display = 'none';
+    this.showReportClicked.emit(index)
+  }
+
   get typesCount() {
     let typesCount = [0, 0, 0, 0]
     this.vehicules.map(vehicule => {

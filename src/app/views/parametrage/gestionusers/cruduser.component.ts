@@ -49,7 +49,7 @@ export class CruduserComponent {
 
   getSelectedGroups(selected) {
     this.selectedUser.groups = selected;
-    console.log(this.selectedUser);
+    // console.log(this.selectedUser);
   }
   
   editorJsonChangeLog(event = null) {
@@ -94,7 +94,7 @@ export class CruduserComponent {
       next: (res) => {
         this.groups = res;
         this.groups.unshift({ groupID: "*", description: "Tout" })
-        console.log(res)
+        // console.log(res)
       }, error(err) {
         if (err.status == 401) {
           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
@@ -189,7 +189,7 @@ export class CruduserComponent {
       var route = this.router
       this.dataService.getUsers(url).subscribe({
         next: (result: any) => {
-          console.log(result);
+          // console.log(result);
           this.selectedUser = new User(result.user.userID, result.user.isActive, result.user.description, "", result.user.contactName, result.user.contactPhone, result.user.contactEmail, result.user.notifyEmail, result.user.timeZone, "*", result.user.notes,'')
           const editorJson = this.editor.getEditor()
           editorJson.set(JSON.parse(result.p))
@@ -236,7 +236,7 @@ export class CruduserComponent {
           else if (this.selectedUser.contactEmail && !this.tools.ValidateEmail(this.selectedUser.contactEmail)) this.errorMsg = "Vous avez saisi un email de contact invalid."
           else {
             this.selectedUser.permissions = JSON.stringify(this.editor.get())
-            console.log(this.selectedUser);
+            // console.log(this.selectedUser);
             this.errorMsg = "";
             this.dataService.addUsers(this.selectedUser)
             .pipe(
@@ -260,7 +260,7 @@ export class CruduserComponent {
             )
             .subscribe({
               next: (res) => {
-                console.log("add")
+                // console.log("add")
                 this.loadData()
                 this.primaryModal.hide()
                 this.errorMsg = ""
@@ -292,10 +292,10 @@ export class CruduserComponent {
       else{
         this.modalLoading = true;
         this.selectedUser.permissions = JSON.stringify(this.editor.get())
-        console.log(this.selectedUser);
+        // console.log(this.selectedUser);
         this.dataService.updateUsers(this.selectedUser).subscribe({
         next: (res) => {
-          console.log("updateUsers");
+          // console.log("updateUsers");
           this.loadData()
           this.primaryModal.hide()
           this.errorMsg = ""
@@ -321,7 +321,7 @@ export class CruduserComponent {
       var u = "?u=" + user
       this.dataService.delUsers(u).subscribe({
         next: (res) => {
-          console.log("deleted cruduser")
+          // console.log("deleted cruduser")
           this.loadData()
         }, error(err) {
           this.modalLoading = false;

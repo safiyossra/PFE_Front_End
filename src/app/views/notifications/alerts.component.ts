@@ -257,7 +257,7 @@ export class AlertsComponent {
   }
 
   openPositionInMap(v:any){
-    console.log(v);
+    // console.log(v);
     this.startTime = v.timestamp ? v.timestamp : "";
     this.endTime = v.timeEnd ? v.timeEnd : "";
     this.selectedMapDevice = v.deviceID ? v.deviceID : "";

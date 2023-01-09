@@ -503,3 +503,42 @@ table.infoBoxTable tr:nth-child(odd) {
     color: dimgrey;
     font-weight: 600;
 }
+
+.popover{
+    min-width: 400px !important;
+}
+.tooltipContainer-1{
+    top: -8px!important;
+    border-top:4px solid red;
+    box-shadow: 0 0.25rem 0.5rem #ff00008f, 0 0.375rem 1.25rem #8000008f;
+}
+.tooltipContainer-2{
+    top: -8px!important;
+    border-top:4px solid orange;
+    box-shadow: 0 0.25rem 0.5rem #ffa6008f, 0 0.375rem 1.25rem #c2840096;
+}
+.tooltipContainer-3{
+    top: -8px!important;
+    border-top:4px solid green;
+    box-shadow: 0 0.25rem 0.5rem #2ce7008f, 0 0.375rem 1.25rem #0080008f;
+}
+
+
+/******* style added ****/
+.sortable-item {
+    padding: 2px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    line-height: 1.2em;
+    text-align: center;
+    cursor: grab;
+    border: 1px solid  #adadad;
+    border-radius: 4px;
+}
+
+.custom-popup .leaflet-popup-content{
+    min-width: 310px;
+    margin: 1px;
+    line-height: inherit;
+    font-size: inherit;
+}

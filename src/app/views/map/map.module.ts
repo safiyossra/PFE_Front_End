@@ -15,6 +15,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { EventsTableComponent } from './events-table/events-table.component';
 import { ZoneComponent } from './zone/zone.component';
 import { ClosestComponent } from './closest/closest.component';
+import { PlannerComponent } from './trajetPlanner/planner.component';
 import { TrackComponent } from './track/track.component';
 import { CompareComponent } from './compare/compare.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,8 +24,12 @@ import { AngularSplitModule } from "angular-split";
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { MyDropdownModule } from '../components/my-dropdown/my-dropdown.module';
 import { MyPlacesDropdownModule } from './my-places-dropdown/my-places-dropdown.module';
+import { ModalResizableModule } from './resizable-draggable/modal/modal-module';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-daterangepicker.module';
+import { PopoverModule  } from 'ngx-bootstrap/popover';
+import { SortableModule } from 'ngx-bootstrap/sortable';
+import { MapTimeLineComponent } from './maptimeline/mapTimeLine.component';
 
  
 @NgModule({
@@ -38,7 +43,9 @@ import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-d
     TrackComponent,
     CompareComponent,
     ClosestComponent,
+    PlannerComponent,
     PointFormComponent,
+    MapTimeLineComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +63,10 @@ import { MyDateRangePickerModule } from '../components/my-date-range-picker/my-d
     AngularSplitModule,
     TabsModule,
     MyPlacesDropdownModule,
-    ModalModule.forRoot(),
+    ModalModule.forRoot(), 
+    PopoverModule.forRoot(),
+    ModalResizableModule,
+    SortableModule.forRoot(),
   ]
 })
 export class MapModule { }

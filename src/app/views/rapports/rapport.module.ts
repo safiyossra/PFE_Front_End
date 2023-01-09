@@ -14,9 +14,6 @@ import { JournalierComponent } from './journalier.component';
 // Collapse Component
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 
-// Dropdowns Component
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-
 // Pagination Component
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 
@@ -38,6 +35,7 @@ import { MySynthetiquesTableComponent } from './my-synthetiques-table/my-synthet
 import { ModalMapComponent } from './modal-map/map.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { SynthetiquesComponent } from './synthetiques.component';
+import { GestionRapportModule } from './gestionrapport/gestionrapport.module';
 
 @NgModule({
   imports: [
@@ -57,6 +55,7 @@ import { SynthetiquesComponent } from './synthetiques.component';
     MyDateRangePickerModule,
     MyDropdownModule,
     ModalModule.forRoot(),
+    GestionRapportModule,
   ],
   declarations: [
     DetailleComponent,

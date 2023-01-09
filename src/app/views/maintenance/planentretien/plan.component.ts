@@ -132,7 +132,6 @@ export class PlanComponent {
     this.dataService.getPlanEntretien(urlParams).subscribe({
       next: (d: any) => {
         this.loading = false;
-        console.log(d);
         this.data = d;
         this.data.forEach((e) => {
           e.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(e.creationTime ?? 0) * 1000));
@@ -140,7 +139,6 @@ export class PlanComponent {
           // if (e.da) e.da = Math.round(Number.parseInt(e.da) / 60);
         })
 
-        console.log(this.data);
       }, error(err) {
         console.log(err);
         this.loading = false;
@@ -193,7 +191,6 @@ export class PlanComponent {
 
   submit() {
     this.selectedPlan.decDateValue = (new Date(this.selectedPlan.decDateValueString)).getTime() / 1000
-    console.log(this.selectedPlan);
 
     if (this.mode == "Ajouter") this.ajouter()
     if (this.mode == "Modifier") this.modifier()
@@ -208,7 +205,6 @@ export class PlanComponent {
     } else {
       this.dataService.addPlanEntretien(this.selectedPlan).subscribe({
         next: (res) => {
-          console.log("added", res)
           this.loadData(true)
           this.primaryModal.hide()
           this.errorMsg = ""

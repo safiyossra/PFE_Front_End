@@ -1,0 +1,587 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card card-accent-info">
+                <div class="card-header">
+                    <button type="button" data-toggle="modal" (click)="modalAjouter()"
+                        class="btn btn-outline-primary"><i class="fa fa-plus-circle"></i> Ajouter Accident</button>
+
+
+                    <div class="card-header-actions">
+                        <app-dropdown-export (export)="exporter($event)"></app-dropdown-export>
+                        <button type="button" class="card-header-action btn btn-link btn-minimize"
+                            (click)="toggleCollapse()">
+                            <i class="{{ iconCollapse }}  transition"></i>
+                        </button>
+                        <button type="button" class="card-header-action btn btn-link btn-close" (click)="reset()">
+                            <i class="icon-close"></i>
+                        </button>
+
+                    </div>
+                </div>
+                <div class="card-body" [collapse]="isCollapsed" [isAnimated]="true">
+                    <div class="form-group row">
+                        <div class="col-md-10">
+                            <div class="row mb-2">
+                                <div class="col-md-6">
+                                    <my-daterangepicker #calendar [options]="myDateRangePickerOptions">
+                                    </my-daterangepicker>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="controls">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-car fa-sm"></i></span>
+                                            </div>
+                                            <my-dropdown-select class="form-control"
+                                                [placeholder]="'Sélection de véhicule'"
+                                                [selectPlaceholder]="'search...'" [options]="devices" [display]="'name'"
+                                                [value]="'dID'" [multiple]="false" [labelCount]="0"
+                                                [selectedOptions]="selectedDevice"
+                                                (selectionChange)="getSelectedDevices($event)">
+                                            </my-dropdown-select>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-key fa-sm" *ngIf="selectedDevice == null"></i>
+                                                    <i *ngIf="selectedDevice != null">{{selectedDevice}}</i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="controls">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i
+                                                        class="fa fa-address-card fa-sm"></i></span>
+                                            </div>
+                                            <my-dropdown-select class="form-control"
+                                                [placeholder]="'Sélection de conducteur'"
+                                                [selectPlaceholder]="'search...'" [options]="drivers"
+                                                [display]="'displayName'" [value]="'driverID'" [multiple]="false"
+                                                [labelCount]="0" [selectedOptions]="selectedDevice"
+                                                (selectionChange)="getSelectedDriver($event)">
+                                            </my-dropdown-select>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-key fa-sm" *ngIf="selectedDriver == null"></i>
+                                                    <i *ngIf="selectedDriver != null">{{selectedDriver}}</i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="row">
+                                <div class="col-md-4">
+                                    <div class="controls">
+                                        <div class="input-group">
+                                           
+                                            <my-dropdown-select class="form-control"
+                                                [placeholder]="'Sélection Etape Assurance'"
+                                                [selectPlaceholder]="'search...'" [options]="etapesAssurance"
+                                                [display]="'name'" [value]="'name'" [multiple]="false" [labelCount]="0"
+                                                [selectedOptions]="selectedEtape"
+                                                (selectionChange)="getSelectedEtape($event)">
+                                            </my-dropdown-select>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-key fa-sm" *ngIf="selectedEtape == null"></i>
+                                                    <i *ngIf="selectedEtape != null">{{selectedEtape}}</i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="controls">
+                                        <div class="input-group">
+                                    
+                                            <my-dropdown-select class="form-control"
+                                                [placeholder]="'Sélection de Type Assurance'"
+                                                [selectPlaceholder]="'search...'" [options]="typeAssurances"
+                                                [display]="'name'" [value]="'name'" [multiple]="false" [labelCount]="0"
+                                                [selectedOptions]="selectedType"
+                                                (selectionChange)="getSelectedType($event)">
+                                            </my-dropdown-select>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-key fa-sm" *ngIf="selectedType == null"></i>
+                                                    <i *ngIf="selectedType != null">{{selectedType}}</i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="controls">
+                                        <div class="input-group">
+                                       
+                                            <my-dropdown-select class="form-control" [placeholder]="'Sélection Status'"
+                                                [selectPlaceholder]="'search...'" [options]="status" [display]="'name'"
+                                                [value]="'name'" [multiple]="false" [labelCount]="0"
+                                                [selectedOptions]="selectedStatus"
+                                                (selectionChange)="getSelectedStatus($event)">
+                                            </my-dropdown-select>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-key fa-sm" *ngIf="selectedStatus == null"></i>
+                                                    <i *ngIf="selectedStatus != null">{{selectedStatus}}</i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> -->
+
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-actions">
+                                <button class="btn btn-sm btn-primary" (click)="loadData(false)" [disabled]="loading">
+                                    <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                                    <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i>
+                                    &nbsp;Appliquer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <tabset>
+        <tab style="min-height: 600px" (selectTab)="selectTab(0)" [active]="selectedTab==0">
+            <ng-template tabHeading><i class="icon-list mr-1"></i> Informations d'accident &nbsp;</ng-template>
+            <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <!--   (modifier)="onEdit($event)"  (modify)="onEdit($event)" -->
+                    <app-accidents-table (delete)="delete($event)" (modify)="onEdit($event)" [data]="data"
+                        (etapeSuivant)="OpenCommentModal($event)" (onCloturer)="cloturer($event)">
+                    </app-accidents-table>
+                </div>
+            </div>
+        </tab>
+
+        <tab style="min-height: 600px;">
+            <ng-template tabHeading><i class="icon-list mr-1"></i> Plan d'assurance &nbsp;</ng-template>
+            <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
+            <div class="row">
+                <div class="card col-md-6 p-0">
+
+                    <div class="card-header">
+                        Ajouter Plan Assurance
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="form-group row">
+                            <label class=" col-md-2 col-form-label" for="designation">Designation <span
+                                    class="etoile">*</span></label>
+                            <div class="col-md-8 input-group">
+                                <input type="Texte" class="form-control" [(ngModel)]="assurance.designation"
+                                    placeholder="Designation d'assurance">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 ml-1">
+                            <h5>Etapes</h5>
+                            <button type="button" data-toggle="modal" (click)="modalEtape()"
+                                style="padding: 0.5px 9px !important;" class="btn btn-outline-primary ml-2"><i
+                                    class="fa fa-plus-circle"></i></button>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 etapesCadre" style="border-color: #aaaaaa;">
+                                <bs-sortable [(ngModel)]="itemEtapesLeft" fieldName="designation"
+                                    itemClass="sortable-item" itemActiveClass="sortable-item-active"
+                                    placeholderItem="Glisser ici" placeholderClass="placeholderStyle text-center"
+                                    wrapperClass="sortable-wrapper"
+                                    (click)="onUpdateEtape($event.target.__ngContext__[30].initData)">
+                                    <button class="btn btn-primary">delete</button>
+                                </bs-sortable>
+                            </div>
+                            <div class="col-md-1">
+
+                            </div>
+                            <div class="col-md-5 etapesCadre">
+                                <bs-sortable [(ngModel)]="assurance.etapes" fieldName="designation"
+                                    itemClass="sortable-item" itemActiveClass="sortable-item-active"
+                                    placeholderItem="Glisser ici" placeholderClass="placeholderStyle text-center"
+                                    wrapperClass="sortable-wrapper">
+                                </bs-sortable>
+                            </div>
+
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <mat-hint class="text-danger">{{errorMsgPlan}}</mat-hint>
+                                <button type="button" class="btn btn-primary pull-right ml-3"
+                                    (click)="savePlan()">Enregistrer</button>
+                                <button type="button" class="btn btn-secondary  pull-right"
+                                    (click)="resetPlan()">Réinitialiser</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card col-md-6 p-0">
+                    <div class="card-header">Listes des Plans Assurance</div>
+                    <div class="card-body" style="overflow-y: auto;">
+                        <alert type="danger" [dismissible]="dismissible" (onClosed)="onClosed(alert)"
+                            dismissOnTimeout="10000" *ngIf="openAlert">
+                            <div> Ce plan est déja affecté à un accident, vous ne pouvez pas le {{msg}} !</div>
+                            <br>
+                            <ul *ngFor="let acc of  accidents">
+                                <li>Véhicule :<strong>{{ acc.deviceID }} </strong> Date accident :
+                                    <strong>{{acc.date}}</strong>
+                                </li>
+                            </ul>
+                        </alert>
+                        <div class="listPlans">
+                            <!-- <div *ngFor="let ass of assuranceTable" class="card planAsurance"> -->
+                                <div *ngFor="let ass of assuranceTable" class="card">
+                                    <div class="card-header row m-0 p-1">
+                                    <div class="col-md-6 my-auto">
+                                        <h6>{{ass.designation}}</h6>
+                                    </div>
+                                    <div class="col-md-6 my-auto">
+                                        <button type="button" title="Supprimer" (click)="deletePlan(ass)"
+                                            class="btn rounded btn-danger m-1 pull-right commentBtn"><i
+                                                class="cil-trash"></i></button>
+                                        <button type="button" title="Modifier" (click)="onEditPlan(ass)"
+                                            class="btn rounded btn-primary m-1 pull-right commentBtn"><i
+                                                class="cil-pen"></i></button>
+                                    </div>
+                                </div>
+                                    <ol class="card-body m-0 ml-2">
+                                        <li *ngFor="let etape of ass.etapes; let index = index">{{etape.designation}}</li>
+                                    </ol>
+
+                                </div>
+                            <!-- </div> -->
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </tab>
+    </tabset>
+
+</div>
+
+<!--  **************  Accident Modal ************** -->
+<div bsModal #primaryModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
+    role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{mode}} Accident</h5>
+                <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="animated fadeIn">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    Information Véhicule/Conducteur
+                                </div>
+                                <div class="card-body">
+
+
+                                    <div class="form-group row">
+                                        <label class=" col-md-3 col-form-label" for="deviceID">Véhicule <span
+                                                class="etoile"> *</span></label>
+                                        <div class="col-8 input-group">
+                                            <my-dropdown-select id="deviceID" class="form-control"
+                                                [placeholder]="'Sélection le véhicule'"
+                                                [selectPlaceholder]="'search...'" [options]="devices" name="IDVehicule"
+                                                [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
+                                                [selectedOptions]="accident.deviceID"
+                                                (selectionChange)="getSelectedDevicesModal($event)">
+                                            </my-dropdown-select>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class=" col-md-3 col-form-label" for="driverId">Conducteur <span
+                                                class="etoile"> *</span></label>
+                                        <div class="col-8 input-group">
+                                            <my-dropdown-select id="driverId" class="form-control"
+                                                [placeholder]="'Sélection le Conducteur'"
+                                                [selectPlaceholder]="'search...'" [options]="drivers" name="driverId"
+                                                [display]="'displayName'" [value]="'driverID'" [multiple]="false"
+                                                [labelCount]="0" [selectedOptions]="accident.driverID"
+                                                (selectionChange)="getSelectedDriverModal($event)">
+                                            </my-dropdown-select>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class=" col-md-3 col-form-label" for="deviceID">Assurance <span
+                                                class="etoile">
+                                                *</span></label>
+                                        <div class="col-8 input-group">
+                                            <input type="text" disabled class="form-control" value="{{nameAssurance}}">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    Information Sinistre
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label class=" col-md-3 col-form-label" for="planAssurance">Plan Assurance <span
+                                                class="etoile">
+                                                *</span></label>
+                                        <div class="col-8 input-group">
+
+                                            <my-dropdown-select id="assuranceID" class="form-control"
+                                                [placeholder]="'Sélectioner le Plan Assurance'"
+                                                [disabled]="mode =='Modifier'" [selectPlaceholder]="'search...'"
+                                                [options]="assuranceTable" name="assuranceID" [display]="'designation'"
+                                                [value]="'assuranceID'" [multiple]="false" [labelCount]="0"
+                                                [selectedOptions]="accident.assuranceID"
+                                                (selectionChange)="getSelectedPlan($event)">
+                                            </my-dropdown-select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class=" col-md-3 col-form-label" for="date">Date <span
+                                                class="etoile">*</span></label>
+                                        <div class="col-8 input-group">
+                                            <input type="datetime-local" id="meeting-time" name="meeting-time"
+                                                value="2018-06-12T19:30" min="2020-06-07T00:00" max="2035-06-14T00:00"
+                                                class="form-control" [(ngModel)]="accident.date">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class=" col-md-3 col-form-label" for="lieu">Lieu <span
+                                                class="etoile">*</span></label>
+                                        <div class="col-md-8 input-group">
+                                            <input type="Texte" class="form-control" [(ngModel)]="accident.lieu"
+                                                placeholder="Lieu de l'accident">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="lieu">Type Dégât <span
+                                                class="etoile">*</span></label>
+                                        <div class="col-md-8 input-group">
+                                            <mat-select placeholder="Type Dégât" multiple class="mt-1"
+                                                (valueChange)="getTypeDegat($event)" [(ngModel)]="typesDegat">
+                                                <mat-option *ngFor="let degat of cts.degatTypes" [value]="degat.value">
+                                                    <div class="d-flex justify-content">
+                                                        <span class="mr-3">
+                                                            <div class="degatType"
+                                                                style="background-image: url('assets/img/typeDegat/{{degat.icon}}.png');">
+                                                            </div>
+                                                        </span>
+                                                        <span>
+                                                            {{degat.value}}
+                                                        </span>
+                                                    </div>
+
+                                                </mat-option>
+                                            </mat-select>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class=" col-md-3 col-form-label" for="degatApparent">Dégât apparents
+                                            <span class="etoile">*</span></label>
+                                        <div class="col-8 input-group">
+                                            <textarea class="form-control" rows="2"
+                                                [(ngModel)]="accident.degatApparents" placeholder="Dégât apparents">
+                                                </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="observation">
+                                            Observation
+                                        </label>
+                                        <div class="col-8 input-group">
+                                            <textarea [(ngModel)]="accident.observation" rows="2"
+                                                placeholder="Observation" class="form-control">
+                                        </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card ">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            Suivi
+                                            <button type="button" data-toggle="modal" (click)="OpenCommentModal(null)"
+                                                [disabled]="mode == 'Ajouter'"
+                                                class="btn btn-outline-primary pull-right"><i
+                                                    class="fa fa-plus-circle"></i>
+                                                Comentaire</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="progressBar">
+                                    <div class="d-flex justify-content-between" *ngIf="mode == 'Modifier'">
+                                        <span *ngFor="let etape of etapes">{{etape.designation}}</span>
+                                    </div>
+                                    <!--  -->
+                                    <div class="progress" *ngIf="mode == 'Modifier'">
+                                        <div class="progress-bar" role="progressbar" aria-valuemin="0"
+                                            aria-valuemax="100" [ngStyle]="{'width': progress +'%'}">
+                                            <span [style.color]="progress == '0'? '#20a8d8':'' "> {{progress}} %
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body commentCard">
+
+
+
+                                    <div *ngFor="let c of commentsTable" class="comment pt-2">
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button type="button" title="Supprimer" (click)="deleteComment(c)"
+                                                    *ngIf="c.etapeID == 0"
+                                                    class="btn rounded btn-danger m-1 pull-right commentBtn"><i
+                                                        class="cil-trash"></i></button>
+                                                <button type="button" title="Modifier" (click)="editComment(c)"
+                                                    class="btn rounded btn-warning m-1 pull-right commentBtn"><i
+                                                        class="cil-pen"></i></button>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+
+                                                <h5>{{c.etapeName | uppercase}}</h5>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <span class="pull-right">{{c.dateComment}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <p>{{c.comment}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: left;display: initial;">
+                <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
+                <button type="button" class="btn btn-primary float-right" [disabled]=""
+                    (click)="submit()">{{mode}}</button>
+                <button type="button" class="btn btn-secondary float-right"
+                    (click)="primaryModal.hide()">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  **************  Comment Modal ************** -->
+<div bsModal #commentModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
+    role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="commentModal">
+    <div class="modal-dialog modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5> {{comment.etapeName | uppercase }}</h5>
+                <button type="button" class="close" (click)="hideCommentModal()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="animated fadeIn">
+                    <div class="form-group row">
+                        <label for="date" class="col-md-3 col-form-label">Date <span class="etoile">*</span></label>
+
+                        <input type="datetime-local" id="meeting-time" name="meeting-time" value="2018-06-12T19:30"
+                            min="2020-06-07T00:00" max="2035-06-14T00:00" class="form-control col-md-8 "
+                            [(ngModel)]="comment.dateComment">
+
+                    </div>
+                    <div class="form-group row">
+                        <label for="comment" class="col-md-3 col-form-label">Commentaire <span
+                                class="etoile">*</span></label>
+                        <textarea name="comment" id="comment" cols="10" rows="3" [(ngModel)]="comment.comment"
+                            class="col-md-8 form-control" placeholder="Commentaire"></textarea>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: left;display: initial;">
+                <mat-hint class="text-danger">{{errorCommentMsg}}</mat-hint>
+                <button type="button" class="btn btn-primary float-right"
+                    (click)="submitComment()">{{modeComment}}</button>
+                <button type="button" class="btn btn-secondary float-right"
+                    (click)="commentModal.hide()">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  **************  Etape Plan Modal ************** -->
+<div bsModal #etapeModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
+    role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" id="assuranceModal">
+    <div class="modal-dialog modal-primary" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5> {{modeEtape}} Etape </h5>
+                <button type="button" class="close" (click)="etapeModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="animated fadeIn">
+                    <div class="form-group row">
+                        <label for="date" class="col-md-3 col-form-label">Désignation <span
+                                class="etoile">*</span></label>
+
+                        <input type="text" id="designation" name="designation" class="form-control col-md-9"
+                            [(ngModel)]="etape.designation">
+                    </div>
+
+                    <!-- <div class="form-group row">
+                        <label class="col-md-3 col-form-label" for="lieu">Etapes <span class="etoile">*</span></label>
+                        <div class="col-md-9 input-group">
+                            <mat-select placeholder="Type Dégât" multiple class="mt-1"
+                                (valueChange)="getAssuranceEtapes($event)" [(ngModel)]="assurance.etapes">
+                                <mat-option *ngFor="let ass of cts.etapesAssurance" [value]="ass.name">
+                                    {{ass.name}}
+                                </mat-option>
+                            </mat-select>
+                        </div>
+                    </div> -->
+
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: left;display: initial;">
+                <mat-hint class="text-danger">{{errorEtapeMsg}}</mat-hint>
+                <button type="button" class="btn btn-primary float-right" (click)="submitEtape()">{{modeEtape}}</button>
+                <button type="button" class="btn btn-secondary float-right" (click)="etapeModal.hide()">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>

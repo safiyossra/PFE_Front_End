@@ -38,7 +38,7 @@ export class RankComponent implements OnInit {
     })
   }
 
-  changeGender(ev) {
+  changePeriod(ev) {
     let p = ""
     if (this.radioModel == "Day") { this.interval = "Les dernières 24 heures"; p = "?st=" + this.getLastxDate(1) + "&et=" + this.getLastxDate(0) }
     else if (this.radioModel == "Year") { this.interval = "Un an à partir de maintenant"; p = "?st=" + this.getLastxDate(365) + "&et=" + this.getLastxDate(0) }

@@ -128,7 +128,7 @@ export class CrudNotifsRulesComponent {
         //   e.lastLoginTime = this.tools.formatDate(new Date(Number.parseInt(e.lastLoginTime) * 1000));
         // });
         this.data = d;
-        console.log(d);
+        // console.log(d);
         this.loading = false;
       }, error(err) {
         console.log(err);
@@ -199,7 +199,7 @@ export class CrudNotifsRulesComponent {
         else {
           this.dataService.addRule(this.selectedAlert).subscribe({
             next: (res) => {
-              console.log("added", res)
+              // console.log("added", res)
               this.loadData()
               this.primaryModal.hide()
               this.errorMsg = ""

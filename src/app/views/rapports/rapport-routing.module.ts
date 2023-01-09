@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { PermissionsGuard } from 'src/app/guards/permissions.guard';
 
 import { DetailleComponent } from './detaille.component';
+import { GestionRapportComponent } from './gestionrapport/gestionrapport.component';
 import { JournalierComponent } from './journalier.component';
 import { SynthetiquesComponent } from './synthetiques.component';
 
@@ -43,6 +44,15 @@ const routes: Routes = [
         data: {
           permissionKey:'Rapports_RapportSynthetique',
           title: 'Synthétiques'
+        }
+      },
+      {
+        path: 'automatique',
+        component: GestionRapportComponent,
+        canActivate: [PermissionsGuard],
+        data: {
+          permissionKey:'Rapports_RapportAutomatique',
+          title: 'Automatique'
         }
       },
     ]

@@ -62,7 +62,8 @@
                 </th>
                 <td mat-cell *matCellDef="let vehicule">
                     <!-- <input type="checkbox" value="{{vehicule.id}}" id="{{vehicule.id}}"> -->
-                    <img src="assets/img/vehicules/{{tools.getImage(vehicule.icon)}}-img.png" alt="car" class="list-car">
+                    <img src="assets/img/vehicules/{{tools.getImage(vehicule.icon)}}-img.png" alt="car"
+                        class="list-car">
                 </td>
             </ng-container>
 
@@ -73,7 +74,16 @@
                         <i [ngClass]="(tools.getStatusClass(vehicule.statusCode))"></i>
                         <!-- <i *ngIf="isNaN2(vehicule.timestamp)" class="fa fa-warning text-warning status-cercle"></i> -->
                         <i [ngClass]="isNaN2(vehicule.timestamp)"></i>
-                        <table class="d-inline"><tbody><tr><td>{{ vehicule.name }}</td></tr><tr><td><sup>{{ vehicule.driverID }}</sup></td></tr></tbody></table>
+                        <table class="d-inline">
+                            <tbody>
+                                <tr>
+                                    <td>{{ vehicule.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><sup>{{ vehicule.driverID }}</sup></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </ng-container>
                 </td>
             </ng-container>
@@ -86,8 +96,14 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let vehicule" class="d-flex justify-content-around align-items-center">
-                    <span (click)="$event.preventDefault();$event.stopPropagation();share_Clicked(vehicule)"><i class="icon-share text-blue h4 align-middle"></i></span>
-                    <a [routerLink]="['./details', vehicule.id]"><i class="icon-graph text-blue h2 align-middle"></i></a>
+                    <div class="btn-group" dropdown placement="right" [stopOnClickPropagation]="true"
+                        [autoClose]="true">
+                        <button id="button" type="button" dropdownToggle class="btn btn-primary"
+                            (click)="$event.preventDefault();$event.stopPropagation();menuClicked($event,vehicule)"
+                            aria-controls="dropdown" style="border-radius: 0.25rem;">: : :
+                        </button>
+
+                    </div>
                 </td>
             </ng-container>
 
@@ -97,8 +113,34 @@
 
         </table>
     </div>
-    <!-- <div class="card-footer">
-        <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [pageSize]="selectedPageSize">
-        </mat-paginator>
-    </div> -->
+</div>
+
+<div #device_actions_menu class="actions_menu wui-tooltip" style="left: 0px; top: 0px;display:none;">
+    <table>
+        <tbody>
+            <tr>
+                <td class="text-center p-2" style="cursor:pointer;" (click)="showReport_Clicked()"><span><i
+                            class="icon-pie-chart text-blue h5 align-middle hover" title="Rapport en bref"></i></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center hover" style="cursor:pointer;"> <a class="p-2" [routerLink]="['./timeline', selectedRow?.id]"><i
+                            class="fa fa-calendar text-blue h5 m-0 align-middle hover" title="Rapport journalier (Max 10 jours)"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-center p-2 hover" style="cursor:pointer;" (click)="share_Clicked()"><span><i
+                            class="icon-share text-blue h5 align-middle hover" title="Partager le suivi"></i></span>
+                </td>
+            </tr>
+            <tr>
+                <td style="border-top: 1px solid #5a5a5a;"></td>
+            </tr>
+            <tr>
+                <td class="text-center hover" style="cursor:pointer;"> <a class="p-2" [routerLink]="['./details', selectedRow?.id]"><i
+                            class="icon-graph text-blue h5 m-0 align-middle hover" title="Plus de detailles"></i></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>

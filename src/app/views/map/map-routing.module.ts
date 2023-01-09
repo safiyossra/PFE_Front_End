@@ -6,6 +6,8 @@ import { ZoneComponent } from './zone/zone.component';
 import { ClosestComponent } from './closest/closest.component';
 import { PermissionsGuard } from 'src/app/guards/permissions.guard';
 import { CompareComponent } from './compare/compare.component';
+import { PlannerComponent } from './trajetPlanner/planner.component';
+import { MapTimeLineComponent } from './maptimeline/mapTimeLine.component';
 
 const routes: Routes = [
   {
@@ -43,6 +45,15 @@ const routes: Routes = [
         }
       },
       {
+        path: 'planner',
+        component: PlannerComponent,
+        canActivate: [PermissionsGuard],
+        data: {
+          permissionKey:'TrajetPlanner',
+          title: 'Trajet Planner'
+        }
+      },
+      {
         path: 'comparer',
         component: CompareComponent,
         canActivate: [PermissionsGuard],
@@ -73,6 +84,15 @@ const routes: Routes = [
             data: {
               permissionKey:'Map_Vehicules',
               title: 'Details'
+            }
+          },
+          {
+            path: 'timeline/:id',
+            component: MapTimeLineComponent,
+            canActivate: [PermissionsGuard],
+            data: {
+              permissionKey:'MapTimeLine',
+              title: 'Map TimeLine'
             }
           },
         ],

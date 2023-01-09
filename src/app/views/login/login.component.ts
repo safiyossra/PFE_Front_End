@@ -41,11 +41,11 @@ export class LoginComponent {
           localStorage.setItem('JWT', response.token)
           localStorage.setItem('username', response.user)
           localStorage.setItem('compte', this.accountid)
-          console.log("setPermissions",response.p);
+          // console.log("setPermissions",response.p);
           if (response.p == "") {
             this.tools.setPermissions(response.p)
           }
-          else { this.tools.setPermissions(JSON.parse(response.p)) ;console.log('permi',JSON.parse(response.p));
+          else { this.tools.setPermissions(JSON.parse(response.p)) ;//console.log('permi',JSON.parse(response.p));
           }
          
 

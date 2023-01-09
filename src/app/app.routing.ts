@@ -89,6 +89,10 @@ export const routes: Routes = [
         path: 'notifications',
         loadChildren: () => import('./views/notifications/notifications.module').then(m => m.NotificationsModule)
       },
+      {
+        path: 'live-streaming',
+        loadChildren: () => import('./views/live-streaming/live-streaming.module').then(m => m.LiveStreamingModule)
+      },
     ]
   },
   { path: '**', component: P404Component }

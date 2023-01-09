@@ -66,9 +66,10 @@ export class MyDataTableComponent implements OnChanges {
     }
   }
 
-  openLocation(timeStart, timeEnd) {
+  openLocation(timeStart, timeEnd,type) {
     // console.log(timeStart, timeEnd);
-    let out = { "timeStart": timeStart, "timeEnd": timeEnd, "selectedMapDevice": this.selectedMapDevice }
+    var end = type==1?timeEnd:""
+    let out = { "timeStart": timeStart, "timeEnd": end, "selectedMapDevice": this.selectedMapDevice }
     this.positionClick.emit(out)
   }
 
@@ -78,7 +79,6 @@ export class MyDataTableComponent implements OnChanges {
 
   pageChanged(event: PageEvent) {
     this.currentPage = event.pageIndex
-
     if(event.pageSize != this.selectedPageSize)
       this.currentPage = 0;
 

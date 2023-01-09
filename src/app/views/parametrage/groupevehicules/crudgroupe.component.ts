@@ -79,7 +79,7 @@ export class CrudgroupeComponent {
     this.dataService.getGroupeVehicules("").subscribe({
       next: (d: any) => {
         this.data = d;
-        console.log(d);
+        // console.log(d);
         this.loading = false;
       }, error(err) {
         console.log(err);
@@ -170,7 +170,7 @@ export class CrudgroupeComponent {
       )
       .subscribe({
         next: (res) => {
-          console.log("add")
+          // console.log("add")
           this.loadData()
           this.primaryModal.hide()
           this.errorMsg = ""
@@ -208,7 +208,7 @@ export class CrudgroupeComponent {
       )
       .subscribe({
         next: (res) => {
-          console.log("edit groupevehivule")
+          // console.log("edit groupevehivule")
           this.loadData()
           this.primaryModal.hide()
           this.errorMsg = ""

@@ -120,6 +120,118 @@ export class ExportingTool {
 
     }
 
+    exportPdf_TrajetsEco(data, title?: string) {
+        const doc = new jsPDF('l');
+        const rows: any = [];
+        // ["Accélération", "Freinage", "Virage"];
+
+        data.forEach((elt) => {
+            const tmp = [
+                elt.timeStart, elt.timeEnd, elt.addi, elt.addf, elt.k, elt.dc,elt.eco,elt.acc,elt.br,elt.cor, elt.v, elt.na,
+                elt.da, elt.c, elt.cm,elt.t,elt.device
+            ];
+            rows.push(tmp);
+        });
+
+        doc.setFontSize(14);
+        doc.setDrawColor('blue');
+        doc.addImage(this.picture, 'png', 10, 4, 30, 30);
+        doc.setFontSize(12);
+        doc.setTextColor('#033A7A');
+        doc.text('Sendatrack.com', 10, 32);
+        doc.setFontSize(10);
+        doc.text(this.adress1, 210, 17);
+        doc.text(this.add, 210, 21)
+        doc.text(this.adress2, 210, 25);
+        doc.setFontSize(18);
+        doc.setTextColor('#366DAD');
+        // Title = "Rapport Trajet et Parking [" + vehicule + "]";
+        doc.text(title, 150, 50, { align: 'center' });
+
+        (doc as any).autoTable({
+            columns: [
+                { dataKey: 'DEPART', header: 'DEPART' },
+                { dataKey: 'ARRIVÉ', header: 'ARRIVÉ' },
+                { dataKey: 'ADRESSE DEPART', header: 'ADRESSE DEPART' },
+                { dataKey: 'ADRESSE ARIVÉE', header: 'ADRESSE ARIVÉE' },
+                { dataKey: 'KM PARCOURUE', header: 'KM PARCOURUE' },
+                { dataKey: 'DURÉE (MIN)', header: 'DURÉE (MIN)' },
+                { dataKey: 'ECO-INDEX', header: 'ECO-INDEX' },
+                { dataKey: 'Accélération', header: 'Accélération' },
+                { dataKey: 'Freinage', header: 'Freinage' },
+                { dataKey: 'Virage', header: 'Virage' },
+                { dataKey: 'MAX VITESSE (KM/H)', header: 'MAX VITESSE (KM/H)' },
+                { dataKey: '# ARRETS', header: '# ARRETS' },
+                { dataKey: 'DURÉE ARRETS', header: 'DURÉE ARRETS' },
+                { dataKey: 'CONSOM (L)', header: 'CONSOM (L)' },
+                { dataKey: 'CONSOM (%)', header: 'CONSOM (%)' },
+                { dataKey: 'MAX TEMP(°C)', header: 'MAX TEMP(°C)' },
+                { dataKey: 'VÉHICULE', header: 'VÉHICULE' },
+            ],
+            body: rows,
+            theme: 'grid',
+            rowPageBreak: 'auto',
+            //specifies where to start drowing the table
+            startY: 60,
+            showHead: 'firstPage',
+            headStyles: { fillColor: [5, 97, 203] },
+            columnStyles: { text: { cellWidth: 'wrap' } },
+        });
+        doc.setFontSize(10);
+        this.addFooters(doc)
+        doc.save(title);
+
+    }
+    exportPdf_Synthetiques(data, title?: string) {
+        const doc = new jsPDF('l');
+        const rows: any = [];
+        data.forEach((elt) => {
+            const tmp = [
+                elt.d, elt.km, elt.v, elt.c, elt.cm, elt.cd, elt.ct
+            ];
+            rows.push(tmp);
+        });
+
+        doc.setFontSize(14);
+        doc.setDrawColor('blue');
+        doc.addImage(this.picture, 'png', 10, 4, 30, 30);
+        doc.setFontSize(12);
+        doc.setTextColor('#033A7A');
+        doc.text('Sendatrack.com', 10, 32);
+        doc.setFontSize(10);
+        doc.text(this.adress1, 210, 17);
+        doc.text(this.add, 210, 21)
+        doc.text(this.adress2, 210, 25);
+        doc.setFontSize(18);
+        doc.setTextColor('#366DAD');
+        // Title = "Rapport Trajet et Parking [" + vehicule + "]";
+        doc.text(title, 150, 50, { align: 'center' });
+
+        (doc as any).autoTable({
+            columns: [
+                { dataKey: 'VÉHICULE', header: 'VÉHICULE' },
+                { dataKey: 'KM PARCOURUE', header: 'KM PARCOURUE' },
+                { dataKey: 'MAX VITESSE (KM/H)', header: 'MAX VITESSE (KM/H)' },
+                { dataKey: 'CONSOM (L)', header: 'CONSOM (L)' },
+                { dataKey: 'CONSOM (%)', header: 'CONSOM (%)' },
+                { dataKey: 'CONSOM (MAD)', header: 'CONSOM (MAD)' },
+                { dataKey: 'CONSOM THÉORIQUE (L)', header: 'CONSOM THÉORIQUE (L)' }
+            ],
+            body: rows,
+            theme: 'grid',
+            rowPageBreak: 'auto',
+            //specifies where to start drowing the table
+            startY: 60,
+            showHead: 'firstPage',
+            headStyles: { fillColor: [5, 97, 203] },
+            columnStyles: { text: { cellWidth: 'wrap' } },
+        });
+        doc.setFontSize(10);
+        this.addFooters(doc)
+        doc.save(title);
+
+    }
+
     exportPdf_Events(data, title: string) {
         const doc = new jsPDF('l');
         const rows: any = [];
@@ -680,7 +792,7 @@ export class ExportingTool {
         doc.text(this.adress2, 130, 25);
         doc.setFontSize(18);
         doc.setTextColor('#366DAD');
-        console.log("title ", title);
+        // console.log("title ", title);
 
         doc.text(title, 150, 50, { align: 'center' });
 
@@ -717,6 +829,75 @@ export class ExportingTool {
         this.addFooters(doc);
         doc.save(title);
     }
+    
+    // added function 
+    exportPdf_Accident(data: any[], title: string) {
+        const doc = new jsPDF();
+        const rows: any = [];
+
+        data.forEach((elt) => {
+            const tmp = [
+                elt.date,
+                elt.deviceName,
+                elt.driverName,
+                elt.lieu,
+                elt.degatType,
+                elt.etapeAssuranceName,
+                elt.typeAssurance,
+                elt.statut,
+
+            ];
+            rows.push(tmp);
+        });
+        doc.setFontSize(9);
+        doc.setDrawColor('blue');
+
+        doc.addImage(this.picture, 'png', 10, 4, 30, 30);
+        doc.setFontSize(9);
+
+        doc.setTextColor('#033A7A');
+        doc.text('Sendatrack.com', 8, 32); //10
+        doc.setFontSize(8);
+        doc.text(this.adress1, 130, 17);
+        doc.text(this.add, 130, 21);
+        doc.text(this.adress2, 130, 25);
+        doc.setFontSize(18);
+        doc.setTextColor('#366DAD');
+        // console.log("title ", title);
+
+        doc.text(title, 150, 50, { align: 'center' });
+
+        (doc as any).autoTable({
+            columns: [
+                { dataKey: 'Date', header: 'Date' },
+                { dataKey: "Véhicule", header: "Véhicule" },
+                { dataKey: 'Conducteur', header: 'Conducteur' },
+                { dataKey: 'Lieu', header: 'Lieu' },
+                { dataKey: 'Type Dégât', header: 'Type Dégât' },
+                { dataKey: `Etat d'avancement`, header: `Etat d'avancement` },
+                { dataKey: 'Type Assurance', header: 'Type Assurance' },
+                { dataKey: 'Statut', header: 'Statut' },
+
+            ],
+            body: rows,
+            theme: 'grid',
+            rowPageBreak: 'auto',
+            //specifies where to start drowing the table
+            startY: 60,
+            styles: {
+                fontSize: 10,
+                font: 'PTSans'
+            },
+            showHead: 'firstPage',
+            headStyles: { fillColor: [5, 97, 203] },
+            columnStyles: { text: { cellWidth: 'wrap' } },
+        });
+        doc.setFontSize(10);
+
+        this.addFooters(doc);
+        doc.save(title);
+    }
+
     exportPdf_Notifications(data: any[], title: string) {
         const doc = new jsPDF();
         const rows: any = [];

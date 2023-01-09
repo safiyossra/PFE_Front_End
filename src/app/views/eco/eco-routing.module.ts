@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PermissionsGuard } from 'src/app/guards/permissions.guard';
-import { DetailsComponent } from './details.component';
+import { DetailleComponent } from './detaille.component';
 import { RankComponent } from './rank.component';
 
 const routes: Routes = [
@@ -26,7 +26,7 @@ const routes: Routes = [
       },
       {
         path: 'details',
-        component: DetailsComponent,
+        component: DetailleComponent,
         canActivate: [PermissionsGuard],
         data: {
           permissionKey:'Eco_EcoDetailles',

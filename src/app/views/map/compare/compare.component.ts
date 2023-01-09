@@ -195,7 +195,7 @@ export class CompareComponent implements OnInit, AfterViewInit {
     var route = this.router
     this.dataService.getVehicule("?extra=true").subscribe({
       next: (res) => {
-        console.log("getDev", res);
+        // console.log("getDev", res);
         this.devices = res;
       }, error(err) {
         if (err.status == 401) {
@@ -232,9 +232,9 @@ export class CompareComponent implements OnInit, AfterViewInit {
       this.loading = true;
       let extra = this.getVehiculeExtraById(this.selectedDevice)
       // this.getdetails()
-      console.log(this.selectedDevice)
+      // console.log(this.selectedDevice)
       var urlParams = "map-events?d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
-      console.log(urlParams);
+      // console.log(urlParams);
       this.loadingEvents = true
       this.vehiculeService.getVehiculeEvents(urlParams).toPromise()
         .then((res) => {
@@ -275,9 +275,9 @@ export class CompareComponent implements OnInit, AfterViewInit {
       this.loading1 = true;
       let extra = this.getVehiculeExtraById(this.selectedDevice1)
       // this.getdetails()
-      console.log(this.selectedDevice1)
+      // console.log(this.selectedDevice1)
       var urlParams = "map-events?d=" + this.selectedDevice1 + "&st=" + this.myDateRangePicker1.getDateFrom + "&et=" + this.myDateRangePicker1.getDateTo
-      console.log(urlParams);
+      // console.log(urlParams);
       this.loadingEvents1 = true
       this.vehiculeService.getVehiculeEvents(urlParams).toPromise()
         .then((res) => {
@@ -324,7 +324,7 @@ export class CompareComponent implements OnInit, AfterViewInit {
 
   createMap(id) {
     const zoomLevel = 12
-    console.log('mapDetail' + id);
+    // console.log('mapDetail' + id);
 
     let map = L.map('mapDetail' + id, { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
       .setView([this.car.lat, this.car.lng], zoomLevel)
@@ -355,13 +355,31 @@ export class CompareComponent implements OnInit, AfterViewInit {
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
     const baseMaps = {
+      'Google Street': googleStreets,
       "Google Hybrid": googleHybrid,
       "Google Terrain": googleTerrain,
       "Google Satellite": googleSat,
-      'Google Street': googleStreets,
       'Dark': dark,
     };
-    googleHybrid.addTo(map)
+    switch (this.tools.getMapType()) {
+      case 'Google Hybrid':
+        googleHybrid.addTo(map)
+        break;
+      case 'Google Terrain':
+        googleTerrain.addTo(map)
+        break;
+      case 'Google Satellite':
+        googleSat.addTo(map)
+        break;
+      case 'Dark':
+        dark.addTo(map)
+        break;
+
+      default:
+        googleStreets.addTo(map)
+        break;
+    }
+
 
 
     L.control.zoom().addTo(map)
@@ -430,7 +448,7 @@ export class CompareComponent implements OnInit, AfterViewInit {
         // console.log(p.coords);
         var positionCtl = document.getElementById("positionControl" + id)
         if (!isMyPositionVisible) {
-          console.log("isMyPositionVisible1 ", isMyPositionVisible);
+          // console.log("isMyPositionVisible1 ", isMyPositionVisible);
           positionCtl.classList.replace("icon-target", "icon-close")
 
           if (MyPositionMarker) {
@@ -458,7 +476,7 @@ export class CompareComponent implements OnInit, AfterViewInit {
           }
 
         } else {
-          console.log("isMyPositionVisible2 ", isMyPositionVisible);
+          // console.log("isMyPositionVisible2 ", isMyPositionVisible);
           // this.MyPositionMarker1 = new L.Marker([p.coords.latitude, p.coords.longitude])
           if (id == 1) {
             this.MyPositionMarker1.removeFrom(this.map1)

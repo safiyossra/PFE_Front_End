@@ -19,8 +19,7 @@
       </div>
       <div class="card-header-actions col-md-9" *ngIf="isTrajet==0">
         <button class="btn btn-outlined-primary float-right" (click)="openMapPoints()"><i class="fa fa-map mr-1"></i>
-          Afficher les Points
-          du parking</button>
+          Afficher les Points</button>
       </div>
     </div>
   </div>
@@ -32,17 +31,9 @@
         </th>
         <td mat-cell *matCellDef="let salle">
          <div  [ngClass]="(column=='timeStart' || column =='timeEnd')? 'badge f-100':'f-100'">
-          <button *ngIf="column=='timeStart'" type="button" (click)="openLocation(salle['st'],salle['et'])"
+          <button *ngIf="column=='timeStart'" type="button" (click)="openLocation(salle['st'],salle['et'],salle['trajet'])"
             class="btn btn-link p-1 pt-2 m-0" [ngClass]="salle['trajet']=='0'? 'text-danger': ''"
             style="font-size: large;line-height: 1;padding: 0px !important;"><i class="cil-location-pin"></i></button>
-
-          <!-- <button *ngIf="column=='addressArr'" type="button" (click)="openLocation(salle['st'],salle['et'])"
-            class="btn btn-link p-1 pt-2 m-0" [ngClass]="salle['trajet']=='0'? 'text-danger': ''"
-            style="font-size: large;line-height: 1;padding: 0px !important;"><i class="cil-location-pin"></i></button>
-
-          <button *ngIf="column=='addressDep'" type="button" (click)="openLocation(salle['st'],salle['et'])"
-            class="btn btn-link p-1 pt-2 m-0" [ngClass]="salle['trajet']=='0'? 'text-danger': ''"
-            style="font-size: large;line-height: 1;padding: 0px !important;"><i class="cil-location-pin"></i></button> -->
 
           <button *ngIf="column=='addressArr'" type="button" [ngClass]="tools.getStatusColor(salle['statusArr'])"
           (click)="openLocation(salle['dateArr'])" class="btn btn-link p-1 pt-2 m-0" style="font-size: large;line-height: 1;"><i
@@ -55,11 +46,7 @@
           {{ salle[column] }}
          </div> 
         </td>
-
-
-
       </ng-container>
-
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>

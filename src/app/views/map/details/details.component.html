@@ -5,8 +5,10 @@
                 class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
             <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
                 class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
-            <div class="card-header d-flex justify-content-between px-2 py-2 ">
-                <div class="h4 text-dark my-auto">Trajets de <b>{{vName}}</b></div>
+            <div class="card-header d-flex justify-content-between px-2 py-0">
+                <div class="h6 text-dark my-auto"> <div class="btn btn-outline-primary mb-1 p-1 border-0" title="Back" style="font-size: large;font-weight: 900;cursor: pointer;"
+                    (click)="router.navigate(['/map'])"><i class="icon-arrow-left"></i>
+                  </div>&nbsp;&nbsp;&nbsp;<b>{{vName}}</b></div>
                 <div class="my-auto">
                     <label for="s1111" class="ml-2 float-right">Afficher tous les points &nbsp;</label>
                     <input id="s1111" type="checkbox" class="switch float-right" [(ngModel)]="showAllPoints"

@@ -492,6 +492,8 @@ export class MyDateRangePickerComponent implements ControlValueAccessor, OnInit,
     }
     public get getDateFrom() { return Math.round(this.dateFrom.getTime() / 1000) + this.convertToTimestamp(this.time_1); }
     public get getDateTo() { return Math.round(this.dateTo.getTime() / 1000) + (this.convertToTimestamp(this.time_2)); }
+    public get getDate2From() { return Math.round(this.dateFrom.getTime() / 1000) ; }
+    public get getDate2To() { return Math.round(this.dateTo.getTime() / 1000); }
 
     convertToTimestamp(val: any) {
         var res = 0

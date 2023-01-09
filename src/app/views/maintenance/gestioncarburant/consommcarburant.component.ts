@@ -63,7 +63,7 @@ export class ConsommcarburantComponent {
   tvaOption: any;
   selectedTva = 10;
 
-  devices$ = this.dataService.getVehicule();
+  devices$ = this.dataService.getVehicule("?extra=true");
   drivers$ = this.dataService.getDriverData("?minimum=true");
 
 
@@ -145,7 +145,6 @@ export class ConsommcarburantComponent {
     var route = this.router
     this.dataService.getDriverData("?minimum=true").subscribe({
       next: (res) => {
-        console.log(res)
         this.drivers = res;
       }, error(err) {
         if (err.status == 401) {
@@ -220,7 +219,7 @@ export class ConsommcarburantComponent {
     });
   }
 
-  getCurrentKm(id) {
+  getCurrentKm(id) {    
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].dID == id) {
         return this.devices[i].km
@@ -318,7 +317,6 @@ export class ConsommcarburantComponent {
             else if (err.status == 400) {
               console.log(err);
               this.errorMsg = "Numero de bon inseré exist deja."
-              console.log(this.errorMsg);
             }
 
             else if (err.status == 402) {
@@ -349,17 +347,11 @@ export class ConsommcarburantComponent {
     this.consommation.dateFillString = consom.dateFill.replace(' ', 'T');
     this.consommation.dateFill = this.dateToTimeStamp(new Date(this.consommation.dateFillString));
 
-    console.log(this.selectedDriverOption);
-
     // dropdown not working
     // we set it by default to test but the value in dropdown does not change
     // this.selectedDriverOption = "test";
     this.selectedDriverOption = this.consommation.driverID;
     this.selectedDeviceModalOption = this.consommation.deviceID;
-
-    console.log(this.consommation);
-    console.log(this.selectedDriverOption);
-
     // calculate current tva from ttc and ht
     let tva = Math.trunc((this.consommation.montantTTC / this.consommation.montant - 1) * 100);
     // set tva in drop down
@@ -379,13 +371,9 @@ export class ConsommcarburantComponent {
     this.errorMsg = ""
 
     if (!this.verifyConsommationFields()) {
-      console.log(!this.verifyConsommationFields());
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.errorMsg = ""
-
-      console.log(this.consommation);
-
       this.dataService.editConsommation(this.consommation)
         .pipe(
           catchError(err => {
@@ -396,7 +384,6 @@ export class ConsommcarburantComponent {
             else if (err.status == 400) {
               console.log(err);
               this.errorMsg = "Numero de bon inseré exist deja."
-              console.log(this.errorMsg);
             }
 
             else if (err.status == 402) {
@@ -421,7 +408,6 @@ export class ConsommcarburantComponent {
       var id = "?id=" + consommation.id
       this.dataService.deleteConsommation(id).subscribe({
         next: (res) => {
-          console.log("deleted cruduser")
           this.loadData(true)
         }, error(err) {
           this.modalLoading = false;
@@ -433,8 +419,6 @@ export class ConsommcarburantComponent {
           }
         }
       })
-      console.log(consommation);
-
     }
   }
 
@@ -477,9 +461,6 @@ export class ConsommcarburantComponent {
             this.devices = devices;
 
             this.drivers = drivers;
-
-            console.log(drivers);
-
             this.data.forEach((e) => {
               e.pleinOnStr = e.pleinOn == 1 ? 'ON' : 'OFF';
 

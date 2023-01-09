@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { util } from '../../../tools/utils'
 import * as L from 'leaflet'
 import { VehiculeService } from 'src/app/services/vehicule.service';
+import { Zone, ZoneType } from './../../../models/zone'
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import { Constant } from 'src/app/tools/constants';
 
 @Component({
   selector: 'modal-map',
@@ -26,12 +28,15 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   @Input() vehiculeID: string
   @Input() startTime: string
   @Input() endTime: string
+  @Input() geozones = []
+  @Input() mapGeozones = []
   @Input() timestamps?: any
   @Input() positionChanged?: any
   @Input() showFullScreenControle?: Boolean = true
   @Input() showPositionControle?: Boolean = true
   layer: any
   MyPositionMarker: L.Marker
+  geozonesLayer = L.layerGroup([])
   isMyPositionVisible: Boolean = false
   fullScreenControl: L.Control;
   positionControl: L.Control;
@@ -44,11 +49,16 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   showAllPoints: Boolean = false
   timer: any
   events: any;
-  constructor(private vehiculeService: VehiculeService, private router: Router, public tools: util,) {
+  constructor(private vehiculeService: VehiculeService, private router: Router, public tools: util, public cts: Constant,) {
   }
   ngOnChanges(changes: SimpleChanges): void {
     // console.log("map changes");
-    console.log(changes);
+    // console.log(changes);
+    if (changes['geozones']) { this.geozones = changes['geozones']?.currentValue }
+    if (changes['mapGeozones']) {
+      this.mapGeozones = changes['mapGeozones']?.currentValue
+      this.paintUsedGeozones()
+    }
     if (changes['vehiculeID'] || changes['startTime'] || changes['endTime'] || changes['timestamps']) {
       this.resetPolyline();
       // if (changes['timestamps'])
@@ -68,7 +78,6 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
         this.loadDataByTimestams(this.selectedVid, this.selectedTimestamps)
       }
     }
-
     else if (changes['positionChanged']) {
       if (this.events && this.events.length > 1) {
         this.resetPolyline();
@@ -85,7 +94,7 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     }, 200);
   }
 
-  loadData(url: string, isOne: boolean) {
+  loadData(url: string, isOne: boolean, usedGeozones = []) {
     url = isOne ? "oneEvent?d=" + url : "map-events?d=" + url
     // console.log("loadData");
     // console.log(url);
@@ -93,13 +102,12 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     var route = this.router
     this.vehiculeService.getVehiculeEvents(url).subscribe({
       next: (res: any) => {
-        console.log("all events",res);
+        // console.log("all events", res);
         this.events = res;
-        let events = res
-        if (events.length == 1)
-          this.addMarker(events[0])
-        else if (events.length > 1)
-          this.paintPolyline(events)
+        if (this.events.length == 1)
+          this.addMarker(this.events[0])
+        else if (this.events.length > 1)
+          this.paintPolyline(this.events)
         this.loadingTrajet = false
       }, error(err) {
         this.loadingTrajet = false
@@ -109,6 +117,20 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       }
     }
     )
+  }
+
+  paintUsedGeozones() {
+    this.resetGeoZones()
+    this.geozonesLayer = L.layerGroup()
+    this.mapGeozones.forEach(e => {
+      var geozone = this.geozones.find((v) => { return e == v.geozoneID })
+      if (geozone != undefined) {
+        this.getZoneLayer(geozone)
+      }
+    });
+    // console.log( this.geozonesLayer);
+    if(this.geozonesLayer && this.map)
+    this.geozonesLayer.addTo(this.map)
   }
 
   loadDataByTimestams(d, timestamps) {
@@ -180,13 +202,31 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
     const baseMaps = {
+      'Google Street': googleStreets,
       "Google Hybrid": googleHybrid,
       "Google Terrain": googleTerrain,
       "Google Satellite": googleSat,
-      'Google Street': googleStreets,
       'Dark': dark,
     };
-    googleHybrid.addTo(this.map)
+    switch (this.tools.getMapType()) {
+      case 'Google Hybrid':
+        googleHybrid.addTo(this.map)
+        break;
+      case 'Google Terrain':
+        googleTerrain.addTo(this.map)
+        break;
+      case 'Google Satellite':
+        googleSat.addTo(this.map)
+        break;
+      case 'Dark':
+        dark.addTo(this.map)
+        break;
+
+      default:
+        googleStreets.addTo(this.map)
+        break;
+    }
+
     L.control.zoom().addTo(this.map)
     if (this.showFullScreenControle) {
       // console.log(this.mapID + 'fullScreenControl');
@@ -215,7 +255,9 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       // keepResult: false, // optional: true|false  - default false
       updateMap: true, // optional: true|false  - default true
     }).addTo(this.map)
-
+    this.map.on('baselayerchange', (e) => {
+      this.tools.setMapType(e.name)
+    })
     ////////////////////////////////////////////////////////////
     L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(this.map);
     L.control.scale().addTo(this.map);
@@ -294,14 +336,14 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
     if (latlngs.length > 0) {
       this.map.fitBounds(latlngs)
     }
-    if(this.layer)this.map.removeLayer(this.layer)
+    if (this.layer) this.map.removeLayer(this.layer)
     this.layer = L.layerGroup([L.polyline(latlngs, { color: '#20a8d8', opacity: 1, weight: 4 })])
     events.forEach((ev, i) => {
       if (i != 0 && i != (events.length - 1)) {
         if (ev.statusCode == 62465 || ev.statusCode == 62467) {
           this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park')).addTo(this.layer)
         } else if (this.showAllPoints) {
-          this.createMarker(ev, ev.speedKPH <=8 ? this.tools.myDetailsIcon('semi-stop') : ev.speedKPH <=30 ?this.tools.myDetailsIcon('semi-moving'):this.tools.myDetailsIcon('moving')).addTo(this.layer)
+          this.createMarker(ev, ev.speedKPH <= 8 ? this.tools.myDetailsIcon('semi-stop') : ev.speedKPH <= 30 ? this.tools.myDetailsIcon('semi-moving') : this.tools.myDetailsIcon('moving')).addTo(this.layer)
         }
       }
     });
@@ -312,34 +354,14 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
   }
 
   createMarker(ev: any, icon: any) {
-    // var vehiculeService = this.vehiculeService
-    // var tools = this.tools
-    // var selectedVid = this.selectedVid
-    var v = { name: "", timestamp: ev.timestamp, statusCode: ev.statusCode, fuelLevel: ev.fuelLevel , address: ev.address, odometer: ev.odometerKM, speed: ev.speedKPH, lat: ev.latitude, lng: ev.longitude }
+    var v = { name: "", timestamp: ev.timestamp, statusCode: ev.statusCode, fuelLevel: ev.fuelLevel, address: ev.address, odometer: ev.odometerKM, speed: ev.speedKPH, lat: ev.latitude, lng: ev.longitude }
     var marker = L.marker([ev.latitude, ev.longitude], {
       icon: icon
     }).bindPopup(this.tools.formatPopUpContent(v), {
-        closeButton: false,
-        offset: L.point(0, -20)
-      })
-    // marker.on('click', function () {
-    //   // ev.timestamp, ev.deviceID
-    //   vehiculeService.getVehiculeEvents("oneEvent?d=" + selectedVid + "&st=" + ev.timestamp).subscribe({
-    //     next: (res: any) => {
-    //       console.log("res", res[0]);
-    //       if (res && res.length > 0) {
-    //         console.log(Number.parseInt(res[0].fuelLevel), cp);
-
-    //         var v = { name: "", timestamp: ev.timestamp, statusCode: res[0].statusCode, fuelLevel: res[0].fuelLevel * cp, address: res[0].address, odometer: res[0].odometerKM, speed: res[0].speedKPH, lat: res[0].latitude, lng: res[0].longitude }
-    //         marker.getPopup().setContent(tools.formatPopUpContent(v)).update();
-    //       }
-
-    //     }
-    //   });
-
-    // });
+      closeButton: false,
+      offset: L.point(0, -20)
+    })
     return marker;
-
   }
 
   addMarker(ev: any) {
@@ -382,6 +404,12 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       this.layer.removeFrom(this.map)
     }
   }
+
+  resetGeoZones() {
+    if (this.geozonesLayer && this.map && this.map.hasLayer(this.geozonesLayer)) {
+      this.geozonesLayer.removeFrom(this.map)
+    }
+  }
   // -----------------------------------------------------------------------------//
 
   ngOnDestroy(): void {
@@ -389,6 +417,31 @@ export class ModalMapComponent implements AfterViewInit, OnDestroy {
       clearInterval(this.timer);
       this.timer = null;
     }
+  }
+
+  getZoneLayer(zone: Zone) {
+    var layer: any
+    if (zone.zoneType == ZoneType.Circle) {
+      layer = L.circle(new L.LatLng(zone.latitude1, zone.longitude1), zone.radius);
+    } else if (zone.zoneType == ZoneType.Polygon) {
+      layer = L.polygon(zone.latLngs)
+    } else {
+      var iconName = "default"
+      if (this.iconExists(zone.iconName)) {
+        iconName = zone.iconName
+      }
+      var icon = L.icon({
+        iconUrl: 'assets/img/POI/' + iconName + '.png',
+        iconSize: [40, 50],
+        iconAnchor: [20, 50]
+      });
+      layer = L.marker(new L.LatLng(zone.latitude1, zone.longitude1), { icon: icon })
+    }
+    layer.addTo(this.geozonesLayer)
+  }
+
+  iconExists(name: any) {
+    return this.cts.zoneIcons.findIndex(elem => elem.name == name) != -1
   }
 
 }

@@ -223,36 +223,25 @@
 
     .link-administratif {
         display: block;
-        border: 1px solid #20a8d8;
-        text-decoration: none;
-        color: #20a8d8 !important;
-        width: 97%;
-        margin: 20px 10px;
+        border: 1px solid #0082b0;
+        margin: 0px 0px 20px 0px;
         text-align: center;
-        padding: 10px 10px;
-        border-radius: 5px;
+        padding: 10px 0px;
+        border-radius: 1px;
         cursor: pointer;
-
-
     }
 
     .link-administratif:hover {
-        background-color: #20a8d8;
+        background-color: #51d1ff;
         color: white !important;
-        font-weight: 500;
+        font-weight: 600;
 
     }
 
     .link-administratif-active {
         background-color: #20a8d8;
         color: white !important;
-        font-weight: 500;
-
-    }
-
-    .table-administratif {
-        margin: 25px auto;
-        border: 1.3px solid #c3c3c3;
+        font-weight: 600;
 
     }
 

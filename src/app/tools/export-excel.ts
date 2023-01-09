@@ -10,7 +10,7 @@ export class ExportExcel {
   ExportParking(data: any, title?: string) {
     var dataForExcel: Object[] = [];
     data.forEach((elt: any) => {
-      const tmp = [elt.timeStart, elt.timeEnd, elt.addi, elt.da, elt.odo, elt.ft,elt.driverID,];
+      const tmp = [elt.timeStart, elt.timeEnd, elt.addi, elt.da, elt.odo, elt.ft, elt.driverID,];
       dataForExcel.push(tmp);
     });
     // if (vehicule) Title = 'Rapport Parking -[' + vehicule + ']';
@@ -19,7 +19,7 @@ export class ExportExcel {
       data: dataForExcel,
       headers: ['DEPART', 'ARRIVÉ', 'ADRESSE', 'DURÉE (MIN)',
         'Odomètre',
-        'Fuel',"Conducteur"],
+        'Fuel', "Conducteur"],
     };
     this.exportExcel(reportData);
   }
@@ -39,7 +39,7 @@ export class ExportExcel {
         elt.cd,
         elt.c,
         elt.cm,
-        elt.ct, elt.odo, elt.ft,elt.driverID
+        elt.ct, elt.odo, elt.ft, elt.driverID
       ];
       dataForExcel.push(tmp);
     });
@@ -64,6 +64,68 @@ export class ExportExcel {
         'Odomètre',
         'Fuel',
         'Conducteur',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
+  ExportTrajetEco(data: any, title?: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt: any) => {
+      const tmp = [
+        elt.timeStart, elt.timeEnd, elt.addi, elt.addf, elt.k, elt.dc, elt.eco, elt.acc, elt.br, elt.cor, elt.v, elt.na,
+        elt.da, elt.c, elt.cm, elt.t, elt.device
+      ];
+      dataForExcel.push(tmp);
+    });
+
+    // if (vehicule) Title = 'Rapport Trajet avec Parking[' + vehicule + ']';
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+        'DEPART',
+        'ARRIVÉ',
+        'ADRESSE DEPART',
+        'ADRESSE ARIVÉE',
+        'KM PARCOURUE',
+        'DURÉE (MIN)',
+        'ECO-INDEX',
+        'Accélération',
+        'Freinage',
+        'Virage',
+        'MAX VITESSE (KM/H)',
+        '# ARRETS',
+        'CONSOM (L)',
+        'CONSOM (%)',
+        'MAX TEMP(°C)',
+        'VÉHICULE',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
+  ExportSynthetiques(data: any, title?: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt: any) => {
+      const tmp = [
+        elt.d, elt.km, elt.v, elt.c, elt.cm, elt.cd, elt.ct
+      ];
+      dataForExcel.push(tmp);
+    });
+
+    // if (vehicule) Title = 'Rapport Trajet avec Parking[' + vehicule + ']';
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+        'VÉHICULE',
+        'KM PARCOURUE',
+        'MAX VITESSE (KM/H)',
+        'CONSOM (L)',
+        'CONSOM (%)',
+        'CONSOM (MAD)',
+        'CONSOM THÉORIQUE (L)'
       ],
     };
     this.exportExcel(reportData);
@@ -348,6 +410,39 @@ export class ExportExcel {
 
   }
   
+  // added function
+  Export_Accidents(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.date,
+        elt.deviceName,
+        elt.driverName,
+        elt.lieu,
+        elt.degatType,
+        elt.etapeAssuranceName,
+        elt.typeAssurance,
+        elt.statut,
+
+      ];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: ['Date',
+        "Véhicule",
+        'Conducteur',
+        'Lieu',
+        'Type Dégât',
+        `Etat d'avancement`,
+        'Type Assurance',
+        'Statut',]
+    };
+    this.exportExcel(reportData);
+
+  }
+
   Export_Notification(data: any[], title: string) {
     var dataForExcel: Object[] = [];
     data.forEach((elt) => {
@@ -465,7 +560,7 @@ export class ExportExcel {
     //Footer
     // worksheet.addRow([]);
     // worksheet.addRow([]);
-    let footerRow = worksheet.addRow([' Details: ' + Date()]);
+    let footerRow = worksheet.addRow([' Details: ' + new Date()]);
     footerRow.getCell(1).fill = {
       type: 'pattern',
       pattern: 'solid',

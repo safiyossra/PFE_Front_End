@@ -1,0 +1,96 @@
+<div class="animated fadeIn">
+    <button id="mapfullScreenControl" *ngIf="showFullScreenControle" title="Enter FullScreen"
+        class="control-fullscreen-button" (click)="toggleMapFullscreen()"></button>
+    <button id="positionControl" *ngIf="showPositionControle" title="My Postion"
+        class="control-position-button icon-target" (click)="toggleMyPosition()"></button>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card card-accent-info">
+                <div class="card-header">
+                    Planifier un trajet
+                </div>
+                <div class="card-body p-2">
+                    <div class="controls w-100 mb-2">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-map-pin fa-sm"></i></span>
+                            </div>
+                            <my-dropdown-select class="form-control" [selectPlaceholder]="'Chercher...'"  [placeholder]="'Sélection un point'"
+                                [options]="POIs" [display]="'name'" [value]="'val'" [multiple]="false" [labelCount]="1"
+                                [selectedOptions]="selectedPois" (selectionChange)="onPoiChange($event)">
+                            </my-dropdown-select>
+                            <div class="input-group-append">
+                                <span class="input-group-text btn btn-primary" style="cursor: pointer;" (click)="addGPSPOI()"><i class="fa fa-plus fa-sm"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-template #itemTemplate let-item="item" let-index="index" >
+                        <div class="row m-0" (click)="onPointClick(item)">
+                            <div class="col-1 p-0 my-auto">
+                                <span class="my-0">{{index}}:</span>
+                            </div>
+                            <div class="col-11 p-0">
+                                <div class="card mb-0">
+                                    <div class="card-header p-1">
+                                        <span style="vertical-align: sub;">{{item.value}}</span>
+                                        <button class="btn btn-sm btn-danger card-header-actions mr-1 py-0"
+                                            title="Supprimer"
+                                            (click)="$event.preventDefault();$event.stopPropagation();deleteGPSPOI(item)">
+                                            <i class="cil-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <div class="controls w-100 m-0 mb-2 gpsCadre" style="border-color: #aaaaaa;">
+                        <bs-sortable [(ngModel)]="gpsPoi" fieldName="val" itemClass="sortable-item" (onChange)="sortableChanged($event)"
+                            itemActiveClass="sortable-item-active" placeholderItem="Ajouter un point"
+                            [itemTemplate]="itemTemplate" placeholderClass="placeholderStyle text-center"
+                            wrapperClass="sortable-wrapper" >
+                        </bs-sortable>
+                    </div>
+                    <!-- <form class="card-body p-2" [formGroup]="POIForm">
+                        <mat-form-field class="w-100" appearance="fill">
+                            <mat-label>Rayon (en mètres)</mat-label>
+                            <input type="number" aria-label="Number" min="100" max="20000000" matInput
+                                formControlName="radius" [matAutocomplete]="auto">
+                            <mat-autocomplete #auto="matAutocomplete">
+                                <mat-option *ngFor="let option of radiusOptions" [value]="option">
+                                    {{option}}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                    </form> -->
+                    <div class="card mb-4 rounded-3 shadow-sm">
+                        <div class="card-header p-1">
+                            <button class="btn btn-sm btn-primary card-header-actions mr-1 py-0"
+                                [disabled]="gpsPoi.length > 1 ? false : true" type="button"
+                                (click)="drawDirection()">
+                                <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+                                <i class="fa fa-circle-o-notch fa-lg mr-2 fa-spin" *ngIf="loading"></i> Générer les
+                                trajets
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card p-2 bg-dark mb-4 rounded-3 d-flex flex-row border-0">
+                        <i class="fa fa-info-circle mr-2 mt-1"></i>
+                        <span class="my-0 fw-normal">Ajouter les points d'intérêt (depuis la list ou par double click sur la Map), puis générer les trajets, et
+                            choisir le trajet désire!</span>
+                    </div>
+                    <div class="d-flex justify-content-end mb-4">
+                        <button class="btn btn-sm btn-danger" *ngIf="isTrajetDrew" type="button"
+                            (click)="clearDirection()">
+                            <i class="fa fa-broom"></i>
+                            Rénitialiser
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex-grow-1 my-map">
+            <div class="card-body custom-popup" id="map"></div>
+        </div>
+    </div>
+</div>

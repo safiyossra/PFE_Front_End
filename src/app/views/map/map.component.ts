@@ -11,7 +11,8 @@ import { Zone, ZoneType } from './../../models/zone'
 import { DataService } from 'src/app/services/data.service'
 import "leaflet.markercluster";
 import { ModalDirective } from 'ngx-bootstrap/modal';
-
+import { ModalComponent } from './resizable-draggable/modal/modal.component';
+// import { BaseChartDirective } from 'ng2-charts';
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -30,14 +31,17 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   errorMsg = ""
   period = 1
   @ViewChild('secondModal') public secondModal: ModalDirective;
+  @ViewChild('modalRoot') public modalRoot: ModalComponent;
   provider = new OpenStreetMapProvider();
   isFirstTime = true
   public position_left: string = "0%"
   public size = [25, 75]
+  public size2 = [60, 40]
   isMyPositionVisible: boolean = false
   isClustering: string = "1"
   MyPositionMarker: L.Marker
   map: any//L.Map
+  mapModal: any//L.Map
   car = {
     lat: 35.75,
     lng: -5.83
@@ -57,10 +61,323 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   constructor(private dataService: DataService, private vehiculeService: VehiculeService, private tools: util, public cts: Constant, private zoneService: ZoneService, private router: Router) {
 
   }
+
+  public segmentedData = [];
+  loadingEvents = false
+  events: any = []
+  selectedVehiculeID: string = ""
+  selectedVName: string = ""
+  showAllPoints = false
+  allTrajet = false
+  selectedDate: any
+  selectedDateString: any
+  selectedEvent = undefined
+  layer: any
+  public resume = { dureeOFF: "0h:0min", dureeON: "0h:0min", dureeMoving: "0h:0min", maxVitesse: 0, odometer: 0, kmParcoure: 0, fuelLevel: 0, consomation: 0, consomationMoyenne: "0" }
+  dates = []
+  splitDisabled = true
+  maxSize = 40
+
   ngOnInit(): void {
     this.isClustering = localStorage.getItem("isClustering") ?? "1";
     this.getDrivers();
-    this.loadData()
+    this.loadData();
+    this.resetSelectedDate()
+  }
+
+  loadVehiculeEvents() {
+    this.loadingEvents = true
+    var route = this.router
+    // console.log(this.selectedVehiculeID)
+    if (this.selectedVehiculeID != "") {//&unskip
+      this.vehiculeService.getVehiculeEvents("map-events?d=" + this.selectedVehiculeID + "&st=" + Math.round(this.selectedDate.getTime() / 1000)).subscribe({
+        next: (res) => {
+          this.events = res
+          // console.log(res);
+          if (this.events.length > 1) {
+            this.extractTrajets()
+            this.extractResume()
+            this.splitDisabled = false
+          } else {
+            this.resetWhenNoEvent()
+          }
+          // console.log(this.segmentedData);
+          this.loadingEvents = false
+        }, error(err) {
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+        }
+      })
+    }
+  }
+
+  extractResume() {
+    var resumeTmp = { dureeOFF: 0, dureeON: 0, dureeMoving: 0, odometer: 0, kmParcoure: 0, fuelLevel: 0, consomation: 0, consomationMoyenne: "0" }
+    resumeTmp.kmParcoure = this.round2d(this.events[this.events.length - 1].odometerKM - this.events[0].odometerKM)
+    resumeTmp.consomation = this.round2d(this.events[this.events.length - 1].fuelTotal - this.events[0].fuelTotal)
+    resumeTmp.consomationMoyenne = (100 * (resumeTmp.consomation / (resumeTmp.kmParcoure != 0 ? resumeTmp.kmParcoure : 1))).toFixed(2);
+    var length = this.segmentedData.length
+    var i = 0
+    this.segmentedData.forEach(tr => {
+      const start = this.events[tr.start].timestamp
+      const end = this.events[tr.end].timestamp
+      var duree = '<div class="px-auto col-md-12 py-1"><i class="nav-icon icon-speedometer h6 text-primary">&nbsp;' + this.tools.formatAge2(end - start) + '</i></div>'
+      var address = ""
+      var fuel = ""
+      var odometre = ""
+      var speed = ""
+      var parkoure = ""
+      var conducteur = ""
+      if (tr.status < 3) {
+        address = '<div class="px-auto col-md-12 py-1"><i class="nav-icon cil-location-pin h6 text-primary">&nbsp;' + this.events[tr.start].address + '</i></div>'
+        fuel = '<div class="px-auto col-md-12 py-1"><i class="fa fa-battery-quarter h6 text-primary">&nbsp;' + this.events[tr.start].fuelLevel + ' L</i></div>'
+        odometre = '<div class="px-auto col-md-12 py-1"><i class="nav-icon cil-football h6 text-primary">&nbsp;' + this.events[tr.start].odometerKM + ' KM</i></div>'
+      } else {
+        speed = '<div class="px-auto col-md-12 py-1"><i class="fa fa-tachometer h6 text-blue">&nbsp;' + this.getMaxSpeed(tr.start, tr.end) + ' KM/h</i></div>'
+        parkoure = '<div class="px-auto col-md-12 py-1"><i class="nav-icon icon-graph h6 text-blue">&nbsp;' + this.round2d(this.events[tr.end].odometerKM - this.events[tr.start].odometerKM) + ' KM</i></div>'
+        conducteur = '<div class="px-auto col-md-12 py-1"><i class="fa fa-user h6 text-green">&nbsp;' + (this.tools.getDriverName(this.drivers, this.events[tr.start].driverID) ?? "inconnue") + '</i></div>'
+      }
+      tr.tooltip = '<div class="row" ><div class="col-md-6 p-1"><div class="px-auto col-md-12 py-1"><i class="nav-icon icon-speedometer h6 text-success">&nbsp;' + new Date(start * 1000).toLocaleTimeString() + '</i></div>' + odometre + speed + conducteur + '</div><div class="col-md-6 p-1"><div class="px-auto col-md-12 py-1"><i class="nav-icon icon-speedometer h6 text-danger">&nbsp;' + new Date(end * 1000).toLocaleTimeString() + '</i></div>' + duree + parkoure + fuel + '</div>' + address + '</div>'
+      switch (tr.status) {
+        case 3:
+          resumeTmp.dureeMoving += end - start
+          tr.class = "motor-driving"
+          break;
+        case 2:
+          resumeTmp.dureeON += end - start
+          tr.class = "travel-stop"
+          break;
+        default:
+          resumeTmp.dureeOFF += end - start
+          tr.class = "motor-off"
+          break;
+      }
+      var interval = i == length - 1 ? end - start : (this.events[this.segmentedData[i + 1].start].timestamp - start)
+      tr.ratio = (100 * interval) / 86400 + "%";
+      i++
+    });
+    this.resume = { dureeOFF: this.tools.formatAge2(resumeTmp.dureeOFF), dureeON: this.tools.formatAge2(resumeTmp.dureeON), dureeMoving: this.tools.formatAge2(resumeTmp.dureeMoving), maxVitesse: this.resume.maxVitesse, kmParcoure: resumeTmp.kmParcoure, odometer: this.events[this.events.length - 1].odometerKM, fuelLevel: this.events[this.events.length - 1].fuelLevel, consomation: resumeTmp.consomation, consomationMoyenne: resumeTmp.consomationMoyenne }
+  }
+
+  extractTrajets() {
+    var selectedDay = this.selectedDate.getTime()
+    var data = [{ status: 0, start: 0, end: 0 }]
+    var carstatMoving = false;
+    var carstatON = false;
+    var carstatOFF = false;
+    var eventIndex = 0
+    var maxVitesse = 0
+    var i = 0
+    this.events.forEach(event => {
+      if (event.speedKPH > maxVitesse) maxVitesse = event.speedKPH
+      if (this.cts.movingStatusCodes.includes(event.statusCode)) {   //Moving
+
+        if (carstatON || carstatOFF) {
+          eventIndex++
+          data[eventIndex] = { status: 3, start: i, end: i }
+          if (carstatON) carstatON = false;
+          if (carstatOFF) carstatOFF = false;
+        }
+        data[eventIndex].end = i
+        if (!carstatMoving) {
+          data[eventIndex].status = 3 //Moving
+          data[eventIndex].start = i
+          carstatMoving = true;
+        }
+      } else if (this.cts.onStatusCodes.includes(event.statusCode)) {  //ON
+        if (carstatMoving || carstatOFF) {
+          eventIndex++
+          data[eventIndex] = { status: 2, start: i, end: i }
+          if (carstatMoving) carstatMoving = false;
+          if (carstatOFF) carstatOFF = false;
+        }
+        data[eventIndex].end = i
+        if (!carstatON) {
+          data[eventIndex].status = 2 //ON
+          data[eventIndex].start = i
+          carstatON = true;
+        }
+      } else {  //OFF
+        if (carstatMoving || carstatON) {
+          eventIndex++
+          data[eventIndex] = { status: 1, start: i, end: i }
+          if (carstatMoving) carstatMoving = false;
+          if (carstatON) carstatON = false;
+        }
+        data[eventIndex].end = i
+        if (!carstatOFF) {
+          data[eventIndex].status = 1 //OFF
+          data[eventIndex].start = i
+          carstatOFF = true;
+        }
+      }
+      i++
+    });
+    this.resume.maxVitesse = maxVitesse
+
+    this.segmentedData = data;
+  }
+
+  getMaxSpeed(start, end) {
+    var max = 0
+    var tmp = this.events.slice(start, end + 1)
+    tmp.forEach(el => {
+      if (el.speedKPH > max) max = el.speedKPH
+    });
+    return max
+  }
+
+  resetSelectedDate() {
+    const startDate = new Date();
+    startDate.setHours(0, 0, 0, 0);
+    this.selectedDate = startDate
+    this.selectedDateString = this.tools.formatDateForInput(this.selectedDate)
+  }
+
+  incrementDate(step) {
+    this.selectedDate = new Date(this.selectedDate.setDate(this.selectedDate.getDate() + step));
+    this.loadVehiculeEvents()
+    this.selectedDateString = this.tools.formatDateForInput(this.selectedDate)
+  }
+
+  updateCalcs() {
+    this.selectedDate = new Date(this.selectedDateString)
+    this.loadVehiculeEvents()
+  }
+
+  public chartClicked(e: any): void {
+    // console.log(this.segmentedData[e]);
+    this.modalRoot.show();
+    if (e != this.selectedEvent) {
+      this.selectedEvent = e
+      this.allTrajet = false
+      setTimeout(() => {
+        this.paintPolyline()
+      }, 100)
+    }
+
+  }
+
+  closeSpliter(force) {
+    this.events = []
+    this.selectedEvent = undefined
+    this.allTrajet = false
+    this.segmentedData = []
+    this.resetResume()
+    this.selectedVehiculeID = ""
+    this.selectedVName = ""
+    this.showAllPoints = false
+    this.modalRoot.hide()
+    this.resetSize2()
+    this.resetSelectedDate()
+    if (force)
+      this.splitDisabled = true
+  }
+
+  resetWhenNoEvent() {
+    this.selectedEvent = undefined
+    // this.events = []
+    this.segmentedData = []
+    this.resetResume()
+    this.allTrajet = false
+    this.showAllPoints = false
+    this.modalRoot.hide()
+    this.resetSize2()
+  }
+
+  showAllPointscheckbox() {
+    if (this.events && this.events.length > 1) {
+      this.mapModal.eachLayer((layer) => {
+        if (!(layer instanceof L.TileLayer)) {
+          this.mapModal.removeLayer(layer);
+        }
+      });
+      this.paintPolyline()
+    }
+  }
+
+  showAllTrajet() {
+    if (this.events && this.events.length > 0) {
+      this.allTrajet = true
+      this.selectedEvent = undefined
+      this.modalRoot.show();
+      setTimeout(() => {
+        this.paintPolyline()
+      }, 100)
+    }
+  }
+
+  paintPolyline() {
+    if (this.allTrajet) {
+      this.invalidateModalMap()
+      if (this.layer) this.mapModal.removeLayer(this.layer)
+      var tr = this.segmentedData[this.selectedEvent]
+      // var evts = this.events.slice(tr.start, tr.end + 1)
+      var latlngs = []
+      latlngs = this.events.map(ev => [ev.latitude, ev.longitude])
+      // console.log(latlngs);
+      if (latlngs.length > 0) {
+        this.layer = L.layerGroup([L.polyline(latlngs, { color: '#20a8d8', opacity: 1, weight: 4 })])
+        this.events.forEach((ev, i) => {
+          if (i != 0 && i != (this.events.length - 1)) {
+            if (ev.statusCode == 62465 || ev.statusCode == 62467) {
+              this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park')).addTo(this.layer)
+            } else if (this.showAllPoints) {
+              this.createMarker(ev, ev.speedKPH <= 8 ? this.tools.myDetailsIcon('semi-stop') : ev.speedKPH <= 30 ? this.tools.myDetailsIcon('semi-moving') : this.tools.myDetailsIcon('moving')).addTo(this.layer)
+            }
+          }
+        });
+        this.createMarker(this.events[0], this.tools.myDetailsIcon('start')).addTo(this.layer)
+        this.createMarker(this.events[this.events.length - 1], this.tools.myDetailsIcon('end')).addTo(this.layer)
+        this.mapModal.fitBounds(latlngs)
+        this.layer.addTo(this.mapModal)
+        this.invalidateModalMap()
+      }
+    }
+    else if (this.selectedEvent != undefined) {
+      this.invalidateModalMap()
+      if (this.layer) this.mapModal.removeLayer(this.layer)
+      var tr = this.segmentedData[this.selectedEvent]
+      var evts = this.events.slice(tr.start, tr.end + 1)
+      if (tr.status == 3) {
+        var latlngs = []
+        latlngs = evts.map(ev => [ev.latitude, ev.longitude])
+        // console.log(latlngs);
+        if (latlngs.length > 0) {
+          this.layer = L.layerGroup([L.polyline(latlngs, { color: '#20a8d8', opacity: 1, weight: 4 })])
+          evts.forEach((ev, i) => {
+            if (i != 0 && i != (evts.length - 1)) {
+              if (ev.statusCode == 62465 || ev.statusCode == 62467) {
+                this.createMarker(ev, ev.statusCode == 62465 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park')).addTo(this.layer)
+              } else if (this.showAllPoints) {
+                this.createMarker(ev, ev.speedKPH <= 8 ? this.tools.myDetailsIcon('semi-stop') : ev.speedKPH <= 30 ? this.tools.myDetailsIcon('semi-moving') : this.tools.myDetailsIcon('moving')).addTo(this.layer)
+              }
+            }
+          });
+          this.createMarker(evts[0], this.tools.myDetailsIcon('start')).addTo(this.layer)
+          this.createMarker(evts[evts.length - 1], this.tools.myDetailsIcon('end')).addTo(this.layer)
+          this.mapModal.fitBounds(latlngs)
+        }
+      } else {
+        // console.log(evts[0]);
+        this.layer = L.layerGroup([this.createMarker(evts[0], tr.status == 2 ? this.tools.myDetailsIcon('stop') : this.tools.myDetailsIcon('park'))])
+        this.mapModal.setView(new L.LatLng(evts[0].latitude, evts[0].longitude))
+      }
+      this.layer.addTo(this.mapModal)
+      this.invalidateModalMap()
+    }
+  }
+
+  createMarker(ev: any, icon: any) {
+    var v = { name: "", timestamp: ev.timestamp, statusCode: ev.statusCode, fuelLevel: ev.fuelLevel, address: ev.address, odometer: ev.odometerKM, speed: ev.speedKPH, lat: ev.latitude, lng: ev.longitude }
+    var marker = L.marker([ev.latitude, ev.longitude], {
+      icon: icon
+    }).bindPopup(this.tools.formatPopUpContent(v), {
+      closeButton: false,
+      offset: L.point(0, -20)
+    })
+    return marker;
   }
 
   getDrivers() {
@@ -80,6 +397,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   ngAfterViewInit() {
     setTimeout(() => {
       this.map = this.tools.createMap(this.map, 'map', this.car, this.provider, this.showCollapsControle, this.showFullScreenControle, this.showPositionControle, true, true)
+      this.mapModal = this.tools.createMap(this.mapModal, 'mapModal', this.car, this.provider, false, false, false, false, false)
       this.inter = setInterval(() => {
         this.loadData()
       }, 5000)
@@ -89,7 +407,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
 
   initMarkers() {
     this.cluster = L.markerClusterGroup({ animate: false, animateAddingMarkers: false, spiderfyOnMaxZoom: false, disableClusteringAtZoom: 20 });
-    console.log( "this.vehicules", this.vehicules);
+    // console.log("this.vehicules", this.vehicules);
     this.vehicules.forEach((veh, index) => {
       this.markers.push(
         L.marker([veh.lat, veh.lng], {
@@ -292,40 +610,34 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  // rowClicked(index) {
-  //   const elems = document.getElementsByClassName('my-div-icon')
-
-  //   for (let index = 0; index < elems.length; index++) {
-  //     elems.item(index).classList.remove('marker-transition')
-  //     elems.item(index).classList.remove('marker-selected')
-  //   }
-
-  //   this.selectedVehiculeIndex = index
-  //   elems.item(this.selectedVehiculeIndex).classList.add('marker-selected')
-  //   // this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
-  //   this.map.setView(this.markers[index].getLatLng(), 15)
-  // }
-
-  // rowDoubleClicked(event) {
-  //   const elems = document.getElementsByClassName('my-div-icon')
-
-  //   for (let index = 0; index < elems.length; index++) {
-  //     elems.item(index).classList.remove('marker-transition')
-  //   }
-
-  //   this.selectedVehiculeIndex = event
-  //   this.map.setView(this.markers[this.selectedVehiculeIndex].getLatLng(), 15)
-
-  // }
-
   rowClicked(index) {
     this.map.setView(this.markers[index].getLatLng(), this.maxZoom)
     this.selectedVehiculeIndex = index
+    if (!this.splitDisabled) {
+      var v = this.vehicules[index]
+      this.resetWhenNoEvent()
+      this.selectedVehiculeID = v.id
+      this.selectedVName = v.name
+      this.loadVehiculeEvents()
+    }
     for (let i = 0; i < this.markers.length; i++) {
       if (this.vehicules[i]) {
         let v = this.vehicules[i]
         this.markers[i].setIcon(this.tools.myIcon(v, v.statusCode, v.icon, this.selectedVehiculeIndex == i, true))
       }
+    }
+
+
+    // this.showDetails(this.vehicules[index])
+  }
+
+  showReportClicked(index) {
+    var v = this.vehicules[index]
+    if (v) {
+      this.closeSpliter(false)
+      this.selectedVehiculeID = v.id
+      this.selectedVName = v.name
+      this.loadVehiculeEvents()
     }
   }
 
@@ -341,6 +653,10 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
+  resetResume() {
+    this.resume = { dureeOFF: "0h:0min", dureeON: "0h:0min", dureeMoving: "0h:0min", maxVitesse: 0, odometer: 0, kmParcoure: 0, fuelLevel: 0, consomation: 0, consomationMoyenne: "0" }
+  }
+  
   rowDoubleClicked(event) {
     this.map.setView(this.markers[event].getLatLng(), this.maxZoom)
     this.selectedVehiculeIndex = event
@@ -368,9 +684,18 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     this.map?.invalidateSize(true)
   }
 
-  resetSize(e) {
+  invalidateModalMap() {
+    this.mapModal?.invalidateSize(true)
+  }
+
+  resetSize() {
     this.size[0] = 25
     this.size[1] = 75
+    this.invalidate()
+  }
+
+  resetSize2() {
+    this.size2 = [60, 40]
     this.invalidate()
   }
 
@@ -414,7 +739,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
         });
         this.generateZonesLayers(zones)
         this.map.on('overlayadd', (e) => {
-          console.log('overlayadd', e.layer);
+          // console.log('overlayadd', e.layer);
           if (e.layer._latlng && !e.layer._radius)
             this.map.setView(e.layer._latlng, 15)
           else this.map.fitBounds(e.layer.getBounds())
@@ -478,13 +803,13 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   generateShareLink() {
     this.errorMsg = ""
     if (this.vehicle2shareIndex != -1 && this.vehicules[this.vehicle2shareIndex] && this.period > 0) {
-      console.log("generateShareLink");
+      // console.log("generateShareLink");
       this.modalLoading = true
       this.dataService.generateTrackToken("?d=" + this.vehicules[this.vehicle2shareIndex].id + "&showTrajet=" + this.isShareTrajet + "&pe=" + this.period).subscribe({
         next: (res) => {
-          console.log(res)
+          // console.log(res)
           this.modalLoading = false
-          this.generatedShareLink = "http://track.sendatrack.com/#/track/"+res["t"].toString();
+          this.generatedShareLink = "http://track.sendatrack.com/#/track/" + res["t"].toString();
         }, error(err) {
           console.log(err)
           this.modalLoading = false
@@ -492,6 +817,12 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
         }
       })
     }
+  }
+
+  onCloseModal() { }
+
+  round2d(v) {
+    return Math.round((v + Number.EPSILON) * 100) / 100;
   }
 }
 

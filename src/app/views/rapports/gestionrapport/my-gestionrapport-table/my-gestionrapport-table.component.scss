@@ -1,0 +1,27 @@
+table {
+    width: 100%;
+    padding-bottom: 20px;
+}
+
+.card-body {
+    padding: 1.25rem 0;
+}
+
+.mat-icon-button {
+    background: transparent;
+}
+
+.mat-icon-button:focus {
+    background: transparent;
+    outline: 0;
+}
+
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+}
+
+.actionBtn {
+    line-height: initial;
+    padding: 5px 8px;
+}

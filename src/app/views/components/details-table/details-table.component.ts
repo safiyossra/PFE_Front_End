@@ -30,7 +30,7 @@ export class DetailsTableComponent implements OnChanges {
   // public columnNames = ["Date","Status","Pushpin Code","Lat/Lon","Vitesse(km/h)","Distance en kilométrage","Carburant %","Fuel Vol(L)","Carburant Total(L)","Adresse","Insert Date"]
   // Pushpin Code , Carburant %,
   public columnNames = ["Date", "Status", "Lat/Lon", "Vitesse(km/h)", "Kilométrage"/*,"Carburant %"*/, "Fuel Vol(L)", "Carburant Total(L)", "Adresse", "Conducteur"]//, "Insert Date"
-  public pageSizeOptions = [10, 15, 20, 30, 50, 100, 200, 500, 1000, 2000];
+  public pageSizeOptions = [10, 15, 20, 30, 50, 100, 200, 500, 1000, 2000, 4000, 6000, 8000];
   // public data: any;
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   public isLoading: boolean = false
@@ -143,8 +143,8 @@ export class DetailsTableComponent implements OnChanges {
   }
 
   export(type) {
-    console.log("export(type)");
-    console.log(type);
+    // console.log("export(type)");
+    // console.log(type);
     if (this.loadDonnee && this.loadDonnee.length) {
       let out = { data: this.loadDonnee, type: type }
       this.exportEvents.emit(out)

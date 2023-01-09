@@ -1,0 +1,63 @@
+.etoile {
+    color: red;
+    font-weight: bold;
+}
+
+#commentModal,
+#assuranceModal {
+    width: 50% !important;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+}
+
+.comment {
+    border-bottom: 1px rgb(209, 209, 209) solid;
+}
+
+.commentCard {
+    max-height: 640px;
+    min-height: 640px;
+    overflow: scroll;
+}
+
+.commentBtn {
+    padding: 0.1rem 0.4rem;
+    color: white;
+}
+
+.etapesCadre {
+    border: 1px solid #20a8d8;
+    border-radius: 4px;
+    padding: 10px 10px;
+    min-height: 200px;
+    margin: 0px 10px;
+
+}
+
+.planAsurance {
+    border-bottom: 1px solid rgb(209, 209, 209);
+    padding: 10px
+}
+
+.listPlans {
+    max-height: 530px;
+    min-height: 530px;
+}
+
+.degatType {
+    height: 27px;
+    width: 34px;
+    margin-top: 7px;
+    background-repeat: no-repeat;
+    background-size: contain
+}
+
+.progressBar {
+    // position: sticky;
+    padding: 15px;
+}

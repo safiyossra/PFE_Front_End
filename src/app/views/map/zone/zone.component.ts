@@ -547,7 +547,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
         this.hideDrawControls(this.map)
         break;
       case 'edit':
-        console.log("edit mode");
+        // console.log("edit mode");
         // this.clearZoneFromMap()
         this.showAfterDrawControls(this.map)
         this.isDrawing = true
@@ -564,7 +564,7 @@ export class ZoneComponent implements OnInit, AfterViewInit {
   }
 
   onIconChange(e) {
-    console.log(e, this.selectedZone);
+    // console.log(e, this.selectedZone);
     var icon = L.icon({
       iconUrl: 'assets/img/POI/' + e.value + '.png',
       iconSize: [40, 50],

@@ -177,15 +177,14 @@
                               </div>
                               <label class="col-form-label" for="text-input">Litre</label>
                             </div>
-                            <div class="form-group row">
+                            <!-- <div class="form-group row">
                               <label class="col-md-4 col-form-label" for="text-input">Odometre</label>
                               <div class="col-7">
                                 <input type="number" min="0" disabled [(ngModel)]="oldOdo"
                                   [ngModelOptions]="{standalone: true}" class="form-control" placeholder="0,00">
                               </div>
                               <label class="col-form-label" for="text-input">Km</label>
-                            </div>
-
+                            </div> -->
                             <div class="form-group row">
                               <label class="col-md-4 col-form-label" for="text-input">Expiration d'abonnement</label>
                               <div class="col-7">
@@ -193,7 +192,6 @@
                                   [ngModelOptions]="{standalone: true}" class="form-control" placeholder="0,00">
                               </div>
                             </div>
-
                             <div class="form-group row">
                               <label class="col-md-4 col-form-label" for="text-input">Expiration d'assurance</label>
                               <div class="col-7">
@@ -201,7 +199,6 @@
                                   [ngModelOptions]="{standalone: true}" class="form-control" placeholder="0,00">
                               </div>
                             </div>
-
                           </div>
                         </div>
                       </div>
@@ -244,7 +241,7 @@
                             <label for="date" class="info">{{ob?.dg}}</label>
                             <label for="date" class="info">{{ob?.dgKm}} KM</label>
                           </div>
-                          <img src="../../../../assets/img/graph/verticalBarre.png" alt="barre" class="verticalbarre">
+                          <img src="assets/img/graph/verticalBarre.png" alt="barre" class="verticalbarre">
                           <div alt="icone-pneu" class="pneu">
                             <label for="date" class="info">{{ob?.gd}}</label>
                             <label for="date" class="info">{{ob?.gdKm}} KM</label>
@@ -303,9 +300,8 @@
                           Vignette</a>
                       </div>
                       <div class="col-md-10">
-                        <table class="table-administratif" mat-table [dataSource]="dataSourceAdmin" matSort
+                        <table class="table-administratif w-100" mat-table [dataSource]="dataSourceAdmin" matSort
                           #adminTbSort="matSort">
-
                           <ng-container *ngFor="let column of columnDisplayAdmin; let index = index"
                             [matColumnDef]="column">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header
@@ -324,23 +320,19 @@
                               <span [ngStyle]="{'color':column =='joursReste' ? line['colorRest'] :'black'}">
                                 {{line[column]}} </span>
                             </td>
-
                           </ng-container>
-
                           <tr mat-header-row *matHeaderRowDef="columnDisplayAdmin"></tr>
                           <tr mat-row *matRowDef="let row; columns: columnDisplayAdmin;"></tr>
                         </table>
-
                       </div>
-
                     </div>
                   </tab>
-
                 </tabset>
               </div>
               <div class="modal-footer" style="justify-content: left;display: initial;">
                 <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
-                <button type="button" class="btn btn-primary float-right" (click)="modifier()">Modifier</button>
+                <button type="button" class="btn btn-primary float-right" *ngIf="selectedTab==0"
+                  (click)="modifier()">Modifier</button>
                 <button type="button" class="btn btn-secondary float-right"
                   (click)="primaryModal.hide()">Fermer</button>
               </div>
@@ -411,6 +403,111 @@
       <my-gestionvehicule-table (offset)="loadOffset($event)" (modify)="loadModify($event)" [data]="data"
         [isEditPermission]="isEditPermission">
       </my-gestionvehicule-table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ********** modal historique *********** -->
+
+<div bsModal #historicModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" *ngIf="isEditPermission"
+  class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-primary" role="document" id="historicModal">
+    <div class="modal-content historic-modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title">Pneumatique Historique</h5>
+        <button type="button" class="close" (click)="historicModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table" mat-table [dataSource]='dataSource' matSort #pneuTbSort="matSort">
+          <ng-container *ngFor="let column of displayedColumns; let index = index" [matColumnDef]="column">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              {{ columnNames[index] | uppercase }}
+            </th>
+            <td mat-cell *matCellDef="let pneu">
+              {{ pneu[column] }}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ********** Add Administratif document Modal *********** -->
+<div bsModal #administraifModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade "
+  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-primary" role="document" id="administraifModal">
+    <div class="modal-content historic-modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title">{{mode}} Document</h5>
+        <button type="button" class="close" (click)="administraifModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="input-group row mb-1">
+              <label for="typeDocument" class="col-form-label col-md-4">Type Document <span class="etoile">
+                  *</span></label>
+              <select id="typeDocument" class="form-control col-md-8" name="typeDocument"
+                [(ngModel)]="document.typeDocument">
+                <option value="Assurance" [selected]="true">Assurance</option>
+                <option value="Autorisation Circulation">Autorisation Circulation</option>
+                <option value="Carnet Métrologique">Carnet Métrologiquen</option>
+                <option value="Carte Grise">Carte Grise</option>
+                <option value="Carte Vert">Carte Vert</option>
+                <option value="Taxe">Taxe</option>
+                <option value="Vignette">Vignette</option>
+                <option value="Visites Technique">Visites Technique</option>
+              </select>
+            </div>
+            <div class="input-group row mb-1">
+              <label class="col-form-label col-md-4" for="dateD">Date contrat <span class="etoile">*</span></label>
+              <input type="date" id="dateContrat" class="form-control col-md-8" placeholder="Saisir une date"
+                [(ngModel)]="document.dateContrat">
+            </div>
+            <div class="input-group row mb-1">
+              <label for="montant" class="col-form-label col-md-4">Montant</label>
+              <input type="number" name="montant" id="montant" class="form-control col-md-7" placeholder="0.00"
+                [(ngModel)]="document.montant">
+              <span class="input-group-text  col-md-1"> DH </span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group row mb-1">
+              <label for="societe" class="col-form-label col-md-4">Société</label>
+              <input name="agence" id="agence" class="form-control col-md-8" type="text" [(ngModel)]="document.societe"
+                placeholder="Société">
+            </div>
+            <div class="input-group row mb-1">
+              <label class="col-form-label col-md-4" for="dateD">Date Prochain <span class="etoile">*</span></label>
+              <input type="date" id="dateProchain" class="form-control col-md-8" placeholder="Saisir une date"
+                [(ngModel)]="document.dateProchain">
+            </div>
+            <div class="input-group row mb-1">
+              <span class="col-form-label col-md-4" for="rapel">Rappel dans <span class="etoile">*</span></span>
+              <input type="number" id="rapelJours" class="form-control col-md-7" placeholder="0"
+                [(ngModel)]="document.rapelJours">
+              <span class="input-group-text col-md-1"> jr(s)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer row">
+        <div class="col-md-12 pb-2">
+          <span class="text-danger">{{errorMsg1}}</span>
+          <button class="btn btn-primary pull-right mr-2" value="Enregistrer" type="submit"
+            (click)="saveDocument()">Enregistrer</button>
+          <button type="button" class="btn btn-secondary pull-right mr-2"
+            (click)="administraifModal.hide()">Fermer</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

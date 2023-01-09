@@ -5,6 +5,8 @@ import { PlanComponent } from './planentretien/plan.component';
 import { ConsommcarburantComponent } from './gestioncarburant/consommcarburant.component';
 import { PermissionsGuard } from 'src/app/guards/permissions.guard';
 import { PneuComponent } from './pneu/pneu.component';
+import { AccidentsComponent } from './accidents/accidents.component';
+
 
 
 const routes: Routes = [
@@ -44,6 +46,13 @@ const routes: Routes = [
         component: PneuComponent,
         data: {
           title: 'Pneu'
+        }
+      },
+      {
+        path: 'accidents',
+        component: AccidentsComponent,
+        data: {
+          title: 'Accidents'
         }
       },
     ]

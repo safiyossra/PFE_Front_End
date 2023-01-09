@@ -7,6 +7,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { util } from 'src/app/tools/utils';
 import { ExportingTool } from 'src/app/tools/exporting_tool';
 import { ExportExcel } from 'src/app/tools/export-excel';
+import { ZoneService } from 'src/app/services/zone.service';
+import { Zone, ZoneType } from './../../models/zone'
 
 @Component({
   templateUrl: 'detaille.component.html',
@@ -25,11 +27,9 @@ export class DetailleComponent implements AfterViewInit {
   DetaillID = "Detaill"
 
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private tools: util, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel, private router: Router) {
+  constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private tools: util, private zoneService: ZoneService, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel, private router: Router) {
   }
   ngAfterViewInit(): void {
-    console.log("ngAfterViewInit", this.vehiculeID);
-
     if (this.vehiculeID) {
       this.selectedTab = 3
       this.selectedDevices = this.vehiculeID;
@@ -46,21 +46,24 @@ export class DetailleComponent implements AfterViewInit {
   iconCollapseD: string = 'icon-arrow-up';
   reportDataTrajet: any;
   geozonesData: any;
+  geozones: Zone[] = [];
+  usedGeozones: any[] = [];
+  mapGeozones: any[] = [];
   reportData: any;
   reportDataArrets: any;
   reportDataCarburant: any;
   reportDataConsommation: any;
   reportDetails: any;
-  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée (min)", "Max Vitesse (km/h)", "# Arrets", "Consom (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)", "Odomètre", "Carburant","Conducteur"]//,"Conducteur"
-  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct", "odo", "ft","driverID"];//,"driver"
+  displayedColumns: any = ["Depart", "Arrivé", "Adresse Depart", "Adresse Arivée", "Km Parcourue", "Durée (min)", "Max Vitesse (km/h)", "# Arrets", "Consom (L)", "Consom (%)", "Consom (MAD)", "Consom Théorique (L)", "Odomètre", "Carburant", "Conducteur"]//,"Conducteur"
+  columns: any = ["timeStart", "timeEnd", "addi", "addf", "k", "dc", "v", "na", "c", "cm", "cd", "ct", "odo", "ft", "driverID"];//,"driver"
 
-  displayedColumnsArrets: any = ["Début", "Fin", "Adresse", "Durée (min)", "Odomètre", "Fuel","Conducteur"]
-  columnsArrets: any = ["timeStart", "timeEnd", "addi", "da", "odo", "ft","driverID"];
+  displayedColumnsArrets: any = ["Début", "Fin", "Adresse", "Durée (min)", "Odomètre", "Fuel", "Conducteur"]
+  columnsArrets: any = ["timeStart", "timeEnd", "addi", "da", "odo", "ft", "driverID"];
   displayedColumnsCarburant: any = ["Date/Heure", "ID", "Vehicule", "Latitude/Longitude", "Carburant total (L)", "Carburant avant (L)", "Carburant après (L)", "Carburant diff (L)", "Odomètre", "Adresse"]//,"Conducteur"
   columnsCarburant: any = ["timestamp", "deviceID", "device", "latlng", "fuelTotal", "fuelstart", "fuelLevel", "deltaFuelLevel", "odometerKM", "address"];//,"driverID"
 
-  displayedColumnsGeo = ["Zone", "date entré", "adresse entré", "odometre entré", "date sortie", "adresse sortie", "odometre sortie", "durée dans la zone","Conducteur"]//,"Conducteur"
-  columnNamesGeo = ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr","driverID"]//,"driver"
+  displayedColumnsGeo = ["Zone", "date entré", "adresse entré", "odometre entré", "date sortie", "adresse sortie", "odometre sortie", "durée dans la zone", "Conducteur"]//,"Conducteur"
+  columnNamesGeo = ["zoneName", "dateDepStr", "addressDep", "odometerDep", "dateArrStr", "addressArr", "odometerArr", "dureeStr", "driverID"]//,"driver"
 
   dColumnsRealCarburant: any = [
     "date",
@@ -320,6 +323,7 @@ export class DetailleComponent implements AfterViewInit {
     });
     this.getDev();
     this.getDrivers();
+    this.loadZones();
   }
 
   toggleCollapse(): void {
@@ -358,7 +362,7 @@ export class DetailleComponent implements AfterViewInit {
         });
 
         this.reportDataConsommation = d;
-        console.log("Consommations", this.reportDataConsommation);
+        // console.log("Consommations", this.reportDataConsommation);
 
         // concatinate the lists
         let concatLists = this.reportDataConsommation.concat(this.reportDataCarburant);
@@ -440,21 +444,22 @@ export class DetailleComponent implements AfterViewInit {
       if (this.selectedTab == 4) this.showTrajet()
       // this.resume = []
       var urlParams = "?geozone=&d=" + this.selectedDevice + "&st=" + this.myDateRangePicker.getDateFrom + "&et=" + this.myDateRangePicker.getDateTo
-      console.log(urlParams);
+      // console.log(urlParams);
 
       var route = this.router
-      this.dataService.getAllTrajets(urlParams+"&geozone=true").subscribe({
+      this.dataService.getAllTrajets(urlParams + "&geozone=true").subscribe({
         next: (d: any) => {
           // console.log(d);
 
           var geoz = d.geozones;
-
+          this.usedGeozones = []
           // console.log("geozone", geoz);
           geoz.forEach((e) => {
+            if (!this.usedGeozones.includes(e.geozoneID)) { this.usedGeozones.push(e.geozoneID) }
             e.dateDepStr = e.dateDep != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateDep)) : '';
             e.dateArrStr = e.dateArr != '' ? this.tools.formatDate(this.tools.timeStampToDate(e.dateArr)) : '';
-            e.dureeStr = (new Date(e.duree*1000).toISOString().slice(11, 19));
-            e.driverID = this.tools.getDriverName(this.drivers,e.driverID);
+            e.dureeStr = (new Date(e.duree * 1000).toISOString().slice(11, 19));
+            e.driverID = this.tools.getDriverName(this.drivers, e.driverID);
           });
 
           this.geozonesData = geoz;
@@ -467,37 +472,37 @@ export class DetailleComponent implements AfterViewInit {
             e.timeEnd = this.tools.formatDate(new Date(Number.parseInt(e.timeEnd) * 1000));
             if (e.da) e.da = this.round2d(Number.parseInt(e.da) / 60);
             if (e.dc) e.dc = this.round2d(Number.parseInt(e.dc) / 60);
-            if (e.odo) e.odo = this.round2d(Number.parseInt(e.odo)+extra.offset);
+            if (e.odo) e.odo = this.round2d(Number.parseInt(e.odo) + extra.offset);
             if (e.ft) e.ft = this.round2d(e.ft * extra.cp);
             e.cd = this.round2d(e.c * extra.fc);
             e.ct = extra.fe != 0 ? (e.k / (extra.fe != 0 ? extra.fe : 1)).toFixed(1) : "0";
             e.cm = (100 * (e.c / (e.k != 0 ? e.k : 1))).toFixed(1);
-            e.driverID = this.tools.getDriverName(this.drivers,e.driverID);
+            e.driverID = this.tools.getDriverName(this.drivers, e.driverID);
           })
           // if (!this.isArret)
           this.reportDataTrajet = d.filter((e) => { return e.trajet == 1 });
           // else
           this.reportData = d;
           this.reportDataArrets = d.filter((e) => { return e.trajet == 0 });
-          this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "st": e.st, "et": e.et, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), "odo": e.odo, "ft": e.ft,"driverID":e.driverID } });
+          this.reportDataArrets = this.reportDataArrets.map((e) => { return { "trajet": e.trajet, "st": e.st, "et": e.et, "timeStart": e.timeStart, "timeEnd": e.timeEnd, "addi": e.addi, "da": ((e.et - e.st) / 60).toFixed(2), "odo": e.odo, "ft": e.ft, "driverID": e.driverID } });
           this.selectedMapDevice = this.selectedDevice
           // console.log("trajet et parking", this.reportData);
           // console.log("parking", this.reportDataArrets);
           // console.log("trajet", this.reportDataTrajet);
 
           let resumetmp = [];
-          let labels = this.reportDataTrajet.map((l) => { return l.timeStart })
+          let labels = this.reportData.map((l) => { return l.timeStart })
           this.columns.forEach((e, index) => {
-            if (!["timeStart", "timeEnd", "addi", "addf","driverID"].includes(e))
+            if (!["timeStart", "timeEnd", "addi", "addf", "driverID"].includes(e))
               resumetmp.push({
-                val: !["cm", "cd", "ct", "odo", "ft"].includes(e) ? this.reduce(this.reportDataTrajet, e) : 0,//.toString() + " " + this.resumeUnits[e]
+                val: !["cm", "cd", "ct", "odo", "ft"].includes(e) ? this.reduce(this.reportData, e) : 0,//.toString() + " " + this.resumeUnits[e]
                 label: this.displayedColumns[index],
                 labels: labels,
                 key: e,
                 data:
                   [
                     {
-                      data: this.reportDataTrajet.map((l) => { return l[e] }),
+                      data: this.reportData.map((l) => { return l[e] }),
                       label: this.displayedColumns[index]
                     }
                   ]
@@ -674,6 +679,7 @@ export class DetailleComponent implements AfterViewInit {
   }
 
   openMap(v: any) {
+    this.mapGeozones = [];
     this.startTime = v.timeStart ? v.timeStart : "";
     this.endTime = v.timeEnd ? v.timeEnd : "";
     this.selectedMapDevice = v.selectedMapDevice ? v.selectedMapDevice : "";
@@ -708,6 +714,7 @@ export class DetailleComponent implements AfterViewInit {
 
   openMapArrets(d: any) {
     // console.log(d);
+    this.mapGeozones = [];
     this.selectedMapDevice = d ? d : "";
     if (this.reportDataArrets?.length && this.selectedMapDevice != "") {
       this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
@@ -718,19 +725,65 @@ export class DetailleComponent implements AfterViewInit {
     }
   }
 
+  loadZones() {
+    this.zoneService.getData().subscribe({
+      next: (res: any) => {
+        var zones: Zone[] = []
+        res.map((element: any) => {
+          var zone = new Zone()
+          zone.geozoneID = element.geozoneID
+          zone.description = element.description
+          zone.isActive = element.isActive
+          zone.iconName = element.iconName
+          zone.radius = element.radius
+          zone.zoneType = element.zoneType
+          zone.latitude1 = element.latitude1
+          zone.longitude1 = element.longitude1
+          zone.latitude2 = element.latitude2
+          zone.longitude2 = element.longitude2
+          zone.latitude3 = element.latitude3
+          zone.longitude3 = element.longitude3
+          zone.latitude4 = element.latitude4
+          zone.longitude4 = element.longitude4
+          zone.latitude5 = element.latitude5
+          zone.longitude5 = element.longitude5
+          zone.latitude6 = element.latitude6
+          zone.longitude6 = element.longitude6
+          zone.latitude7 = element.latitude7
+          zone.longitude7 = element.longitude7
+          zone.latitude8 = element.latitude8
+          zone.longitude8 = element.longitude8
+          zone.latitude9 = element.latitude9
+          zone.longitude9 = element.longitude9
+          zone.latitude10 = element.latitude10
+          zone.longitude10 = element.longitude10
+          zones.push(zone)
+        });
+        this.geozones = zones
+      }, error(err) {
+        console.log(err);
+      }
+    })
+
+  }
+
   openMapGeozone(d: any) {
     // console.log(d);
     this.selectedMapDevice = d ? d : "";
     if (this.geozonesData.length && this.selectedMapDevice != "") {
       this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
       this.interval = " Geozone"
-      this.timestamps = this.geozonesData.map((e) => { return e.dateArr });
-      this.timestamps = this.timestamps.concat(this.geozonesData.map((e) => { return e.dateDep }));
+      // this.timestamps = this.geozonesData.map((e) => { return e.dateArr }).concat(this.geozonesData.map((e) => { return e.dateDep })); 
+      this.startTime = this.geozonesData[0].dateDep
+      this.endTime = this.geozonesData[this.geozonesData.length - 1].dateArr
+      this.mapGeozones = this.usedGeozones;
+      // this.positionChanged = Math.random();
       this.primaryModal.show()
     }
   }
 
   openMapPoints(d: any) {
+    this.mapGeozones = [];
     this.selectedMapDevice = d ? d : "";
     if (this.reportDataCarburant?.length && this.selectedMapDevice != "") {
       this.selectedMapDeviceName = this.getVehiculeNameById(this.selectedMapDevice)
@@ -751,7 +804,7 @@ export class DetailleComponent implements AfterViewInit {
     for (let i = 0; i < this.devices.length; i++) {
       if (this.devices[i].dID == id) return { "fe": this.devices[i].fe, "fc": this.devices[i].fc, "cp": this.devices[i].cp, "offset": this.devices[i].offset }
     }
-    return { "fe": 0, "fc": 0, "cp": 0,"offset": 0 }
+    return { "fe": 0, "fc": 0, "cp": 0, "offset": 0 }
   }
 
   getVehiculeCapacityById(id) {
@@ -767,28 +820,37 @@ export class DetailleComponent implements AfterViewInit {
     }
     return 0
   }
+
   exporter(type) {
+    // console.log("type", type);
+
     var title = " Entre " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateFrom) * 1000)) + " et " +
       this.tools.formatDate(new Date((this.myDateRangePicker.getDateTo) * 1000))
-    if (this.selectedTab == 1)
+    if (this.selectedTab == 1) {
       type == 1 ? this.exportingPdfTool.exportPdf_Trajets(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " + this.getVehiculeNameById(this.selectedDevice) + " \n" + title) :
         this.exportingExcelTool.ExportTrajet(this.isArret ? this.reportData : this.reportDataTrajet, "Rapport des Trajets pour " + this.getVehiculeNameById(this.selectedDevice) + " \n" + title)
-    else if (this.selectedTab == 0)
+    }
+    else if (this.selectedTab == 0) {
       this.exportingPdfTool.convetToPDF("cardResume", "Rapport Resume pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
-    else if (this.selectedTab == 2)
+    }
+    else if (this.selectedTab == 2) {
       this.exportingPdfTool.convetToPDF("cardEvolution", "Rapport d'Evolution pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
+    }
     else if (this.selectedTab == 3) {
       this.exportEvts = { type: type, force: Math.random() }
     }
-    else if (this.selectedTab == 4)
+    else if (this.selectedTab == 4){
       this.exportingPdfTool.convetToPDF("trajetMap", "Trajet carte pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
-    else if (this.selectedTab == 5)
+    }
+    else if (this.selectedTab == 5){
       type == 1 ? this.exportingPdfTool.exportPdf_Parking(this.reportDataArrets, "Rapport de Parking pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title) :
         this.exportingExcelTool.ExportParking(this.reportDataArrets, "Rapport de Parking pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
-    else if (this.selectedTab == 6)
+    }
+    else if (this.selectedTab == 6){
       type == 1 ? this.exportingPdfTool.exportPdf_Carburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title) :
         this.exportingExcelTool.ExportCarburant(this.reportDataCarburant, "Rapport de Pose Carburant pour " + this.getVehiculeNameById(this.selectedMapDevice) + " \n" + title)
+    }
   }
 
   exportEvents(v) {

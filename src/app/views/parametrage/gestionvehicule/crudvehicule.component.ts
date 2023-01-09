@@ -37,16 +37,13 @@ export class CrudvehiculeComponent {
   constructor(private dataService: DataService, public cts: Constant, private tools: util, private router: Router, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
 
   data = [];
-
-
-
   //////////////////////////////////////////////////////////
 
   errorMsg1: string;
   document: CarDocument = new CarDocument()
   @ViewChild('pneuTbSort') sort: MatSort
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
-  selectAllDoc: Boolean = true
+  selectAllDoc: Boolean = false
   columnNames: string[] = ['N° SÉRIE', 'ETAT PNEU', 'KM ACQUISITION', 'DATE DEBUT', 'DATE FIN ', 'POSITION PNEU', 'MODELE PNEU', 'FOURNISSEUR', 'MONTANT'];
   displayedColumns = ['NumSerie', 'EtatPneu', 'KmAcquisition', 'DateDebut', 'DateFin', 'PositionPneu', 'ModelePneu', 'Fournisseurs', 'Montant'];
   selectedTab = 0
@@ -109,7 +106,7 @@ export class CrudvehiculeComponent {
     var route = this.router
     this.dataService.getDeviceData(url).subscribe({
       next: (d: any) => {
-        console.log(d);
+        // console.log(d);
         this.selectedDevice = d[0];
         this.offset = this.selectedDevice.odometerOffsetKM;
         this.offModalLoading = false;
@@ -160,8 +157,8 @@ export class CrudvehiculeComponent {
     this.tabTem = this.documents
     this.dataSourceAdmin = new MatTableDataSource(this.tabTem);
     this.dataSourceAdmin.sort = this.adminTbSort;
-    this.selectAllDoc = true;
-    this.selectedItemTable = ['ac', 'cm', 'cg', 'cv', 'ta', 'vi', 'vt', 'ass']
+    // this.selectAllDoc = true;
+    this.selectedItemTable = ['ass']
     ///////////////////////////////////////////
     if (idDevice) {
       var url = "?d=" + idDevice
@@ -237,7 +234,7 @@ export class CrudvehiculeComponent {
   }
 
   onIconChange(e) {
-    console.log(e, this.selectedDevice);
+    // console.log(e, this.selectedDevice);
     this.selectedDevice.pushpinID = e.value
   }
 
@@ -376,7 +373,7 @@ export class CrudvehiculeComponent {
         (response) => {
 
           this.axes = [].concat(response)
-          console.log("this.axes ", this.axes);
+          // console.log("this.axes ", this.axes);
           this.axes.forEach(axe => {
             if (axe.dg) axe.dg = this.tools.formatDateForInput(new Date(Number.parseInt(axe.dg ?? 0) * 1000))
             if (axe.dd) axe.dd = this.tools.formatDateForInput(new Date(Number.parseInt(axe.dd ?? 0) * 1000))
@@ -424,10 +421,9 @@ export class CrudvehiculeComponent {
   /****************** Ducument Tab ************** */
 
   openAddModal() {
-    this.document = new CarDocument()
+    this.document = new CarDocument(null, this.document.typeDocument)
     this.administraifModal.show()
     this.mode = "Ajouter"
-    this.document.typeDocument = "Assurance"
   }
 
   calculateRestDays(docs) {
@@ -476,24 +472,14 @@ export class CrudvehiculeComponent {
   }
 
   getSelectedItem(tag, type) {
+    this.selectedItemTable = []
+    this.selectedItemTable.push(tag)
+    this.tabTem = this.documents.filter(d => d.typeDocument == type)
+    this.dataSourceAdmin = new MatTableDataSource(this.tabTem);
+    this.dataSourceAdmin.sort = this.adminTbSort;
+    // console.log(type);
 
-    if (!this.selectedItemTable.includes(tag)) {
-      this.selectedItemTable.push(tag)
-      this.tabTem.push.apply(this.tabTem, this.documents.filter(d => d.typeDocument == type))
-
-      this.dataSourceAdmin = new MatTableDataSource(this.tabTem);
-      this.dataSourceAdmin.sort = this.adminTbSort;
-
-    } else {
-      const index = this.selectedItemTable.indexOf(tag, 0);
-      if (index > -1) {
-        this.selectedItemTable.splice(index, 1);
-      }
-      this.tabTem = this.tabTem.filter(doc => doc.typeDocument != type)
-      this.dataSourceAdmin = new MatTableDataSource(this.tabTem);
-      this.dataSourceAdmin.sort = this.adminTbSort;
-
-    }
+    this.document.typeDocument = type;
   }
 
   getDaysBetweentnDates(endtDate): number {
@@ -588,13 +574,11 @@ export class CrudvehiculeComponent {
         deviceID: this.selectedDevice.deviceID,
         rapelJours: this.document.rapelJours,
       }
-      console.log("2----document  ", docToSave);
-      if (this.mode == "Ajouter") {
-        this.documents.push(this.document);
-        this.dataService.addDeviceDocument(docToSave).subscribe({
+      var endPoint = 'addDocVehicule';if (this.mode == "Modifier") {endPoint = 'editDocVehicule';}
+        this.dataService.AddOrUpdateDeviceDocument(endPoint,docToSave).subscribe({
           next: resp => {
             this.documents = resp[0]
-
+            this.documents.reverse()
             this.documents.forEach(
               d => {
                 d.dateContrat = this.tools.formatDateForInput(new Date(Number.parseInt(d.dateContrat ?? 0) * 1000));
@@ -606,38 +590,13 @@ export class CrudvehiculeComponent {
             this.dataSourceAdmin = new MatTableDataSource(this.tabTem);
             this.dataSourceAdmin.sort = this.adminTbSort;
             this.document = new CarDocument()
+            this.selectAllDoc = true
+            this.getAllDoc()
           },
           error(err) {
             console.log("error ", err);
           }
         })
-
-      } else {
-
-        this.dataService.updateDeviceDocument(docToSave).subscribe({
-          next: resp => {
-            this.documents = resp[0]
-
-            this.documents.forEach(
-              d => {
-                d.dateContrat = this.tools.formatDateForInput(this.tools.timeStampToDate(d.dateContrat));
-                d.dateProchain = this.tools.formatDateForInput(this.tools.timeStampToDate(d.dateProchain));
-              }
-            )
-            this.calculateRestDays(this.documents)
-            this.tabTem = this.documents
-            this.dataSourceAdmin = new MatTableDataSource(this.tabTem);
-            this.dataSourceAdmin.sort = this.adminTbSort;
-            this.document = new CarDocument()
-
-          },
-          error(err) {
-            console.log("err ", err);
-          }
-        })
-      }
-
-
       this.administraifModal.hide();
       this.mode = "add"
     }
@@ -666,6 +625,7 @@ export class CrudvehiculeComponent {
       next:
         resp => {
           this.documents = [].concat(resp)
+          this.documents.reverse()
           this.documents.forEach(
             d => {
               d.dateContrat = this.tools.formatDateForInput(new Date(Number.parseInt(d.dateContrat ?? 0) * 1000));
@@ -674,9 +634,9 @@ export class CrudvehiculeComponent {
             }
           )
           this.calculateRestDays(this.documents)
-
-          this.dataSourceAdmin = new MatTableDataSource(this.documents);
-          this.dataSourceAdmin.sort = this.adminTbSort;
+          this.getSelectedItem("ass", "Assurance")
+          // this.dataSourceAdmin = new MatTableDataSource(this.documents);
+          // this.dataSourceAdmin.sort = this.adminTbSort;
         },
       error(err) {
         console.log("error ", err);

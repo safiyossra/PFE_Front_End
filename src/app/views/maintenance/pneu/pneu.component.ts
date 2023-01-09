@@ -155,9 +155,6 @@ export class PneuComponent implements OnInit {
       this.exportingExcelTool.Export_Pneu(v, "Rapport Entretien Pneu")
   }
 
-
-  testDate = "2022-05-12"
-
   toggleCollapse() {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
@@ -227,7 +224,6 @@ export class PneuComponent implements OnInit {
       this.entretienPneu.DateDebut = (new Date(this.entretienPneu.DateDebut)).getTime() / 1000;
       this.entretienPneu.DateFin = (new Date(this.entretienPneu.DateFin)).getTime() / 1000,
         this.errorMsg = ""
-      console.log("2-----pneu   ", this.entretienPneu);
 
       if (this.mode == "Ajouter") this.ajouter()
       if (this.mode == "Modifier") this.modifier()
@@ -270,7 +266,6 @@ export class PneuComponent implements OnInit {
     this.dataService.updateCangementPneu(this.entretienPneu).subscribe({
       next:
         resp => {
-          console.log("response update ", resp);
           this.data2 = [].concat(resp[0])
           this.data2.forEach(p => {
             p.deviceName = this.getVehiculeNameById(p.deviceID);

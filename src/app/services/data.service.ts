@@ -549,8 +549,8 @@ export class DataService {
   }
 
   /******** Add Document for Device ******* */
-  addDeviceDocument(doc) {
-    let SERVER_URL = environment.apiUrl + "addDocVehicule";
+  AddOrUpdateDeviceDocument(endPoint,doc) {
+    let SERVER_URL = environment.apiUrl + endPoint;
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
@@ -578,21 +578,6 @@ export class DataService {
     })
   }
 
-
-  /******** Update Document for Device ******* */
-  updateDeviceDocument(doc) {
-    let SERVER_URL = environment.apiUrl + "editDocVehicule";
-    let jwt = this.JWT.get();
-    let headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + jwt,
-      'Accept': 'application/json'
-    });
-    return this.http.get(SERVER_URL, {
-      headers: headers,
-      params: { doc: JSON.stringify(doc) }
-
-    })
-  }
 
   /******** Add Pneu for Device ******* */
   addPneu(pneu) {
@@ -685,6 +670,198 @@ export class DataService {
   /******** Get Driver Document ******* */
   getDriverDocument(driverID) {
     let SERVER_URL = environment.apiUrl + "getDriverDocuments" + driverID;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+    })
+  }
+
+  
+  getStream() {
+    let SERVER_URL = 'http://api.tvmaze.com/search/shows?q=golden%20girls';
+    // let params: {
+    //   modules: 'A comma-delimited list of one or more insights to request.',
+    //   id: 'An ID that uniquely identifies a video. The Video object\'s videoId field contains the ID that you set this parameter to.'
+    // };
+    let headers: {
+      'X-RapidAPI-Key': 'SIGN-UP-FOR-KEY',
+      'X-RapidAPI-Host': 'bing-video-search1.p.rapidapi.com'
+    }
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      // params: params
+    })
+  }
+
+
+  /****************** Accidents Services **************** */
+  saveAccident(accident) {
+    let SERVER_URL = environment.apiUrl + "saveAccident";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { accident: JSON.stringify(accident) }
+
+    })
+  }
+
+  getAccident() {
+    let SERVER_URL = environment.apiUrl + "getAccidents";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get<any>(SERVER_URL, {
+      headers: headers,
+    }
+    )
+  }
+
+
+  deleteAccident(id) {
+    let SERVER_URL = environment.apiUrl + "deleteAccident" + id;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+    }
+    )
+  }
+
+  saveAccidentComment(comment, accident) {
+    let SERVER_URL = environment.apiUrl + "saveAccidentComment" + accident;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { comment: JSON.stringify(comment) }
+
+    })
+  }
+
+  getAccidentCommnet(accidentID) {
+    let SERVER_URL = environment.apiUrl + "getAccidentComments" + accidentID;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get<any>(SERVER_URL, {
+      headers: headers,
+    })
+  }
+
+  deleteAccidentComment(id) {
+    let SERVER_URL = environment.apiUrl + "deleteAccidentComment" + id;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+    }
+
+    )
+  }
+
+  /*************** Assurance Services ***************** */
+
+  savePlanAssurance(plan) {
+    let SERVER_URL = environment.apiUrl + "saveAssurance";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { plan: JSON.stringify(plan) }
+
+    })
+  }
+
+  getPlanAssurance() {
+    let SERVER_URL = environment.apiUrl + "getPlan";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get<any>(SERVER_URL, {
+      headers: headers,
+    })
+  }
+
+  deletePlanAssurance(assuranceID) {
+    let SERVER_URL = environment.apiUrl + "deletePlan" + assuranceID;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get<any>(SERVER_URL, {
+      headers: headers,
+    })
+  }
+
+  editPlanAssurance(plan) {
+    let SERVER_URL = environment.apiUrl + "editPlan";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get<any>(SERVER_URL, {
+      headers: headers,
+      params: { plan: JSON.stringify(plan) }
+    })
+  }
+
+
+
+  getEtapes() {
+    let SERVER_URL = environment.apiUrl + "getEtapes";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+    })
+  }
+  saveEtape(etape) {
+    let SERVER_URL = environment.apiUrl + "saveEtape";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { etape: JSON.stringify(etape) }
+    })
+  }
+
+  // get docVehicule by idVehicule && type assurance
+  getAssuranceVehicule(deviceID) {
+    let SERVER_URL = environment.apiUrl + "getAssuranceVehicule" + deviceID;
     let jwt = this.JWT.get();
     let headers = new HttpHeaders({
       'Authorization': 'Bearer ' + jwt,
