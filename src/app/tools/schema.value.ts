@@ -4,7 +4,7 @@ export const schema = {
   $id: '#/Permissions',
   type: 'object',
   title: 'Permissions',
-  required: ["Dashboard", "Map","Zones","VehiculesPlusProches","Rapports","Eco","Parametrage","Maintenance","Notifications"],
+  required: ["Dashboard", "Map","Zones","VehiculesPlusProches","Rapports","Eco","Parametrage","Maintenance","Notifications","TrajetPlanner"],
   properties: {
     Dashboard: {
       $id: '#/Permissions/dashboard',
@@ -99,6 +99,16 @@ export const schema = {
             "Afficher ou pas d'access"
           ],
           enum: ["Pas d'access", "Afficher"],
+        },
+        RapportAutomatique: {
+          $id: '#/Permissions/rapports/rapportAutomatique',
+          type: 'string',
+          title:  'Gestion des Rapports Automatiques',
+          default: "Ajouter",
+          examples: [
+            "Ajouter -> Mettre a jour -> Afficher ou pas d'access"
+          ],
+          enum: ["Pas d'access","Ajouter", "Mettre a jour", "Afficher"]
         },
       }
     },
@@ -255,6 +265,16 @@ export const schema = {
         "Afficher ou pas d'access"
       ],
       enum: ["Pas d'access", "Afficher"]
+    },
+    TrajetPlanner: {
+      $id: '#/Permissions/trajetPlanner',
+      type: 'string',
+      title: 'Acceder le TrajetPlanner',
+      default: "Ajouter",
+      examples: [
+        "Ajouter ou pas d'access"
+      ],
+      enum: ["Pas d'access", "Ajouter"]
     },
   }
 }

@@ -18,6 +18,15 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
   compte: String
   Dashboard = false
   Parametrage_Vehicules = false
+  Parametrage_Alertes = false
+  Parametrage_GroupeVehicules = false
+  Parametrage_CarteCarburant = false
+  Parametrage_Utilisateur = false
+  Parametrage_Conducteur = false
+  Maintenance_PlanEntretien = false
+  Maintenance_Pneu = false
+  Maintenance_Accidents = false
+  Maintenance_Consommation = false
   Map_Vehicules = false
   Map_Comparaison = false
   Zones = false
@@ -25,9 +34,11 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
   Rapports_RapportsDetailles = false
   Rapports_RapportsJournalier = false
   Rapports_RapportSynthetique = false
+  Rapports_RapportAutomatique = false
   Eco_EcoConduite = false
   Eco_EcoDetailles = false
   Notifications = false
+  TrajetPlanner = false
   inter: any
   constructor(private route: Router, private dataService: DataService, public tools: util, public cst: Constant) {
   }
@@ -58,10 +69,21 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
     this.Rapports_RapportsDetailles = this.tools.isAuthorized('Rapports_RapportsDetailles', 'Afficher')
     this.Rapports_RapportsJournalier = this.tools.isAuthorized('Rapports_RapportsJournalier', 'Afficher')
     this.Rapports_RapportSynthetique = this.tools.isAuthorized('Rapports_RapportSynthetique', 'Afficher')
+    this.Rapports_RapportAutomatique = this.tools.isAuthorized('Rapports_RapportAutomatique', 'Afficher')
     this.Eco_EcoConduite = this.tools.isAuthorized('Eco_EcoConduite', 'Afficher')
     this.Eco_EcoDetailles = this.tools.isAuthorized('Eco_EcoDetailles', 'Afficher')
     this.Notifications = this.tools.isAuthorized('Notifications', 'Afficher')
     this.Parametrage_Vehicules = this.tools.isAuthorized('Parametrage_Vehicules', 'Afficher')
+    this.Parametrage_Conducteur = this.tools.isAuthorized('Parametrage_Conducteur', 'Afficher')
+    this.Parametrage_Utilisateur = this.tools.isAuthorized('Parametrage_Utilisateur', 'Afficher')
+    this.Parametrage_CarteCarburant = this.tools.isAuthorized('Parametrage_CarteCarburant', 'Afficher')
+    this.Parametrage_GroupeVehicules = this.tools.isAuthorized('Parametrage_GroupeVehicules', 'Afficher')
+    this.Parametrage_Alertes = this.tools.isAuthorized('Parametrage_Alertes', 'Afficher')
+    this.Maintenance_Consommation = this.tools.isAuthorized('Maintenance_Consommation', 'Afficher')
+    this.Maintenance_Accidents = this.tools.isAuthorized('Maintenance_Accidents', 'Afficher')
+    this.Maintenance_Pneu = this.tools.isAuthorized('Maintenance_Pneu', 'Afficher')
+    this.Maintenance_PlanEntretien = this.tools.isAuthorized('Maintenance_PlanEntretien', 'Afficher')
+    this.TrajetPlanner = this.tools.isAuthorized('TrajetPlanner', 'Afficher')
     if (!this.Dashboard) { delete this.navItems[0] }
     if (!this.Map_Vehicules && !this.Map_Comparaison) {
       delete this.navItems[1]
@@ -72,29 +94,36 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
     }
     if (!this.Zones) { delete this.navItems[2] }
     if (!this.VehiculesPlusProches) { delete this.navItems[3] }
-    if (!this.Rapports_RapportsDetailles && !this.Rapports_RapportsDetailles && !this.Rapports_RapportSynthetique) {
+    if (!this.Rapports_RapportsDetailles && !this.Rapports_RapportsDetailles && !this.Rapports_RapportSynthetique && !this.Rapports_RapportAutomatique) {
       delete this.navItems[4]
     } else {
       if (!this.Rapports_RapportsDetailles) { delete this.navItems[4]['children'][0] }
       if (!this.Rapports_RapportsJournalier) { delete this.navItems[4]['children'][1] }
       if (!this.Rapports_RapportSynthetique) { delete this.navItems[4]['children'][2] }
+      if (!this.Rapports_RapportAutomatique) { delete this.navItems[4]['children'][3] }
       this.navItems[4]['children'] = this.navItems[4]['children'].filter(function () { return true; });
     }
-    if (!this.Eco_EcoConduite && !this.Eco_EcoDetailles) { 
+    if (!this.Eco_EcoConduite && !this.Eco_EcoDetailles) {
       delete this.navItems[5]
      } else {
       if (!this.Eco_EcoConduite) { delete this.navItems[5]['children'][0] }
       if (!this.Eco_EcoDetailles) { delete this.navItems[5]['children'][1] }
       this.navItems[5]['children'] = this.navItems[5]['children'].filter(function () { return true; });
     }
+    if (!this.Parametrage_Vehicules && !this.Parametrage_Conducteur && !this.Parametrage_Utilisateur && !this.Parametrage_CarteCarburant && !this.Parametrage_GroupeVehicules&& !this.Parametrage_Alertes) {
+      delete this.navItems[6]
+    } 
+    if (!this.Maintenance_Pneu && !this.Maintenance_Consommation && !this.Maintenance_Accidents && !this.Maintenance_PlanEntretien) {
+      delete this.navItems[7]
+    } 
     if (!this.Notifications) { delete this.navItems[8] }
+    if (!this.TrajetPlanner) { delete this.navItems[9] }
     this.navItems = this.navItems.filter(function () { return true; });
   }
 
   logout() {
     localStorage.clear()
     this.route.navigate(['login']);
-
   }
 
   loadGroupedUnseenNotifs() {

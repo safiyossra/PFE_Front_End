@@ -91,7 +91,7 @@ const routes: Routes = [
             component: MapTimeLineComponent,
             canActivate: [PermissionsGuard],
             data: {
-              permissionKey:'MapTimeLine',
+              permissionKey:'Map_Vehicules',
               title: 'Map TimeLine'
             }
           },

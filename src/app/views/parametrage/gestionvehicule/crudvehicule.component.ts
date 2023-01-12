@@ -83,7 +83,6 @@ export class CrudvehiculeComponent {
         d.forEach(e => {
           e.age = e.age ?? 0 > 0 ? (now - e.age) : "jamais"
           e.creationTime = this.tools.formatDateForInput(this.tools.timeStampToDate(e.creationTime ?? 0));
-          e.creationTime = this.tools.formatDateForInput(this.tools.timeStampToDate(e.creationTime ?? 0));
           e.registrationExpireString != 0 ? e.registrationExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.registrationExpire ?? 0)) : '';
           e.insuranceExpireString != 0 ? e.insuranceExpireString = this.tools.formatDateForInput(this.tools.timeStampToDate(e.insuranceExpire ?? 0)) : '';
         });

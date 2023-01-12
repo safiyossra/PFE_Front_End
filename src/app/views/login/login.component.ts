@@ -42,12 +42,15 @@ export class LoginComponent {
           localStorage.setItem('username', response.user)
           localStorage.setItem('compte', this.accountid)
           // console.log("setPermissions",response.p);
-          if (response.p == "") {
-            this.tools.setPermissions(response.p)
+          var ap = response.ap;
+          var p = response.p;
+          if (ap != "") {
+            ap = JSON.parse(ap)
           }
-          else { this.tools.setPermissions(JSON.parse(response.p)) ;//console.log('permi',JSON.parse(response.p));
+          if (p != "") {
+            p = JSON.parse(p)
           }
-         
+          this.tools.setPermissions(p,ap) ;//console.log('permi',JSON.parse(response.p));
 
           this.route.navigate(['map']);
           this.loading = false;

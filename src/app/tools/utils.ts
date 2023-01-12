@@ -7,6 +7,7 @@ import { GeoSearchControl } from 'leaflet-geosearch';
 import { Constant } from 'src/app/tools/constants';
 
 var userPermissions: any;
+var accountPermissions: any;
 @Injectable({
   providedIn: 'root'
 })
@@ -19,36 +20,54 @@ export class util {
   public isAuthorized(key: any, permission: any) {
     key = key.split("_");
     var val = undefined
-    if (!userPermissions) {
+    var vala = undefined
+    if (!userPermissions || !accountPermissions) {
       this.getPermissions()
     }
-    if (key.length > 1)
+    // console.log(userPermissions ,accountPermissions);
+    
+    if (key.length > 1) {
       val = userPermissions[key[0]][key[1]]
-    else if (key.length == 1) val = userPermissions[key[0]];
-    if (val == undefined) return true;
+      vala = accountPermissions[key[0]][key[1]]
+    }
+
+    else if (key.length == 1) { val = userPermissions[key[0]]; vala = accountPermissions[key[0]]; }
+    if (vala == undefined || val == undefined) return false;
     var index = this.cst.permissions.indexOf(val);
+    var indexa = this.cst.permissions.indexOf(vala);
     var indexP = this.cst.permissions.indexOf(permission);
-    if (index >= indexP && indexP != 0)
-      return true;
+    if (indexa >= indexP && indexP != 0) {
+      if (index >= indexP && indexP != 0) {
+        return true;
+      }
+    }
     return false;
   };
 
-  public setPermissions(userPermissions: any) {
+  public setPermissions(uPermissions: any,aPermissions: any) {
     this.resetPermissions()
-    userPermissions = this.encodePermissions(userPermissions);
-    localStorage.setItem('rm', userPermissions);
+    uPermissions = this.encodePermissions(uPermissions);
+    localStorage.setItem('rm', uPermissions);
+    aPermissions = this.encodePermissions(aPermissions);
+    localStorage.setItem('ram', aPermissions);
   }
 
   resetPermissions() {
     userPermissions = null
+    accountPermissions = null
   }
 
   public getPermissions() {
     var permissions = this.decodePermissions(localStorage.getItem('rm') ?? '');
+    var apermissions = this.decodePermissions(localStorage.getItem('ram') ?? '');
     if (permissions == undefined || !permissions || permissions == '') {
       permissions = this.cst.defaultPermissions;
     }
+    if (apermissions == undefined || !apermissions || apermissions == '') {
+      apermissions = this.cst.defaultAccountPermissions;
+    }
     userPermissions = permissions;
+    accountPermissions = apermissions;
   }
 
   public encodePermissions(userPermissions: any) {
@@ -149,7 +168,7 @@ export class util {
   }
 
   formatPopUpContent(v) {
-    let img = v.icon!=undefined?'<img src="assets/img/vehicules/'+this.getImage(v.icon)+'-img.png">':"Info"
+    let img = v.icon != undefined ? '<img src="assets/img/vehicules/' + this.getImage(v.icon) + '-img.png">' : "Info"
     let time = this.formatDate(new Date(v.timestamp * 1000))
 
     let age = this.getAge(v.timestamp)
@@ -196,8 +215,8 @@ export class util {
             </tbody>
           </table>`
   }
-  
-  formatPopUpContentPOI(v,gps) {
+
+  formatPopUpContentPOI(v, gps) {
     let img = '<img src="assets/img/markers/pin_n.png" style="height: 28px;">';
     return `<table class="infoBoxTable">
             <tbody>
@@ -249,7 +268,7 @@ export class util {
     return `${days > 0 ? days + " Jours " : ''}${hours > 0 ? hours + " Heurs " : ''}${minutes > 0 ? minutes + " minutes " : ''}${Math.floor(seconds) > 0 ? Math.floor(seconds) + " seconds" : ''}`;
   }
 
-  formatDuree(seconds,_default = "Expiré") {
+  formatDuree(seconds, _default = "Expiré") {
     if (isNaN(seconds)) return _default
     // return age
     //days
@@ -486,59 +505,58 @@ export class util {
 
   ValidatePhone(phone) {
     // if (/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{6})(?: *x(\d+))?\s*$/.test(phone)) {
-      if (/\d{10,15}/.test(phone)) {
-        return true
+    if (/\d{10,15}/.test(phone)) {
+      return true
     }
     return false
   }
   // fonction tranformer
-  getHeadingString(heading)
-  {
-      if (!isNaN(heading) && (heading >= 0.0)) {
-          var h = Math.round(heading / 45.0) % 8;
-          //return DIRECTION[(h > 7)? 0 : h];
-          switch (h) {
-              case 0: return "N";
-              case 1: return "NE";
-              case 2: return "E" ;
-              case 3: return "SE";
-              case 4: return "S" ;
-              case 5: return "SW";
-              case 6: return "W" ;
-              case 7: return "NW";
-          }
-          return "N"; // default
-      } else {
-          return "";
+  getHeadingString(heading) {
+    if (!isNaN(heading) && (heading >= 0.0)) {
+      var h = Math.round(heading / 45.0) % 8;
+      //return DIRECTION[(h > 7)? 0 : h];
+      switch (h) {
+        case 0: return "N";
+        case 1: return "NE";
+        case 2: return "E";
+        case 3: return "SE";
+        case 4: return "S";
+        case 5: return "SW";
+        case 6: return "W";
+        case 7: return "NW";
       }
+      return "N"; // default
+    } else {
+      return "";
+    }
   }
-  
+
   formatAge2(seconds) {
     let table = []
     if (isNaN(seconds)) return "Jamais"
     // return age
     //days
-    if (seconds > 0){
+    if (seconds > 0) {
       let days = Math.floor(seconds / (24 * 3600));
-    if (days > 0) table.push(days + 'J,')
-    seconds -= days * 24 * 3600;
-    //hours
-    let hours = Math.floor(seconds / 3600);
-    if (hours > 0) table.push(hours + 'H')
-    seconds -= hours * 3600;
-    //minutes
-    let minutes = Math.floor(seconds / 60);
-    if (minutes > 0) table.push(minutes + 'min')
-    seconds -= minutes * 60;
+      if (days > 0) table.push(days + 'J,')
+      seconds -= days * 24 * 3600;
+      //hours
+      let hours = Math.floor(seconds / 3600);
+      if (hours > 0) table.push(hours + 'H')
+      seconds -= hours * 3600;
+      //minutes
+      let minutes = Math.floor(seconds / 60);
+      if (minutes > 0) table.push(minutes + 'min')
+      seconds -= minutes * 60;
 
-    if (seconds > 0) table.push(seconds + 's')
-    //output
-    // console.log("table =======> ", table);
-    if (table.length > 2)
-      return table[0] + table[1];
-    else
-      return table[0];
-    }else return seconds + 's'
-    
+      if (seconds > 0) table.push(seconds + 's')
+      //output
+      // console.log("table =======> ", table);
+      if (table.length > 2)
+        return table[0] + table[1];
+      else
+        return table[0];
+    } else return seconds + 's'
+
   }
 }

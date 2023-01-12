@@ -19,11 +19,48 @@ export class Constant {
     Rapports: {
         RapportsDetailles: "Afficher",
         RapportsJournalier: "Afficher",
-        RapportSynthetique: "Afficher"
+        RapportSynthetique: "Afficher",
+        RapportAutomatique: "Ajouter"
       },
     Eco: {
         EcoConduite:"Afficher",
         EcoDetailles:"Afficher"
+    },
+    Parametrage: {
+        Conducteur:  "Ajouter",
+        Vehicules: "Ajouter",
+        Utilisateur:  "Afficher",
+        CarteCarburant:  "Ajouter",
+        GroupeVehicules: "Ajouter",
+        Alertes:  "Ajouter"
+      },
+    Maintenance: {
+        PlanEntretien:  "Pas d'access",
+        Pneu: "Pas d'access",
+        Accidents:"Pas d'access",
+        Consommation: "Pas d'access"
+    },
+    Notifications:"Afficher",
+    TrajetPlanner:"Pas d'access"
+  };
+
+  public defaultAccountPermissions = {
+    Dashboard: "Ajouter",
+    Map: {
+        Vehicules: "Ajouter",
+        Comparaison:"Ajouter"
+    }, 
+    Zones: "Ajouter",
+    VehiculesPlusProches: "Ajouter",
+    Rapports: {
+        RapportsDetailles: "Ajouter",
+        RapportsJournalier: "Ajouter",
+        RapportSynthetique: "Ajouter",
+        RapportAutomatique: "Ajouter"
+      },
+    Eco: {
+        EcoConduite:"Ajouter",
+        EcoDetailles:"Ajouter"
     },
     Parametrage: {
         Conducteur:  "Ajouter",
@@ -34,12 +71,13 @@ export class Constant {
         Alertes:  "Ajouter"
       },
     Maintenance: {
-        PlanEntretien:  "Ajouter",
-        Pneu: "Ajouter",
-        Accidents:"Ajouter",
-        Consommation: "Ajouter"
+        PlanEntretien:  "Pas d'access",
+        Pneu: "Pas d'access",
+        Accidents:"Pas d'access",
+        Consommation: "Pas d'access"
     },
-    Notifications:"Afficher"
+    Notifications:"Ajouter",
+    TrajetPlanner:"Pas d'access"
   };
 
   public guestPermissions = {
@@ -53,7 +91,8 @@ export class Constant {
     Rapports: {
         RapportsDetailles: "Afficher",
         RapportsJournalier: "Afficher",
-        RapportSynthetique: "Afficher"
+        RapportSynthetique: "Afficher",
+        RapportAutomatique: "Afficher"
       },
     Eco: {
         EcoConduite:"Afficher",
@@ -68,12 +107,13 @@ export class Constant {
         Alertes:  "Pas d'access"
       },
     Maintenance: {
-        PlanEntretien:  "Afficher",
-        Pneu: "Afficher",
-        Accidents:"Afficher",
-        Consommation: "Afficher"
+        PlanEntretien:  "Pas d'access",
+        Pneu: "Pas d'access",
+        Accidents:"Pas d'access",
+        Consommation: "Pas d'access"
     },
-    Notifications:"Afficher"
+    Notifications:"Afficher",
+    TrajetPlanner:"Pas d'access"
   };
   
   public userPermissions = {
@@ -87,7 +127,8 @@ export class Constant {
     Rapports: {
         RapportsDetailles: "Afficher",
         RapportsJournalier: "Afficher",
-        RapportSynthetique: "Afficher"
+        RapportSynthetique: "Afficher",
+        RapportAutomatique: "Ajouter"
       },
     Eco: {
         EcoConduite:"Afficher",
@@ -102,12 +143,13 @@ export class Constant {
         Alertes:  "Afficher"
       },
     Maintenance: {
-        PlanEntretien:  "Ajouter",
-        Pneu: "Ajouter",
-        Accidents:"Ajouter",
-        Consommation: "Ajouter"
+        PlanEntretien:  "Pas d'access",
+        Pneu: "Pas d'access",
+        Accidents:"Pas d'access",
+        Consommation: "Pas d'access"
     },
-    Notifications:"Afficher"
+    Notifications:"Afficher",
+    TrajetPlanner:"Pas d'access"
   };
 
   public permissions = ["Pas d'access", "Afficher", "Mettre a jour", "Ajouter"];
