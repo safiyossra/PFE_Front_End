@@ -400,7 +400,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
       this.mapModal = this.tools.createMap(this.mapModal, 'mapModal', this.car, this.provider, false, false, false, false, false)
       this.inter = setInterval(() => {
         this.loadData()
-      }, 500000)
+      }, 5000)
       this.loadZones()
     }, 100);
   }
