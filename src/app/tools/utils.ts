@@ -30,9 +30,7 @@ export class util {
     if (key.length > 1) {
       val = userPermissions[key[0]][key[1]]
       vala = accountPermissions[key[0]][key[1]]
-    }
-
-    else if (key.length == 1) { val = userPermissions[key[0]]; vala = accountPermissions[key[0]]; }
+    }else if (key.length == 1) { val = userPermissions[key[0]]; vala = accountPermissions[key[0]]; }
     if (vala == undefined || val == undefined) return false;
     var index = this.cst.permissions.indexOf(val);
     var indexa = this.cst.permissions.indexOf(vala);
