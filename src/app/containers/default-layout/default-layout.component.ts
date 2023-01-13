@@ -11,7 +11,7 @@ import { navItems } from '../../_nav';
 })
 export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy {
   public sidebarMinimized = true;
-  public navItems = navItems;
+  public navItems = [];
   notifs = { v: 0, z: 0, d: 0, f: 0, other: 0, total: 0, maintenance: 0 }
   notifregx = { v: /\$Speeding/i, z1: /InZone/i, z2: /\$DEPART/i, z3: /\$Arrive/i, f: /\$FuelDelta()/i, d: /demarrage/i }
   username: String
@@ -61,6 +61,7 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
   }
 
   loadMenuBasedOnPermissions() {
+    var tmpNav = [...navItems]
     this.Dashboard = this.tools.isAuthorized('Dashboard', 'Afficher')
     this.Map_Vehicules = this.tools.isAuthorized('Map_Vehicules', 'Afficher')
     this.Map_Comparaison = this.tools.isAuthorized('Map_Comparaison', 'Afficher')
@@ -84,41 +85,41 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
     this.Maintenance_Pneu = this.tools.isAuthorized('Maintenance_Pneu', 'Afficher')
     this.Maintenance_PlanEntretien = this.tools.isAuthorized('Maintenance_PlanEntretien', 'Afficher')
     this.TrajetPlanner = this.tools.isAuthorized('TrajetPlanner', 'Afficher')
-    if (!this.Dashboard) { delete this.navItems[0] }
+    if (!this.Dashboard) { delete tmpNav[0] }
     if (!this.Map_Vehicules && !this.Map_Comparaison) {
-      delete this.navItems[1]
+      delete tmpNav[1]
     } else {
-      if (!this.Map_Vehicules) { delete this.navItems[1]['children'][0] }
-      if (!this.Map_Comparaison) { delete this.navItems[1]['children'][1] }
-      this.navItems[1]['children'] = this.navItems[1]['children'].filter(function () { return true; });
+      if (!this.Map_Vehicules) { delete tmpNav[1]['children'][0] }
+      if (!this.Map_Comparaison) { delete tmpNav[1]['children'][1] }
+      tmpNav[1]['children'] = tmpNav[1]['children'].filter(function () { return true; });
     }
-    if (!this.Zones) { delete this.navItems[2] }
-    if (!this.VehiculesPlusProches) { delete this.navItems[3] }
+    if (!this.Zones) { delete tmpNav[2] }
+    if (!this.VehiculesPlusProches) { delete tmpNav[3] }
     if (!this.Rapports_RapportsDetailles && !this.Rapports_RapportsDetailles && !this.Rapports_RapportSynthetique && !this.Rapports_RapportAutomatique) {
-      delete this.navItems[4]
+      delete tmpNav[4]
     } else {
-      if (!this.Rapports_RapportsDetailles) { delete this.navItems[4]['children'][0] }
-      if (!this.Rapports_RapportsJournalier) { delete this.navItems[4]['children'][1] }
-      if (!this.Rapports_RapportSynthetique) { delete this.navItems[4]['children'][2] }
-      if (!this.Rapports_RapportAutomatique) { delete this.navItems[4]['children'][3] }
-      this.navItems[4]['children'] = this.navItems[4]['children'].filter(function () { return true; });
+      if (!this.Rapports_RapportsDetailles) { delete tmpNav[4]['children'][0] }
+      if (!this.Rapports_RapportsJournalier) { delete tmpNav[4]['children'][1] }
+      if (!this.Rapports_RapportSynthetique) { delete tmpNav[4]['children'][2] }
+      if (!this.Rapports_RapportAutomatique) { delete tmpNav[4]['children'][3] }
+      tmpNav[4]['children'] = tmpNav[4]['children'].filter(function () { return true; });
     }
     if (!this.Eco_EcoConduite && !this.Eco_EcoDetailles) {
-      delete this.navItems[5]
+      delete tmpNav[5]
      } else {
-      if (!this.Eco_EcoConduite) { delete this.navItems[5]['children'][0] }
-      if (!this.Eco_EcoDetailles) { delete this.navItems[5]['children'][1] }
-      this.navItems[5]['children'] = this.navItems[5]['children'].filter(function () { return true; });
+      if (!this.Eco_EcoConduite) { delete tmpNav[5]['children'][0] }
+      if (!this.Eco_EcoDetailles) { delete tmpNav[5]['children'][1] }
+      tmpNav[5]['children'] = tmpNav[5]['children'].filter(function () { return true; });
     }
     if (!this.Parametrage_Vehicules && !this.Parametrage_Conducteur && !this.Parametrage_Utilisateur && !this.Parametrage_CarteCarburant && !this.Parametrage_GroupeVehicules&& !this.Parametrage_Alertes) {
-      delete this.navItems[6]
+      delete tmpNav[6]
     } 
     if (!this.Maintenance_Pneu && !this.Maintenance_Consommation && !this.Maintenance_Accidents && !this.Maintenance_PlanEntretien) {
-      delete this.navItems[7]
+      delete tmpNav[7]
     } 
-    if (!this.Notifications) { delete this.navItems[8] }
-    if (!this.TrajetPlanner) { delete this.navItems[9] }
-    this.navItems = this.navItems.filter(function () { return true; });
+    if (!this.Notifications) { delete tmpNav[8] }
+    if (!this.TrajetPlanner) { delete tmpNav[9] }
+    this.navItems = tmpNav.filter(function () { return true; });
   }
 
   logout() {

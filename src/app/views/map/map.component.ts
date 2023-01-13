@@ -400,7 +400,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
       this.mapModal = this.tools.createMap(this.mapModal, 'mapModal', this.car, this.provider, false, false, false, false, false)
       this.inter = setInterval(() => {
         this.loadData()
-      }, 5000)
+      }, 500000)
       this.loadZones()
     }, 100);
   }
@@ -435,6 +435,24 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
         this.markersLayerGroup.addTo(this.map)
       }
       this.cluster.addTo(this.map)
+      this.cluster.on('clustermouseover', function (a) {
+        var table = `<table class="infoBoxTable"><tbody>`
+        var max = 15;
+        for (let i = 0; i < a.layer.getAllChildMarkers().length; i++) {
+          if (i < max) {
+            table += a.layer.getAllChildMarkers()[i]._popup._content.replace(/[\r\n]/gm, '').match(/(\<tr.*?\/tr>)/im)[0]
+          }
+          else {
+            break;
+          }
+        }
+        table += `</tbody></table>`
+        if (a.layer.getAllChildMarkers().length > max) table += `<div style="height: 30px;font-size: 32px;line-height: 16px;" class="text-center">...</div>`
+        a.layer.bindPopup(table, {
+          closeButton: false,
+          offset: L.point(0, -20)
+        }).openPopup()
+      });
     } else {
       let inter = setInterval(() => {
         if (this.map) {
@@ -447,6 +465,24 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
             this.markersLayerGroup.addTo(this.map);
           }
           this.cluster.addTo(this.map)
+          this.cluster.on('clustermouseover', function (a) {
+            var table = `<table class="infoBoxTable"><tbody>`
+            var max = 15;
+            for (let i = 0; i < a.layer.getAllChildMarkers().length; i++) {
+              if (i < max) {
+                table += a.layer.getAllChildMarkers()[i]._popup._content.replace(/[\r\n]/gm, '').match(/(\<tr.*?\/tr>)/im)[0]
+              }
+              else {
+                break;
+              }
+            }
+            table += `</tbody></table>`
+            if (a.layer.getAllChildMarkers().length > max) table += `<div style="height: 30px;font-size: 32px;line-height: 16px;" class="text-center">...</div>`
+            a.layer.bindPopup(table, {
+              closeButton: false,
+              offset: L.point(0, -20)
+            }).openPopup()
+          });
           clearInterval(inter)
         }
       }, 100)
@@ -612,6 +648,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
 
   rowClicked(index) {
     this.map.setView(this.markers[index].getLatLng(), this.maxZoom)
+    this.markers[index].openPopup();
     this.selectedVehiculeIndex = index
     if (!this.splitDisabled) {
       var v = this.vehicules[index]
@@ -656,7 +693,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   resetResume() {
     this.resume = { dureeOFF: "0h:0min", dureeON: "0h:0min", dureeMoving: "0h:0min", maxVitesse: 0, odometer: 0, kmParcoure: 0, fuelLevel: 0, consomation: 0, consomationMoyenne: "0" }
   }
-  
+
   rowDoubleClicked(event) {
     this.map.setView(this.markers[event].getLatLng(), this.maxZoom)
     this.selectedVehiculeIndex = event

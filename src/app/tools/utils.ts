@@ -25,6 +25,7 @@ export class util {
       this.getPermissions()
     }
     // console.log(userPermissions ,accountPermissions);
+    // console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     
     if (key.length > 1) {
       val = userPermissions[key[0]][key[1]]
@@ -172,14 +173,14 @@ export class util {
     let time = this.formatDate(new Date(v.timestamp * 1000))
 
     let age = this.getAge(v.timestamp)
-    let ageString = this.formatAge(age)
+    let ageString = this.formatAge(age)//<b style='vertical-align: sub;'>${v.name}</b>
     return `<table class="infoBoxTable">
             <tbody>
               <tr class="infoBoxRow"
                 style="background-color: #3598dc !important;color: #FFFFFF !important;">
                 <td>${img}&nbsp; </td>
                 <td class="infoBoxCell" style="vertical-align: bottom;">
-                <b style='vertical-align: sub;'>${v.name}</b>
+                <div style="display: inline-block;"><b style="vertical-align: sub;display: block;">${v.name}</b><sub style="display: block;line-height: 1;">&nbsp;&nbsp;${v.driverID}</sub></div>
                 <a href='https://www.google.com/maps/?q=${v.lat},${v.lng}' class='float-right' target='_blank'> <i class="fa fa-share text-light" style="font-size: x-large;"></i></a>
                 <b style="margin-right: 10px;" class="float-right" >
                 <i class="${this.getStatusClass(v.statusCode)}" style="vertical-align: bottom;"></i>${(this.getStatusName(v.statusCode))}</b></td>
