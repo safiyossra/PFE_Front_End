@@ -7,7 +7,7 @@
             class="btn btn-outline-primary"><i class="fa fa-plus-circle"></i> Ajouter Rapport Automatique </button>
           <div class="card-header-actions">
             <button class="btn text-primary mr-2" (click)="loadData()" [disabled]="loading">
-              <i class="fa fa-dot-circle-o" *ngIf="!loading"></i> 
+              <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
               <i class="fa fa-circle-o-notch fa-lg mr-1 fa-spin" *ngIf="loading"></i> &nbsp;Actualiser
             </button>
             <app-dropdown-export (export)="exporter($event)"></app-dropdown-export>
@@ -88,19 +88,20 @@
                             <label class="col-md-4 col-form-label">Emails des destinataires</label>
                             <div class="col-8">
                               <input type="text" class="form-control" [(ngModel)]="selectedRapport.recipients"
-                                [ngModelOptions]="{standalone: true}" placeholder="Emails des destinataires séparés par ;"
-                                autocomplete="on">
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="Emails des destinataires séparés par ;" autocomplete="on">
 
                             </div>
                           </div>
                           <div class="form-group row">
-                            <label class=" col-md-4 col-form-label" for="select1">Groupe de rapport</label>
+                            <label class=" col-md-4 col-form-label" for="select1">Type de rapport</label>
                             <div class="col-8 input-group">
-                              <my-dropdown-select class="form-control" [placeholder]="'Selectionner un groupe de rapport'"
-                                [selectPlaceholder]="'Cherhcer...'" [errorMsg]="errorMessageGroupreport"
-                                [showErrorMsg]="showErrorGroupreport" [options]="groups" [display]="'description'"
-                                [value]="'groupID'" [multiple]="false" [labelCount]="2"
-                                [selectedOptions]="selectedGroupReport" (selectionChange)="getSelectedGroupsreport($event)">
+                              <my-dropdown-select class="form-control"
+                                [placeholder]="'Selectionner un groupe de rapport'" [selectPlaceholder]="'Cherhcer...'"
+                                [errorMsg]="errorMessageGroupreport" [showErrorMsg]="showErrorGroupreport"
+                                [options]="cst.reportTypes" [display]="'text'" [value]="'val'" [multiple]="false"
+                                [labelCount]="2" [selectedOptions]="selectedGroupReport"
+                                (selectionChange)="getSelectedGroupsreport($event)">
                               </my-dropdown-select>
                             </div>
                           </div>
@@ -117,7 +118,7 @@
                           </div>
                         </div>
                       </div>
-                      </div>
+                    </div>
                   </div>
                 </div>
               </form>
@@ -138,11 +139,12 @@
   <div class="row">
     <div class="col-lg-12">
       <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
-      <my-gestionrapport-table (modify)="loadModify($event)"
-        (delete)="delete($event)" [data]="data" [isEditPermission]="isEditPermission">
+      <my-gestionrapport-table (modify)="loadModify($event)" (delete)="delete($event)" [data]="data"
+        [isEditPermission]="isEditPermission">
       </my-gestionrapport-table>
     </div>
   </div>
 </div>
 
 <!-- (delete)="delete($event)"  -->
+

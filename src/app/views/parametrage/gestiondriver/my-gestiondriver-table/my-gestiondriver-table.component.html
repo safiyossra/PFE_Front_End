@@ -15,7 +15,7 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>
           {{ columnNames[index] | uppercase }}
         </th>
-        <td mat-cell *matCellDef="let salle">
+        <td mat-cell *matCellDef="let salle" [ngClass]="salle['dutyStatus']==0 ? 'bg-danger':''">
           <div *ngIf="column=='actions' && isEditPermission">
             <button type="button" title="Modifier" (click)="modif(salle['driverID'])"
               class="btn rounded m-1 btn-primary"><i class="cil-pen"></i></button>

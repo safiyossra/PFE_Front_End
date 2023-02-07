@@ -45,13 +45,14 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="card-body">
-                <div class="form-group row">
-                  <label class=" col-md-4 col-form-label">Identifiant *</label>
-                  <div class="col-8 input-group">
+                <!-- <div class="form-group row">
+                  <label class=" col-md-4 col-form-label">Identifiant *</label> -->
+                  <!-- <div class="col-8 input-group">
                     <input type="text" class="form-control" [disabled]="mode=='Modifier'?'true':'false'" [(ngModel)]="selectedAlert.ruleID"
-                      [ngModelOptions]="{standalone: true}" placeholder="Saisir un identifiant">
-                    </div>
-                    </div>
+                      [ngModelOptions]="{standalone: true}" placeholder="Saisir un identifiant"> -->
+                      <input type="hidden" [(ngModel)]="selectedAlert.ruleID" [ngModelOptions]="{standalone: true}">
+                    <!-- </div>
+                    </div> -->
                     <div class="form-group row">
                       <label class="col-md-4 col-form-label" for="text-input">Actif</label>
                       <div class="col-8">

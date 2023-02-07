@@ -47,6 +47,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     lng: -5.83
   }
   maxZoom = 20
+  oneZoom = 17
   marker: any
   markers: L.Marker[] = []
   markersLayerGroup: any
@@ -85,7 +86,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     this.resetSelectedDate()
   }
 
-  loadVehiculeEvents() {
+  loadVehiculeEvents(isAlsoForPopup = false) {
     this.loadingEvents = true
     var route = this.router
     // console.log(this.selectedVehiculeID)
@@ -95,8 +96,8 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
           this.events = res
           // console.log(res);
           if (this.events.length > 1) {
-            this.extractTrajets()
-            this.extractResume()
+            var drivers = this.extractTrajets()
+            this.extractResume(drivers,isAlsoForPopup)
             this.splitDisabled = false
           } else {
             this.resetWhenNoEvent()
@@ -112,7 +113,28 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  extractResume() {
+  loadVehiculeEventsforPopup() {
+    var route = this.router
+    // console.log(this.selectedVehiculeID)
+    if (this.selectedVehiculeID != "") {//&unskip
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
+      this.vehiculeService.getVehiculeEvents("map-events?d=" + this.selectedVehiculeID + "&st=" + Math.round(today.getTime() / 1000)).subscribe({
+        next: (res: any) => {
+          // console.log(res);
+          if (res.length > 1) {
+            this.extractResumeForPopup(res)
+          }
+        }, error(err) {
+          if (err.status == 401) {
+            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+          }
+        }
+      })
+    }
+  }
+
+  extractResume(drivers,isAlsoForPopup = false) {
     var resumeTmp = { dureeOFF: 0, dureeON: 0, dureeMoving: 0, odometer: 0, kmParcoure: 0, fuelLevel: 0, consomation: 0, consomationMoyenne: "0" }
     resumeTmp.kmParcoure = this.round2d(this.events[this.events.length - 1].odometerKM - this.events[0].odometerKM)
     resumeTmp.consomation = this.round2d(this.events[this.events.length - 1].fuelTotal - this.events[0].fuelTotal)
@@ -158,10 +180,13 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
       i++
     });
     this.resume = { dureeOFF: this.tools.formatAge2(resumeTmp.dureeOFF), dureeON: this.tools.formatAge2(resumeTmp.dureeON), dureeMoving: this.tools.formatAge2(resumeTmp.dureeMoving), maxVitesse: this.resume.maxVitesse, kmParcoure: resumeTmp.kmParcoure, odometer: this.events[this.events.length - 1].odometerKM, fuelLevel: this.events[this.events.length - 1].fuelLevel, consomation: resumeTmp.consomation, consomationMoyenne: resumeTmp.consomationMoyenne }
+    if (isAlsoForPopup) {
+      this.setPopupLoadedContent(resumeTmp.kmParcoure, this.resume.dureeOFF, resumeTmp.dureeOFF, resumeTmp.dureeON, resumeTmp.dureeMoving, drivers);
+    }
   }
 
   extractTrajets() {
-    var selectedDay = this.selectedDate.getTime()
+    // var selectedDay = this.selectedDate.getTime()
     var data = [{ status: 0, start: 0, end: 0 }]
     var carstatMoving = false;
     var carstatON = false;
@@ -169,7 +194,10 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     var eventIndex = 0
     var maxVitesse = 0
     var i = 0
+    var drivers = []
     this.events.forEach(event => {
+      var driver = this.tools.getDriverName(this.drivers, event.driverID ?? '----')
+      if (!drivers.includes(driver)) drivers.push(driver)
       if (event.speedKPH > maxVitesse) maxVitesse = event.speedKPH
       if (this.cts.movingStatusCodes.includes(event.statusCode)) {   //Moving
 
@@ -217,6 +245,109 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     this.resume.maxVitesse = maxVitesse
 
     this.segmentedData = data;
+    return drivers
+  }
+
+  extractResumeForPopup(events) {
+    var data = [{ status: 0, start: 0, end: 0 }]
+    var carstatMoving = false;
+    var carstatON = false;
+    var carstatOFF = false;
+    var eventIndex = 0
+    var i = 0
+    var drivers = []
+    // console.log(events);
+
+    events.forEach(event => {
+      var driver = this.tools.getDriverName(this.drivers, event.driverID ?? '----')
+      if (!drivers.includes(driver)) drivers.push(driver)
+      if (this.cts.movingStatusCodes.includes(event.statusCode)) {   //Moving
+        if (carstatON || carstatOFF) {
+          eventIndex++
+          data[eventIndex] = { status: 3, start: i, end: i }
+          if (carstatON) carstatON = false;
+          if (carstatOFF) carstatOFF = false;
+        }
+        data[eventIndex].end = i
+        if (!carstatMoving) {
+          data[eventIndex].status = 3 //Moving
+          data[eventIndex].start = i
+          carstatMoving = true;
+        }
+      } else if (this.cts.onStatusCodes.includes(event.statusCode)) {  //ON
+        if (carstatMoving || carstatOFF) {
+          eventIndex++
+          data[eventIndex] = { status: 2, start: i, end: i }
+          if (carstatMoving) carstatMoving = false;
+          if (carstatOFF) carstatOFF = false;
+        }
+        data[eventIndex].end = i
+        if (!carstatON) {
+          data[eventIndex].status = 2 //ON
+          data[eventIndex].start = i
+          carstatON = true;
+        }
+      } else {  //OFF
+        if (carstatMoving || carstatON) {
+          eventIndex++
+          data[eventIndex] = { status: 1, start: i, end: i }
+          if (carstatMoving) carstatMoving = false;
+          if (carstatON) carstatON = false;
+        }
+        data[eventIndex].end = i
+        if (!carstatOFF) {
+          data[eventIndex].status = 1 //OFF
+          data[eventIndex].start = i
+          carstatOFF = true;
+        }
+      }
+      i++
+    });
+
+    var resumeTmp = { dureeOFF: 0, dureeON: 0, dureeMoving: 0, kmParcoure: 0 }//, consomation: 0, consomationMoyenne: "0" }
+    resumeTmp.kmParcoure = this.round2d(events[events.length - 1].odometerKM - events[0].odometerKM)
+    // resumeTmp.consomation = this.round2d(events[events.length - 1].fuelTotal - events[0].fuelTotal)
+    // resumeTmp.consomationMoyenne = (100 * (resumeTmp.consomation / (resumeTmp.kmParcoure != 0 ? resumeTmp.kmParcoure : 1))).toFixed(2);
+    data.forEach(tr => {
+      const start = events[tr.start].timestamp
+      const end = events[tr.end].timestamp
+      switch (tr.status) {
+        case 3:
+          resumeTmp.dureeMoving += end - start
+          break;
+        case 2:
+          resumeTmp.dureeON += end - start
+          break;
+        default:
+          resumeTmp.dureeOFF += end - start
+          break;
+      }
+    });
+    this.setPopupLoadedContent(resumeTmp.kmParcoure, this.tools.formatAge2(resumeTmp.dureeOFF), resumeTmp.dureeOFF, resumeTmp.dureeON, resumeTmp.dureeMoving, drivers);
+  }
+
+  setPopupLoadedContent(kmParcoure, dureeOFFString, dureeOFF, dureeON, dureeMoving, drivers) {
+   if(document.getElementById(this.selectedVehiculeID)) {
+
+    var totalTime = dureeOFF + dureeON + dureeMoving
+    var on = 0
+    var moving = 0
+    if (totalTime > 0) {
+      on = (dureeON * 360) / totalTime
+      moving = on + (dureeMoving * 360) / totalTime
+    }
+    var driversHtml = `<td style="vertical-align: top;" class="infoBoxCell" colspan="1"><div class="mb-1"> <i class="fa fa-user text-primary" style="font-size: larger;font-weight: 900;"></i>&nbsp;&nbsp;Conducteurs</div>`
+    for (let index = 0; index < drivers.length; index++) {
+      driversHtml += `<div class="ml-2" style="font-size: x-small;">&nbsp;-&nbsp;${drivers[index]}</div>`;
+    }
+    driversHtml +=`</td>`;
+    var parkAndParcouru = `<td class="infoBoxCell" style="vertical-align: top;" colspan="1">
+    <div class="mb-2"><i class="nav-icon icon-graph text-primary" style="font-size: initial;"></i>&nbsp;&nbsp;KM Parcouru <b>${kmParcoure} KM</b></div>
+    <div class="mb-2"><i class="fa fa-clock-o text-green" style="font-size: initial;"></i>&nbsp;&nbsp;On route <b>${this.tools.formatAge2(dureeMoving)}</b></div>
+    <div><i class="fa fa-clock-o text-red" style="font-size: initial;"></i>&nbsp;&nbsp;Parking <b>${dureeOFFString}</b></div></td>`;
+    var pie = `<td class="infoBoxCell" colspan="1"><div class="pie" style="margin: auto;width: 80px;height: 80px;border-radius: 50%;background: conic-gradient(#ff9800 0deg ${on}deg,#00e04e ${on}deg ${moving}deg,red ${moving}deg 360deg);"></div></td>`;
+    document.getElementById(this.selectedVehiculeID).innerHTML = driversHtml+parkAndParcouru+pie;
+    }
   }
 
   getMaxSpeed(start, end) {
@@ -370,7 +501,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   createMarker(ev: any, icon: any) {
-    var v = { name: "", timestamp: ev.timestamp, statusCode: ev.statusCode, fuelLevel: ev.fuelLevel, address: ev.address, odometer: ev.odometerKM, speed: ev.speedKPH, lat: ev.latitude, lng: ev.longitude }
+    var v = { name: "", timestamp: ev.timestamp, statusCode: ev.statusCode, fuelLevel: ev.fuelLevel, address: ev.address, odometer: ev.odometerKM, speed: ev.speedKPH, lat: ev.latitude, lng: ev.longitude,driverID: this.tools.getDriverName(this.drivers, ev.driverID?? '----')}
     var marker = L.marker([ev.latitude, ev.longitude], {
       icon: icon
     }).bindPopup(this.tools.formatPopUpContent(v), {
@@ -406,14 +537,14 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   initMarkers() {
-    this.cluster = L.markerClusterGroup({ animate: false, animateAddingMarkers: false, spiderfyOnMaxZoom: false, disableClusteringAtZoom: 20 });
+    this.cluster = L.markerClusterGroup({ animate: false, animateAddingMarkers: false, spiderfyOnMaxZoom: false, disableClusteringAtZoom: this.maxZoom });
     // console.log("this.vehicules", this.vehicules);
     this.vehicules.forEach((veh, index) => {
       this.markers.push(
         L.marker([veh.lat, veh.lng], {
           icon: this.tools.myIcon(veh, veh.statusCode, veh.icon),
         })
-          .bindPopup(this.tools.formatPopUpContent(veh), {
+          .bindPopup(this.tools.formatPopUpContent(veh,"",false), {
             closeButton: false,
             offset: L.point(0, -20)
           }).on('click', (event) => {
@@ -497,7 +628,12 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
         let v = this.vehicules[i]
         this.markers[i].setLatLng([v.lat, v.lng])
         this.markers[i].setIcon(this.tools.myIcon(v, v.statusCode, v.icon, this.selectedVehiculeIndex == i))
-        this.markers[i].setPopupContent(this.tools.formatPopUpContent(v))
+        var content = ""
+        if (this.markers[i].isPopupOpen()) {
+          content = document.getElementById(this.selectedVehiculeID)?.innerHTML??"";
+        }
+        this.markers[i].setPopupContent(this.tools.formatPopUpContent(v, content,false));
+        if (this.markers[i].isPopupOpen()) this.loadVehiculeEventsforPopup()
       }
     }
     // this.cluster.refreshClusters()
@@ -647,15 +783,22 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   rowClicked(index) {
-    this.map.setView(this.markers[index].getLatLng(), this.maxZoom)
+    this.map.setView(this.markers[index].getLatLng(), this.oneZoom)
     this.markers[index].openPopup();
     this.selectedVehiculeIndex = index
+    var v = this.vehicules[index]
+    this.selectedVehiculeID = v.id
+    this.selectedVName = v.name
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
     if (!this.splitDisabled) {
-      var v = this.vehicules[index]
       this.resetWhenNoEvent()
-      this.selectedVehiculeID = v.id
-      this.selectedVName = v.name
-      this.loadVehiculeEvents()
+      if (this.selectedDate.getTime() == today.getTime())
+        this.loadVehiculeEvents(true)
+      else
+        this.loadVehiculeEvents()
+    } else {
+      this.loadVehiculeEventsforPopup()
     }
     for (let i = 0; i < this.markers.length; i++) {
       if (this.vehicules[i]) {
@@ -695,14 +838,14 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   rowDoubleClicked(event) {
-    this.map.setView(this.markers[event].getLatLng(), this.maxZoom)
-    this.selectedVehiculeIndex = event
-    for (let i = 0; i < this.markers.length; i++) {
-      if (this.vehicules[i]) {
-        let v = this.vehicules[i]
-        this.markers[i].setIcon(this.tools.myIcon(v, v.statusCode, v.icon, this.selectedVehiculeIndex == i, true))
-      }
-    }
+    // this.map.setView(this.markers[event].getLatLng(), this.maxZoom)
+    // this.selectedVehiculeIndex = event
+    // for (let i = 0; i < this.markers.length; i++) {
+    //   if (this.vehicules[i]) {
+    //     let v = this.vehicules[i]
+    //     this.markers[i].setIcon(this.tools.myIcon(v, v.statusCode, v.icon, this.selectedVehiculeIndex == i, true))
+    //   }
+    // }
   }
 
   collapseClicked() {
@@ -779,7 +922,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
           // console.log('overlayadd', e.layer);
           if (e.layer._latlng && !e.layer._radius)
             this.map.setView(e.layer._latlng, 15)
-          else this.map.fitBounds(e.layer.getBounds())
+          else this.map.fitBounds(e.layer.getLayers()[0].getBounds())
         })
       }, error(err) {
         console.log(err);
@@ -799,19 +942,17 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   getZoneLayer(zone: Zone) {
     var layer: any
     if (zone.zoneType == ZoneType.Circle) {
-      layer = L.circle(new L.LatLng(zone.latitude1, zone.longitude1), zone.radius);
+      var icon = this.tools.myIconTile4Zone(zone.description)
+      layer = L.layerGroup([L.circle(new L.LatLng(zone.latitude1, zone.longitude1), zone.radius), L.marker(new L.LatLng(zone.latitude1, zone.longitude1), { icon: icon })]);
     } else if (zone.zoneType == ZoneType.Polygon) {
-      layer = L.polygon(zone.latLngs)
+      var icon = this.tools.myIconTile4Zone(zone.description)
+      layer = L.layerGroup([L.polygon(zone.latLngs), L.marker(this.tools.computeCentroid(zone.latLngs), { icon: icon })])
     } else {
       var iconName = "default"
       if (this.iconExists(zone.iconName)) {
         iconName = zone.iconName
       }
-      var icon = L.icon({
-        iconUrl: 'assets/img/POI/' + iconName + '.png',
-        iconSize: [40, 50],
-        iconAnchor: [20, 50]
-      });
+      var icon = this.tools.myIcon4POI(zone.description, 'assets/img/POI/' + iconName + '.png')
       layer = L.marker(new L.LatLng(zone.latitude1, zone.longitude1), { icon: icon })
     }
     return layer

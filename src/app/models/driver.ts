@@ -19,12 +19,14 @@ export class Driver {
     restrictions: any
     notes: any
     deviceID: any
+    dutyStatus: any
 
 
     constructor(driverID?, contactPhone?, displayName?, contactEmail?, badgeID?, birthdate?, licenseType?, licenseNumber?, licenseExpire?,
-        carTitle?, description?, licensePlate?, insuranceExpire?, address?, restrictions?, notes?, deviceID?, birthdateString?, licenseExpireString?, insuranceExpireString?,
+        carTitle?, description?, licensePlate?, insuranceExpire?, address?, restrictions?, notes?, deviceID?, birthdateString?, licenseExpireString?, insuranceExpireString?,dutyStatus?,
     ) {
         this.driverID = driverID ?? ''
+        this.dutyStatus = dutyStatus ?? 1
         this.contactPhone = contactPhone ?? ''
         this.displayName = displayName ?? ''
         this.contactEmail = contactEmail ?? ''

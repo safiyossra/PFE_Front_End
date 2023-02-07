@@ -23,7 +23,7 @@ export class ModalComponent implements AfterViewChecked {
   @ViewChild('modalRoot', { static: false }) modalRoot: ElementRef;
   @ViewChild('modalBody', { static: false }) modalBody: ElementRef;
   @ViewChild('modalHeader', { static: false }) modalHeader: ElementRef;
-  @ViewChild('modalFooter', { static: false }) modalFooter: ElementRef;
+  // @ViewChild('modalFooter', { static: false }) modalFooter: ElementRef;
   @ViewChild('closeIcon', { static: false }) closeIcon: ElementRef;
 
   visible: boolean;
@@ -118,7 +118,7 @@ export class ModalComponent implements AfterViewChecked {
   }
 
   calcBodyHeight(): void {
-    const diffHeight = this.modalHeader.nativeElement.offsetHeight+(this.modalFooter.nativeElement.offsetHeight/4);
+    const diffHeight = this.modalHeader.nativeElement.offsetHeight;//+(this.modalFooter.nativeElement.offsetHeight/4);
     const contentHeight = this.modalRoot.nativeElement.offsetHeight - diffHeight;
     this.modalBody.nativeElement.style.height = contentHeight+'px';
     this.modalBody.nativeElement.style.maxHeight = 'none';
@@ -156,7 +156,7 @@ export class ModalComponent implements AfterViewChecked {
     this.modalRoot.nativeElement.style.left = '0px';
     this.modalRoot.nativeElement.style.width = '100vw';
     this.modalRoot.nativeElement.style.height = '100vh';
-    const diffHeight = this.modalHeader.nativeElement.offsetHeight + (this.modalFooter.nativeElement.offsetHeight/4);
+    const diffHeight = this.modalHeader.nativeElement.offsetHeight;// + (this.modalFooter.nativeElement.offsetHeight/4);
     this.modalBody.nativeElement.style.height = 'calc(100vh - ' + diffHeight + 'px)';
     this.modalBody.nativeElement.style.maxHeight = 'none';
 

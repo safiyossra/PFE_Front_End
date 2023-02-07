@@ -143,7 +143,7 @@ export class CrudgroupeComponent {
 
   ajouter() {
     var route = this.router
-    if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
+    if (!this.selectedGroupevehicules.displayName) {//!this.selectedGroupevehicules.groupID || 
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.dataService.addDevicesGroup(this.selectedGroupevehicules)

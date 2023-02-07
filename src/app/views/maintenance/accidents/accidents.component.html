@@ -242,8 +242,8 @@
                         </alert>
                         <div class="listPlans">
                             <!-- <div *ngFor="let ass of assuranceTable" class="card planAsurance"> -->
-                                <div *ngFor="let ass of assuranceTable" class="card">
-                                    <div class="card-header row m-0 p-1">
+                            <div *ngFor="let ass of assuranceTable" class="card">
+                                <div class="card-header row m-0 p-1">
                                     <div class="col-md-6 my-auto">
                                         <h6>{{ass.designation}}</h6>
                                     </div>
@@ -256,11 +256,11 @@
                                                 class="cil-pen"></i></button>
                                     </div>
                                 </div>
-                                    <ol class="card-body m-0 ml-2">
-                                        <li *ngFor="let etape of ass.etapes; let index = index">{{etape.designation}}</li>
-                                    </ol>
+                                <ol class="card-body m-0 ml-2">
+                                    <li *ngFor="let etape of ass.etapes; let index = index">{{etape.designation}}</li>
+                                </ol>
 
-                                </div>
+                            </div>
                             <!-- </div> -->
 
                         </div>

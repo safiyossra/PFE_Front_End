@@ -21,7 +21,7 @@ export class CrudNotifsRulesComponent {
   selectedAlert = new AlertRule();
   errorMsg: string;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util, public cnst: Constant, private zoneService: ZoneService, private router: Router,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
+  constructor(private dataService: DataService, private tools: util, public cnst: Constant, private zoneService: ZoneService, private router: Router, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
   crons_rule = [{ name: "Non", val: "0" }, { name: "Oui", val: "1" }, { name: "5 Minutes", val: "5min" },
   { name: "15 Minutes", val: "15min" }, { name: "30 Minute", val: "30min" }, { name: "Hourly", val: "hourly" },
   { name: "Daily", val: "daily" }, { name: "Weekly", val: "weekly" },]
@@ -81,8 +81,8 @@ export class CrudNotifsRulesComponent {
   }
 
   ngOnInit() {
-    this.isEditPermission = this.tools.isAuthorized('Parametrage_Alertes','Mettre a jour')
-    this.isAddPermission = this.tools.isAuthorized('Parametrage_Alertes','Ajouter')
+    this.isEditPermission = this.tools.isAuthorized('Parametrage_Alertes', 'Mettre a jour')
+    this.isAddPermission = this.tools.isAuthorized('Parametrage_Alertes', 'Ajouter')
     this.loadData();
     this.loadPOIs();
     this.getGroup();
@@ -190,7 +190,7 @@ export class CrudNotifsRulesComponent {
     var route = this.router
     this.errorMsg = ""
     this.selectedAlert.selector = this.resultedRule
-    if (!this.selectedAlert.ruleID || !this.selectedAlert.description || !this.selectedAlert.selector) {
+    if (!this.selectedAlert.description || !this.selectedAlert.selector) {//!this.selectedAlert.ruleID || 
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       if (this.selectedAlert.selector == "") this.errorMsg = "Veuillez saisir un selector ."
@@ -238,7 +238,7 @@ export class CrudNotifsRulesComponent {
           }, error(err) {
             console.log("error", err)
             this.modalLoading = false;
-            this.errorMsg = "Erreur "+err
+            this.errorMsg = "Erreur " + err
             if (err.status == 401) {
               route.navigate(['login'], { queryParams: { returnUrl: route.url } });
             }
@@ -409,9 +409,9 @@ export class CrudNotifsRulesComponent {
     this.selectedAlert.v = this.selectedVs
   }
 
- 
+
   exporter(type) {
-    type == 1 ? this.exportingPdfTool.exportPdf_Alerts(this.data, "Rapport de Notifications Rules " ) :
+    type == 1 ? this.exportingPdfTool.exportPdf_Alerts(this.data, "Rapport de Notifications Rules ") :
       this.exportingExcelTool.Export_Alerts(this.data, "Rapport de Notifications Rules ")
-}
+  }
 }

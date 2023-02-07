@@ -24,7 +24,7 @@ export class CruddriverComponent {
   isEditPermission = false
   isAddPermission = false
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(private dataService: DataService, private tools: util,public cts: Constant, private router: Router, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel,) { }
+  constructor(private dataService: DataService, private tools: util, public cts: Constant, private router: Router, private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel,) { }
 
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -80,8 +80,8 @@ export class CruddriverComponent {
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
   ngOnInit() {
-    this.isEditPermission = this.tools.isAuthorized('Parametrage_Conducteur','Mettre a jour')
-    this.isAddPermission = this.tools.isAuthorized('Parametrage_Conducteur','Ajouter')
+    this.isEditPermission = this.tools.isAuthorized('Parametrage_Conducteur', 'Mettre a jour')
+    this.isAddPermission = this.tools.isAuthorized('Parametrage_Conducteur', 'Ajouter')
     this.getDev();
     this.loadData();
   }
@@ -115,7 +115,7 @@ export class CruddriverComponent {
     this.dataService.getDriverData(urlParams).subscribe({
       next: (d: any) => {
         this.data = d;
-        // console.log(d);
+        console.log(d);
         this.loading = false;
       }, error(err) {
         console.log(err);
@@ -132,6 +132,7 @@ export class CruddriverComponent {
     this.selectedTab = 0
     this.selectedDriver = new Driver();
     this.selectedDeviceModalOption = [];
+    this.errorMsg = ""
     if (ev) {
       var url = "?d=" + ev
       this.modalLoading = true;
@@ -199,10 +200,10 @@ export class CruddriverComponent {
     this.selectedDriver.insuranceExpire = Math.round((new Date(this.selectedDriver.insuranceExpireString).getTime()) / 1000);
     if (this.mode == "Ajouter") this.ajouter()
     if (this.mode == "Modifier") this.modifier()
-    this.saveDriverocument();
+    // this.saveDriverocument();
   }
 
-  convertDatesToTimestamp(){
+  convertDatesToTimestamp() {
     this.selectedDriver.birthdateString = this.tools.dateToTimestamp(this.selectedDriver.birthdate);
     this.selectedDriver.licenseExpireString = this.tools.dateToTimestamp(this.selectedDriver.licenseExpire);
     this.selectedDriver.insuranceExpireString = this.tools.dateToTimestamp(this.selectedDriver.insuranceExpire);
@@ -211,44 +212,44 @@ export class CruddriverComponent {
   ajouter() {
     var route = this.router
     this.errorMsg = ""
-    if (!this.selectedDriver.driverID || !this.selectedDriver.displayName || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail) {
+    if (!this.selectedDriver.displayName) {//!this.selectedDriver.driverID ||  || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      if (!this.tools.ValidateEmail(this.selectedDriver.contactEmail)) {
+      if (this.selectedDriver.contactEmail && !this.tools.ValidateEmail(this.selectedDriver.contactEmail)) {
         this.errorMsg = "Vous avez saisi un email de contact invalid."
-      } else if (!this.tools.ValidatePhone(this.selectedDriver.contactPhone)) {
+      } else if (this.selectedDriver.contactPhone && !this.tools.ValidatePhone(this.selectedDriver.contactPhone)) {
         this.errorMsg = "Vous avez saisi un telephone de contact invalid."
       } else {
         this.dataService.addDriver(this.selectedDriver)
-        .pipe(
-          catchError(err => {
-            // console.log("res", err)
-            this.modalLoading = false;
-            if (err.status == 401) {
-              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-            }
+          .pipe(
+            catchError(err => {
+              // console.log("res", err)
+              this.modalLoading = false;
+              if (err.status == 401) {
+                route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+              }
 
-            else if (err.status == 400) {
-              console.log(err);
-              this.errorMsg = "Conducteur avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
-              console.log(this.errorMsg);
-            }
+              else if (err.status == 400) {
+                console.log(err);
+                this.errorMsg = "Conducteur avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
+                console.log(this.errorMsg);
+              }
 
-            else if (err.status == 402) {
-              this.errorMsg = "Erreur l'ajout est bloqué."
+              else if (err.status == 402) {
+                this.errorMsg = "Erreur l'ajout est bloqué."
+              }
+              return throwError(err);
+            })
+          )
+          .subscribe({
+            next: (res: any) => {
+              // console.log("res", res)
+              this.loadData()
+              this.primaryModal.hide()
+              this.errorMsg = ""
+              this.saveDriverocument()
             }
-            return throwError(err);
           })
-        )
-        .subscribe({
-          next: (res: any) => {
-            // console.log("res", res)
-            this.loadData()
-            this.primaryModal.hide()
-            this.errorMsg = ""
-            this.saveDriverocument()
-          }
-        })
       }
     }
   }
@@ -258,12 +259,12 @@ export class CruddriverComponent {
     this.openAlert = false
     this.errorMsg = ""
     // console.log("selectedDriver", this.selectedDriver)
-    if (!this.selectedDriver.displayName || !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail) {
+    if (!this.selectedDriver.displayName) {//|| !this.selectedDriver.contactPhone || !this.selectedDriver.contactEmail
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      if (!this.tools.ValidateEmail(this.selectedDriver.contactEmail)) {
+      if (this.selectedDriver.contactEmail && !this.tools.ValidateEmail(this.selectedDriver.contactEmail)) {
         this.errorMsg = "Vous avez saisi un email de contact invalid."
-      } else if (!this.tools.ValidatePhone(this.selectedDriver.contactPhone)) {
+      } else if (this.selectedDriver.contactPhone && !this.tools.ValidatePhone(this.selectedDriver.contactPhone)) {
         this.errorMsg = "Vous avez saisi un telephone de contact invalid."
       } else {
         this.dataService.updateDriver(this.selectedDriver)
@@ -292,6 +293,7 @@ export class CruddriverComponent {
               // console.log("res", res)
               this.loadData()
               // this.primaryModal.hide()
+              this.saveDriverocument()
               this.errorMsg = ""
               this.openAlert = true
             }
@@ -326,114 +328,119 @@ export class CruddriverComponent {
       this.selectedDevice = null
   }
 
+  activeStatechange() {
+    if (!this.selectedDriver.dutyStatus)
+      this.selectedDriver.badgeID = ""
+  }
+
   exporter(type) {
     type == 1 ? this.exportingPdfTool.exportPdf_Conducteurs(this.data, "Rapport de List Conducteures ") :
       this.exportingExcelTool.ExportConducteurs(this.data, "Rapport de List Conducteures ")
   }
 
   /////////////////
- /******************* Driver Document Tab *************** */
- getTypePermis(event) {
-  // console.log("event ", event);
-  this.driverDocument.typePermis = event.toString();
-  // console.log("this.driverDocument.typePermis ", this.driverDocument.typePermis);
-}
-
-saveDriverocument() {
-
-  // console.log("1----driverdocument ", this.driverDocument);
-  this.driverDocument.driverID = this.selectedDriver.driverID
-
-  if (this.driverDocument.dateDelivrancePermis)
-    this.driverDocument.dateDelivrancePermis = this.tools.dateToTimestamp(this.driverDocument.dateDelivrancePermis)
-
-  if (this.driverDocument.dateValiditePermis)
-    this.driverDocument.dateValiditePermis = this.tools.dateToTimestamp(this.driverDocument.dateValiditePermis)
-
-  if (this.driverDocument.dateValiditeAdr)
-    this.driverDocument.dateValiditeAdr = this.tools.dateToTimestamp(this.driverDocument.dateValiditeAdr)
-
-  if (this.driverDocument.dateValiditePassport)
-    this.driverDocument.dateValiditePassport = this.tools.dateToTimestamp(this.driverDocument.dateValiditePassport)
-
-  if (this.driverDocument.dateValiditeVisa)
-    this.driverDocument.dateValiditeVisa = this.tools.dateToTimestamp(this.driverDocument.dateValiditeVisa)
-
-  if (this.driverDocument.dateValiditeVisit)
-    this.driverDocument.dateValiditeVisit = this.tools.dateToTimestamp(this.driverDocument.dateValiditeVisit)
-
-  if (this.driverDocument.dateValiditeAssurance)
-    this.driverDocument.dateValiditeAssurance = this.tools.dateToTimestamp(this.driverDocument.dateValiditeAssurance)
-  // console.log("2----driverdocument ", this.driverDocument);
-
-  this.dataService.addDriverDocument(this.driverDocument).subscribe({
-    next:
-      resp => {
-        // console.log("resp driver document ", resp)
-        this.formatData(resp)
-
-        // this.primaryModal.hide()
-      },
-    error(err) {
-      console.log("erooooooooor ", err);
-
-    }
-
-  })
-}
-
-getDriverDocument(driverID) {
-  // console.log("driverID ", driverID);
-
-  let url = "?driverID=" + driverID
-  this.dataService.getDriverDocument(url).subscribe({
-    next:
-      resp => {
-        // console.log("resp ", resp);
-
-        this.formatData(resp)
-        // console.log("  this.driverDocument ", this.driverDocument);
-
-      },
-    error(err) {
-      console.log("error ", err);
-
-    }
-  })
-
-}
-
-formatData(resp) {
-  if ([].concat(resp).length > 0) {
-    this.driverDocument = resp[0];
-    if (this.driverDocument.dateDelivrancePermis)
-      this.driverDocument.dateDelivrancePermis = this.tools.formatDateForInput(new Date(this.driverDocument.dateDelivrancePermis * 1000))
-
-    if (this.driverDocument.dateValiditePermis)
-      this.driverDocument.dateValiditePermis = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditePermis * 1000))
-
-    if (this.driverDocument.dateValiditeAdr)
-      this.driverDocument.dateValiditeAdr = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditeAdr * 1000))
-
-    if (this.driverDocument.dateValiditePassport)
-      this.driverDocument.dateValiditePassport = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditePassport * 1000))
-
-    if (this.driverDocument.dateValiditeVisa)
-      this.driverDocument.dateValiditeVisa = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditeVisa * 1000))
-
-    if (this.driverDocument.dateValiditeVisit)
-      this.driverDocument.dateValiditeVisit = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditeVisit * 1000))
-
-    if (this.driverDocument.dateValiditeAssurance)
-      this.driverDocument.dateValiditeAssurance = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditeAssurance * 1000))
-
-    if (this.driverDocument.typePermis)
-      this.typeSelected = Array.from(this.driverDocument.typePermis.split(','));
-  } else {
-    this.driverDocument = new DriverDocument()
+  /******************* Driver Document Tab *************** */
+  getTypePermis(event) {
+    // console.log("event ", event);
+    this.driverDocument.typePermis = event.toString();
+    // console.log("this.driverDocument.typePermis ", this.driverDocument.typePermis);
   }
 
-}
+  saveDriverocument() {
+
+    // console.log("1----driverdocument ", this.driverDocument);
+    this.driverDocument.driverID = this.selectedDriver.driverID
+
+    if (this.driverDocument.dateDelivrancePermis)
+      this.driverDocument.dateDelivrancePermis = this.tools.dateToTimestamp(this.driverDocument.dateDelivrancePermis)
+
+    if (this.driverDocument.dateValiditePermis)
+      this.driverDocument.dateValiditePermis = this.tools.dateToTimestamp(this.driverDocument.dateValiditePermis)
+
+    if (this.driverDocument.dateValiditeAdr)
+      this.driverDocument.dateValiditeAdr = this.tools.dateToTimestamp(this.driverDocument.dateValiditeAdr)
+
+    if (this.driverDocument.dateValiditePassport)
+      this.driverDocument.dateValiditePassport = this.tools.dateToTimestamp(this.driverDocument.dateValiditePassport)
+
+    if (this.driverDocument.dateValiditeVisa)
+      this.driverDocument.dateValiditeVisa = this.tools.dateToTimestamp(this.driverDocument.dateValiditeVisa)
+
+    if (this.driverDocument.dateValiditeVisit)
+      this.driverDocument.dateValiditeVisit = this.tools.dateToTimestamp(this.driverDocument.dateValiditeVisit)
+
+    if (this.driverDocument.dateValiditeAssurance)
+      this.driverDocument.dateValiditeAssurance = this.tools.dateToTimestamp(this.driverDocument.dateValiditeAssurance)
+    // console.log("2----driverdocument ", this.driverDocument);
+
+    this.dataService.addDriverDocument(this.driverDocument).subscribe({
+      next:
+        resp => {
+          // console.log("resp driver document ", resp)
+          this.formatData(resp)
+
+          // this.primaryModal.hide()
+        },
+      error(err) {
+        console.log("erooooooooor ", err);
+
+      }
+
+    })
+  }
+
+  getDriverDocument(driverID) {
+    // console.log("driverID ", driverID);
+
+    let url = "?driverID=" + driverID
+    this.dataService.getDriverDocument(url).subscribe({
+      next:
+        resp => {
+          // console.log("resp ", resp);
+
+          this.formatData(resp)
+          // console.log("  this.driverDocument ", this.driverDocument);
+
+        },
+      error(err) {
+        console.log("error ", err);
+
+      }
+    })
+
+  }
+
+  formatData(resp) {
+    if ([].concat(resp).length > 0) {
+      this.driverDocument = resp[0];
+      if (this.driverDocument.dateDelivrancePermis)
+        this.driverDocument.dateDelivrancePermis = this.tools.formatDateForInput(new Date(this.driverDocument.dateDelivrancePermis * 1000))
+
+      if (this.driverDocument.dateValiditePermis)
+        this.driverDocument.dateValiditePermis = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditePermis * 1000))
+
+      if (this.driverDocument.dateValiditeAdr)
+        this.driverDocument.dateValiditeAdr = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditeAdr * 1000))
+
+      if (this.driverDocument.dateValiditePassport)
+        this.driverDocument.dateValiditePassport = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditePassport * 1000))
+
+      if (this.driverDocument.dateValiditeVisa)
+        this.driverDocument.dateValiditeVisa = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditeVisa * 1000))
+
+      if (this.driverDocument.dateValiditeVisit)
+        this.driverDocument.dateValiditeVisit = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditeVisit * 1000))
+
+      if (this.driverDocument.dateValiditeAssurance)
+        this.driverDocument.dateValiditeAssurance = this.tools.formatDateForInput(new Date(this.driverDocument.dateValiditeAssurance * 1000))
+
+      if (this.driverDocument.typePermis)
+        this.typeSelected = Array.from(this.driverDocument.typePermis.split(','));
+    } else {
+      this.driverDocument = new DriverDocument()
+    }
+
+  }
 }
 
 

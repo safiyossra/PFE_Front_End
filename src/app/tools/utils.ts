@@ -26,12 +26,12 @@ export class util {
     }
     // console.log(userPermissions ,accountPermissions);
     // console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-    
+
     if (key.length > 1) {
       val = userPermissions[key[0]][key[1]]
       vala = accountPermissions[key[0]][key[1]]
-    }else if (key.length == 1) { val = userPermissions[key[0]]; vala = accountPermissions[key[0]]; }
-    if (vala == undefined || val == undefined) return false;
+    } else if (key.length == 1) { val = userPermissions[key[0]]; vala = accountPermissions[key[0]]; }
+    if (vala == undefined || val == undefined) return true;///false
     var index = this.cst.permissions.indexOf(val);
     var indexa = this.cst.permissions.indexOf(vala);
     var indexP = this.cst.permissions.indexOf(permission);
@@ -40,10 +40,10 @@ export class util {
         return true;
       }
     }
-    return false;
+    return true;/////////////false
   };
 
-  public setPermissions(uPermissions: any,aPermissions: any) {
+  public setPermissions(uPermissions: any, aPermissions: any) {
     this.resetPermissions()
     uPermissions = this.encodePermissions(uPermissions);
     localStorage.setItem('rm', uPermissions);
@@ -166,7 +166,40 @@ export class util {
     })
   }
 
-  formatPopUpContent(v) {
+  myIcon4POI(n,icon) {
+    return L.divIcon({
+      html: `<div class="center-marker"></div>` +
+        `<img class="my-icon-img" src="${icon}">` +
+        `<span class="my-icon-title">${n}</span>`,
+      iconSize: [60, 60],
+      // iconAnchor: [25, 20],
+      className: 'my-div-icon' 
+    })
+  }
+
+  myIconTile4Zone(n) {
+    return L.divIcon({
+      html:`<span class="my-icon-title-Zone">${n}</span>`,
+      iconSize: [60, 20],
+      className: 'my-div-icon' 
+      // iconAnchor: [25, 20],
+    })
+  }
+
+  computeCentroid(points:any) {
+    var latitude = 0;
+    var longitude = 0;
+    var n = points.length;
+  
+    for (var i=0;i< points.length;i++) {
+      latitude += points[i][0];
+      longitude += points[i][1];
+    }
+  
+    return new L.LatLng(latitude / n,longitude / n)
+  }
+
+  formatPopUpContentV2(v) {
     let img = v.icon != undefined ? '<img src="assets/img/vehicules/' + this.getImage(v.icon) + '-img.png">' : "Info"
     let time = this.formatDate(new Date(v.timestamp * 1000))
 
@@ -215,6 +248,59 @@ export class util {
           </table>`
   }
 
+  formatPopUpContent(v,stats="",forDetails=true) {
+    // console.log(v,stats);
+    
+    let img = v.icon != undefined ? '<img src="assets/img/vehicules/' + this.getImage(v.icon) + '-img.png">' : ""
+    let time = this.formatDate(new Date(v.timestamp * 1000))
+    stats = forDetails?"":stats && stats!=""?stats:`<td style="vertical-align: top;" class="infoBoxCell" colspan="1"><div class="mb-1"> <i class="fa fa-user text-primary" style="font-size: larger;font-weight: 900;"></i>&nbsp;&nbsp;Conducteurs</div><div class="ml-2">&nbsp;-&nbsp;...</div></td><td class="infoBoxCell" style="vertical-align: top;" colspan="1"><div class="mb-2"><i class="nav-icon icon-graph text-primary" style="font-size: initial;"></i>&nbsp;&nbsp;KM Parcouru <b>... KM</b></div>
+    <div class="mb-2"><i class="fa fa-clock-o text-green" style="font-size: initial;"></i>&nbsp;&nbsp;On route <b>...</b></div>
+    <div><i class="fa fa-clock-o text-red" style="font-size: initial;"></i>&nbsp;&nbsp;Parking <b>...</b></div></td><td class="infoBoxCell" colspan="1"><div class="pie" style="margin: auto;width: 80px;height: 80px;border-radius: 50%;background: conic-gradient(#ff9800 0deg 0deg,#00e04e 0deg 0deg,#ddd 0deg 360deg);"></div></td>`
+    let age = this.getAge(v.timestamp)
+    let ageString = this.formatAge(age)//<b style='vertical-align: sub;'>${v.name}</b>#5590ff
+    return `<table class="infoBoxTable">
+    <tbody>
+      <tr class="infoBoxRow"
+        style="background-color: #fff !important;color: #000 !important;border-bottom: 1px solid #cecece;">
+        <td class="infoBoxCell" style="vertical-align: bottom;" colspan="2">
+          <i class="${this.getStatusClass(v.statusCode)}"></i>
+          <div style="display: inline-block;"><b style="vertical-align: sub;display: block;">${v.name}</b><sub
+              style="display: block;line-height: 1;">${v.driverID??""}</sub></div>
+        </td>
+        <td style="text-align: end;" colspan="1">${img}&nbsp; 
+        <a href="https://www.google.com/maps/?q=${v.lat},${v.lng}" target="_blank" class="ml-3"> <i
+            class="fa fa-share text-primary" style="font-size: x-large;"></i></a></td>
+      </tr>
+      <tr class="infoBoxRow">
+        <td class="infoBoxCell" colspan="1"><i class="fa fa-clock-o text-primary"
+            style="font-size: initial;"></i>&nbsp;&nbsp;${ageString}</td>
+        <td class="infoBoxCell" colspan="2"><i class="fa fa-calendar text-primary"
+            style="font-size: larger;"></i>&nbsp;&nbsp;${time}</td>
+      </tr>
+      <tr class="infoBoxRow">
+        <td class="infoBoxCell" colspan="1"><i class="fa fa-dashboard text-primary"
+            style="font-size: larger;font-weight: 900;"></i>&nbsp;&nbsp;${v.odometer} Km</td>
+        <td class="infoBoxCell" colspan="1"><i class="nav-icon icon-speedometer text-primary"
+            style="font-size: larger;font-weight: 900;"></i>&nbsp;&nbsp;${v.speed} Km/H </td>
+        <td class="infoBoxCell" colspan="1"><i class="fa fa-battery-quarter text-primary"
+            style="font-size: larger;font-weight: 900;"></i>&nbsp;&nbsp;${v.fuelLevel} L</td>
+      </tr>
+      <tr class="infoBoxRow" id="${v.id}">
+        ${stats}
+      </tr>
+      <tr class="infoBoxRow">
+        <td class="infoBoxCell" colspan="3">
+          <div class="m-auto bg-success rounded" style="height: 8px!important;"></div>
+        </td>
+      </tr>
+      <tr class="infoBoxRow">
+        <td class="infoBoxCell" colspan="3"><i class="fa fa-map-marker text-primary"
+            style="font-size: large;"></i>&nbsp;${v.address}</td>
+      </tr>
+    </tbody>
+  </table>`
+  }
+
   formatPopUpContentPOI(v, gps) {
     let img = '<img src="assets/img/markers/pin_n.png" style="height: 28px;">';
     return `<table class="infoBoxTable">
@@ -229,6 +315,11 @@ export class util {
             </tbody>
           </table>`
   }
+
+  formatPopUpContentPOIAndZone(v) {
+    return `<div class="infoBoxZone">${v}</div>`
+  }
+
   // // 👇️ format as "YYYY-MM-DD hh:mm:ss"
   formatDate(date: Date) {
     return formatDate(date, 'Y-M-d HH:mm:ss', this.locale);
@@ -467,6 +558,7 @@ export class util {
     })
     return map;
   }
+
   getImageId(vehiculeType) {
     return this.cst.motor.includes(vehiculeType) ? "moto" : this.cst.truck.includes(vehiculeType) ? "remolque" : this.cst.sprinter.includes(vehiculeType) ? "bus" : this.cst.remorque.includes(vehiculeType) ?
       "trailer" : this.cst.camions.includes(vehiculeType) ? "fleetGreen" : this.cst.truck_head.includes(vehiculeType) ? "volvo2" : "default"
@@ -496,10 +588,15 @@ export class util {
   }
 
   ValidateEmail(mail) {
-    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
-      return (true)
+    var emails = mail.split(";")
+    for (let index = 0; index < emails.length; index++) {
+      const email = emails[index];
+      if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
+        return false
     }
-    return (false)
+    }
+    
+    return true
   }
 
   ValidatePhone(phone) {

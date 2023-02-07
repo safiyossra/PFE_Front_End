@@ -129,16 +129,16 @@
                 </td>
             </tr>
             <tr>
-                <td class="text-center p-2 hover" style="cursor:pointer;" (click)="share_Clicked()"><span><i
-                            class="icon-share text-blue h5 align-middle hover" title="Partager le suivi"></i></span>
+                <td class="text-center hover" style="cursor:pointer;"> <a class="p-2" [routerLink]="['./details', selectedRow?.id]"><i
+                            class="icon-graph text-blue h5 m-0 align-middle hover" title="Plus de detailles"></i></a>
                 </td>
             </tr>
             <tr>
                 <td style="border-top: 1px solid #5a5a5a;"></td>
             </tr>
             <tr>
-                <td class="text-center hover" style="cursor:pointer;"> <a class="p-2" [routerLink]="['./details', selectedRow?.id]"><i
-                            class="icon-graph text-blue h5 m-0 align-middle hover" title="Plus de detailles"></i></a>
+                <td class="text-center p-2 hover" style="cursor:pointer;" (click)="share_Clicked()"><span><i
+                            class="icon-share text-blue h5 align-middle hover" title="Partager le suivi"></i></span>
                 </td>
             </tr>
         </tbody>

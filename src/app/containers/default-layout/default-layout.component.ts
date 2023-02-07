@@ -106,17 +106,17 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
     }
     if (!this.Eco_EcoConduite && !this.Eco_EcoDetailles) {
       delete tmpNav[5]
-     } else {
+    } else {
       if (!this.Eco_EcoConduite) { delete tmpNav[5]['children'][0] }
       if (!this.Eco_EcoDetailles) { delete tmpNav[5]['children'][1] }
       tmpNav[5]['children'] = tmpNav[5]['children'].filter(function () { return true; });
     }
-    if (!this.Parametrage_Vehicules && !this.Parametrage_Conducteur && !this.Parametrage_Utilisateur && !this.Parametrage_CarteCarburant && !this.Parametrage_GroupeVehicules&& !this.Parametrage_Alertes) {
+    if (!this.Parametrage_Vehicules && !this.Parametrage_Conducteur && !this.Parametrage_Utilisateur && !this.Parametrage_CarteCarburant && !this.Parametrage_GroupeVehicules && !this.Parametrage_Alertes) {
       delete tmpNav[6]
-    } 
-    if (!this.Maintenance_Pneu && !this.Maintenance_Consommation && !this.Maintenance_Accidents && !this.Maintenance_PlanEntretien) {
+    }
+    // if (!this.Maintenance_Pneu && !this.Maintenance_Consommation && !this.Maintenance_Accidents && !this.Maintenance_PlanEntretien) {
       delete tmpNav[7]
-    } 
+    // }
     if (!this.Notifications) { delete tmpNav[8] }
     if (!this.TrajetPlanner) { delete tmpNav[9] }
     this.navItems = tmpNav.filter(function () { return true; });

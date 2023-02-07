@@ -109,4 +109,9 @@ export const navItems: INavData[] = [
     url: '/map/planner',
     icon: 'icon-graph'
   },
+  // {
+  //   name: 'AI Optimisation',
+  //   url: 'http://backup.sendatrack.com:8081/',
+  //   icon: 'icon-rocket'
+  // },
 ];

@@ -37,7 +37,8 @@
                 <button class="col-3 btn btn-primary p-0" (click)="incrementDate(1)">&gt;&gt;</button>
               </div>
             </div>
-            <div class="px-2 py-1 h5 float-left text-primary" style="position: relative;top: -5px;">{{selectedVName}}</div>
+            <div class="px-2 py-1 h5 float-left text-primary" style="position: relative;top: -5px;">{{selectedVName}}
+            </div>
             <div class="btn btn-close bg-danger float-right" style="top: -5px;position: relative;right: 1px;"
               (click)="closeSpliter(true)">X</div>
             <div class="row mx-auto px-4 w-100 justify-content-center">
@@ -126,8 +127,8 @@
                 </div>
               </div>
             </div>
-            <div class="btn btn-outline-primary w-100 border-bottom-0" title="Afficher le trajet du jour" (click)="showAllTrajet()"><i
-                class="nav-icon cil-map"></i> Afficher le trajet complet</div>
+            <div class="btn btn-outline-primary w-100 border-bottom-0" title="Afficher le trajet du jour"
+              (click)="showAllTrajet()"><i class="nav-icon cil-map"></i> Afficher le trajet complet</div>
             <div class="chart-wrapper" style="background: #fff9f0;">
               <ng-template #popTemplate let-view="view">
                 <div style="width:375px" [innerHtml]="segmentedData[view].tooltip"></div>
@@ -135,11 +136,11 @@
               <div class="vis-content">
                 <div class="vis-itemset">
                   <div class="vis-group">
-                    <div id="event-{{i}}" *ngFor="let event of segmentedData;let i=index;"
-                      (click)="chartClicked(i)" container="event-{{i}}"
-                      containerClass="tooltipContainer-{{segmentedData[i].status}}" [ngClass]="event.class"
-                      [style.width]="event.ratio" [popover]="popTemplate" boundariesElement="window"
-                      [outsideClick]="true" triggers="mouseenter:mouseleave" [popoverContext]="{ view: i }"></div>
+                    <div id="event-{{i}}" *ngFor="let event of segmentedData;let i=index;" (click)="chartClicked(i)"
+                      container="event-{{i}}" containerClass="tooltipContainer-{{segmentedData[i].status}}"
+                      [ngClass]="event.class" [style.width]="event.ratio" [popover]="popTemplate"
+                      boundariesElement="window" [outsideClick]="true" triggers="mouseenter:mouseleave"
+                      [popoverContext]="{ view: i }"></div>
                   </div>
                 </div>
                 <div class="xAxisContainer">

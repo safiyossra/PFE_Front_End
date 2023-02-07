@@ -266,12 +266,12 @@ table.mat-table {
     padding: 1px 10px;
     text-align: justify;
     white-space: normal;
-    vertical-align: baseline;
+    vertical-align: middle;
 }
 
 .infoBoxCellTitle {
     font-weight: bold !important;
-    border-right: 1px solid #000625;
+    // border-right: 1px solid #000625;
     padding: 1px 10px;
     text-align: justify;
     vertical-align: baseline;
@@ -293,10 +293,23 @@ table.mat-table {
     font-size: inherit;
     font-size: inherit;
 }
+.leaflet-popup-content :has(> .infoBoxZone) {
+    min-width: 150px;
+}
+
+.leaflet-popup-content:has(.infoBoxZone) {
+    min-width: 150px;
+}
+
+.infoBoxZone{
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.2;
+}
 
 table.infoBoxTable td,
 table.infoBoxTable th {
-    border-bottom: 1px solid #000625;
+    // border-bottom: 1px solid #000625;
     padding: 5px;
 }
 

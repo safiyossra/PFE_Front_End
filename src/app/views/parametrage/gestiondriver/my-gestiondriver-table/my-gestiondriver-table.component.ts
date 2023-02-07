@@ -14,14 +14,14 @@ import { MatTableDataSource } from '@angular/material/table';
 export class MyGestiondriverTableComponent implements OnChanges {
   @Input() data=[];
   // @Input() columnNames?: any[]
-  public displayedColumns =  ["actions","driverID","contactPhone","description","displayName"]
+  public displayedColumns =  ["actions","displayName","description","contactPhone"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
 
   @Input() isEditPermission? = false
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  columnNames =["Actions","ConducteursID","Numéro de Téléphone","Description","Nom"];
+  columnNames =["Actions","Nom","Description","Numéro de Téléphone"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -70,11 +70,11 @@ export class MyGestiondriverTableComponent implements OnChanges {
   if(changes['isEditPermission']){
     this.isEditPermission = changes['isEditPermission'].currentValue
     if(this.isEditPermission){
-      this.displayedColumns = ["actions","driverID","contactPhone","description","displayName"]
-      this.columnNames = ["Actions","ConducteursID","Numéro de Téléphone","Description","Nom"];
+      this.displayedColumns = ["actions","displayName","description","contactPhone"]
+      this.columnNames = ["Actions","Nom","Description","Numéro de Téléphone"];
     }else{
-      this.displayedColumns = ["driverID","contactPhone","description","displayName"]
-      this.columnNames = ["ConducteursID","Numéro de Téléphone","Description","Nom"];
+      this.displayedColumns = ["displayName","description","contactPhone"]
+      this.columnNames = ["Nom","Description","Numéro de Téléphone"];
     }
   }
 }
