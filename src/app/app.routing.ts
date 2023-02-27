@@ -9,12 +9,11 @@ import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 import { BasicGuard } from './guards/basic.guard';
-import { TrackComponent } from './views/map/track/track.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'map',
+    redirectTo: 'parametrage',
     pathMatch: 'full',
   },
   {
@@ -39,14 +38,6 @@ export const routes: Routes = [
     }
   },
   {
-    path: 'track/:token',
-    // canActivate: [tokenGuard],
-    component: TrackComponent,
-    data: {
-      title: 'Suivi de vehicule'
-    }
-  },
-  {
     path: 'register',
     component: RegisterComponent,
     data: {
@@ -63,15 +54,15 @@ export const routes: Routes = [
     children: [
       {
         path: 'map',
-        loadChildren: () => import('./views/map/map.module').then(m => m.MapModule)
+        loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
       },
       {
         path: 'rapports',
-        loadChildren: () => import('./views/rapports/rapport.module').then(m => m.RapportModule)
+        loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
       },
       {
         path: 'eco',
-        loadChildren: () => import('./views/eco/eco.module').then(m => m.EcoModule)
+        loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
       },
       {
         path: 'parametrage',
@@ -83,16 +74,20 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+        loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
       },
       {
         path: 'notifications',
-        loadChildren: () => import('./views/notifications/notifications.module').then(m => m.NotificationsModule)
+        loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
       },
       {
         path: 'live-streaming',
-        loadChildren: () => import('./views/live-streaming/live-streaming.module').then(m => m.LiveStreamingModule)
+        loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
       },
+      {
+        path: 'employees',
+        loadChildren: () => import('./views/parametrage/gestionemployes/gestionemployes.module').then(m => m.GestionemployesModule)
+      }
     ]
   },
   { path: '**', component: P404Component }

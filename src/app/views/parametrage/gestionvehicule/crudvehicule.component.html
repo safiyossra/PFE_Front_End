@@ -258,7 +258,6 @@
                     <ng-template tabHeading><i class="icon-user-following"></i> Administratifs &nbsp;</ng-template>
                     <div class="row">
                       <div class="col-md-12">
-
                         <button type="button" class="btn btn-outline-primary pull-right" (click)="openAddModal()">
                           <i class="fa fa-plus-circle "></i></button>
                         <label for="all" class="pull-right mr-5 mt-1">tous</label>
@@ -316,8 +315,11 @@
                                 <button type="button" title="Modifier" (click)="deleteDocument(line)"
                                   class="btn rounded m-1 btn-danger"><i class="cil-trash"
                                     style="color: white;"></i></button>
+                                <button type="button" title="Visualiser document" (click)="showDocument(line)"
+                                  class="btn rounded m-1 btn-info"><i class="fa fa-eye"
+                                    style="color: white;"></i></button>
                               </div>
-                              <span [ngStyle]="{'color':column =='joursReste' ? line['colorRest'] :'black'}">
+                              <span [ngStyle]="{'color':column =='joursReste' ? line.colorRest :'black'}">
                                 {{line[column]}} </span>
                             </td>
                           </ng-container>
@@ -498,6 +500,11 @@
             </div>
           </div>
         </div>
+        <div class="row mt-2" *ngIf="mode != 'Ajouter'">
+          <div class="col-md-12" style="max-height: 60vh;overflow-y: auto;">
+            <file-uploader [id]="document.idDocument" [table]="'CarDocument'"></file-uploader>
+          </div>
+        </div>
       </div>
       <div class="modal-footer row">
         <div class="col-md-12 pb-2">
@@ -511,3 +518,25 @@
     </div>
   </div>
 </div>
+
+<!-- ********** Add Administratif document Modal *********** -->
+<!-- <div bsModal #fileModal="bs-modal" [config]="{backdrop: 'static', keyboard: false}" class="modal fade "
+  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-primary" role="file" id="fileModal">
+    <div class="modal-content historic-modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title">Document : {{file_name}}</h5>
+        <button type="button" class="close" (click)="fileModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <iframe width="100%" height="100%" [sandbox]="'allow-scripts'" frameBorder="0" [src]="file_url"></iframe>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

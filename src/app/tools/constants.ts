@@ -7,7 +7,8 @@ import { Injectable } from '@angular/core'
 export class Constant {
 
   constructor() { }
- 
+  public polylineStyle = [{ color: 'black', weight: 16, stroke: true, opacity: .2 }, { color: 'white', weight: 13, stroke: true, opacity: .8 }, { color: 'green', weight: 10, stroke: true, opacity: 1 }]
+  
   public defaultPermissions = {
     Dashboard: "Afficher",
     Map: {

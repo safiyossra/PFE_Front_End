@@ -115,7 +115,7 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
       delete tmpNav[6]
     }
     // if (!this.Maintenance_Pneu && !this.Maintenance_Consommation && !this.Maintenance_Accidents && !this.Maintenance_PlanEntretien) {
-      delete tmpNav[7]
+      // delete tmpNav[7]
     // }
     if (!this.Notifications) { delete tmpNav[8] }
     if (!this.TrajetPlanner) { delete tmpNav[9] }

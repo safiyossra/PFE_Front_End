@@ -7,6 +7,8 @@ import { CruduserComponent } from './gestionusers/cruduser.component';
 import { CrudvehiculeComponent } from './gestionvehicule/crudvehicule.component';
 import { CrudgroupeComponent } from './groupevehicules/crudgroupe.component';
 import {PermissionsGuard} from '../../guards/permissions.guard'
+import {CrudemployeeComponent} from "./gestionemployes/crudemployee.component";
+import {CrudorderFormComponent} from "./order-form/crudorder-form.component";
 
 const routes: Routes = [
   {
@@ -67,6 +69,24 @@ const routes: Routes = [
           title: 'Utilisateurs'
         }
       },
+      {
+        path: 'employees',
+        component: CrudemployeeComponent,
+        canActivate: [PermissionsGuard],
+        data: {
+          permissionKey:'Parametrage_Utilisateur',
+          title: 'Employés'
+        }
+      },
+      {
+        path: 'order-form',
+        component: CrudorderFormComponent,
+        canActivate: [PermissionsGuard],
+        data: {
+          permissionKey:'Parametrage_Utilisateur',
+          title: 'Bon de Commande'
+        }
+      }
     ]
   },
 ];

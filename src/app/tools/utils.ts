@@ -1,9 +1,6 @@
 import { formatDate, DOCUMENT } from '@angular/common';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core'
 import { } from '@angular/core';
-import * as L from 'leaflet';
-import { GeoSearchControl } from 'leaflet-geosearch';
-
 import { Constant } from 'src/app/tools/constants';
 
 var userPermissions: any;
@@ -11,10 +8,10 @@ var accountPermissions: any;
 @Injectable({
   providedIn: 'root'
 })
+
 export class util {
   isFullScreen: boolean;
   constructor(@Inject(DOCUMENT) private document: any, @Inject(LOCALE_ID) private locale: string, private cst: Constant) {
-    document.onfullscreenchange = ($event: any) => this.chkScreenMode($event.target['id']);
   }
 
   public isAuthorized(key: any, permission: any) {
@@ -80,244 +77,6 @@ export class util {
       return undefined
     }
 
-  }
-
-  public openFullscreen(elem: any) {
-    // console.log(elem);
-
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.mozRequestFullScreen) {
-      /* Firefox */
-      elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) {
-      /* Chrome, Safari and Opera */
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      /* IE/Edge */
-      elem.msRequestFullscreen();
-    }
-  }
-  /* Close fullscreen */
-  public closeFullscreen() {
-    if (this.document.exitFullscreen) {
-      this.document.exitFullscreen();
-    } else if (this.document.mozCancelFullScreen) {
-      /* Firefox */
-      this.document.mozCancelFullScreen();
-    } else if (this.document.webkitExitFullscreen) {
-      /* Chrome, Safari and Opera */
-      this.document.webkitExitFullscreen();
-    } else if (this.document.msExitFullscreen) {
-      /* IE/Edge */
-      this.document.msExitFullscreen();
-    }
-  }
-
-  chkScreenMode(id) {
-    // var idElem = (id == 'map') || (id == 'mapDetail') ? id+'fullScreenControl' : 'list-fullscreenControl'
-    // console.log(id);
-    var idElem = id + 'fullScreenControl'
-    // console.log(idElem);
-    var fullScreenCtl = document.getElementById(idElem)
-    if (document.fullscreenElement) {
-      //fullscreen
-      fullScreenCtl.style.backgroundPosition = "64% 96%";
-      fullScreenCtl.setAttribute("title", "Exit FullScreen");
-      this.isFullScreen = true;
-    } else {
-      //not in full screen
-      fullScreenCtl.style.backgroundPosition = "55% 2%";
-      fullScreenCtl.setAttribute("title", "Enter FullScreen");
-      this.isFullScreen = false;
-    }
-  }
-
-  myIcon(vehicule: any, status: number, vehiculeType: string, isSelected: boolean = false, noTransition: boolean = false) {
-    let img = this.getImage(vehiculeType)
-    let icon = status == 61714 ? `assets/img/vehicules/${img}-on.png` : `assets/img/vehicules/${img}-off.png`
-    return L.divIcon({
-      html: `<div class="center-marker"></div>` +
-        `<img class="my-icon-img rotate-${Math.round(vehicule.heading)}" src="${icon}">` +
-        `<span class="my-icon-title">${vehicule.name}</span>`,
-      iconSize: [60, 60],
-      // iconAnchor: [25, 20],
-      className: (noTransition ? '' : 'marker-transition ') + 'my-div-icon' + (isSelected ? ' marker-selected' : ''),
-    })
-  }
-
-  myTrajetIcon(status: string) {
-    let icon = `assets/img/markers/${status}.png`
-    return L.divIcon({
-      html: `<img class="my-icon-img" src="${icon}">`,
-      iconSize: (status == 'start' || status == 'end') ? [50, 50] : [30, 30],
-      iconAnchor: (status == 'start' || status == 'end') ? [25, 50] : [15, 30],
-      className: (status == 'start' || status == 'end') ? 'important-marker' : ''
-    })
-  }
-
-  myDetailsIcon(status: string) {
-    let icon = `assets/img/markers/${status}.png`
-    return L.divIcon({
-      html: `<img class="my-icon-img" src="${icon}">`,
-      iconSize: (status == 'start' || status == 'end' || status == 'park') ? [50, 50] : [40, 40],
-      iconAnchor: (status == 'start' || status == 'end') ? [25, 50] : [20, 40],
-      className: (status == 'start' || status == 'end') ? 'important-marker' : ''
-    })
-  }
-
-  myIcon4POI(n,icon) {
-    return L.divIcon({
-      html: `<div class="center-marker"></div>` +
-        `<img class="my-icon-img" src="${icon}">` +
-        `<span class="my-icon-title">${n}</span>`,
-      iconSize: [60, 60],
-      // iconAnchor: [25, 20],
-      className: 'my-div-icon' 
-    })
-  }
-
-  myIconTile4Zone(n) {
-    return L.divIcon({
-      html:`<span class="my-icon-title-Zone">${n}</span>`,
-      iconSize: [60, 20],
-      className: 'my-div-icon' 
-      // iconAnchor: [25, 20],
-    })
-  }
-
-  computeCentroid(points:any) {
-    var latitude = 0;
-    var longitude = 0;
-    var n = points.length;
-  
-    for (var i=0;i< points.length;i++) {
-      latitude += points[i][0];
-      longitude += points[i][1];
-    }
-  
-    return new L.LatLng(latitude / n,longitude / n)
-  }
-
-  formatPopUpContentV2(v) {
-    let img = v.icon != undefined ? '<img src="assets/img/vehicules/' + this.getImage(v.icon) + '-img.png">' : "Info"
-    let time = this.formatDate(new Date(v.timestamp * 1000))
-
-    let age = this.getAge(v.timestamp)
-    let ageString = this.formatAge(age)//<b style='vertical-align: sub;'>${v.name}</b>
-    return `<table class="infoBoxTable">
-            <tbody>
-              <tr class="infoBoxRow"
-                style="background-color: #3598dc !important;color: #FFFFFF !important;">
-                <td>${img}&nbsp; </td>
-                <td class="infoBoxCell" style="vertical-align: bottom;">
-                <div style="display: inline-block;"><b style="vertical-align: sub;display: block;">${v.name}</b><sub style="display: block;line-height: 1;">&nbsp;&nbsp;${v.driverID}</sub></div>
-                <a href='https://www.google.com/maps/?q=${v.lat},${v.lng}' class='float-right' target='_blank'> <i class="fa fa-share text-light" style="font-size: x-large;"></i></a>
-                <b style="margin-right: 10px;" class="float-right" >
-                <i class="${this.getStatusClass(v.statusCode)}" style="vertical-align: bottom;"></i>${(this.getStatusName(v.statusCode))}</b></td>
-              </tr>
-              <tr class="infoBoxRow">
-                <td class="infoBoxCellTitle">Age:</td>
-                <td class="infoBoxCell"> ${ageString}</td>
-              </tr>
-              <tr class="infoBoxRow">
-                <td class="infoBoxCellTitle">Date:</td>
-                <td class="infoBoxCell"> ${time}</td>
-              </tr>
-              <tr class="infoBoxRow">
-                <td class="infoBoxCellTitle">GPS:</td>
-                <td class="infoBoxCell"> ${v.lat} / ${v.lng} </td>
-              </tr>
-              <tr class="infoBoxRow">
-                <td class="infoBoxCellTitle">Vitesse: </td>
-                <td class="infoBoxCell"> ${v.speed} Km/H</td>
-              </tr>
-              <tr class="infoBoxRow">
-                <td class="infoBoxCellTitle">Odomètre:</td>
-                <td class="infoBoxCell">${v.odometer} Km</td>
-              </tr>
-              <tr class="infoBoxRow">
-                <td class="infoBoxCellTitle">Adresse: </td>
-                <td class="infoBoxCell"> ${v.address}</td>
-              </tr>
-              <tr class="infoBoxRow">
-                <td class="infoBoxCellTitle">Fuel Level:</td>
-                <td class="infoBoxCell"> ${v.fuelLevel} L</td>
-              </tr>
-            </tbody>
-          </table>`
-  }
-
-  formatPopUpContent(v,stats="",forDetails=true) {
-    // console.log(v,stats);
-    
-    let img = v.icon != undefined ? '<img src="assets/img/vehicules/' + this.getImage(v.icon) + '-img.png">' : ""
-    let time = this.formatDate(new Date(v.timestamp * 1000))
-    stats = forDetails?"":stats && stats!=""?stats:`<td style="vertical-align: top;" class="infoBoxCell" colspan="1"><div class="mb-1"> <i class="fa fa-user text-primary" style="font-size: larger;font-weight: 900;"></i>&nbsp;&nbsp;Conducteurs</div><div class="ml-2">&nbsp;-&nbsp;...</div></td><td class="infoBoxCell" style="vertical-align: top;" colspan="1"><div class="mb-2"><i class="nav-icon icon-graph text-primary" style="font-size: initial;"></i>&nbsp;&nbsp;KM Parcouru <b>... KM</b></div>
-    <div class="mb-2"><i class="fa fa-clock-o text-green" style="font-size: initial;"></i>&nbsp;&nbsp;On route <b>...</b></div>
-    <div><i class="fa fa-clock-o text-red" style="font-size: initial;"></i>&nbsp;&nbsp;Parking <b>...</b></div></td><td class="infoBoxCell" colspan="1"><div class="pie" style="margin: auto;width: 80px;height: 80px;border-radius: 50%;background: conic-gradient(#ff9800 0deg 0deg,#00e04e 0deg 0deg,#ddd 0deg 360deg);"></div></td>`
-    let age = this.getAge(v.timestamp)
-    let ageString = this.formatAge(age)//<b style='vertical-align: sub;'>${v.name}</b>#5590ff
-    return `<table class="infoBoxTable">
-    <tbody>
-      <tr class="infoBoxRow"
-        style="background-color: #fff !important;color: #000 !important;border-bottom: 1px solid #cecece;">
-        <td class="infoBoxCell" style="vertical-align: bottom;" colspan="2">
-          <i class="${this.getStatusClass(v.statusCode)}"></i>
-          <div style="display: inline-block;"><b style="vertical-align: sub;display: block;">${v.name}</b><sub
-              style="display: block;line-height: 1;">${v.driverID??""}</sub></div>
-        </td>
-        <td style="text-align: end;" colspan="1">${img}&nbsp; 
-        <a href="https://www.google.com/maps/?q=${v.lat},${v.lng}" target="_blank" class="ml-3"> <i
-            class="fa fa-share text-primary" style="font-size: x-large;"></i></a></td>
-      </tr>
-      <tr class="infoBoxRow">
-        <td class="infoBoxCell" colspan="1"><i class="fa fa-clock-o text-primary"
-            style="font-size: initial;"></i>&nbsp;&nbsp;${ageString}</td>
-        <td class="infoBoxCell" colspan="2"><i class="fa fa-calendar text-primary"
-            style="font-size: larger;"></i>&nbsp;&nbsp;${time}</td>
-      </tr>
-      <tr class="infoBoxRow">
-        <td class="infoBoxCell" colspan="1"><i class="fa fa-dashboard text-primary"
-            style="font-size: larger;font-weight: 900;"></i>&nbsp;&nbsp;${v.odometer} Km</td>
-        <td class="infoBoxCell" colspan="1"><i class="nav-icon icon-speedometer text-primary"
-            style="font-size: larger;font-weight: 900;"></i>&nbsp;&nbsp;${v.speed} Km/H </td>
-        <td class="infoBoxCell" colspan="1"><i class="fa fa-battery-quarter text-primary"
-            style="font-size: larger;font-weight: 900;"></i>&nbsp;&nbsp;${v.fuelLevel} L</td>
-      </tr>
-      <tr class="infoBoxRow" id="${v.id}">
-        ${stats}
-      </tr>
-      <tr class="infoBoxRow">
-        <td class="infoBoxCell" colspan="3">
-          <div class="m-auto bg-success rounded" style="height: 8px!important;"></div>
-        </td>
-      </tr>
-      <tr class="infoBoxRow">
-        <td class="infoBoxCell" colspan="3"><i class="fa fa-map-marker text-primary"
-            style="font-size: large;"></i>&nbsp;${v.address}</td>
-      </tr>
-    </tbody>
-  </table>`
-  }
-
-  formatPopUpContentPOI(v, gps) {
-    let img = '<img src="assets/img/markers/pin_n.png" style="height: 28px;">';
-    return `<table class="infoBoxTable">
-            <tbody>
-              <tr class="infoBoxRow"
-                style="background-color: #3598dc !important;color: #FFFFFF !important;">
-                <td>${img}&nbsp; </td>
-                <td class="infoBoxCell" style="vertical-align: middle;">
-                <b style='vertical-align: sub;'>${v}</b><button title="Supprimer" data-gps="${gps}" class="btn btn-sm btn-danger card-header-actions mr-1 py-0 cil-trash deleteGPS"><i></i></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>`
-  }
-
-  formatPopUpContentPOIAndZone(v) {
-    return `<div class="infoBoxZone">${v}</div>`
   }
 
   // // 👇️ format as "YYYY-MM-DD hh:mm:ss"
@@ -421,144 +180,6 @@ export class util {
           return "fa fa-question-circle text-dark status-cercle";
   }
 
-  createMap(map, mapId, car, provider, showCollapsControle = true, showFullScreenControle = true, showPositionControle = true, showClusterControle = false, showResetControle = false) {
-    const zoomLevel = 12
-    map = L.map(mapId, { attributionControl: false, zoomControl: false, markerZoomAnimation: true, zoomAnimation: true, fadeAnimation: true })
-      .setView([car.lat, car.lng], zoomLevel)
-
-    // dark map
-    const dark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 19
-    });
-    const googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-    // google street
-    const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-
-    //google satellite
-    const googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-    const googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&apistyle=s.t%3A17|s.e%3Alg|p.v%3Aoff', {
-      maxZoom: 20,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-    });
-    const baseMaps = {
-      'Google Street': googleStreets,
-      "Google Hybrid": googleHybrid,
-      "Google Terrain": googleTerrain,
-      "Google Satellite": googleSat,
-      'Dark': dark,
-    };
-    switch (this.getMapType()) {
-      case 'Google Hybrid':
-        googleHybrid.addTo(map)
-        break;
-      case 'Google Terrain':
-        googleTerrain.addTo(map)
-        break;
-      case 'Google Satellite':
-        googleSat.addTo(map)
-        break;
-      case 'Dark':
-        dark.addTo(map)
-        break;
-
-      default:
-        googleStreets.addTo(map)
-        break;
-    }
-
-    if (showCollapsControle) {
-      let ExpandControl = L.Control.extend({
-        onAdd(map: L.Map) {
-          return L.DomUtil.get('list-Expand');
-        },
-        onRemove(map: L.Map) { }
-      });
-      new ExpandControl({
-        position: "topleft"
-      }).addTo(map);
-    }
-    if (showResetControle) {
-      let ResetControl = L.Control.extend({
-        onAdd(map: L.Map) {
-          return L.DomUtil.get('resetConrtol');
-        },
-        onRemove(map: L.Map) { }
-      });
-      new ResetControl({
-        position: "topleft"
-      }).addTo(map);
-    }
-    L.control.zoom().addTo(map)
-
-
-    if (showFullScreenControle) {
-      let FullScreenControl = L.Control.extend({
-        onAdd(map: L.Map) {
-          return L.DomUtil.get('mapfullScreenControl');
-        },
-        onRemove(map: L.Map) { }
-      });
-      new FullScreenControl({
-        position: "topleft"
-      }).addTo(map);
-    }
-    if (showPositionControle) {
-      let PositionControl = L.Control.extend({
-        onAdd(map: L.Map) {
-          return L.DomUtil.get('positionControl');
-        },
-        onRemove(map: L.Map) { }
-      });
-      new PositionControl({
-        position: "topleft"
-      }).addTo(map);
-    }
-    ////////////////////////////////////////////////////////////
-    GeoSearchControl({
-      provider: provider,
-      showMarker: false,
-      // style: 'bar',
-      position: "topleft",
-      retainZoomLevel: false, // optional: true|false  - default false
-      animateZoom: true, // optional: true|false  - default true
-      autoClose: true, // optional: true|false  - default false
-      searchLabel: 'Entrez une adresse', // optional: string      - default 'Enter address'
-      // keepResult: false, // optional: true|false  - default false
-      updateMap: true, // optional: true|false  - default true
-    }).addTo(map)
-
-    ////////////////////////////////////////////////////////////
-
-    if (showClusterControle) {
-      let ResetControl = L.Control.extend({
-        onAdd(map: L.Map) {
-          return L.DomUtil.get('clusterConrtol');
-        },
-        onRemove(map: L.Map) { }
-      });
-      new ResetControl({
-        position: "topleft"
-      }).addTo(map);
-    }
-    L.control.layers(baseMaps, null, { collapsed: true, position: "topleft" }).addTo(map);
-    L.control.scale().addTo(map);
-    map.on('baselayerchange', (e) => {
-      this.setMapType(e.name)
-    })
-    return map;
-  }
-
   getImageId(vehiculeType) {
     return this.cst.motor.includes(vehiculeType) ? "moto" : this.cst.truck.includes(vehiculeType) ? "remolque" : this.cst.sprinter.includes(vehiculeType) ? "bus" : this.cst.remorque.includes(vehiculeType) ?
       "trailer" : this.cst.camions.includes(vehiculeType) ? "fleetGreen" : this.cst.truck_head.includes(vehiculeType) ? "volvo2" : "default"
@@ -655,4 +276,14 @@ export class util {
     } else return seconds + 's'
 
   }
+
+  getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
 }

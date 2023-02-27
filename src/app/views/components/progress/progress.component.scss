@@ -1,0 +1,53 @@
+.indeterminate-progress-bar {
+  background-color: #d1d5db;
+  border-radius: 9999px;
+  height: 0.5rem;
+
+  position: relative;
+  overflow: hidden;
+}
+
+.indeterminate-progress-bar-finished,.indeterminate-progress-bar__progress {
+  background-color: #3b82f6;
+  border-radius: 9999px;
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  width: 100%;
+}
+
+.indeterminate-progress-bar__progress {
+  width: 50%;
+  /* Move the bar infinitely */
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-name: indeterminate-progress-bar;
+}
+
+@keyframes indeterminate-progress-bar {
+  from {
+      left: -50%;
+  }
+  to {
+      left: 100%;
+  }
+}
+// .progress-cont {
+//     height: 7px;
+//     width: 100%;
+//     border-radius: 4px;
+//     background-color: #d0d0d0;
+//     position: relative;
+  
+//     .progress {
+//       width: 0;
+//       height: 100%;
+//       position: absolute;
+//       z-index: 1;
+//       top: 0;
+//       left: 0;
+//       border-radius: 4px;
+//       background-color: #4c97cb;
+//       transition: 0.5s all;
+//     }
+//   }

@@ -288,6 +288,8 @@ table.mat-table {
 
 .leaflet-popup-content {
     min-width: 500px;
+    max-height: 305px;
+    overflow-y: auto;
     margin: 5px 5px 5px 5px;
     line-height: inherit;
     font-size: inherit;
@@ -504,8 +506,16 @@ table.infoBoxTable tr:nth-child(odd) {
 }
 
 #map[overlay]>div.leaflet-control-container>div.leaflet-top.leaflet-left>div.leaflet-control:last-child .leaflet-control-layers-toggle {
-    background-image: url('../assets/img/markers/pin.png');
+    background-image: url('../assets/img/markers/pin.png')!important;
 }
+
+#mapTrajet>div.leaflet-control-container>div.leaflet-top.leaflet-left>div.leaflet-control:nth-child(6)>.leaflet-control-layers-toggle,
+#mapDetails>div.leaflet-control-container>div.leaflet-top.leaflet-left>div.leaflet-control:nth-child(6)>.leaflet-control-layers-toggle  {
+    background-image: url('../assets/img/markers/trip.png')!important;
+}
+// #mapTrajet[overlay]>div.leaflet-control-container>div.leaflet-top.leaflet-left>div.leaflet-control:last-child .leaflet-control-layers-toggle {
+//     background-image: url('../assets/img/markers/trip.png');
+// }
 
 .btn {
     padding: 0.2rem 0.6rem;

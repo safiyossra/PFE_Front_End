@@ -8,6 +8,7 @@ import { Device } from '../models/device';
 import { Driver } from '../models/driver';
 import { Groupevehicules } from '../models/groupevehicules';
 import { Consommation } from '../models/Consommation';
+import {Employee} from "../models/employee";
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,46 @@ import { Consommation } from '../models/Consommation';
 export class DataService {
 
   constructor(private http: HttpClient, private JWT: JwtService) {
+  }
+
+  upload(file:any,extra = "") {
+    let SERVER_URL = environment.apiUrl + "upload" + extra;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+
+    const formData = new FormData();
+    // Store form name as "file" with file data
+    formData.append("file", file, file.name);
+    return this.http.post(SERVER_URL,formData, {
+      headers: headers
+    })
+  }
+
+  getDocsUrl(extra = "") {
+    let SERVER_URL = environment.apiUrl + "getDocsUrl" + extra;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  deleteFile(id) {
+    let SERVER_URL = environment.apiUrl + "deleteFile?id=" + id;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
   }
 
   getVehicule(extra = "") {
@@ -680,7 +721,7 @@ export class DataService {
     })
   }
 
-  
+
   getStream() {
     let SERVER_URL = 'http://api.tvmaze.com/search/shows?q=golden%20girls';
     // let params: {
@@ -833,8 +874,6 @@ export class DataService {
     })
   }
 
-
-
   getEtapes() {
     let SERVER_URL = environment.apiUrl + "getEtapes";
     let jwt = this.JWT.get();
@@ -872,4 +911,157 @@ export class DataService {
     })
   }
 
+////////////////////// Auto reports /////////////////////
+
+  getautoReports(options) {
+    let SERVER_URL = environment.apiUrl + "getautoReports" + options;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+    })
+  }
+
+  addautoReports(rep) {
+    let SERVER_URL = environment.apiUrl + "addautoReports";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { d: JSON.stringify(rep) }
+    })
+  }
+
+  updateautoReports(rep) {
+    let SERVER_URL = environment.apiUrl + "updateautoReports";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { d: JSON.stringify(rep) }
+    })
+  }
+
+  deleteautoReports(id) {
+    let SERVER_URL = environment.apiUrl + "deleteautoReports" + id;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get<any>(SERVER_URL, {
+      headers: headers,
+    })
+  }
+
+  ////////////////////// trajet planner /////////////////////
+
+  getPlannedTrips(options) {
+    let SERVER_URL = environment.apiUrl + "getPlannedTrips" + options;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+    })
+  }
+
+  addPlannedTrips(rep) {
+    let SERVER_URL = environment.apiUrl + "addPlannedTrips";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.post(SERVER_URL, JSON.stringify(rep), {
+      headers: headers,
+    })
+  }
+
+  updatePlannedTrips(rep) {
+    let SERVER_URL = environment.apiUrl + "updatePlannedTrips";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.post(SERVER_URL, JSON.stringify(rep), {
+      headers: headers,
+    })
+  }
+
+  deletePlannedTrips(id) {
+    let SERVER_URL = environment.apiUrl + "deletePlannedTrips" + id;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get<any>(SERVER_URL, {
+      headers: headers,
+    })
+  }
+
+  getEmployees(url) {
+    let SERVER_URL = environment.apiUrl + "gestionemployes" + url;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  addEmployee(employee: Employee) {
+    let SERVER_URL = environment.apiUrl + "createEmployee";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(Employee) }
+
+    })
+  }
+
+  updateEmployee(e: Employee) {
+    let SERVER_URL = environment.apiUrl + "editUser";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(e) }
+
+    })
+  }
+
+  deleteEmployee(e) {
+    let SERVER_URL = environment.apiUrl + "delEmployee" + e;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
 }

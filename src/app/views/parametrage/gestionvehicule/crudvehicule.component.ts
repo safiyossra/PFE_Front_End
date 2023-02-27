@@ -18,15 +18,13 @@ import { CarDocument } from './../../../models/carDocument';
 })
 
 export class CrudvehiculeComponent {
-
-
-
   loading: boolean = false;
   modalLoading: boolean = false;
   offModalLoading: boolean = false;
   isEditPermission = false
   isAddPermission = false
-
+  file_url = ""
+  file_name = ""
   newOdo: any;
   oldOdo: any;
   offset: any;
@@ -54,6 +52,7 @@ export class CrudvehiculeComponent {
   dataSourceAdmin: MatTableDataSource<any> = new MatTableDataSource();
   @ViewChild('historicModal') public historicModal: ModalDirective;
   @ViewChild('administraifModal') public administraifModal: ModalDirective;
+  // @ViewChild('fileModal') public fileModal: ModalDirective;
   @ViewChild('adminTbSort') adminTbSort: MatSort
 
   documents = []
@@ -152,7 +151,7 @@ export class CrudvehiculeComponent {
     ///////////////////////////////////////
     this.selectedTab = 0
     this.type = false
-    this.calculateRestDays(this.documents)
+    this.calculateRestDays()
     this.tabTem = this.documents
     this.dataSourceAdmin = new MatTableDataSource(this.tabTem);
     this.dataSourceAdmin.sort = this.adminTbSort;
@@ -425,15 +424,14 @@ export class CrudvehiculeComponent {
     this.mode = "Ajouter"
   }
 
-  calculateRestDays(docs) {
-    docs.forEach(d => {
+  calculateRestDays() {
+    this.documents.forEach(d => {
       let nbrJours = this.getDaysBetweentnDates(d.dateProchain);
       d.colorRest = this.getColor(nbrJours, d.rapelJours);
       if (d.colorRest == 'green' || d.colorRest == 'orange')
         d.joursReste = nbrJours + " jours restant."
       else
         d.joursReste = " Expiré depuis " + Math.abs(nbrJours) + " jours.";
-
     });
   }
 
@@ -534,7 +532,7 @@ export class CrudvehiculeComponent {
               d.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(d.creationTime ?? 0) * 1000));
             }
           )
-          this.calculateRestDays(this.documents)
+          this.calculateRestDays()
 
           this.dataSourceAdmin = new MatTableDataSource(this.documents);
           this.dataSourceAdmin.sort = this.adminTbSort;
@@ -573,29 +571,29 @@ export class CrudvehiculeComponent {
         deviceID: this.selectedDevice.deviceID,
         rapelJours: this.document.rapelJours,
       }
-      var endPoint = 'addDocVehicule';if (this.mode == "Modifier") {endPoint = 'editDocVehicule';}
-        this.dataService.AddOrUpdateDeviceDocument(endPoint,docToSave).subscribe({
-          next: resp => {
-            this.documents = resp[0]
-            this.documents.reverse()
-            this.documents.forEach(
-              d => {
-                d.dateContrat = this.tools.formatDateForInput(new Date(Number.parseInt(d.dateContrat ?? 0) * 1000));
-                d.dateProchain = this.tools.formatDateForInput(new Date(Number.parseInt(d.dateProchain ?? 0) * 1000));
-              }
-            )
-            this.calculateRestDays(this.documents)
-            this.tabTem = this.documents
-            this.dataSourceAdmin = new MatTableDataSource(this.tabTem);
-            this.dataSourceAdmin.sort = this.adminTbSort;
-            this.document = new CarDocument()
-            this.selectAllDoc = true
-            this.getAllDoc()
-          },
-          error(err) {
-            console.log("error ", err);
-          }
-        })
+      var endPoint = 'addDocVehicule'; if (this.mode == "Modifier") { endPoint = 'editDocVehicule'; }
+      this.dataService.AddOrUpdateDeviceDocument(endPoint, docToSave).subscribe({
+        next: resp => {
+          this.documents = resp[0]
+          this.documents.reverse()
+          this.documents.forEach(
+            d => {
+              d.dateContrat = this.tools.formatDateForInput(new Date(Number.parseInt(d.dateContrat ?? 0) * 1000));
+              d.dateProchain = this.tools.formatDateForInput(new Date(Number.parseInt(d.dateProchain ?? 0) * 1000));
+            }
+          )
+          this.calculateRestDays()
+          this.tabTem = this.documents
+          this.dataSourceAdmin = new MatTableDataSource(this.tabTem);
+          this.dataSourceAdmin.sort = this.adminTbSort;
+          this.document = new CarDocument()
+          this.selectAllDoc = true
+          this.getAllDoc()
+        },
+        error(err) {
+          console.log("error ", err);
+        }
+      })
       this.administraifModal.hide();
       this.mode = "add"
     }
@@ -632,10 +630,29 @@ export class CrudvehiculeComponent {
               d.creationTime = this.tools.formatDateForInput(new Date(Number.parseInt(d.creationTime ?? 0) * 1000));
             }
           )
-          this.calculateRestDays(this.documents)
+          this.calculateRestDays()
           this.getSelectedItem("ass", "Assurance")
           // this.dataSourceAdmin = new MatTableDataSource(this.documents);
           // this.dataSourceAdmin.sort = this.adminTbSort;
+        },
+      error(err) {
+        console.log("error ", err);
+      }
+    })
+  }
+
+  showDocument(doc) {
+    let url = "?id_foreign=" + doc.idDocument + "&table=CarDocument&justUrl=1"
+    this.dataService.getDocsUrl(url).subscribe({
+      next:
+        (resp: any) => {
+          if (resp.length > 0) {
+            this.file_url = resp[0].file_url;
+            // this.file_name = resp[0].file_name;
+            // this.fileModal.show()
+            window.open(this.file_url, "_blank");
+            console.log(this.file_url);
+          }
         },
       error(err) {
         console.log("error ", err);

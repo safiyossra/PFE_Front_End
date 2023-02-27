@@ -1,26 +1,32 @@
 export class RapportAutomatique {
-    rapportID: any
+    reportJobID: any
     description: any
-    interval: any
-    fromtime: any
-    totime: any
+    intervalTag: any
+    reportTimeFrom: any
+    reportTimeTo: any
+    reportTimeFromString: any
+    reportTimeToString: any
+    creationtimeString: any
     recipients: any
-    grouprapport: any
-    group: any
+    reportName: any
+    groupID: any
     isActive: any
     creationtime:any
 
-    constructor(rapportID?,isActive?,description?, fromtime?,recipients?, interval?,  totime?,
-        grouprapport?, group?, creationtime? ) {
-        this.rapportID = rapportID ?? ''
+    constructor(reportJobID?,isActive?,description?, reportTimeFrom?,recipients?, intervalTag?, reportTimeTo?,
+        reportName?, groupID?, creationtime?,reportTimeFromString?,reportTimeToString?,creationtimeString? ) {
+        this.reportJobID = reportJobID ?? ''
         this.description = description ?? ''
-        this.interval = interval ?? ''
-        this.fromtime = fromtime ?? ''
-        this.totime = totime ?? ''
-        this.grouprapport = grouprapport ?? ''
+        this.intervalTag = intervalTag ?? ''
+        this.reportTimeFrom = reportTimeFrom ?? 0
+        this.reportTimeTo = reportTimeTo ?? 0
+        this.reportTimeToString = reportTimeToString ?? ''
+        this.reportTimeFromString = reportTimeFromString ?? ''
+        this.reportName = reportName ?? ''
         this.recipients = recipients ?? ''
-        this.group = group ?? ''
+        this.groupID = groupID ?? ''
         this.isActive = isActive ?? 0
         this.creationtime = creationtime ?? ''
+        this.creationtimeString = creationtimeString ?? ''
     }
 }
