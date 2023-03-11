@@ -5,10 +5,12 @@ import {OrderFormTableComponent} from "./order-form-table/order-form-table.compo
 import {DropdownExportModule} from "../../components/dropdown-export/dropdown-export.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MaterialsModule} from "../../../materials.module";
-import {NgJsonEditorModule} from "../gestionusers/jsoneditor/jsoneditor.module";
 import {MyDropdownModule} from "../../components/my-dropdown/my-dropdown.module";
 import {ModalModule} from "ngx-bootstrap/modal";
 import {CollapseModule} from "ngx-bootstrap/collapse";
+import {MatSelectModule} from "@angular/material/select";
+import {ChartsModule} from "ng2-charts";
+import {MyDateRangePickerModule} from "../../components/my-date-range-picker/my-daterangepicker.module";
 
 
 
@@ -17,17 +19,18 @@ import {CollapseModule} from "ngx-bootstrap/collapse";
     CrudorderFormComponent,
     OrderFormTableComponent,
   ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MaterialsModule,
-    NgJsonEditorModule,
-    MyDropdownModule,
-    ModalModule.forRoot(),
-    CollapseModule.forRoot(),
-    DropdownExportModule,
-    ReactiveFormsModule
-  ]
+    imports: [
+      CommonModule,
+      FormsModule,
+      MatSelectModule,
+      ChartsModule,
+      MaterialsModule,
+      MyDateRangePickerModule,
+      MyDropdownModule,
+      ReactiveFormsModule,
+      ModalModule.forRoot(),
+      CollapseModule.forRoot(),
+      DropdownExportModule
+    ]
 })
 export class OrderFormModule { }

@@ -4,21 +4,23 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 
 @Component({
-  selector: 'app-order-form-table',
+  selector: 'order-form-table',
   templateUrl: './order-form-table.component.html',
   styleUrls: ['./order-form-table.component.scss']
 })
 export class OrderFormTableComponent implements OnChanges {
   @Input() data=[];
-  // @Input() columnNames?: any[]
-  public displayedColumns = ["actions","groupID","displayName","description","nbrvehicules"]
+  @Input() columnNames?: any[]
+  @Input() displayedColumns?: any[]
+
+  // public displayedColumns = ["actions","N Commande ",  "Fornisseur", "Liste produits", "Paiement", "Total TTC","Date", "Observation"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   @Input() isEditPermission? = false
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  columnNames =["Actions","Identifiant","Nom","Description","Nombre de Véhicules"];
+  // columnNames =["Actions","N Commande ",  "Fornisseur", "Liste produits", "Paiement", "Date", "Observation"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;
@@ -68,11 +70,8 @@ export class OrderFormTableComponent implements OnChanges {
     if(changes['isEditPermission']){
       this.isEditPermission = changes['isEditPermission'].currentValue
       if(this.isEditPermission){
-        this.displayedColumns = ["actions","groupID","displayName","description","nbrvehicules"]
-        this.columnNames = ["Actions","Identifiant","Nom","Description","Nombre de Véhicules"];
-      }else{
-        this.displayedColumns = ["groupID","displayName","description","nbrvehicules"]
-        this.columnNames = ["Identifiant","Nom","Description","Nombre de Véhicules"];
+        this.displayedColumns.unshift("actions")
+        this.columnNames.unshift("Actions")
       }
     }
   }

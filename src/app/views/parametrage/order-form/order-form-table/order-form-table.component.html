@@ -18,7 +18,7 @@
         <td mat-cell *matCellDef="let salle">
           <div *ngIf="column=='actions' && isEditPermission">
             <button type="button" title="Modifier"
-                    (click)="modif([salle['groupID'],salle['description'],salle['displayName']])"
+                    (click)="modif([salle['orderNum'],salle['desc'],salle['it']])"
                     class="btn rounded m-1 btn-primary"><i class="cil-pen"></i></button>
             <button type="button" title="Supprimer" (click)="supp(salle['groupID'])"
                     class="btn rounded m-1 btn-danger"><i class="cil-trash"></i></button>

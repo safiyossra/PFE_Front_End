@@ -9,6 +9,7 @@ import { Driver } from '../models/driver';
 import { Groupevehicules } from '../models/groupevehicules';
 import { Consommation } from '../models/Consommation';
 import {Employee} from "../models/employee";
+import {OrderForm} from "../models/orderForm";
 
 @Injectable({
   providedIn: 'root'
@@ -1034,7 +1035,7 @@ export class DataService {
     });
     return this.http.get(SERVER_URL, {
       headers: headers,
-      params: { u: JSON.stringify(Employee) }
+      params: { u: JSON.stringify(employee) }
 
     })
   }
@@ -1063,5 +1064,58 @@ export class DataService {
     return this.http.get(SERVER_URL, {
       headers: headers
     })
+  }
+
+  getOrdersForm(url) {
+    let SERVER_URL = environment.apiUrl + "ordersForm" + url;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  addOrderForm(o: OrderForm) {
+    let SERVER_URL = environment.apiUrl + "createOrderForm";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(o) }
+
+    })
+  }
+
+  updateOrderForm(o: OrderForm) {
+    let SERVER_URL = environment.apiUrl + "editOrderForm";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(o) }
+
+    })
+  }
+
+  delOrderForm(o) {
+    let SERVER_URL = environment.apiUrl + "delEmployee" + o;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+
   }
 }

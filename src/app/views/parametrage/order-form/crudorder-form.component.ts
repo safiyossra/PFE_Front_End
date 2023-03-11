@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {ModalDirective} from "ngx-bootstrap/modal";
 import {DataService} from "../../../services/data.service";
 import {Router} from "@angular/router";
@@ -9,21 +9,24 @@ import {
   MyDateRangePickerComponent,
   MyDateRangePickerOptions
 } from "../../components/my-date-range-picker/my-daterangepicker.component";
-import {Groupevehicules} from "../../../models/groupevehicules";
 import {catchError} from "rxjs/operators";
 import {throwError} from "rxjs";
+import {OrderForm} from "../../../models/orderForm";
+import {OrderItem} from "../../../models/orderItem";
+
+
 
 @Component({
   selector: 'app-crudorder-form',
   templateUrl: './crudorder-form.component.html',
   styleUrls: ['./crudorder-form.component.scss']
 })
-export class CrudorderFormComponent implements OnInit {
+export class CrudorderFormComponent{
   loading: boolean = false;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
   constructor(private dataService: DataService, private router: Router,public tools: util,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
-
+  tva: number = 0.2;
   value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
   isCollapsed: boolean = false;
@@ -35,9 +38,28 @@ export class CrudorderFormComponent implements OnInit {
   isAddPermission = false
   errorMsg: string;
   public isnotNum: boolean = false
-  displayedColumns: any = ["Véhicule", "Device", "Num de Tel"]
+  displayedColumns: any = ["N Commande ",  "Fornisseur", "Liste produits", "Paiement", "Total TTC", "Date", "Observation" ]
   modalLoading: boolean = false;
-  selectedGroupevehicules: Groupevehicules = new Groupevehicules();
+  //
+  columnNames =["Actions","N Commande ",  "Fornisseur", "Liste produits", "Paiement", "Date", "Observation"];
+  selectedOrderForm: OrderForm = new OrderForm();
+  payementOptions = [
+    { label: 'Espece', value: 'cash' },
+    { label: 'Par Chèque', value: 'byCheck' },
+    { label: 'Carte Bancaire', value: 'creditCard' },
+    { label: 'Virement', value: 'creditCard' }
+  ];
+  selectedProduct: OrderItem=new OrderItem();
+  orderItems: OrderItem[] = [new OrderItem()];
+  // emptyItem: OrderItem=new OrderItem();
+  products: any =[];
+  suppliers: any=[];
+  selectedSupplier: any=[];
+  itemsData=[]
+  displayedOrderItemColumns=["Réf", "Produit", "Quantité", "Prix unitaire HT (MAD)", "% TVA", "Total TTC"]
+  OrderItemColumns=[ "ref", "product", "quantity", "price", "tva", "total"]
+  //
+  selectedMode =''
   public devices: any = [];
   selectedDevices = [];
   selectedDevice = null;
@@ -51,10 +73,12 @@ export class CrudorderFormComponent implements OnInit {
   }
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
+
+
   ngOnInit() {
     this.isEditPermission = this.tools.isAuthorized('Parametrage_GroupeVehicules','Mettre a jour')
     this.isAddPermission = this.tools.isAuthorized('Parametrage_GroupeVehicules','Ajouter')
-    this.getDev();
+    // this.getDev();
     this.loadData();
   }
 
@@ -64,12 +88,7 @@ export class CrudorderFormComponent implements OnInit {
 
   }
 
-  getSelectedDevices(selected) {
-    this.selectedDevice = selected;
-    // console.log(this.selectedDevice?.join(" , ").trim());
 
-    this.selectedGroupevehicules.vehiclues = selected;
-  }
 
   onValidateDevice() {
     this.showErrorDevice = !this.showErrorDevice;
@@ -80,7 +99,7 @@ export class CrudorderFormComponent implements OnInit {
     this.loading = true;
 
     var route = this.router
-    this.dataService.getGroupeVehicules("").subscribe({
+    this.dataService.getOrdersForm("").subscribe({
       next: (d: any) => {
         this.data = d;
         // console.log(d);
@@ -103,14 +122,15 @@ export class CrudorderFormComponent implements OnInit {
       this.primaryModal.show()
 
       var route = this.router
-      this.dataService.getGroupeVehicules(url).subscribe({
+      this.dataService.getOrdersForm(url).subscribe({
         next: (res: any) => {
           // console.log(res);
-          this.selectedGroupevehicules = new Groupevehicules(res.group.groupID,res.group.description,res.group.displayName);
+          this.selectedOrderForm = new OrderForm(res.orderNum,res.supplier,res.orderItems, res.payment, res.createdAt, res.desc);
 
-          this.selectedGroupevehicules.vehiclues = res.vehicules.map(e => { return e.deviceID });
-          this.selectedDevices = this.selectedGroupevehicules.vehiclues
+          // this.selectedGroupevehicules.vehiclues = res.vehicules.map(e => { return e.deviceID });
+          // this.selectedDevices = this.selectedGroupevehicules.vehiclues
           this.selectedDevice = this.selectedDevices
+
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
@@ -147,10 +167,12 @@ export class CrudorderFormComponent implements OnInit {
 
   ajouter() {
     var route = this.router
-    if (!this.selectedGroupevehicules.displayName) {//!this.selectedGroupevehicules.groupID ||
+    if (!this.selectedOrderForm.supplier || !this.selectedOrderForm.orderItems
+      || !this.selectedOrderForm.createdAt
+    ) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      this.dataService.addDevicesGroup(this.selectedGroupevehicules)
+      this.dataService.addOrderForm(this.selectedOrderForm)
         .pipe(
           catchError(err => {
             console.log("res", err)
@@ -162,7 +184,7 @@ export class CrudorderFormComponent implements OnInit {
 
             else if (err.status == 400) {
               console.log(err);
-              this.errorMsg = "Groupe avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
+              this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
               console.log(this.errorMsg);
             }
 
@@ -185,10 +207,12 @@ export class CrudorderFormComponent implements OnInit {
 
   modifier() {
     var route = this.router
-    if (!this.selectedGroupevehicules.groupID || !this.selectedGroupevehicules.displayName) {
+    if (!this.selectedOrderForm.supplier || !this.selectedOrderForm.orderItems
+      || !this.selectedOrderForm.createdAt
+    )  {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      this.dataService.updateDevicesGroup(this.selectedGroupevehicules)
+      this.dataService.updateOrderForm(this.selectedOrderForm)
         .pipe(
           catchError(err => {
             console.log("res", err)
@@ -200,7 +224,7 @@ export class CrudorderFormComponent implements OnInit {
 
             else if (err.status == 400) {
               console.log(err);
-              this.errorMsg = "Groupe avec cet identifiant exist deja. Veuillez utiliser un autre identifiant."
+              this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
               console.log(this.errorMsg);
             }
 
@@ -212,7 +236,7 @@ export class CrudorderFormComponent implements OnInit {
         )
         .subscribe({
           next: (res) => {
-            // console.log("edit groupevehivule")
+            // console.log("edit order form")
             this.loadData()
             this.primaryModal.hide()
             this.errorMsg = ""
@@ -222,11 +246,11 @@ export class CrudorderFormComponent implements OnInit {
   }
 
 
-  delete(group) {
-    if (confirm("Are you sure to delete " + group)) {
+  delete(ordrForm) {
+    if (confirm("Are you sure to delete " + ordrForm)) {
       var route = this.router
-      var g = "?g=" + group
-      this.dataService.delDevicesGroup(g).subscribe({
+      var g = "?g=" + ordrForm
+      this.dataService.delOrderForm(g).subscribe({
         next: (res) => {
           this.loadData()
         }, error(err) {
@@ -244,7 +268,7 @@ export class CrudorderFormComponent implements OnInit {
   }
 
   showAddModal() {
-    this.selectedGroupevehicules = new Groupevehicules();
+    this.selectedOrderForm = new OrderForm();
     this.selectedDevice = []
     this.selectedDevices = []
     this.errorMsg = ""
@@ -259,11 +283,24 @@ export class CrudorderFormComponent implements OnInit {
 
 
   exporter(type) {
-    type == 1 ? this.exportingPdfTool.exportPdf_GroupeVehicules(this.data, "Rapport de Groupes des Vehicules " ) :
-      this.exportingExcelTool.Export_GroupVehicules(this.data, "Rapport de Groupes des Vehicules ")
+    // to modify
+    type == 1 ? this.exportingPdfTool.exportPdf_GroupeVehicules(this.data, "Rapport de Bons de commande" ) :
+      this.exportingExcelTool.Export_GroupVehicules(this.data, "Rapport de Bons de commande ")
+  }
+  //******* Items order form treatment ***************
+
+  addOrderItem(){
+    this.orderItems.unshift(new OrderItem());
+
   }
 
-}
+  deleteItem(item){
+    this.orderItems = this.orderItems.filter((e)=>{
+      return e!=item
+    })
+  }
 
+
+}
 
 
