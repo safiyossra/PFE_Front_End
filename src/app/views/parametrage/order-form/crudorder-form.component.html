@@ -1,9 +1,9 @@
-<div class="animated fadeIn">
+<div *ngIf="mode == 'List'" class="animated fadeIn">
   <div class="row">
     <div class="col-lg-12">
       <div class="card card-accent-info">
         <div class="card-header">
-          <button type="button" data-toggle="modal" (click)="showAddModal()" *ngIf="isAddPermission" class="btn btn-outline-primary"><i
+          <button type="button" data-toggle="card" (click)="newOrderForm()" *ngIf="isAddPermission" class="btn btn-outline-primary"><i
             class="fa fa-plus-circle"></i> Ajouter un Bon de Commande </button>
           <div class="card-header-actions">
             <button class="btn text-primary mr-2" (click)="loadData()" [disabled]="loading">
@@ -31,24 +31,21 @@
 </div>
 
 
-<div bsModal #primaryModal="bs-modal" *ngIf="isEditPermission" [config]="{backdrop: 'static', keyboard: false}" class="modal fade" tabindex="-1"
-     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-primary" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{{mode}} Bon de Commande</h5>
-        <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+    <div class="card" *ngIf="mode != 'List'">
+      <div class="card-header">
+        <button type="button" class="btn btn-outline-primary mb-1 mr-2 p-1 d-inline border-0" (click)="mode = 'List'">
+          <i class="icon-arrow-left fa-lg"></i>
         </button>
+        <h6 class="d-inline">{{mode}} Bon de Commande</h6>
       </div>
-      <div class="modal-body">
+      <div class="card-body">
         <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
         <div class="animated fadeIn">
           <div class="row">
             <div class="col-lg-6 pl-1">
               <div class="card card-accent-info">
                 <div class="form-group row px-2 pt-2">
-                  <label class=" col-md-4 col-form-label" for="select1">N Commande *</label>
+                  <label class=" col-md-4 col-form-label" for="select1">N Commande </label>
                   <div class="col-8">
                     <input type="text"
                            [disabled]="true"
@@ -137,6 +134,10 @@
                   </div>
                 </div>
               </div>
+              <ng-container style="justify-content: left;display: initial;">
+                <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
+                <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
+              </ng-container>
 
               </div>
             </div>
@@ -280,7 +281,7 @@
                   <div class="col-6">
                     <input type="text"
                            [disabled]="true"
-                           [(ngModel)]="selectedOrderForm.totalTTC - selectedOrderForm.totalHT"
+                           [(ngModel)]="selectedOrderForm.totalHT"
                            [ngModelOptions]="{standalone: true}"
                            class="form-control"
                     >
@@ -307,11 +308,5 @@
 
         </div>
       </div>
-      <div class="modal-footer" style="justify-content: left;display: initial;">
-        <mat-hint class="text-danger">{{errorMsg}}</mat-hint>
-        <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
-        <button type="button" class="btn btn-secondary float-right" (click)="primaryModal.hide()">Fermer</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+    </div>
+

@@ -13,14 +13,12 @@ export class OrderFormTableComponent implements OnChanges {
   @Input() columnNames?: any[]
   @Input() displayedColumns?: any[]
 
-  // public displayedColumns = ["actions","N Commande ",  "Fornisseur", "Liste produits", "Paiement", "Total TTC","Date", "Observation"]
   @Input() columns?: any[]
   @Input() pageSizeOptions?= [5, 10, 15, 20, 30, 50, 100, 200, 500, 1000];
   @Input() isEditPermission? = false
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
-  // columnNames =["Actions","N Commande ",  "Fornisseur", "Liste produits", "Paiement", "Date", "Observation"];
   public selectedPageSize = 15;
   public maxSize: number = 5;
   public totalItems: number = 0;

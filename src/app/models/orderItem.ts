@@ -13,10 +13,10 @@ export class OrderItem{
     this.ref = ref?? ''
     this.product = product?? ''
     this.designation = designation?? ''
-    this.quantity = quantity?? ''
+    this.quantity = quantity?? '1'
     this.price = price?? '0.00'
     this.tva=tva??'0'
-    this.remise = remise?? ''
+    this.remise = remise?? 'Oui'
     this.totalHT = totalHT?? '0.00'
     this.totalTTC=totalTTC??'0.00'
   }

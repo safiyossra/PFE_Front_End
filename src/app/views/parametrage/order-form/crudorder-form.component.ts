@@ -1,5 +1,4 @@
 import {Component, ViewChild} from '@angular/core';
-import {ModalDirective} from "ngx-bootstrap/modal";
 import {DataService} from "../../../services/data.service";
 import {Router} from "@angular/router";
 import {util} from "../../../tools/utils";
@@ -23,25 +22,18 @@ import {OrderItem} from "../../../models/orderItem";
 })
 export class CrudorderFormComponent{
   loading: boolean = false;
-  @ViewChild('primaryModal') public primaryModal: ModalDirective;
-
   constructor(private dataService: DataService, private router: Router,public tools: util,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
-  tva: number = 0.2;
-  value: string | Object;
   myDateRangePickerOptions: MyDateRangePickerOptions;
-  isCollapsed: boolean = false;
-  isCollapsedData: boolean = false;
-  iconCollapse: string = 'icon-arrow-up';
   data = [];
-  mode = "Ajouter"
+  mode = "List"
   isEditPermission = false
   isAddPermission = false
   errorMsg: string;
   public isnotNum: boolean = false
-  displayedColumns: any = ["N Commande ",  "Fornisseur", "Liste produits", "Paiement", "Total TTC", "Date", "Observation" ]
+  displayedColumns: any = ["orderNum ", "createdAt", "deleveryDate", "supplier",  "depot","quantity", "totalTTC"]
   modalLoading: boolean = false;
   //
-  columnNames =["Actions","N Commande ",  "Fornisseur", "Liste produits", "Paiement", "Date", "Observation"];
+  columnNames: any = ["N Commande ", "Date commande", "Date livraison", "Fornisseur",  "Dépôt","Quantité", "Total TTC"]
   selectedOrderForm: OrderForm = new OrderForm();
   payementOptions = [
     { label: 'Espece', value: 'cash' },
@@ -49,20 +41,13 @@ export class CrudorderFormComponent{
     { label: 'Carte Bancaire', value: 'creditCard' },
     { label: 'Virement', value: 'creditCard' }
   ];
-  selectedProduct: OrderItem=new OrderItem();
   orderItems: OrderItem[] = [new OrderItem()];
-  // emptyItem: OrderItem=new OrderItem();
-  products: any =[];
-  suppliers: any=[];
-  selectedSupplier: any=[];
-  itemsData=[]
-  displayedOrderItemColumns=["Réf", "Produit", "Quantité", "Prix unitaire HT (MAD)", "% TVA", "Total TTC"]
-  OrderItemColumns=[ "ref", "product", "quantity", "price", "tva", "total"]
+  // suppliers: any=[];
+  // selectedSupplier: any=[];
   //
-  selectedMode =''
   public devices: any = [];
-  selectedDevices = [];
-  selectedDevice = null;
+  // selectedDevices = [];
+  // selectedDevice = null;
   showErrorDevice = false;
   errorMessageDevice = "";
 
@@ -82,11 +67,6 @@ export class CrudorderFormComponent{
     this.loadData();
   }
 
-  toggleCollapse(): void {
-    this.isCollapsed = !this.isCollapsed;
-    this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
-
-  }
 
 
 
@@ -115,22 +95,15 @@ export class CrudorderFormComponent{
   };
 
   loadModify(ev) {
-    this.mode = "Modifier"
     if (ev) {
       var url = "?id=" + ev[0]
       this.modalLoading = true;
-      this.primaryModal.show()
-
+      this.mode = "Modifier"
       var route = this.router
       this.dataService.getOrdersForm(url).subscribe({
         next: (res: any) => {
           // console.log(res);
-          this.selectedOrderForm = new OrderForm(res.orderNum,res.supplier,res.orderItems, res.payment, res.createdAt, res.desc);
-
-          // this.selectedGroupevehicules.vehiclues = res.vehicules.map(e => { return e.deviceID });
-          // this.selectedDevices = this.selectedGroupevehicules.vehiclues
-          this.selectedDevice = this.selectedDevices
-
+          this.selectedOrderForm = new OrderForm(res.orderNum,res.createdAt,res.deliveryDate, res.depot, res.supplier, res.supplierAdress, res.deliveryAdress, res.orderItems, res.totalHT, res.totalHT, res.totalTVA);
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
@@ -142,23 +115,11 @@ export class CrudorderFormComponent{
     }
   }
 
-  getDev() {
-    var route = this.router
-    this.dataService.getVehicule().subscribe({
-      next: (res) => {
-        this.devices = res;
-        // console.log(res)
-      }, error(err) {
-        if (err.status == 401) {
-          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-        }
-      }
-    })
-  }
+  
 
-  getDeviceByName(e) {
-    return this.devices.filter((v) => { return v.dID == e })[0].name
-  }
+  // getDeviceByName(e) {
+  //   return this.devices.filter((v) => { return v.dID == e })[0].name
+  // }
 
   submit() {
     if (this.mode == "Ajouter") this.ajouter()
@@ -167,9 +128,9 @@ export class CrudorderFormComponent{
 
   ajouter() {
     var route = this.router
-    if (!this.selectedOrderForm.supplier || !this.selectedOrderForm.orderItems
-      || !this.selectedOrderForm.createdAt
-    ) {
+    if (!this.selectedOrderForm.createdAt || !this.selectedOrderForm.deliveryDate
+      || !this.selectedOrderForm.depot || !this.selectedOrderForm.supplier
+      ) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.dataService.addOrderForm(this.selectedOrderForm)
@@ -182,11 +143,11 @@ export class CrudorderFormComponent{
               route.navigate(['login'], { queryParams: { returnUrl: route.url } });
             }
 
-            else if (err.status == 400) {
-              console.log(err);
-              this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
-              console.log(this.errorMsg);
-            }
+            // else if (err.status == 400) {
+            //   console.log(err);
+            //   this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
+            //   console.log(this.errorMsg);
+            // }
 
             else if (err.status == 402) {
               this.errorMsg = "Erreur l'ajout est bloqué."
@@ -198,7 +159,7 @@ export class CrudorderFormComponent{
           next: (res) => {
             // console.log("add")
             this.loadData()
-            this.primaryModal.hide()
+            this.mode = "List"
             this.errorMsg = ""
           }
         })
@@ -207,9 +168,9 @@ export class CrudorderFormComponent{
 
   modifier() {
     var route = this.router
-    if (!this.selectedOrderForm.supplier || !this.selectedOrderForm.orderItems
-      || !this.selectedOrderForm.createdAt
-    )  {
+    if (!this.selectedOrderForm.createdAt || !this.selectedOrderForm.deliveryDate
+      || !this.selectedOrderForm.depot || !this.selectedOrderForm.supplier
+      ) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.dataService.updateOrderForm(this.selectedOrderForm)
@@ -222,11 +183,11 @@ export class CrudorderFormComponent{
               route.navigate(['login'], { queryParams: { returnUrl: route.url } });
             }
 
-            else if (err.status == 400) {
-              console.log(err);
-              this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
-              console.log(this.errorMsg);
-            }
+            // else if (err.status == 400) {
+            //   console.log(err);
+            //   this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
+            //   console.log(this.errorMsg);
+            // }
 
             else if (err.status == 402) {
               this.errorMsg = "Erreur l'ajout est bloqué."
@@ -238,7 +199,7 @@ export class CrudorderFormComponent{
           next: (res) => {
             // console.log("edit order form")
             this.loadData()
-            this.primaryModal.hide()
+            this.mode = "Modifier"
             this.errorMsg = ""
           }
         })
@@ -246,11 +207,11 @@ export class CrudorderFormComponent{
   }
 
 
-  delete(ordrForm) {
-    if (confirm("Are you sure to delete " + ordrForm)) {
+  delete(orderForm) {
+    if (confirm("Are you sure to delete " + orderForm)) {
       var route = this.router
-      var g = "?g=" + ordrForm
-      this.dataService.delOrderForm(g).subscribe({
+      var ord = "?orderForm=" + orderForm
+      this.dataService.delOrderForm(ord).subscribe({
         next: (res) => {
           this.loadData()
         }, error(err) {
@@ -267,19 +228,16 @@ export class CrudorderFormComponent{
     }
   }
 
-  showAddModal() {
+  newOrderForm() {
     this.selectedOrderForm = new OrderForm();
-    this.selectedDevice = []
-    this.selectedDevices = []
     this.errorMsg = ""
     this.mode = "Ajouter"
-    this.primaryModal.show()
   }
 
-  reset() {
-    this.selectedDevice = []
-    this.selectedDevices = []
-  }
+  // reset() {
+  //   this.selectedDevice = []
+  //   this.selectedDevices = []
+  // }
 
 
   exporter(type) {
@@ -292,6 +250,10 @@ export class CrudorderFormComponent{
   addOrderItem(){
     this.orderItems.unshift(new OrderItem());
 
+  }
+
+  saveOrderItem(){
+    
   }
 
   deleteItem(item){
