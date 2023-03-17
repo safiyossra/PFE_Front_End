@@ -1,3 +1,5 @@
+import { DeliveryItem } from './../../../models/deliveryItem';
+import { DeliveryNote } from './../../../models/deliveryNote';
 import {Component, ViewChild} from '@angular/core';
 import {DataService} from "../../../services/data.service";
 import {Router} from "@angular/router";
@@ -14,13 +16,13 @@ import {OrderForm} from "../../../models/orderForm";
 import {OrderItem} from "../../../models/orderItem";
 
 
-
 @Component({
-  selector: 'app-crudorder-form',
-  templateUrl: './crudorder-form.component.html',
-  styleUrls: ['./crudorder-form.component.scss']
+  selector: 'app-crud-delivery-note',
+  templateUrl: './crud-delivery-note.component.html',
+  styleUrls: ['./crud-delivery-note.component.scss']
 })
-export class CrudorderFormComponent{
+export class CrudDeliveryNoteComponent {
+
   loading: boolean = false;
   constructor(private dataService: DataService, private router: Router,public tools: util,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
   myDateRangePickerOptions: MyDateRangePickerOptions;
@@ -29,12 +31,11 @@ export class CrudorderFormComponent{
   isEditPermission = false
   isAddPermission = false
   errorMsg: string;
-  public isnotNum: boolean = false
-  displayedColumns: any = ["orderNum ", "createdAt", "deleveryDate", "supplier",  "depot","quantity", "totalTTC"]
   modalLoading: boolean = false;
   //
-  columnNames: any = ["N Commande ", "Date commande", "Date livraison", "Fornisseur",  "Dépôt","Quantité", "Total TTC"]
-  selectedOrderForm: OrderForm = new OrderForm();
+  columnNames: any = ["N BL ", "Date BL", "N BL", "N commande fournisseur", "fournisseur", "N facture", "N reglement"]
+  selectedDeliveryNote: DeliveryNote = new DeliveryNote();
+  selectedOrderForm: OrderForm= new OrderForm()
   payementOptions = [
     { label: 'Espece', value: 'cash' },
     { label: 'Par Chèque', value: 'byCheck' },
@@ -42,7 +43,7 @@ export class CrudorderFormComponent{
     { label: 'Virement', value: 'creditCard' }
   ];
   orderItems: OrderItem[] = [new OrderItem()];
-  
+  ordersDelivery: DeliveryItem[]= [new DeliveryItem];
   // suppliers: any=[];
   selectedSupplier: any;
   //
@@ -129,10 +130,8 @@ export class CrudorderFormComponent{
 
   ajouter() {
     var route = this.router
-    console.log(this.selectedOrderForm)
-    if (!this.selectedOrderForm.createdAt || !this.selectedOrderForm.deliveryDate
-        || !this.selectedOrderForm.depot || !this.selectedOrderForm.supplier
-      ) {
+    console.log(this.selectedDeliveryNote)
+    if (!this.selectedDeliveryNote.createdAt ) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.mode = "Modifier" //test mode Modifier 
@@ -171,10 +170,8 @@ export class CrudorderFormComponent{
 
   modifier() {
     var route = this.router
-    console.log(this.selectedOrderForm)
-    if (!this.selectedOrderForm.createdAt || !this.selectedOrderForm.deliveryDate
-      || !this.selectedOrderForm.depot || !this.selectedOrderForm.supplier
-      ) {
+    console.log(this.selectedDeliveryNote)
+    if (!this.selectedDeliveryNote.createdAt ) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
       this.dataService.updateOrderForm(this.selectedOrderForm)
@@ -232,9 +229,9 @@ export class CrudorderFormComponent{
     }
   }
 
-  newOrderForm() {
-    this.selectedOrderForm = new OrderForm();
-    this.selectedOrderForm.orderItems = [new OrderItem()];
+  newDeliveryNote() {
+    this.selectedDeliveryNote = new DeliveryNote();
+    this.selectedDeliveryNote.deliveryItems = [new DeliveryItem()];
     this.errorMsg = ""
     this.mode = "Ajouter"
   }
@@ -310,7 +307,7 @@ export class CrudorderFormComponent{
   
 
   addOrderItem(){
-    this.selectedOrderForm.orderItems.unshift(new OrderItem());
+    this.selectedDeliveryNote.deliveryItems.unshift(new DeliveryItem());
 
   }
 
@@ -319,7 +316,7 @@ export class CrudorderFormComponent{
   }
 
   deleteItem(item){
-    this.selectedOrderForm.orderItems = this.selectedOrderForm.orderItems.filter((e)=>{
+    this.selectedDeliveryNote.deliveryItems = this.selectedDeliveryNote.deliveryItems.filter((e)=>{
       return e!=item
     })
   }

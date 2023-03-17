@@ -1,0 +1,344 @@
+<div *ngIf="mode == 'List'" class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card card-accent-info">
+        <div class="card-header">
+          <button type="button" data-toggle="card" (click)="newDeliveryNote()" *ngIf="isAddPermission" class="btn btn-outline-primary"><i
+            class="fa fa-plus-circle"></i> Ajouter un Bon de Livraison </button>
+          <div class="card-header-actions">
+            <button class="btn text-primary mr-2" (click)="loadData()" [disabled]="loading">
+              <i class="fa fa-dot-circle-o" *ngIf="!loading"></i>
+              <i class="fa fa-circle-o-notch fa-lg mr-1 fa-spin" *ngIf="loading"></i> &nbsp;Actualiser
+            </button>
+            <app-dropdown-export (export)="exporter($event)" ></app-dropdown-export>
+          </div>
+        </div>
+        <div [collapse]="isCollapsed" [isAnimated]="true" class="card-body">
+          <form class="form-horizontal">
+            <div class="row">
+              <div class="col-lg-12">
+                <delivery-note-table [columnNames]="columnNames" [displayedColumns]="displayedColumns" (modify)="loadModify($event)" (delete)="delete($event)" [data]="data" [isEditPermission]="isEditPermission">
+                </delivery-note-table>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.row-->
+</div>
+
+
+<div class="card" *ngIf="mode != 'List'">
+  <div class="card-header">
+    <button type="button" class="btn btn-outline-primary mb-1 mr-2 p-1 d-inline border-0" (click)="mode = 'List'">
+      <i class="icon-arrow-left fa-lg"></i>
+    </button>
+    <h6 class="d-inline">{{mode}} Bon de Commande</h6>
+  </div>
+  <div class="card-body">
+    <mat-progress-bar mode="indeterminate" *ngIf="modalLoading"></mat-progress-bar>
+    <div class="animated fadeIn">
+      <div class="row">
+        <div class="col-lg-6 pl-1">
+          <div class="card card-accent-info">
+            <div class="form-group row px-2 pt-2">
+              <label class=" col-md-4 col-form-label" for="select1">N Bon Livraison </label>
+              <div class="col-8">
+                <input type="text"
+                       [disabled]="true"
+                       [(ngModel)]="selectedDeliveryNote.deliveryNum"
+                       [ngModelOptions]="{standalone: true}"
+                       class="form-control"
+                       placeholder="Numero Bon Livraison"
+                >
+              </div>
+            </div>
+
+            <div class="form-group row px-2">
+              <label class="col-md-4 col-form-label" for="text-input">Date Bon Livraison *</label>
+              <div class="col-8">
+                <input type="date" [(ngModel)]="selectedOrderForm.createdAt"
+                       [ngModelOptions]="{standalone: true}" class="form-control">
+              </div>
+            </div>
+            <div class="form-group row px-2">
+              <label class="col-md-4 col-form-label" for="text-input">N BL Fournisseur</label>
+              <div class="col-8">
+                <input type="text" [(ngModel)]="selectedDeliveryNote.createdAt"
+                       [ngModelOptions]="{standalone: true}" class="form-control"
+                       placeholder="Numero BL Fournisseur"
+                       >
+              </div>
+            </div>
+            <div class="form-group row px-2">
+              <label class="col-md-4 col-form-label" for="text-input">N Bon Livraison</label>
+              <div class="col-8">
+                <input type="text" 
+                [disabled]="true"
+                [(ngModel)]="selectedDeliveryNote.createdAt"
+                 [ngModelOptions]="{standalone: true}" class="form-control"
+                 placeholder="Numero Bon Livraison">
+              </div>
+            </div>
+
+            <div class="form-group row px-2 pb-0">
+              <label class=" col-md-4 col-form-label" for="select1">Dépôt</label>
+              <div class="col-8 input-group">
+                <my-dropdown-select class="form-control" [placeholder]="'Dépôt'"
+                                    [selectPlaceholder]="'search...'" [options]="payementOptions" [display]="'label'"
+                                    [value]="'value'" [multiple]="false" [labelCount]="0"
+                                    [selectedOptions]="selectedOrderForm.depot"
+                                    (selectionChange)="getSelectedDepot($event)"
+                                    
+                >
+                </my-dropdown-select>
+              </div>
+            </div>
+
+          </div>
+          <div class="card card-accent-info mb-3">
+            <div class="form-group row px-2 pt-2">
+              <div class="col-md-4">
+                <label class="col-form-label" for="select1">Fournisseur *</label>
+                <button type="button" class="btn">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+              </div>
+              <div class="col-8 input-group">
+                <my-dropdown-select class="form-control" [placeholder]="'Fournisseur'"
+                                    [selectPlaceholder]="'search...'" [options]="payementOptions" [display]="'label'"
+                                    [value]="'value'" [multiple]="false" [labelCount]="0"
+                                    [selectedOptions]="selectedOrderForm.supplier"
+                                    (selectionChange)="getSelectedSupplier($event)"
+                                    >
+                >
+                </my-dropdown-select>
+              </div>
+            </div>
+
+
+            <div class="form-group row px-2 pb-1">
+              <div class="col-md-4">
+                <label class="col-form-label" for="select1">Liste Bons Commandes</label>
+              </div>
+              <div class="col-8 input-group">
+                <my-dropdown-select class="form-control" [placeholder]="'Fournisseur'"
+                                    [selectPlaceholder]="'search...'" [options]="payementOptions" [display]="'label'"
+                                    [value]="'value'" [multiple]="false" [labelCount]="0"
+                                    [selectedOptions]="selectedOrderForm.supplier"
+                                    (selectionChange)="getSelectedSupplier($event)"
+                                    >
+                >
+                </my-dropdown-select>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-lg-6 p-0">
+          <div class="card card-accent-info">
+            <div class="form-group row px-2 pt-2">
+              <label class=" col-md-4 col-form-label" for="select1">N réglement </label>
+              <div class="col-8">
+                <input type="text"
+                       [disabled]="true"
+                       [(ngModel)]="selectedDeliveryNote.settlementNum"
+                       [ngModelOptions]="{standalone: true}"
+                       class="form-control"
+                       placeholder="Numero de réglement"
+                >
+              </div>
+            </div>
+
+            <div class="form-group row px-2">
+              <label class="col-md-4 col-form-label" for="text-input">Facture Fournisseur</label>
+              <div class="col-8">
+                <input type="date" [(ngModel)]="selectedOrderForm.createdAt"
+                       [ngModelOptions]="{standalone: true}" class="form-control">
+              </div>
+            </div>
+            <div class="form-group row px-2 pb-0">
+              <label class=" col-md-4 col-form-label" for="select1">Commande Fournisseur</label>
+              <div class="col-8 input-group">
+                <my-dropdown-select class="form-control" [placeholder]="'Dépôt'"
+                                    [selectPlaceholder]="'search...'" [options]="payementOptions" [display]="'label'"
+                                    [value]="'value'" [multiple]="false" [labelCount]="0"
+                                    [selectedOptions]="selectedOrderForm.depot"
+                                    (selectionChange)="getSelectedDepot($event)"
+                                    
+                >
+                </my-dropdown-select>
+              </div>
+            </div>
+
+          </div>
+          <div class="card card-accent-info pt-2">
+            <div class="form-group row px-2 pt-2 pb-0">
+              <label class="col-md-3 col-form-label" for="text-input">Observation</label>
+              <div class="col-9 pl-0">
+                          <textarea type="text" rows="8" class="form-control"
+                                    [ngModel]="selectedOrderForm.supplierAdress"
+                          ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <mat-hint class="text-danger col-6">{{errorMsg}}</mat-hint>
+        <div class="col-6">
+          <button type="button" class="btn btn-primary float-right" (click)="submit()">{{mode}}</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="card card-accent-info">
+          <div class="card-header p-0 pt-2">
+            <div class="row col-12 p-0 m-0 align-items-center">
+              <div class="col-1 p-0 px-2">
+                <label>Ref</label>
+              </div>
+            
+              <div class="col-2 p-0 px-2">
+                <label>Designation</label>
+              </div>
+
+              <div class="col-2 p-0 px-2">
+                <label>Quantité Commandée</label>
+              </div>
+              <div class="col-2 p-0 px-2">
+                <label>Quantité Livré</label>
+              </div>
+              <div class="col-2 p-0 px-2">
+                <label>Quantité</label>
+              </div>
+
+              <div class="col-1 p-0 px-2">
+                <label>Prix</label>
+              </div>
+
+              <div class="col-1 p-0 px-2">
+                <label>Remise</label>
+              </div>
+
+              <div class="col-1 p-0 px-2 d-flex justify-content-center">
+                <button type="button" title="Ajouter" class="btn btn-outline-success py-0" (click)="addOrderItem()">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body px-0 py-2">
+            <div *ngFor="let item of ordersDelivery; let i = index" class="row col-12 m-0 p-0">
+              <div class="col-1 p-1">
+                <input type="text"
+                       [(ngModel)]="item.ref"
+                       [ngModelOptions]="{standalone: true}"
+                       class="form-control"
+                       placeholder="Ref"
+                >
+              </div>
+              <div class="col-2 p-1">
+                <input type="text"
+                       [(ngModel)]="item.designation"
+                       [ngModelOptions]="{standalone: true}"
+                       class="form-control"
+                       placeholder="Designation"
+                >
+              </div>
+              
+              <div class="col-2 p-1">
+                <input type="number" min="1" class="form-control"
+                       [(ngModel)]="item.quantity"
+                       [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-2 p-1">
+                <input type="number" min="0" class="form-control"
+                       [(ngModel)]="item.qtyDelivered"
+                       [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-2 p-1">
+                <input type="number" min="0" class="form-control"
+                       [(ngModel)]="item.qty"
+                       [ngModelOptions]="{standalone: true}">
+              </div>
+
+              <div class="col-1 p-1">
+                <input type="number" min="0" class="form-control"
+                       [(ngModel)]="item.price"
+                       [ngModelOptions]="{standalone: true}">
+              </div>
+
+              <div class="col-1 p-1">
+                <input type="number" class="form-control"
+                       [(ngModel)]="item.remise"
+                       [ngModelOptions]="{standalone: true}">
+              </div>
+
+              <div class="col-1 p-1 d-flex justify-content-center align-items-center">
+                <span *ngIf="i === 0">
+                  <i style="cursor: pointer;" class="cil-check p-1 text-success" title="Enregistrer"></i>
+                </span>
+                <span *ngIf="i !== 0">
+                  <i style="cursor: pointer;" class="cil-pen p-1 text-primary" title="Modifier"></i>
+                  <i style="cursor: pointer;" class="cil-trash p-1 text-danger" (click)="deleteItem(item)" title="Supprimer"></i>
+                </span>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8">
+        </div>
+        <div class="col-lg-4 p-0">
+          <div class="card card-accent-info">
+            <div class="form-group row px-2 pt-2">
+              <label class=" col-md-6 col-form-label" for="select1">Total HT</label>
+              <div class="col-6">
+                <input type="number"
+                       [disabled]="true"
+                       [(ngModel)]="selectedOrderForm.totalHT"
+                       [ngModelOptions]="{standalone: true}"
+                       (change)="calculate()"
+                       class="form-control"
+                >
+              </div>
+            </div>
+            <div class="form-group row px-2">
+              <label class=" col-md-6 col-form-label" for="select1">Total TVA</label>
+              <div class="col-6">
+                <input type="number"
+                       [disabled]="true"
+                       [(ngModel)]="selectedOrderForm.totalTVA"
+                       [ngModelOptions]="{standalone: true}"
+                       (change)="calculate()"
+                       class="form-control"
+                >
+              </div>
+            </div>
+            <div class="form-group row px-2 pb-0">
+              <label class=" col-md-6 col-form-label" for="select1">Total TTC</label>
+              <div class="col-6">
+                <input type="number"
+                       [disabled]="true"
+                       [(ngModel)]="selectedOrderForm.totalTTC"
+                       [ngModelOptions]="{standalone: true}"
+                       (change)="calculate()"
+                       class="form-control"
+                >
+              </div>
+            </div>
+  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -16,7 +16,7 @@ export class OrderItem{
     this.quantity = quantity?? '1'
     this.price = price?? '0.00'
     this.tva=tva??'0'
-    this.remise = remise?? 'Oui'
+    this.remise = remise?? '0.00'
     this.totalHT = totalHT?? '0.00'
     this.totalTTC=totalTTC??'0.00'
   }

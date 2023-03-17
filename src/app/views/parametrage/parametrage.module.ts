@@ -10,13 +10,13 @@ import { GestiondriverModule } from './gestiondriver/gestiondriver.module';
 import { GestionusersModule } from './gestionusers/gestionusers.module';
 import { GestionvehiculeModule } from './gestionvehicule/gestionvehicule.module';
 import {GestionemployesModule} from "./gestionemployes/gestionemployes.module";
-import { CrudorderFormComponent } from './order-form/crudorder-form.component';
-import { OrderFormTableComponent } from './order-form/order-form-table/order-form-table.component';
 import {OrderFormModule} from "./order-form/order-form.module";
+import { DeliveryNoteModule } from './delivery-note/delivery-note.module';
+
 
 @NgModule({
   declarations: [
-    ParametrageComponent
+    ParametrageComponent,
   ],
   imports: [
     CommonModule,
@@ -28,7 +28,8 @@ import {OrderFormModule} from "./order-form/order-form.module";
     GestionusersModule,
     GestionvehiculeModule,
     GestionemployesModule,
-    OrderFormModule
+    OrderFormModule,
+    DeliveryNoteModule
   ]
 })
 export class ParametrageModule { }

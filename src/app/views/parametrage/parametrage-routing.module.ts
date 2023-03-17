@@ -9,6 +9,7 @@ import { CrudgroupeComponent } from './groupevehicules/crudgroupe.component';
 import {PermissionsGuard} from '../../guards/permissions.guard'
 import {CrudemployeeComponent} from "./gestionemployes/crudemployee.component";
 import {CrudorderFormComponent} from "./order-form/crudorder-form.component";
+import { CrudDeliveryNoteComponent } from './delivery-note/crud-delivery-note.component';
 
 const routes: Routes = [
   {
@@ -85,6 +86,15 @@ const routes: Routes = [
         data: {
           permissionKey:'Parametrage_Utilisateur',
           title: 'Bon de Commande'
+        }
+      },
+      {
+        path: 'delivery-note',
+        component: CrudDeliveryNoteComponent,
+        canActivate: [PermissionsGuard],
+        data: {
+          permissionKey:'Parametrage_Utilisateur',
+          title: 'Bon de livraison'
         }
       }
     ]
