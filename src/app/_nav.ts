@@ -109,6 +109,11 @@ export const navItems: INavData[] = [
     url: '/map/planner',
     icon: 'icon-graph'
   },
+  {
+    name: 'Achat',
+    url: '/achat',
+    icon: 'cil-money'
+  },
   // {
   //   name: 'AI Optimisation',
   //   url: 'http://backup.sendatrack.com:8081/',

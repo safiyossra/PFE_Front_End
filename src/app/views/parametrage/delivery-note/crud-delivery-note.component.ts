@@ -1,3 +1,5 @@
+import { throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { DeliveryItem } from './../../../models/deliveryItem';
 import { DeliveryNote } from './../../../models/deliveryNote';
 import {Component, ViewChild} from '@angular/core';
@@ -6,26 +8,16 @@ import {Router} from "@angular/router";
 import {util} from "../../../tools/utils";
 import {ExportingTool} from "../../../tools/exporting_tool";
 import {ExportExcel} from "../../../tools/export-excel";
-import {
-  MyDateRangePickerComponent,
-  MyDateRangePickerOptions
-} from "../../components/my-date-range-picker/my-daterangepicker.component";
-import {catchError} from "rxjs/operators";
-import {throwError} from "rxjs";
-import {OrderForm} from "../../../models/orderForm";
-import {OrderItem} from "../../../models/orderItem";
 
 
 @Component({
   selector: 'app-crud-delivery-note',
-  templateUrl: './crud-delivery-note.component.html',
-  styleUrls: ['./crud-delivery-note.component.scss']
+  templateUrl: './crud-delivery-note.component.html'
 })
 export class CrudDeliveryNoteComponent {
 
   loading: boolean = false;
   constructor(private dataService: DataService, private router: Router,public tools: util,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
-  myDateRangePickerOptions: MyDateRangePickerOptions;
   data = [];
   mode = "List"
   isEditPermission = false
@@ -33,33 +25,30 @@ export class CrudDeliveryNoteComponent {
   errorMsg: string;
   modalLoading: boolean = false;
   //
-  columnNames: any = ["N BL ", "Date BL", "N BL", "N commande fournisseur", "fournisseur", "N facture", "N reglement"]
+  columnNames: any = ["N BL ", "Date BL", "N commande fournisseur", "fournisseur", ,"Dépôt", "N facture", "N reglement"]
+  displayedColumns: any =["deliveryNum", "createdAt", "orderNum", "supplier", "depot", "billNum", "settlementNum"];
+
   selectedDeliveryNote: DeliveryNote = new DeliveryNote();
-  selectedOrderForm: OrderForm= new OrderForm()
+  selectedOrder: any;
+
   payementOptions = [
     { label: 'Espece', value: 'cash' },
     { label: 'Par Chèque', value: 'byCheck' },
     { label: 'Carte Bancaire', value: 'creditCard' },
     { label: 'Virement', value: 'creditCard' }
-  ];
-  orderItems: OrderItem[] = [new OrderItem()];
-  ordersDelivery: DeliveryItem[]= [new DeliveryItem];
-  // suppliers: any=[];
-  selectedSupplier: any;
-  //
+  ];  
+  
+  
   public devices: any = [];
-  // selectedDevices = [];
-  // selectedDevice = null;
-  showErrorDevice = false;
-  errorMessageDevice = "";
+  
+  showErrorOrder = false;
+  errorMessageOrder = "";
 
 
   resetValidator() {
-    this.showErrorDevice = false;
-    this.errorMessageDevice = "";
+    this.showErrorOrder = false;
+    this.errorMessageOrder = "";
   }
-  @ViewChild('calendar', { static: true })
-  private myDateRangePicker: MyDateRangePickerComponent;
 
 
   ngOnInit() {
@@ -72,16 +61,13 @@ export class CrudDeliveryNoteComponent {
 
 
 
-  onValidateDevice() {
-    this.showErrorDevice = !this.showErrorDevice;
-    this.errorMessageDevice = "This field is required";
-  }
+
 
   loadData() {
     this.loading = true;
 
     var route = this.router
-    this.dataService.getOrdersForm("").subscribe({
+    this.dataService.getDeliveryNotes("").subscribe({
       next: (d: any) => {
         this.data = d;
         // console.log(d);
@@ -102,10 +88,10 @@ export class CrudDeliveryNoteComponent {
       this.modalLoading = true;
       this.mode = "Modifier"
       var route = this.router
-      this.dataService.getOrdersForm(url).subscribe({
+      this.dataService.getDeliveryNotes(url).subscribe({
         next: (res: any) => {
           // console.log(res);
-          this.selectedOrderForm = new OrderForm(res.orderNum,res.createdAt,res.deliveryDate, res.depot, res.supplier, res.supplierAdress, res.deliveryAdress, res.orderItems, res.totalHT, res.totalHT, res.totalTVA);
+          this.selectedDeliveryNote = new DeliveryNote(res.createdAt, res.deliveryItems, res.orderNum, res.supplier, res.supplierDeliveryNum, res.depot, res.billNum, res.settlementNum, res.observation, res.adress, res.totalHT, res.totalTVA, res.totalTTC);
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
@@ -119,10 +105,6 @@ export class CrudDeliveryNoteComponent {
 
   
 
-  // getDeviceByName(e) {
-  //   return this.devices.filter((v) => { return v.dID == e })[0].name
-  // }
-
   submit() {
     if (this.mode == "Ajouter") this.ajouter()
     if (this.mode == "Modifier") this.modifier()
@@ -134,47 +116,8 @@ export class CrudDeliveryNoteComponent {
     if (!this.selectedDeliveryNote.createdAt ) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      this.mode = "Modifier" //test mode Modifier 
-      // this.dataService.addOrderForm(this.selectedOrderForm)
-      //   .pipe(
-      //     catchError(err => {
-      //       console.log("res", err)
-      //       this.modalLoading = false;
-      //       this.errorMsg = "Erreur "+err
-      //       if (err.status == 401) {
-      //         route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-      //       }
-
-      //       // else if (err.status == 400) {
-      //       //   console.log(err);
-      //       //   this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
-      //       //   console.log(this.errorMsg);
-      //       // }
-
-      //       else if (err.status == 402) {
-      //         this.errorMsg = "Erreur l'ajout est bloqué."
-      //       }
-      //       return throwError(err);
-      //     })
-      //   )
-      //   .subscribe({
-      //     next: (res) => {
-      //       // console.log("add")
-      //       this.loadData()
-      //       this.mode = "List"
-      //       this.errorMsg = ""
-      //     }
-      //   })
-    }
-  }
-
-  modifier() {
-    var route = this.router
-    console.log(this.selectedDeliveryNote)
-    if (!this.selectedDeliveryNote.createdAt ) {
-      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
-    } else {
-      this.dataService.updateOrderForm(this.selectedOrderForm)
+  
+      this.dataService.addDeliveryNote(this.selectedDeliveryNote)
         .pipe(
           catchError(err => {
             console.log("res", err)
@@ -184,11 +127,50 @@ export class CrudDeliveryNoteComponent {
               route.navigate(['login'], { queryParams: { returnUrl: route.url } });
             }
 
-            // else if (err.status == 400) {
-            //   console.log(err);
-            //   this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
-            //   console.log(this.errorMsg);
-            // }
+            else if (err.status == 400) {
+              console.log(err);
+              this.errorMsg = "Un bon de Livraison avec cet numéro exist deja. Veuillez utiliser un autre numéro."
+              console.log(this.errorMsg);
+            }
+
+            else if (err.status == 402) {
+              this.errorMsg = "Erreur l'ajout est bloqué."
+            }
+            return throwError(err);
+          })
+        )
+        .subscribe({
+          next: (res) => {
+            // console.log("add")
+            this.loadData()
+            this.mode = "List"
+            this.errorMsg = ""
+          }
+        })
+    }
+  }
+
+  modifier() {
+    var route = this.router
+    console.log(this.selectedDeliveryNote)
+    if (!this.selectedDeliveryNote.createdAt ) {
+      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+    } else {
+      this.dataService.updateDeliveryNote(this.selectedDeliveryNote)
+        .pipe(
+          catchError(err => {
+            console.log("res", err)
+            this.modalLoading = false;
+            this.errorMsg = "Erreur "+err
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
+
+            else if (err.status == 400) {
+              console.log(err);
+              this.errorMsg = "Un bon de Livraison avec cet numéro exist deja. Veuillez utiliser un autre numéro."
+              console.log(this.errorMsg);
+            }
 
             else if (err.status == 402) {
               this.errorMsg = "Erreur l'ajout est bloqué."
@@ -212,7 +194,7 @@ export class CrudDeliveryNoteComponent {
     if (confirm("Are you sure to delete " + orderForm)) {
       var route = this.router
       var ord = "?orderForm=" + orderForm
-      this.dataService.delOrderForm(ord).subscribe({
+      this.dataService.delDeliveryNote(ord).subscribe({
         next: (res) => {
           this.loadData()
         }, error(err) {
@@ -231,15 +213,14 @@ export class CrudDeliveryNoteComponent {
 
   newDeliveryNote() {
     this.selectedDeliveryNote = new DeliveryNote();
-    this.selectedDeliveryNote.deliveryItems = [new DeliveryItem()];
     this.errorMsg = ""
     this.mode = "Ajouter"
   }
 
-  // reset() {
-  //   this.selectedDevice = []
-  //   this.selectedDevices = []
-  // }
+  reset() {
+    this.selectedOrder = []
+  
+  }
 
 
   exporter(type) {
@@ -249,71 +230,50 @@ export class CrudDeliveryNoteComponent {
   }
   //******* Items order form treatment ***************
 
-  getSelectedDepot(selected) {
-    this.selectedOrderForm.depot = selected;
+  getSelectedDepot(selected:any) {
+    this.selectedDeliveryNote.depot = selected;
   }
   getSelectedSupplier(selected) {
-    this.selectedOrderForm.supplier = selected;
+    this.selectedDeliveryNote.supplier = selected;
   }
 
-  
-  calculate(item: OrderItem=null){
-    if(item!=null){
-      item.totalHT = item.price * item.quantity
-      item.totalTTC= item.totalHT + item.tva * item.quantity
-    }
-    else{
-      let sum=0.00
-      let tva=0.00
-      this.selectedOrderForm.orderItems.forEach(item=>{
-      sum+=item.totalHT
-      tva+=item.totalHT
-      })
-      this.selectedOrderForm.totalHT = sum
-      this.selectedOrderForm.totalTVA= tva
-      this.selectedOrderForm.totalTTC = sum + tva
-    }
+  getSelectedOrder(selected) {
+    this.selectedOrder = selected;
   }
-
-  totalHT(item: OrderItem){
-    console.log("totalHT used")
-    item.totalHT = item.price * item.quantity
-  }
-  totalTTC(item: OrderItem){
-
-    item.totalTTC= item.totalHT + item.tva * item.quantity
-    console.log("totalTTC used")
-  }
-
-  totHT(){
-    let sum=0.00;
-    this.selectedOrderForm.orderItems.forEach(item=>{
-      sum+=item.totalHT
+  calculate(){
+    let totalHT=0.00
+    let totalTva=0.00
+    // let totalRemise=0.00
+    this.selectedDeliveryNote.deliveryItems.forEach(item=>{
+      item.totalHT = item.price * item.qty
+      var tva = (item.tva*item.totalHT/100)
+      item.totalTTC = item.totalHT + tva
+      totalHT+=item.totalHT
+      totalTva+=tva
+      // totalRemise+=item.remise
     })
-    this.selectedOrderForm.totalHT = sum
-  }
-  
-  totalTVA(){
-    let tva=0.00;
-    this.selectedOrderForm.orderItems.forEach(item=>{
-      tva+=item.totalHT
-    })
-    this.selectedOrderForm.totalTVA= tva
-  }
+    this.selectedDeliveryNote.totalHT = totalHT
+    this.selectedDeliveryNote.totalTVA= totalTva
+    this.selectedDeliveryNote.totalTTC = totalHT + totalTva
+}
 
-  totTTC(){
-    this.selectedOrderForm.totalTTC = this.selectedOrderForm.totalHT + this.selectedOrderForm.totalTVA
-  }
   
 
-  addOrderItem(){
+  addDeliveryItem(){
     this.selectedDeliveryNote.deliveryItems.unshift(new DeliveryItem());
 
   }
-
-  saveOrderItem(orderNum){
-    
+  saveOrderItem(item){
+    //api treatment
+    this.selectedDeliveryNote.deliveryItems.unshift(item);
   }
+  updateOrderItem(item, index){
+    //api treatment
+    this.selectedDeliveryNote.deliveryItems[index]=item
+  }
+
+
+ 
 
   deleteItem(item){
     this.selectedDeliveryNote.deliveryItems = this.selectedDeliveryNote.deliveryItems.filter((e)=>{

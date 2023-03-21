@@ -1,3 +1,4 @@
+import { DeliveryNote } from './../models/deliveryNote';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from './../../environments/environment';
@@ -16,6 +17,7 @@ import {OrderForm} from "../models/orderForm";
 })
 
 export class DataService {
+  
 
   constructor(private http: HttpClient, private JWT: JwtService) {
   }
@@ -1066,6 +1068,8 @@ export class DataService {
     })
   }
 
+  //orderForm
+
   getOrdersForm(url) {
     let SERVER_URL = environment.apiUrl + "ordersForm" + url;
     let jwt = this.JWT.get();
@@ -1118,4 +1122,61 @@ export class DataService {
     })
 
   }
+
+  //delivery note extracting data from api 
+
+
+  getDeliveryNotes(url) {
+    let SERVER_URL = environment.apiUrl + "delivery" + url;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+  }
+
+  addDeliveryNote(dn: DeliveryNote) {
+    let SERVER_URL = environment.apiUrl + "createDelivery";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(dn) }
+
+    })
+  }
+
+  updateDeliveryNote(dn: DeliveryNote) {
+    let SERVER_URL = environment.apiUrl + "editDelivery";
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers,
+      params: { u: JSON.stringify(dn) }
+
+    })
+  }
+
+  delDeliveryNote(dn) {
+    let SERVER_URL = environment.apiUrl + "delDelivery" + dn;
+    let jwt = this.JWT.get();
+    let headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json'
+    });
+    return this.http.get(SERVER_URL, {
+      headers: headers
+    })
+
+  }
+
 }

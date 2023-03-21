@@ -10,26 +10,25 @@ import {
 } from "../../components/my-date-range-picker/my-daterangepicker.component";
 import {catchError} from "rxjs/operators";
 import {throwError} from "rxjs";
-import {OrderForm} from "../../../models/orderForm";
 import {OrderItem} from "../../../models/orderItem";
+import { OrderForm } from 'src/app/models/orderForm';
 
 
 
 @Component({
   selector: 'app-crudorder-form',
-  templateUrl: './crudorder-form.component.html',
-  styleUrls: ['./crudorder-form.component.scss']
+  templateUrl: './crudorder-form.component.html'
 })
 export class CrudorderFormComponent{
   loading: boolean = false;
   constructor(private dataService: DataService, private router: Router,public tools: util,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
-  myDateRangePickerOptions: MyDateRangePickerOptions;
+
   data = [];
   mode = "List"
   isEditPermission = false
   isAddPermission = false
   errorMsg: string;
-  public isnotNum: boolean = false
+ 
   displayedColumns: any = ["orderNum ", "createdAt", "deleveryDate", "supplier",  "depot","quantity", "totalTTC"]
   modalLoading: boolean = false;
   //
@@ -41,22 +40,14 @@ export class CrudorderFormComponent{
     { label: 'Carte Bancaire', value: 'creditCard' },
     { label: 'Virement', value: 'creditCard' }
   ];
-  orderItems: OrderItem[] = [new OrderItem()];
   
-  // suppliers: any=[];
-  selectedSupplier: any;
-  //
-  public devices: any = [];
-  // selectedDevices = [];
-  // selectedDevice = null;
-  showErrorDevice = false;
-  errorMessageDevice = "";
+  
 
 
-  resetValidator() {
-    this.showErrorDevice = false;
-    this.errorMessageDevice = "";
-  }
+  // resetValidator() {
+    
+  // }
+
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
 
@@ -69,12 +60,6 @@ export class CrudorderFormComponent{
   }
 
 
-
-
-  onValidateDevice() {
-    this.showErrorDevice = !this.showErrorDevice;
-    this.errorMessageDevice = "This field is required";
-  }
 
   loadData() {
     this.loading = true;
@@ -118,9 +103,7 @@ export class CrudorderFormComponent{
 
   
 
-  // getDeviceByName(e) {
-  //   return this.devices.filter((v) => { return v.dID == e })[0].name
-  // }
+
 
   submit() {
     if (this.mode == "Ajouter") this.ajouter()
@@ -135,37 +118,37 @@ export class CrudorderFormComponent{
       ) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-      this.mode = "Modifier" //test mode Modifier 
-      // this.dataService.addOrderForm(this.selectedOrderForm)
-      //   .pipe(
-      //     catchError(err => {
-      //       console.log("res", err)
-      //       this.modalLoading = false;
-      //       this.errorMsg = "Erreur "+err
-      //       if (err.status == 401) {
-      //         route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-      //       }
 
-      //       // else if (err.status == 400) {
-      //       //   console.log(err);
-      //       //   this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
-      //       //   console.log(this.errorMsg);
-      //       // }
+      this.dataService.addOrderForm(this.selectedOrderForm)
+        .pipe(
+          catchError(err => {
+            console.log("res", err)
+            this.modalLoading = false;
+            this.errorMsg = "Erreur "+err
+            if (err.status == 401) {
+              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+            }
 
-      //       else if (err.status == 402) {
-      //         this.errorMsg = "Erreur l'ajout est bloqué."
-      //       }
-      //       return throwError(err);
-      //     })
-      //   )
-      //   .subscribe({
-      //     next: (res) => {
-      //       // console.log("add")
-      //       this.loadData()
-      //       this.mode = "List"
-      //       this.errorMsg = ""
-      //     }
-      //   })
+            else if (err.status == 400) {
+              console.log(err);
+              this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
+              console.log(this.errorMsg);
+            }
+
+            else if (err.status == 402) {
+              this.errorMsg = "Erreur l'ajout est bloqué."
+            }
+            return throwError(err);
+          })
+        )
+        .subscribe({
+          next: (res) => {
+            // console.log("add")
+            this.loadData()
+            this.mode = "List"
+            this.errorMsg = ""
+          }
+        })
     }
   }
 
@@ -187,11 +170,11 @@ export class CrudorderFormComponent{
               route.navigate(['login'], { queryParams: { returnUrl: route.url } });
             }
 
-            // else if (err.status == 400) {
-            //   console.log(err);
-            //   this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
-            //   console.log(this.errorMsg);
-            // }
+            else if (err.status == 400) {
+              console.log(err);
+              this.errorMsg = "Un bon de Commande avec cet numéro exist deja. Veuillez utiliser un autre numéro."
+              console.log(this.errorMsg);
+            }
 
             else if (err.status == 402) {
               this.errorMsg = "Erreur l'ajout est bloqué."
@@ -239,11 +222,6 @@ export class CrudorderFormComponent{
     this.mode = "Ajouter"
   }
 
-  // reset() {
-  //   this.selectedDevice = []
-  //   this.selectedDevices = []
-  // }
-
 
   exporter(type) {
     // to modify
@@ -260,65 +238,40 @@ export class CrudorderFormComponent{
   }
 
   
-  calculate(item: OrderItem=null){
-    if(item!=null){
-      item.totalHT = item.price * item.quantity
-      item.totalTTC= item.totalHT + item.tva * item.quantity
-    }
-    else{
-      let sum=0.00
-      let tva=0.00
+  calculate(){
+      let totalHT=0.00
+      let totalTva=0.00
+      // let totalRemise=0.00
       this.selectedOrderForm.orderItems.forEach(item=>{
-      sum+=item.totalHT
-      tva+=item.totalHT
+        item.totalHT = item.price * item.quantity
+        var tva = (item.tva*item.totalHT/100)
+        item.totalTTC = item.totalHT + tva
+        totalHT+=item.totalHT
+        totalTva+=tva
+        // totalRemise+=item.remise
       })
-      this.selectedOrderForm.totalHT = sum
-      this.selectedOrderForm.totalTVA= tva
-      this.selectedOrderForm.totalTTC = sum + tva
-    }
+      this.selectedOrderForm.totalHT = totalHT
+      this.selectedOrderForm.totalTVA= totalTva
+      this.selectedOrderForm.totalTTC = totalHT + totalTva
   }
 
-  totalHT(item: OrderItem){
-    console.log("totalHT used")
-    item.totalHT = item.price * item.quantity
-  }
-  totalTTC(item: OrderItem){
-
-    item.totalTTC= item.totalHT + item.tva * item.quantity
-    console.log("totalTTC used")
-  }
-
-  totHT(){
-    let sum=0.00;
-    this.selectedOrderForm.orderItems.forEach(item=>{
-      sum+=item.totalHT
-    })
-    this.selectedOrderForm.totalHT = sum
-  }
   
-  totalTVA(){
-    let tva=0.00;
-    this.selectedOrderForm.orderItems.forEach(item=>{
-      tva+=item.totalHT
-    })
-    this.selectedOrderForm.totalTVA= tva
-  }
-
-  totTTC(){
-    this.selectedOrderForm.totalTTC = this.selectedOrderForm.totalHT + this.selectedOrderForm.totalTVA
-  }
-  
-
   addOrderItem(){
     this.selectedOrderForm.orderItems.unshift(new OrderItem());
 
   }
 
-  saveOrderItem(orderNum){
-    
+  saveOrderItem(item){
+    //api treatment
+    this.selectedOrderForm.orderItems.unshift(item);
+  }
+  updateOrderItem(item, index){
+    //api treatment
+    this.selectedOrderForm.orderItems[index]=item
   }
 
   deleteItem(item){
+    //api treatment
     this.selectedOrderForm.orderItems = this.selectedOrderForm.orderItems.filter((e)=>{
       return e!=item
     })
