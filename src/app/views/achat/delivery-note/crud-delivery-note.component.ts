@@ -19,15 +19,14 @@ export class CrudDeliveryNoteComponent {
   loading: boolean = false;
   constructor(private dataService: DataService, private router: Router,public tools: util,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
   data = [];
+  selectedOrders = [];
   mode = "List"
   isEditPermission = false
   isAddPermission = false
   errorMsg: string;
   modalLoading: boolean = false;
-  //
-  columnNames: any = ["N BL ", "Date BL", "N commande fournisseur", "fournisseur", ,"Dépôt", "N facture", "N reglement"]
+  columnNames: any = ["N BL ", "Date BL", "N commande fournisseur", "fournisseur", "Dépôt", "N facture", "N reglement"]
   displayedColumns: any =["deliveryNum", "createdAt", "orderNum", "supplier", "depot", "billNum", "settlementNum"];
-
   selectedDeliveryNote: DeliveryNote = new DeliveryNote();
   selectedOrder: any;
 
@@ -54,7 +53,6 @@ export class CrudDeliveryNoteComponent {
   ngOnInit() {
     this.isEditPermission = this.tools.isAuthorized('Parametrage_GroupeVehicules','Mettre a jour')
     this.isAddPermission = this.tools.isAuthorized('Parametrage_GroupeVehicules','Ajouter')
-    // this.getDev();
     this.loadData();
   }
 
@@ -91,7 +89,7 @@ export class CrudDeliveryNoteComponent {
       this.dataService.getDeliveryNotes(url).subscribe({
         next: (res: any) => {
           // console.log(res);
-          this.selectedDeliveryNote = new DeliveryNote(res.createdAt, res.deliveryItems, res.orderNum, res.supplier, res.supplierDeliveryNum, res.depot, res.billNum, res.settlementNum, res.observation, res.adress, res.totalHT, res.totalTVA, res.totalTTC);
+          this.selectedDeliveryNote = res
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
@@ -191,9 +189,9 @@ export class CrudDeliveryNoteComponent {
 
 
   delete(orderForm) {
-    if (confirm("Are you sure to delete " + orderForm)) {
+    if (confirm("Are you sure to delete " + orderForm.orderNum)) {
       var route = this.router
-      var ord = "?orderForm=" + orderForm
+      var ord = "?id=" + orderForm.orderNum
       this.dataService.delDeliveryNote(ord).subscribe({
         next: (res) => {
           this.loadData()
@@ -243,14 +241,12 @@ export class CrudDeliveryNoteComponent {
   calculate(){
     let totalHT=0.00
     let totalTva=0.00
-    // let totalRemise=0.00
     this.selectedDeliveryNote.deliveryItems.forEach(item=>{
-      item.totalHT = item.price * item.qty
+      item.totalHT = item.price * item.qty * (1-item.tva/100)
       var tva = (item.tva*item.totalHT/100)
       item.totalTTC = item.totalHT + tva
       totalHT+=item.totalHT
       totalTva+=tva
-      // totalRemise+=item.remise
     })
     this.selectedDeliveryNote.totalHT = totalHT
     this.selectedDeliveryNote.totalTVA= totalTva
@@ -263,22 +259,17 @@ export class CrudDeliveryNoteComponent {
     this.selectedDeliveryNote.deliveryItems.unshift(new DeliveryItem());
 
   }
-  saveOrderItem(item){
+  
+  deleteItem(i){
     //api treatment
-    this.selectedDeliveryNote.deliveryItems.unshift(item);
-  }
-  updateOrderItem(item, index){
-    //api treatment
-    this.selectedDeliveryNote.deliveryItems[index]=item
-  }
-
-
- 
-
-  deleteItem(item){
-    this.selectedDeliveryNote.deliveryItems = this.selectedDeliveryNote.deliveryItems.filter((e)=>{
-      return e!=item
-    })
+    if(this.selectedDeliveryNote.deliveryItems.length==1){
+      this.selectedDeliveryNote.deliveryItems[i] = new DeliveryItem()
+    }else{
+      this.selectedDeliveryNote.deliveryItems = this.selectedDeliveryNote.deliveryItems.filter((e,j)=>{
+        return j!=i
+      })
+    }
+    
   }
 
 

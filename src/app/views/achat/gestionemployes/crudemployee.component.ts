@@ -37,18 +37,10 @@ export class CrudemployeeComponent {
   isAddPermission = false
   errorMsg: string;
   public isnotNum: boolean = false
-  // displayedColumns: any = ["Véhicule", "Device", "Num de Tel"]
   modalLoading: boolean = false;
   selectedEmployee: Employee = new Employee();
 
-  // showErrorDevice = false;
-  // errorMessageDevice = "";
 
-
-  // resetValidator() {
-  //   this.showErrorDevice = false;
-  //   this.errorMessageDevice = "";
-  // }
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
   ngOnInit() {
@@ -64,17 +56,7 @@ export class CrudemployeeComponent {
 
   }
 
-  // getSelectedDevices(selected) {
-  //   this.selectedDevice = selected;
-  //   // console.log(this.selectedDevice?.join(" , ").trim());
-  //
-  //   this.selectedGroupevehicules.vehiclues = selected;
-  // }
 
-  // onValidateDevice() {
-  //   this.showErrorDevice = !this.showErrorDevice;
-  //   this.errorMessageDevice = "This field is required";
-  // }
 
   loadData() {
     this.loading = true;
@@ -106,7 +88,7 @@ export class CrudemployeeComponent {
       this.dataService.getEmployees(url).subscribe({
         next: (res: any) => {
           // console.log(res);
-          this.selectedEmployee = new Employee(res.employeeId,res.lastName,res.firstName, res.address, res.city, res.tel, res.email, res.fonction, res.login);
+          this.selectedEmployee = res
 
           this.modalLoading = false;
         }, error(err) {
@@ -119,23 +101,6 @@ export class CrudemployeeComponent {
     }
   }
 
-  // getDev() {
-  //   var route = this.router
-  //   this.dataService.getVehicule().subscribe({
-  //     next: (res) => {
-  //       this.devices = res;
-  //       // console.log(res)
-  //     }, error(err) {
-  //       if (err.status == 401) {
-  //         route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-  //       }
-  //     }
-  //   })
-  // }
-  //
-  // getDeviceByName(e) {
-  //   return this.devices.filter((v) => { return v.dID == e })[0].name
-  // }
 
   submit() {
     if (this.mode == "Ajouter") this.ajouter()
@@ -223,10 +188,10 @@ export class CrudemployeeComponent {
 
 
   delete(employee) {
-    if (confirm("Are you sure to delete " + employee)) {
+    if (confirm("Are you sure to delete " + employee.firstName + employee.lastName)) {
       var route = this.router
-      var employ = "?employ=" + employee
-      this.dataService.deleteEmployee(employee).subscribe({
+      var url = "?id=" + employee.employeeId
+      this.dataService.deleteEmployee(url).subscribe({
         next: (res) => {
           this.loadData()
         }, error(err) {
@@ -245,17 +210,12 @@ export class CrudemployeeComponent {
 
   showAddModal() {
     this.selectedEmployee = new Employee();
-    // this.selectedDevice = []
-    // this.selectedDevices = []
     this.errorMsg = ""
     this.mode = "Ajouter"
     this.primaryModal.show()
   }
 
-  reset() {
-    // this.selectedDevice = []
-    // this.selectedDevices = []
-  }
+
 
 
   exporter(type) {

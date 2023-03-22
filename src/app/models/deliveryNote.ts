@@ -25,8 +25,8 @@ export class DeliveryNote{
         this.settlementNum = settlementNum??''
         this.observation = observation??''
         this.address = address??''
-        this.totalHT=totalHT??'00.00'
-        this.totalTVA=totalTVA??'00.00'
-        this.totalTTC=totalTTC??'00.00'
+        this.totalHT=totalHT??0
+        this.totalTVA=totalTVA??0
+        this.totalTTC=totalTTC??0
     }
 }

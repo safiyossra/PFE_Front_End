@@ -1,3 +1,4 @@
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
@@ -6,7 +7,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {

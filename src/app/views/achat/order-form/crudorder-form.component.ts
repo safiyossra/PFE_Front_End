@@ -24,14 +24,13 @@ export class CrudorderFormComponent{
   constructor(private dataService: DataService, private router: Router,public tools: util,private exportingPdfTool: ExportingTool, private exportingExcelTool: ExportExcel) { }
 
   data = [];
+  products = [];
   mode = "List"
   isEditPermission = false
   isAddPermission = false
   errorMsg: string;
- 
-  displayedColumns: any = ["orderNum ", "createdAt", "deleveryDate", "supplier",  "depot","quantity", "totalTTC"]
   modalLoading: boolean = false;
-  //
+  displayedColumns: any = ["orderNum ", "createdAt", "deleveryDate", "supplier",  "depot","quantity", "totalTTC"]
   columnNames: any = ["N Commande ", "Date commande", "Date livraison", "Fornisseur",  "Dépôt","Quantité", "Total TTC"]
   selectedOrderForm: OrderForm = new OrderForm();
   payementOptions = [
@@ -41,12 +40,6 @@ export class CrudorderFormComponent{
     { label: 'Virement', value: 'creditCard' }
   ];
   
-  
-
-
-  // resetValidator() {
-    
-  // }
 
   @ViewChild('calendar', { static: true })
   private myDateRangePicker: MyDateRangePickerComponent;
@@ -56,10 +49,8 @@ export class CrudorderFormComponent{
     this.isEditPermission = this.tools.isAuthorized('Parametrage_GroupeVehicules','Mettre a jour')
     this.isAddPermission = this.tools.isAuthorized('Parametrage_GroupeVehicules','Ajouter')
     // this.getDev();
-    this.loadData();
+    // this.loadData();
   }
-
-
 
   loadData() {
     this.loading = true;
@@ -89,7 +80,7 @@ export class CrudorderFormComponent{
       this.dataService.getOrdersForm(url).subscribe({
         next: (res: any) => {
           // console.log(res);
-          this.selectedOrderForm = new OrderForm(res.orderNum,res.createdAt,res.deliveryDate, res.depot, res.supplier, res.supplierAdress, res.deliveryAdress, res.orderItems, res.totalHT, res.totalHT, res.totalTVA);
+          this.selectedOrderForm = res
           this.modalLoading = false;
         }, error(err) {
           this.modalLoading = false;
@@ -195,10 +186,10 @@ export class CrudorderFormComponent{
 
 
   delete(orderForm) {
-    if (confirm("Are you sure to delete " + orderForm)) {
+    if (confirm("Are you sure to delete " + orderForm.orderNum)) {
       var route = this.router
-      var ord = "?orderForm=" + orderForm
-      this.dataService.delOrderForm(ord).subscribe({
+      var url = "?id=" + orderForm.orderNum
+      this.dataService.delOrderForm(url).subscribe({
         next: (res) => {
           this.loadData()
         }, error(err) {
@@ -217,7 +208,6 @@ export class CrudorderFormComponent{
 
   newOrderForm() {
     this.selectedOrderForm = new OrderForm();
-    this.selectedOrderForm.orderItems = [new OrderItem()];
     this.errorMsg = ""
     this.mode = "Ajouter"
   }
@@ -241,14 +231,13 @@ export class CrudorderFormComponent{
   calculate(){
       let totalHT=0.00
       let totalTva=0.00
-      // let totalRemise=0.00
+      let totalRemise=0.00
       this.selectedOrderForm.orderItems.forEach(item=>{
-        item.totalHT = item.price * item.quantity
+        item.totalHT = item.price * item.quantity * (1-item.remise/100)
         var tva = (item.tva*item.totalHT/100)
         item.totalTTC = item.totalHT + tva
         totalHT+=item.totalHT
         totalTva+=tva
-        // totalRemise+=item.remise
       })
       this.selectedOrderForm.totalHT = totalHT
       this.selectedOrderForm.totalTVA= totalTva
@@ -258,23 +247,18 @@ export class CrudorderFormComponent{
   
   addOrderItem(){
     this.selectedOrderForm.orderItems.unshift(new OrderItem());
-
   }
 
-  saveOrderItem(item){
+  deleteItem(i){
     //api treatment
-    this.selectedOrderForm.orderItems.unshift(item);
-  }
-  updateOrderItem(item, index){
-    //api treatment
-    this.selectedOrderForm.orderItems[index]=item
-  }
-
-  deleteItem(item){
-    //api treatment
-    this.selectedOrderForm.orderItems = this.selectedOrderForm.orderItems.filter((e)=>{
-      return e!=item
-    })
+    if(this.selectedOrderForm.orderItems.length==1){
+      this.selectedOrderForm.orderItems[i] = new OrderItem()
+    }else{
+      this.selectedOrderForm.orderItems = this.selectedOrderForm.orderItems.filter((e,j)=>{
+        return j!=i
+      })
+    }
+    
   }
 
 

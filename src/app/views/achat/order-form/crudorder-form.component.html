@@ -184,7 +184,7 @@
               <div class="col-2 p-1">
                 <my-dropdown-select class="form-control" [placeholder]="'Sélection de produit'"
                   [selectPlaceholder]="'search...'" [options]="payementOptions" [display]="'label'" [value]="'value'"
-                  [multiple]="false" [labelCount]="0" [selectedOptions]="orderItems" [(ngModel)]="selectedProduct">
+                  [multiple]="false" [labelCount]="0" [selectedOptions]="item.selectedproducts" >
                 </my-dropdown-select>
               </div>
 
@@ -224,14 +224,8 @@
               </div>
 
               <div class="col-1 p-1 d-flex justify-content-center align-items-center">
-                <span *ngIf="i === 0">
-                  <i style="cursor: pointer;" class="cil-check p-1 text-success" title="Enregistrer"
-                  (click)="saveOrderItem(item)"></i>
-                </span>
-                <span *ngIf="i !== 0">
-                  <i style="cursor: pointer;" class="cil-pen p-1 text-primary" title="Modifier"
-                  (click)="updateOrderItem(item, i)"></i>
-                  <i style="cursor: pointer;" class="cil-trash p-1 text-danger" (click)="deleteItem(item)"
+                <span>
+                  <i style="cursor: pointer;" class="cil-trash p-1 text-danger" (click)="delete(i)"
                     title="Supprimer"></i>
                 </span>
 

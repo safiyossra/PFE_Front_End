@@ -24,10 +24,10 @@ export class OrderForm {
     this.supplier = supplier?? ''
     this.supplierAdress = supplierAdress?? ''
     this.deliveryAdress = deliveryAdress?? ''
-    this.orderItems = orderItems?? []
-    this.totalHT=totalHT?? '0.00'
-    this.totalTVA=totalTVA?? '0.00'
-    this.totalTTC=totalTTC?? '0.00'
+    this.orderItems = orderItems??  [new OrderItem()]
+    this.totalHT=totalHT?? 0
+    this.totalTVA=totalTVA?? 0
+    this.totalTTC=totalTTC?? 0
     this.observation=observation?? ''
   }
 }

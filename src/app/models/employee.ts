@@ -9,8 +9,7 @@ export class Employee{
   fonction: any
   login: any
 
-  constructor(employeeId?,lastName?, firstName?, address?, city?, tel?, email?, fonction?, login?) {
-    this.employeeId=employeeId?? ''
+  constructor(lastName?, firstName?, address?, city?, tel?, email?, fonction?, login?) {
     this.lastName=lastName?? ''
     this.firstName=firstName?? ''
     this.address=address?? ''

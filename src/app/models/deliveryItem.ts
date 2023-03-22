@@ -14,14 +14,14 @@ totalTTC: any
 
 constructor(designation?, quantity?, qtyDelivered?, qty?, price?, tva?, remise?, totalHT?, totalTTC?) {
     this.designation = designation?? ''
-    this.quantity = quantity?? '1'
-    this.qtyDelivered=qtyDelivered?? ''
-    this.qty=qty??''
-    this.price = price?? '0.00'
-    this.tva = tva?? '00'
-    this.remise = remise?? '0.00'
-    this.totalHT = totalHT?? '0.00'
-    this.totalTTC = totalTTC?? '0.00'
+    this.quantity = quantity?? 1
+    this.qtyDelivered=qtyDelivered?? 0
+    this.qty=qty??1
+    this.price = price?? 0
+    this.tva = tva?? 0
+    this.remise = remise?? 0
+    this.totalHT = totalHT?? 0
+    this.totalTTC = totalTTC?? 0
   }
 
 }
