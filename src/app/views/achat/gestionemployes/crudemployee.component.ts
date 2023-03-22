@@ -1,5 +1,4 @@
 import {Component, ViewChild} from '@angular/core';
-import {Driver} from "../../../models/driver";
 import {ModalDirective} from "ngx-bootstrap/modal";
 import {DataService} from "../../../services/data.service";
 import {util} from "../../../tools/utils";
@@ -19,8 +18,7 @@ import {Employee} from "../../../models/employee";
 
 @Component({
   selector: 'app-crudemployee',
-  templateUrl: './crudemployee.component.html',
-  styleUrls: ['./crudemployee.component.scss']
+  templateUrl: './crudemployee.component.html'
 })
 export class CrudemployeeComponent {
   loading: boolean = false;

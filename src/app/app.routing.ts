@@ -85,8 +85,8 @@ export const routes: Routes = [
         loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
       },
       {
-        path: 'employees',
-        loadChildren: () => import('./views/parametrage/gestionemployes/gestionemployes.module').then(m => m.GestionemployesModule)
+        path: 'achat',
+        loadChildren: () => import('./views/achat/achat.module').then(m => m.AchatModule)
       }
     ]
   },

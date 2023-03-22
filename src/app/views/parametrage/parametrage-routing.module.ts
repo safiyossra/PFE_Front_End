@@ -6,10 +6,7 @@ import { CruddriverComponent } from './gestiondriver/cruddriver.component';
 import { CruduserComponent } from './gestionusers/cruduser.component';
 import { CrudvehiculeComponent } from './gestionvehicule/crudvehicule.component';
 import { CrudgroupeComponent } from './groupevehicules/crudgroupe.component';
-import {PermissionsGuard} from '../../guards/permissions.guard'
-import {CrudemployeeComponent} from "./gestionemployes/crudemployee.component";
-import {CrudorderFormComponent} from "./order-form/crudorder-form.component";
-import { CrudDeliveryNoteComponent } from './delivery-note/crud-delivery-note.component';
+import {PermissionsGuard} from '../../guards/permissions.guard';
 
 const routes: Routes = [
   {
@@ -69,34 +66,10 @@ const routes: Routes = [
           permissionKey:'Parametrage_Utilisateur',
           title: 'Utilisateurs'
         }
-      },
-      {
-        path: 'employees',
-        component: CrudemployeeComponent,
-        canActivate: [PermissionsGuard],
-        data: {
-          permissionKey:'Parametrage_Utilisateur',
-          title: 'Employés'
-        }
-      },
-      {
-        path: 'order-form',
-        component: CrudorderFormComponent,
-        canActivate: [PermissionsGuard],
-        data: {
-          permissionKey:'Parametrage_Utilisateur',
-          title: 'Bon de Commande'
-        }
-      },
-      {
-        path: 'delivery-note',
-        component: CrudDeliveryNoteComponent,
-        canActivate: [PermissionsGuard],
-        data: {
-          permissionKey:'Parametrage_Utilisateur',
-          title: 'Bon de livraison'
-        }
       }
+      
+      
+      
     ]
   },
 ];

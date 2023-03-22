@@ -106,14 +106,6 @@
                 </my-dropdown-select>
               </div>
             </div>
-            <div class="form-group row px-2 pb-0">
-              <label class="col-md-4 col-form-label" for="text-input">Observation</label>
-              <div class="col-8">
-                          <textarea type="text" rows="3" class="form-control"
-                                    [ngModel]="selectedDeliveryNote.observation"
-                          ></textarea>
-              </div>
-            </div>
             <div class="form-group row px-2">
               <label class="col-md-4 col-form-label" for="text-input">Facture Fournisseur</label>
               <div class="col-8">
@@ -127,6 +119,16 @@
                 </my-dropdown-select>
               </div>
             </div>
+
+            <div class="form-group row px-2 pb-0">
+              <label class="col-md-4 col-form-label" for="text-input">Observation</label>
+              <div class="col-8">
+                          <textarea type="text" rows="3" class="form-control"
+                                    [ngModel]="selectedDeliveryNote.observation"
+                          ></textarea>
+              </div>
+            </div>
+            
             
           </div>
         </div>
@@ -291,7 +293,7 @@
         </div>
 
       </div>
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-8">
         </div>
         <div class="col-lg-4 p-0">
@@ -320,7 +322,7 @@
 
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>

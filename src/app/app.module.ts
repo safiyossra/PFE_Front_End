@@ -49,7 +49,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort'
 import { HttpClientModule } from '@angular/common/http';
-import {GestionemployesModule} from "./views/parametrage/gestionemployes/gestionemployes.module";
+import { AchatModule } from './views/achat/achat.module';
+import { GestionemployesModule } from './views/achat/gestionemployes/gestionemployes.module';
 
 @NgModule({
   imports: [
@@ -74,7 +75,8 @@ import {GestionemployesModule} from "./views/parametrage/gestionemployes/gestion
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    GestionemployesModule
+    GestionemployesModule,
+    AchatModule
   ],
   declarations: [
     AppComponent,

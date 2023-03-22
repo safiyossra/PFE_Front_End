@@ -9,9 +9,7 @@ import { GroupevehiculesModule } from './groupevehicules/groupevehicules.module'
 import { GestiondriverModule } from './gestiondriver/gestiondriver.module';
 import { GestionusersModule } from './gestionusers/gestionusers.module';
 import { GestionvehiculeModule } from './gestionvehicule/gestionvehicule.module';
-import {GestionemployesModule} from "./gestionemployes/gestionemployes.module";
-import {OrderFormModule} from "./order-form/order-form.module";
-import { DeliveryNoteModule } from './delivery-note/delivery-note.module';
+
 
 
 @NgModule({
@@ -26,10 +24,7 @@ import { DeliveryNoteModule } from './delivery-note/delivery-note.module';
     GroupevehiculesModule,
     GestiondriverModule,
     GestionusersModule,
-    GestionvehiculeModule,
-    GestionemployesModule,
-    OrderFormModule,
-    DeliveryNoteModule
+    GestionvehiculeModule
   ]
 })
 export class ParametrageModule { }

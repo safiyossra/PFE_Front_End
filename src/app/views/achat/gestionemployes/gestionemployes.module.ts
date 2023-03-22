@@ -4,7 +4,6 @@ import { CrudemployeeComponent } from './crudemployee.component';
 import { EmployeesTableComponent } from './employees-table/employees-table.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MaterialsModule} from "../../../materials.module";
-import {NgJsonEditorModule} from "../gestionusers/jsoneditor/jsoneditor.module";
 import {MyDropdownModule} from "../../components/my-dropdown/my-dropdown.module";
 import {ModalModule} from "ngx-bootstrap/modal";
 import {CollapseModule} from "ngx-bootstrap/collapse";
@@ -22,7 +21,6 @@ import {DropdownExportModule} from "../../components/dropdown-export/dropdown-ex
     FormsModule,
     ReactiveFormsModule,
     MaterialsModule,
-    NgJsonEditorModule,
     MyDropdownModule,
     ModalModule.forRoot(),
     CollapseModule.forRoot(),
