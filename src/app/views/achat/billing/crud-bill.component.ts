@@ -1,3 +1,4 @@
+import { Bill } from './../../../models/bill';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { DeliveryItem } from './../../../models/deliveryItem';
@@ -25,6 +26,7 @@ export class CrudBillComponent{
   columnNames: any = ["N Facture", "Date Facture", "N Facture fournisseur", "fournisseur", "Total HT", "Total TVA", "Total TTC", "Déjà Reglé", "Reste à Reglé", "Mode de Reglement"];
   displayedColumns: any =["billNum", "createdAt", "supplierBillNum", "supplier", "totalHT", "totalTVA", "totalTTC", "doneWith", "toFix", "settlementMode"];
   selectedDeliveryNote: DeliveryNote = new DeliveryNote();
+  selectedBill: Bill = new Bill()
   selectedOrder: any;
 
   payementOptions = [

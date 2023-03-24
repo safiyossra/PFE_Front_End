@@ -45,154 +45,83 @@
         <div class="col-lg-6 px-1">
           <div class="card card-accent-info">
             <div class="form-group row px-2 pt-2">
-              <label class=" col-md-4 col-form-label" for="select1">N Bon Livraison </label>
+              <label class=" col-md-4 col-form-label" for="select1">N Facture</label>
               <div class="col-8">
                 <input type="text"
-                       [disabled]="true"
-                       [(ngModel)]="selectedDeliveryNote.deliveryNum"
+                       [disabled]="true"selectedBill
+                       [(ngModel)]="selectedBill.billNum"
                        [ngModelOptions]="{standalone: true}"
                        class="form-control"
-                       placeholder="Numero Bon Livraison"
+                       placeholder="Numero de Facture"
                 >
               </div>
             </div>
 
             <div class="form-group row px-2">
-              <label class="col-md-4 col-form-label" for="text-input">Date Bon Livraison *</label>
+              <label class="col-md-4 col-form-label" for="text-input">Date Facture *</label>
               <div class="col-8">
-                <input type="date" [(ngModel)]="selectedDeliveryNote.createdAt"
+                <input type="date" [(ngModel)]="selectedBill.createdAt" required="true"
+                       [ngModelOptions]="{standalone: true}" class="form-control">
+              </div>
+            </div>
+            <div class="form-group row px-2 px-2">
+              <label class="col-md-4 col-form-label" for="text-input">Date d'échéance</label>
+              <div class="col-8">
+                <input type="date" [(ngModel)]="selectedBill.dueDate"
                        [ngModelOptions]="{standalone: true}" class="form-control">
               </div>
             </div>
 
-            <div class="form-group row px-2">
-              <label class="col-md-4 col-form-label" for="text-input">N BL Fournisseur</label>
+            <div class="form-group row pb-0">
+              <label class="col-md-4 col-form-label" for="text-input">N Facture Fournisseur</label>
               <div class="col-8">
-                <input type="text" [(ngModel)]="selectedDeliveryNote.supplierDeliveryNum"
+                <input type="text" [(ngModel)]="selectedBill.supplierBillNum"
                        [ngModelOptions]="{standalone: true}" class="form-control"
                        placeholder="Numero BL Fournisseur"
                        >
               </div>
             </div>
 
-            <div class="form-group row px-2 pb-0">
-              <label class=" col-md-4 col-form-label" for="select1">Dépôt</label>
-              <div class="col-8 input-group">
-                <my-dropdown-select class="form-control" [placeholder]="'Dépôt'"
-                                    [selectPlaceholder]="'search...'" [options]="payementOptions" [display]="'label'"
-                                    [value]="'value'" [multiple]="false" [labelCount]="0"
-                                    [selectedOptions]="selectedDeliveryNote.depot"
-                                    (selectionChange)="getSelectedDepot($event)"
-
-                >
-                </my-dropdown-select>
-              </div>
-            </div>
-
           </div>
         </div>
         <div class="col-lg-6 px-1">
-          <div class="card card-accent-info">
+          <div class="card card-accent-info mb-3">
             <div class="form-group row px-2 pt-2">
-              <label class=" col-md-4 col-form-label" for="select1">N réglement </label>
-              <div class="col-8">
-                <my-dropdown-select class="form-control" [placeholder]="'Dépôt'"
-                                    [selectPlaceholder]="'search...'" [options]="payementOptions" [display]="'label'"
-                                    [value]="'value'" [multiple]="false" [labelCount]="0"
-                                    [selectedOptions]="selectedDeliveryNote.settlementNum"
-                                    (selectionChange)="getSelectedDepot($event)"
-
-                >
-                </my-dropdown-select>
+              <div class="col-md-4">
+                <label class="col-form-label" for="select1">Fournisseur *</label>
+                <button type="button" class="btn">
+                  <i class="fa fa-plus-circle"></i>
+                </button>
               </div>
-            </div>
-            <div class="form-group row px-2">
-              <label class="col-md-4 col-form-label" for="text-input">Facture Fournisseur</label>
-              <div class="col-8">
-                <my-dropdown-select class="form-control" [placeholder]="'Dépôt'"
-                                    [selectPlaceholder]="'search...'" [options]="payementOptions" [display]="'label'"
-                                    [value]="'value'" [multiple]="false" [labelCount]="0"
-                                    [selectedOptions]="selectedDeliveryNote.billNum"
-                                    (selectionChange)="getSelectedDepot($event)"
-
-                >
+              <div class="col-8 input-group">
+                <my-dropdown-select class="form-control" [placeholder]="'Fournisseur'" [selectPlaceholder]="'search...'"
+                  [options]="payementOptions" [display]="'label'" [value]="'value'" [multiple]="false" [labelCount]="0"
+                  [selectedOptions]="selectedOrderForm.supplier" (selectionChange)="getSelectedSupplier($event)">
+                  >
                 </my-dropdown-select>
               </div>
             </div>
 
-            <div class="form-group row px-2 pb-0">
-              <label class="col-md-4 col-form-label" for="text-input">Observation</label>
+            <div class="form-group row px-2 pb-1">
+              <label class="col-md-4 col-form-label" for="text-input">Adresse</label>
               <div class="col-8">
-                          <textarea type="text" rows="3" class="form-control"
-                                    [ngModel]="selectedDeliveryNote.observation"
-                          ></textarea>
+                <textarea type="text" rows="2" class="form-control"
+                  [ngModel]="selectedOrderForm.supplierAdress"></textarea>
               </div>
             </div>
-
 
           </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-12 px-1">
-          <div class="card card-accent-info">
-            <div class="card-body row px-0 py-2">
-              <div class="col-6">
-                <div class="form-group row px-2 pt-2">
-                  <div class="col-md-4">
-                    <label class="col-form-label" for="select1">Fournisseur *</label>
-                    <button type="button" class="btn">
-                      <i class="fa fa-plus-circle"></i>
-                    </button>
-                  </div>
-                  <div class="col-8 input-group">
-                    <my-dropdown-select class="form-control" [placeholder]="'Fournisseur'"
-                                        [selectPlaceholder]="'search...'" [options]="payementOptions" [display]="'label'"
-                                        [value]="'value'" [multiple]="false" [labelCount]="0"
-                                        [selectedOptions]="selectedDeliveryNote.supplier"
-                                        (selectionChange)="getSelectedSupplier($event)"
-
-                    >
-                    </my-dropdown-select>
-                  </div>
-                </div>
-                <div class="form-group row px-2 pb-1">
-                  <div class="col-md-4">
-                    <label class="col-form-label" for="select1">Liste Bons Commandes</label>
-                  </div>
-                  <div class="col-8 input-group">
-                    <my-dropdown-select class="form-control" [placeholder]="'Liste Bons Commandes'"
-                          [selectPlaceholder]="'Chercher...'" [errorMsg]="errorMessageOrder" [showErrorMsg]="showErrorOrder"
-                          [options]="payementOptions" [display]="'label'" [value]="'label'" [multiple]="true" [labelCount]="2"
-                          [selectedOptions]="selectedOrders" (selectionChange)="getSelectedOrder($event)">
-                    </my-dropdown-select>
-                  </div>
-                </div>
-
-                <div class="form-group row px-2 pb-0">
-                  <label class=" col-md-6 col-form-label"> Bons Commandes Séléctionnés</label>
-                  <div *ngFor="let order of selectedOrder" class="col-6 float-right ">
-                    <label class="col-form-label" for="select1">{{order.label}}</label>
-                  </div>
-                </div>
-
-              </div>
-              <div class="col-6">
-                <div class="form-group row px-2 pb-0">
-                  <label class="col-md-4 col-form-label" for="text-input">Adresse</label>
-                  <div class="col-8">
-                              <textarea type="text" rows="6" class="form-control"
-                                        [ngModel]="selectedDeliveryNote.address"
-                              ></textarea>
-                  </div>
-                </div>
+          <div class="card card-accent-info pt-2">
+            <div class="form-group row px-2 pt-2 pb-0">
+              <label class="col-md-3 col-form-label" for="text-input">Observation</label>
+              <div class="col-9 pl-0">
+                <textarea type="text" rows="4" class="form-control"
+                  [ngModel]="selectedBill.observation"></textarea>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-
 
       <div class="row mb-2">
         <mat-hint class="text-danger col-6 px-1">{{errorMsg}}</mat-hint>

@@ -114,6 +114,7 @@ export class CrudDeliveryNoteComponent {
     if (!this.selectedDeliveryNote.createdAt ) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
+      this.mode = "Modifier" //test mode modifier
 
       this.dataService.addDeliveryNote(this.selectedDeliveryNote)
         .pipe(

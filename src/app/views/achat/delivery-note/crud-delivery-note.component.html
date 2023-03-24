@@ -92,7 +92,7 @@
           </div>
         </div>
         <div class="col-lg-6 px-1">
-          <div class="card card-accent-info mb-3">
+          <div *ngIf="mode =='Modifier'" class="card card-accent-info mb-3">
             <div class="form-group row px-2 pt-2">
               <label class=" col-md-4 col-form-label" for="select1">N réglement </label>
               <div class="col-8">
@@ -149,7 +149,7 @@
               <div class="col-6">
                 <div class="form-group row px-2 pt-2">
                   <div class="col-md-4">
-                    <label class="col-form-label" for="select1">Fournisseur *</label>
+                    <label class="col-form-label" for="select1">Fournisseur</label>
                     <button type="button" class="btn">
                       <i class="fa fa-plus-circle"></i>
                     </button>
