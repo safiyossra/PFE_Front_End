@@ -1,3 +1,4 @@
+import { CrudBillComponent } from './billing/crud-bill.component';
 import { AchatComponent } from './achat.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -45,6 +46,15 @@ const routes: Routes = [
         data: {
           permissionKey:'Parametrage_Utilisateur',
           title: 'Bon de livraison'
+        }
+      },
+      {
+        path: 'billing',
+        component: CrudBillComponent,
+        canActivate: [PermissionsGuard],
+        data: {
+          permissionKey:'Parametrage_Utilisateur',
+          title: 'Facturation'
         }
       }
     ]

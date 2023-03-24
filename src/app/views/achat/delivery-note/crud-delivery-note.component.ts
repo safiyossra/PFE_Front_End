@@ -2,7 +2,7 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { DeliveryItem } from './../../../models/deliveryItem';
 import { DeliveryNote } from './../../../models/deliveryNote';
-import {Component, ViewChild} from '@angular/core';
+import {Component} from '@angular/core';
 import {DataService} from "../../../services/data.service";
 import {Router} from "@angular/router";
 import {util} from "../../../tools/utils";
@@ -35,11 +35,11 @@ export class CrudDeliveryNoteComponent {
     { label: 'Par Chèque', value: 'byCheck' },
     { label: 'Carte Bancaire', value: 'creditCard' },
     { label: 'Virement', value: 'creditCard' }
-  ];  
-  
-  
+  ];
+
+
   public devices: any = [];
-  
+
   showErrorOrder = false;
   errorMessageOrder = "";
 
@@ -101,7 +101,7 @@ export class CrudDeliveryNoteComponent {
     }
   }
 
-  
+
 
   submit() {
     if (this.mode == "Ajouter") this.ajouter()
@@ -114,7 +114,7 @@ export class CrudDeliveryNoteComponent {
     if (!this.selectedDeliveryNote.createdAt ) {
       this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
     } else {
-  
+
       this.dataService.addDeliveryNote(this.selectedDeliveryNote)
         .pipe(
           catchError(err => {
@@ -217,7 +217,7 @@ export class CrudDeliveryNoteComponent {
 
   reset() {
     this.selectedOrder = []
-  
+
   }
 
 
@@ -237,6 +237,8 @@ export class CrudDeliveryNoteComponent {
 
   getSelectedOrder(selected) {
     this.selectedOrder = selected;
+    console.log(this.selectedOrder)
+    console.log(this.selectedOrders)
   }
   calculate(){
     let totalHT=0.00
@@ -253,13 +255,13 @@ export class CrudDeliveryNoteComponent {
     this.selectedDeliveryNote.totalTTC = totalHT + totalTva
 }
 
-  
+
 
   addDeliveryItem(){
     this.selectedDeliveryNote.deliveryItems.unshift(new DeliveryItem());
 
   }
-  
+
   deleteItem(i){
     //api treatment
     if(this.selectedDeliveryNote.deliveryItems.length==1){
@@ -269,7 +271,7 @@ export class CrudDeliveryNoteComponent {
         return j!=i
       })
     }
-    
+
   }
 
 

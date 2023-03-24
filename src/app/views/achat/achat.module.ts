@@ -1,3 +1,4 @@
+import { BillingModule } from './billing/billing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -19,7 +20,8 @@ import { DeliveryNoteModule } from './delivery-note/delivery-note.module';
     AchatRoutingModule,
     GestionemployesModule,
     OrderFormModule,
-    DeliveryNoteModule
+    DeliveryNoteModule,
+    BillingModule
   ]
 })
 export class AchatModule { }
