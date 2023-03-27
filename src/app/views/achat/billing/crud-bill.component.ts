@@ -25,7 +25,6 @@ export class CrudBillComponent{
   modalLoading: boolean = false;
   columnNames: any = ["N Facture", "Date Facture", "N Facture fournisseur", "fournisseur", "Total HT", "Total TVA", "Total TTC", "Déjà Reglé", "Reste à Reglé", "Mode de Reglement"];
   displayedColumns: any =["billNum", "createdAt", "supplierBillNum", "supplier", "totalHT", "totalTVA", "totalTTC", "doneWith", "toFix", "settlementMode"];
-  selectedDeliveryNote: DeliveryNote = new DeliveryNote();
   selectedBill: Bill = new Bill()
   selectedOrder: any;
 
@@ -36,8 +35,11 @@ export class CrudBillComponent{
     { label: 'Virement', value: 'creditCard' }
   ];
 
+  iconCollapse: string = 'icon-arrow-up';
+  isCollapsed: boolean = false;
 
-  public devices: any = [];
+
+
 
   showErrorOrder = false;
   errorMessageOrder = "";
@@ -63,41 +65,41 @@ export class CrudBillComponent{
   loadData() {
     this.loading = true;
 
-    var route = this.router
-    this.dataService.getDeliveryNotes("").subscribe({
-      next: (d: any) => {
-        this.data = d;
-        // console.log(d);
-        this.loading = false;
-      }, error(err) {
-        console.log(err);
-        this.loading = false;
-        if (err.status == 401) {
-          route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-        }
-      }
-    })
+  //   var route = this.router
+  //   this.dataService.getDeliveryNotes("").subscribe({
+  //     next: (d: any) => {
+  //       this.data = d;
+  //       // console.log(d);
+  //       this.loading = false;
+  //     }, error(err) {
+  //       console.log(err);
+  //       this.loading = false;
+  //       if (err.status == 401) {
+  //         route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+  //       }
+  //     }
+  //   })
   };
 
   loadModify(ev) {
-    if (ev) {
-      var url = "?id=" + ev[0]
-      this.modalLoading = true;
-      this.mode = "Modifier"
-      var route = this.router
-      this.dataService.getDeliveryNotes(url).subscribe({
-        next: (res: any) => {
-          // console.log(res);
-          this.selectedDeliveryNote = res
-          this.modalLoading = false;
-        }, error(err) {
-          this.modalLoading = false;
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-          }
-        }
-      });
-    }
+  //   if (ev) {
+  //     var url = "?id=" + ev
+  //     this.modalLoading = true;
+  //     this.mode = "Modifier"
+  //     var route = this.router
+  //     this.dataService.getBills(url).subscribe({
+  //       next: (res: any) => {
+  //         // console.log(res);
+  //         this.selectedBill = res
+  //         this.modalLoading = false;
+  //       }, error(err) {
+  //         this.modalLoading = false;
+  //         if (err.status == 401) {
+  //           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+  //         }
+  //       }
+  //     });
+  //   }
   }
 
 
@@ -108,112 +110,115 @@ export class CrudBillComponent{
   }
 
   ajouter() {
-    var route = this.router
-    console.log(this.selectedDeliveryNote)
-    if (!this.selectedDeliveryNote.createdAt ) {
-      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
-    } else {
+  //   var route = this.router
+  //   console.log(this.selectedBill)
+  //   if (!this.selectedBill.createdAt ) {
+  //     this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+  //   } else {
 
-      this.dataService.addDeliveryNote(this.selectedDeliveryNote)
-        .pipe(
-          catchError(err => {
-            console.log("res", err)
-            this.modalLoading = false;
-            this.errorMsg = "Erreur "+err
-            if (err.status == 401) {
-              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-            }
+  //     this.dataService.addDeliveryNote(this.selectedBill)
+  //       .pipe(
+  //         catchError(err => {
+  //           console.log("res", err)
+  //           this.modalLoading = false;
+  //           this.errorMsg = "Erreur "+err
+  //           if (err.status == 401) {
+  //             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+  //           }
 
-            else if (err.status == 400) {
-              console.log(err);
-              this.errorMsg = "Un bon de Livraison avec cet numéro exist deja. Veuillez utiliser un autre numéro."
-              console.log(this.errorMsg);
-            }
+  //           else if (err.status == 400) {
+  //             console.log(err);
+  //             this.errorMsg = "Un bon de Livraison avec cet numéro exist deja. Veuillez utiliser un autre numéro."
+  //             console.log(this.errorMsg);
+  //           }
 
-            else if (err.status == 402) {
-              this.errorMsg = "Erreur l'ajout est bloqué."
-            }
-            return throwError(err);
-          })
-        )
-        .subscribe({
-          next: (res) => {
-            // console.log("add")
-            this.loadData()
-            this.mode = "List"
-            this.errorMsg = ""
-          }
-        })
-    }
+  //           else if (err.status == 402) {
+  //             this.errorMsg = "Erreur l'ajout est bloqué."
+  //           }
+  //           return throwError(err);
+  //         })
+  //       )
+  //       .subscribe({
+  //         next: (res) => {
+  //           // console.log("add")
+  //           this.loadData()
+  //           this.mode = "List"
+  //           this.errorMsg = ""
+  //         }
+  //       })
+  //   }
   }
 
   modifier() {
-    var route = this.router
-    console.log(this.selectedDeliveryNote)
-    if (!this.selectedDeliveryNote.createdAt ) {
-      this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
-    } else {
-      this.dataService.updateDeliveryNote(this.selectedDeliveryNote)
-        .pipe(
-          catchError(err => {
-            console.log("res", err)
-            this.modalLoading = false;
-            this.errorMsg = "Erreur "+err
-            if (err.status == 401) {
-              route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-            }
+  //   var route = this.router
+  //   console.log(this.selectedBill)
+  //   if (!this.selectedBill.createdAt ) {
+  //     this.errorMsg = "Veuillez remplir les champs obligatoires (*) ."
+  //   } else {
+  //     this.dataService.updateDeliveryNote(this.selectedBill)
+  //       .pipe(
+  //         catchError(err => {
+  //           console.log("res", err)
+  //           this.modalLoading = false;
+  //           this.errorMsg = "Erreur "+err
+  //           if (err.status == 401) {
+  //             route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+  //           }
 
-            else if (err.status == 400) {
-              console.log(err);
-              this.errorMsg = "Un bon de Livraison avec cet numéro exist deja. Veuillez utiliser un autre numéro."
-              console.log(this.errorMsg);
-            }
+  //           else if (err.status == 400) {
+  //             console.log(err);
+  //             this.errorMsg = "Une facture avec cet numéro exist deja. Veuillez utiliser un autre numéro."
+  //             console.log(this.errorMsg);
+  //           }
 
-            else if (err.status == 402) {
-              this.errorMsg = "Erreur l'ajout est bloqué."
-            }
-            return throwError(err);
-          })
-        )
-        .subscribe({
-          next: (res) => {
-            // console.log("edit order form")
-            this.loadData()
-            this.mode = "Modifier"
-            this.errorMsg = ""
-          }
-        })
-    }
+  //           else if (err.status == 402) {
+  //             this.errorMsg = "Erreur l'ajout est bloqué."
+  //           }
+  //           return throwError(err);
+  //         })
+  //       )
+  //       .subscribe({
+  //         next: (res) => {
+  //           // console.log("edit bill")
+  //           this.loadData()
+  //           this.mode = "Modifier"
+  //           this.errorMsg = ""
+  //         }
+  //       })
+  //   }
   }
 
 
-  delete(orderForm) {
-    if (confirm("Are you sure to delete " + orderForm.orderNum)) {
-      var route = this.router
-      var ord = "?id=" + orderForm.orderNum
-      this.dataService.delDeliveryNote(ord).subscribe({
-        next: (res) => {
-          this.loadData()
-        }, error(err) {
-          this.modalLoading = false;
-          if (err.status == 401) {
-            route.navigate(['login'], { queryParams: { returnUrl: route.url } });
-          }
-          else if (err.status == 402) {
-            alert("Erreur, la suppression est bloqué")
-          }
-        }
-      })
+  delete(bill) {
+  //   if (confirm("Are you sure to delete " + bill.billNum)) {
+  //     var route = this.router
+  //     var ord = "?id=" + bill.billNum
+  //     this.dataService.delDeliveryNote(bill).subscribe({
+  //       next: (res) => {
+  //         this.loadData()
+  //       }, error(err) {
+  //         this.modalLoading = false;
+  //         if (err.status == 401) {
+  //           route.navigate(['login'], { queryParams: { returnUrl: route.url } });
+  //         }
+  //         else if (err.status == 402) {
+  //           alert("Erreur, la suppression est bloqué")
+  //         }
+  //       }
+  //     })
 
-    }
+  //   }
   }
 
-  newDeliveryNote() {
-    this.selectedDeliveryNote = new DeliveryNote();
+  newBill() {
+    this.selectedBill = new Bill();
     this.errorMsg = ""
     this.mode = "Ajouter"
   }
-
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
+    this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
+  }
   reset() {
     this.selectedOrder = []
 
@@ -222,16 +227,12 @@ export class CrudBillComponent{
 
   exporter(type) {
     // to modify
-    type == 1 ? this.exportingPdfTool.exportPdf_GroupeVehicules(this.data, "Rapport de Bons de commande" ) :
-      this.exportingExcelTool.Export_GroupVehicules(this.data, "Rapport de Bons de commande ")
+    type == 1 ? this.exportingPdfTool.exportPdf_GroupeVehicules(this.data, "Rapport des Factures" ) :
+      this.exportingExcelTool.Export_GroupVehicules(this.data, "Rapport des Factures")
   }
-  //******* Items order form treatment ***************
 
-  getSelectedDepot(selected:any) {
-    this.selectedDeliveryNote.depot = selected;
-  }
   getSelectedSupplier(selected) {
-    this.selectedDeliveryNote.supplier = selected;
+    this.selectedBill.supplier = selected;
   }
 
   getSelectedOrder(selected) {
@@ -240,31 +241,31 @@ export class CrudBillComponent{
   calculate(){
     let totalHT=0.00
     let totalTva=0.00
-    this.selectedDeliveryNote.deliveryItems.forEach(item=>{
-      item.totalHT = item.price * item.qty * (1-item.tva/100)
+    this.selectedBill.billItems.forEach(item=>{
+      item.totalHT = item.price * item.quantity * (1-item.tva/100)
       var tva = (item.tva*item.totalHT/100)
       item.totalTTC = item.totalHT + tva
       totalHT+=item.totalHT
       totalTva+=tva
     })
-    this.selectedDeliveryNote.totalHT = totalHT
-    this.selectedDeliveryNote.totalTVA= totalTva
-    this.selectedDeliveryNote.totalTTC = totalHT + totalTva
+    this.selectedBill.totalHT = totalHT
+    this.selectedBill.totalTVA= totalTva
+    this.selectedBill.totalTTC = totalHT + totalTva
 }
 
 
 
   addDeliveryItem(){
-    this.selectedDeliveryNote.deliveryItems.unshift(new DeliveryItem());
+    this.selectedBill.billItems.unshift(new DeliveryItem());
 
   }
 
   deleteItem(i){
     //api treatment
-    if(this.selectedDeliveryNote.deliveryItems.length==1){
-      this.selectedDeliveryNote.deliveryItems[i] = new DeliveryItem()
+    if(this.selectedBill.billItems.length==1){
+      this.selectedBill.billItems[i] = new DeliveryItem()
     }else{
-      this.selectedDeliveryNote.deliveryItems = this.selectedDeliveryNote.deliveryItems.filter((e,j)=>{
+      this.selectedBill.billItems = this.selectedBill.billItems.filter((e,j)=>{
         return j!=i
       })
     }
