@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  host: 'http://127.0.0.1:8000/api/',
   apiUrl: 'http://backup.sendatrack.com/sendatrack-dev-othman/public/api/', // Dynamic variable set by region choice
 };
 

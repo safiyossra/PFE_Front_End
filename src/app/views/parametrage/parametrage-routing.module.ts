@@ -7,6 +7,9 @@ import { CruduserComponent } from './gestionusers/cruduser.component';
 import { CrudvehiculeComponent } from './gestionvehicule/crudvehicule.component';
 import { CrudgroupeComponent } from './groupevehicules/crudgroupe.component';
 import {PermissionsGuard} from '../../guards/permissions.guard';
+import { CrudpassagerComponent } from './gestionPassager/crudpassager.component';
+import { CrudStockComponent } from './gestionStock/crud-stock.component';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 const routes: Routes = [
   {
@@ -66,9 +69,27 @@ const routes: Routes = [
           permissionKey:'Parametrage_Utilisateur',
           title: 'Utilisateurs'
         }
-      }
+      },
       
+      {
+        path: 'gestionPassager',
+        component: CrudpassagerComponent ,
+        canActivate: [PermissionsGuard],
+        data: {
+          permissionKey:'Parametrage_passager',
+          title: 'passager',
+        }
+      },
       
+      {
+        path: 'gestionStock',
+        component: CrudStockComponent ,
+        canActivate: [PermissionsGuard],
+        data: {
+          permissionKey:'Parametrage_Stock',
+          title: 'Stock',
+        }
+      },
       
     ]
   },

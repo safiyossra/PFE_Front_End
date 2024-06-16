@@ -16,6 +16,12 @@ export const routes: Routes = [
     redirectTo: 'parametrage',
     pathMatch: 'full',
   },
+{
+  path: '',
+    redirectTo: 'Stock',
+    pathMatch: 'full',
+  },
+
   {
     path: '404',
     component: P404Component,
@@ -84,6 +90,8 @@ export const routes: Routes = [
         path: 'live-streaming',
         loadChildren: () => import('./views/parametrage/parametrage.module').then(m => m.ParametrageModule)
       },
+    
+       
       {
         path: 'achat',
         loadChildren: () => import('./views/achat/achat.module').then(m => m.AchatModule)

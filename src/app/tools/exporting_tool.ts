@@ -1003,4 +1003,129 @@ export class ExportingTool {
             })
         }
     }
+
+
+    exportPdf_Passager(data: any[], title: string) {
+        const doc = new jsPDF('l');
+        const rows: any = [];
+        data.forEach((elt) => {
+            const tmp = [
+                elt.lastName,
+                elt.FirstName,
+                elt.address,
+                elt.tel,
+                elt.cin,
+                elt.city,
+                elt.country,
+                elt.code,
+            ];
+            rows.push(tmp);
+        });
+        doc.setFontSize(14);
+        doc.setDrawColor('blue');
+        doc.addImage(this.picture, 'png', 10, 4, 30, 30);
+        doc.setFontSize(12);
+        doc.setTextColor('#033A7A');
+        doc.text('Sendatrack.com', 10, 32);
+        doc.setFontSize(10);
+        doc.text(this.adress1, 210, 17);
+        doc.text(this.add, 210, 21);
+        doc.text(this.adress2, 210, 25);
+        doc.setFontSize(18);
+        doc.setTextColor('#366DAD');
+
+        doc.text(title, 150, 50, { align: 'center' });
+
+        (doc as any).autoTable({
+            columns: [
+                { dataKey: "NOM DE PASSAGER", header: "NOM DE PASSAGER" },
+                { dataKey: 'PRENOM DE PASSAGER', header: 'PRENOM DE PASSAGER' },
+                { dataKey: 'ADRESSE ', header: 'ADRESSE ' },
+                { dataKey: 'TELEPHONE', header: ' TELEPHONE' },
+                { dataKey: 'CIN ', header: 'CIN' },
+                { dataKey: 'VILLE', header: 'VILLE' },   
+                { dataKey: 'PAYS', header: 'PAYS' },
+                { dataKey: 'CODE', header: 'CODE' },
+                { dataKey: 'CLIENT', header: 'CLIENT' },
+          
+            ],
+            body: rows,
+            theme: 'grid',
+            rowPageBreak: 'auto',
+            //specifies where to start drowing the table
+            startY: 60,
+            showHead: 'firstPage',
+            headStyles: { fillColor: [5, 97, 203] },
+            columnStyles: { text: { cellWidth: 'wrap' } },
+        });
+        doc.setFontSize(10);
+        this.addFooters(doc);
+        doc.save(title);
+    }
+    exportPdf_Stock(data: any[], title: string) {
+        const doc = new jsPDF('l');
+        const rows: any = [];
+        data.forEach((elt) => {
+            const tmp = [
+                
+                elt.DateMvt,
+                elt.Reference,
+                elt.Price,
+                elt.observation,
+                elt.Designation,
+                elt.Kilometrage,
+                elt.Qte,
+                elt.NumBon,
+                elt.id_Vehicule,
+                elt.id_TypePanne,
+                elt.login,
+                elt.TypeMvt
+            
+            ];
+            rows.push(tmp);
+        });
+        doc.setFontSize(14);
+        doc.setDrawColor('blue');
+        doc.addImage(this.picture, 'png', 10, 4, 30, 30);
+        doc.setFontSize(12);
+        doc.setTextColor('#033A7A');
+        doc.text('Sendatrack.com', 10, 32);
+        doc.setFontSize(10);
+        doc.text(this.adress1, 210, 17);
+        doc.text(this.add, 210, 21);
+        doc.text(this.adress2, 210, 25);
+        doc.setFontSize(18);
+        doc.setTextColor('#366DAD');
+
+        doc.text(title, 150, 50, { align: 'center' });
+
+        (doc as any).autoTable({
+            columns: [
+                
+                { dataKey: 'Date de Mouvement', header: 'Date de Mouvement' },
+                { dataKey: 'Référence', header: 'Référence' },
+                { dataKey: 'Prix', header: ' Prix' },
+                { dataKey: ' Designation', header: ' Designation' },        
+                { dataKey: 'Observation', header: 'Observation' },
+                { dataKey: 'kilométrage', header: 'kilométrage' },   
+                { dataKey: 'Quantité', header: 'Quantité' },
+                { dataKey: 'Document', header: 'Document' },
+                { dataKey: 'Véhicule', header: 'Véhicule' },
+                { dataKey: 'Type de Panne', header: 'Type de Panne' },
+                { dataKey: 'Login', header: 'Login' },
+                {dataKey: 'Type de Mouvement', header: 'Type de Mouvement' },
+            ],
+            body: rows,
+            theme: 'grid',
+            rowPageBreak: 'auto',
+            //specifies where to start drowing the table
+            startY: 60,
+            showHead: 'firstPage',
+            headStyles: { fillColor: [5, 97, 203] },
+            columnStyles: { text: { cellWidth: 'wrap' } },
+        });
+        doc.setFontSize(10);
+        this.addFooters(doc);
+        doc.save(title);
+    }
 }

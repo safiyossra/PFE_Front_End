@@ -18,6 +18,7 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
   compte: String
   Dashboard = false
   Parametrage_Vehicules = false
+  stock = false
   Parametrage_Alertes = false
   Parametrage_GroupeVehicules = false
   Parametrage_CarteCarburant = false
@@ -73,6 +74,7 @@ export class DefaultLayoutComponent implements AfterViewInit, OnInit, OnDestroy 
     this.Rapports_RapportAutomatique = this.tools.isAuthorized('Rapports_RapportAutomatique', 'Afficher')
     this.Eco_EcoConduite = this.tools.isAuthorized('Eco_EcoConduite', 'Afficher')
     this.Eco_EcoDetailles = this.tools.isAuthorized('Eco_EcoDetailles', 'Afficher')
+    this.stock=this.tools.isAuthorized('stock','Afficher')
     this.Notifications = this.tools.isAuthorized('Notifications', 'Afficher')
     this.Parametrage_Vehicules = this.tools.isAuthorized('Parametrage_Vehicules', 'Afficher')
     this.Parametrage_Conducteur = this.tools.isAuthorized('Parametrage_Conducteur', 'Afficher')

@@ -583,4 +583,82 @@ export class ExportExcel {
 
 
   }
+
+  Export_Passager(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+      
+        elt.lastName,
+        elt.FirstName,
+        elt.address,
+        elt.tel,
+        elt.cin,
+        elt.city,
+        elt.country,
+        elt.code,
+        elt.client,
+       
+      ];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+       
+        "NOM DE PASSAGER", 
+        'PRENOM PASSAGER',
+        'ADRESSE ',  
+         'TELPHONE', 
+          'CIN',
+          'VILLE', 
+         'PAYS', 
+         'CODE', 
+         'Client',
+       
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+  Export_Stock(data: any[], title: string) {
+    var dataForExcel: Object[] = [];
+    data.forEach((elt) => {
+      const tmp = [
+        elt.DateMvt,
+        elt.Reference,
+        elt.Price,
+        elt.observation,
+        elt.Designation,
+        elt.Kilometrage,
+        elt.Qte,
+        elt.NumBon,
+        elt.id_Vehicule,
+        elt.id_TypePanne,
+        elt.login,
+        elt.TypeMvt
+      ];
+      dataForExcel.push(tmp);
+    });
+    let reportData = {
+      title: title,
+      data: dataForExcel,
+      headers: [
+      'Date de Mouvement', 
+       'Référence',
+         'Prix', 
+         ' Designation',        
+         'Observation', 
+         'kilométrage',   
+         'Quantité', 
+        'Document', 
+         'Véhicule', 
+         'Type de Panne', 
+          'Login',
+         'Type de Mouvement',
+      ],
+    };
+    this.exportExcel(reportData);
+  }
+
 }

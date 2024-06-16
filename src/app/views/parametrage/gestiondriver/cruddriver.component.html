@@ -47,7 +47,7 @@
                                 <input type="hidden" [(ngModel)]="selectedDriver.driverID" [ngModelOptions]="{standalone: true}">
                               <!-- </div>
                             </div> -->
-                            
+
                           <div class="form-group row">
                             <label class="col-md-4 col-form-label" for="text-input">Actif</label>
                             <div class="col-8">
@@ -200,22 +200,22 @@
                     <ng-template tabHeading><i class="icon--user-followin mr-1"></i> Documents Administartifs &nbsp;
                     </ng-template>
                     <div class="row">
-                      <div class="col-lg-4 col-md-6 col-sm-1">
+                      <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                         <div class="card">
                           <div class="card-header driverDocument">
                             <h5>Permis</h5>
                           </div>
                           <div class="card-body cardInfo">
                             <div class="input-group row mb-1">
-                              <label for="numPermis" class="col-form-label col-md-4">N° Permis</label>
+                              <label for="numPermis" class="col-form-label col-md-6">N° Permis</label>
                               <input id="numPermis" [(ngModel)]="driverDocument.numPermis" type="text"
-                                placeholder="N° Permis" class="form-control col-md-8">
+                                placeholder="N° Permis" class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <label for="typePermis" class="col-form-label col-md-4">Type de permis</label>
+                              <label for="typePermis" class="col-form-label col-md-6">Type de permis</label>
                               <mat-select id="typePermis" placeholder="Type Permis"
                                 style="border: solid 1px lightgrey;padding-top: 5px;margin-top: 0px!important;border-radius: 4px;"
-                                multiple class="mt-2 col-md-8" (valueChange)="getTypePermis($event)"
+                                multiple class="mt-2 col-md-6 col-sm-6 col-xs-6" (valueChange)="getTypePermis($event)"
                                 [(ngModel)]="typeSelected">
                                 <mat-option *ngFor="let filters of cts.permisTypes" [value]="filters.value">
                                   {{filters.value}}
@@ -223,138 +223,138 @@
                               </mat-select>
                             </div>
                             <div class="input-group row mb-1">
-                              <label for="dateDelivrancePermis" class="col-form-label col-md-4">Date délivrance</label>
+                              <label for="dateDelivrancePermis" class="col-form-label col-md-6">Date délivrance</label>
                               <input id="dateDelivrancePermis" [(ngModel)]="driverDocument.dateDelivrancePermis"
-                                type="date" class="form-control col-md-8">
+                                type="date" class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <label for="dateValiditePermis" class="col-form-label col-md-4">Date validité</label>
+                              <label for="dateValiditePermis" class="col-form-label col-md-6">Date validité</label>
                               <input id="dateValiditePermis" [(ngModel)]="driverDocument.dateValiditePermis" type="date"
-                                class="form-control col-md-8">
+                                class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <span for="JoursPermis" class="col-form-label col-md-4">Rappel dans</span>
-                              <input type="number" id="JoursPermis" class="form-control col-md-7" placeholder="0"
+                              <span for="JoursPermis" class="col-form-label col-md-6">Rappel dans</span>
+                              <input type="number" id="JoursPermis" class="form-control col-md-6 col-sm-6 col-xs-6" placeholder="0"
                                 [(ngModel)]="driverDocument.rappelJoursPermis">
                               <span class="input-group-text col-md-1">jr(s)</span>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-4 col-md-6 col-sm-1">
+                      <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                         <div class="card">
                           <div class="card-header driverDocument">
                             <h5>Passport</h5>
                           </div>
                           <div class="card-body cardInfo">
                             <div class="input-group row mb-1">
-                              <label for="numPassport" class="col-form-label col-md-4">N° Passport</label>
+                              <label for="numPassport" class="col-form-label col-md-6">N° Passport</label>
                               <input id="numPassport" [(ngModel)]="driverDocument.numPassport" type="text"
-                                placeholder="N° Passport" class="form-control col-md-8">
+                                placeholder="N° Passport" class="form-controlcol-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <label for="dateValiditePassport" class="col-form-label col-md-4">Date validité</label>
+                              <label for="dateValiditePassport" class="col-form-label col-md-6">Date validité</label>
                               <input id="dateValiditePassport" [(ngModel)]="driverDocument.dateValiditePassport"
-                                type="date" class="form-control col-md-8">
+                                type="date" class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <span for="rapel" class="col-form-label col-md-4">Rappel dans</span>
-                              <input type="number" id="rapelJoursPass" class="form-control col-md-7" placeholder="0"
+                              <span for="rapel" class="col-form-label col-md-6">Rappel dans</span>
+                              <input type="number" id="rapelJoursPass" class="form-control col-md-6 col-sm-6 col-xs-6" placeholder="0"
                                 [(ngModel)]="driverDocument.rappelJoursPasssport">
                               <span class="input-group-text col-md-1">jr(s)</span>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-4 col-md-6 col-sm-1">
+                      <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                         <div class="card">
                           <div class="card-header driverDocument">
                             <h5>Assurance Voyage</h5>
                           </div>
                           <div class="card-body cardInfo">
                             <div class="input-group row mb-1">
-                              <label for="numAssurance" class="col-form-label col-md-4">N° Assurance</label>
+                              <label for="numAssurance" class="col-form-label col-md-6">N° Assurance</label>
                               <input id="numAssurance" [(ngModel)]="driverDocument.numAssurance" type="text"
-                                placeholder="N° Assurance" class="form-control col-md-8">
+                                placeholder="N° Assurance" class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <label for="dateValiditeAssurance" class="col-form-label col-md-4">Date validité</label>
+                              <label for="dateValiditeAssurance" class="col-form-label col-md-6">Date validité</label>
                               <input id="dateValiditeAssurance" [(ngModel)]="driverDocument.dateValiditeAssurance"
-                                type="date" class="form-control col-md-8">
+                                type="date" class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <span for="rapelJoursAssurance" class="col-form-label col-md-4">Rappel dans</span>
-                              <input type="number" id="rapelJoursAssurance" class="form-control col-md-7"
+                              <span for="rapelJoursAssurance" class="col-form-label col-md-6">Rappel dans</span>
+                              <input type="number" id="rapelJoursAssurance" class="form-control col-md-6 col-sm-6 col-xs-6"
                                 placeholder="0" [(ngModel)]="driverDocument.rappelJoursAssurance">
                               <span class="input-group-text col-md-1">jr(s)</span>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-4 col-md-6 col-sm-1">
+                      <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                         <div class="card">
                           <div class="card-header driverDocument">
                             <h5>ADR</h5>
                           </div>
                           <div class="card-body cardInfo">
                             <div class="input-group row mb-1">
-                              <label for="numAdr" class="col-form-label col-md-4">N° ADR</label>
+                              <label for="numAdr" class="col-form-label col-md-6">N° ADR</label>
                               <input id="numAdr" [(ngModel)]="driverDocument.numAdr" placeholder="N° ADR" type="text"
-                                class="form-control col-md-8">
+                                class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <label for="dateValiditeAdr" class="col-form-label col-md-4">Date validité</label>
+                              <label for="dateValiditeAdr" class="col-form-label col-md-6">Date validité</label>
                               <input id="dateValiditeAdr" [(ngModel)]="driverDocument.dateValiditeAdr" type="date"
-                                class="form-control col-md-8">
+                                class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <span for="rappelJoursAdr" class="col-form-label col-md-4">Rappel dans</span>
-                              <input type="number" id="rappelJoursAdr" class="form-control col-md-7" placeholder="0"
+                              <span for="rappelJoursAdr" class="col-form-label col-md-6">Rappel dans</span>
+                              <input type="number" id="rappelJoursAdr" class="form-control col-md-6 col-sm-6 col-xs-6" placeholder="0"
                                 [(ngModel)]="driverDocument.rappelJoursAdr">
                               <span class="input-group-text col-md-1">jr(s)</span>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-4 col-md-6 col-sm-1">
+                      <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                         <div class="card">
                           <div class="card-header driverDocument">
                             <h5>Visa</h5>
                           </div>
                           <div class="card-body cardInfo">
                             <div class="input-group row mb-1">
-                              <label for="numVisa" class="col-form-label col-md-4">N° Visa</label>
+                              <label for="numVisa" class="col-form-label col-md-6">N° Visa</label>
                               <input id="numVisa" [(ngModel)]="driverDocument.numVisa" type="text" placeholder="N° Visa"
-                                class="form-control col-md-8">
+                                class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <label for="dateValiditeVisa" class="col-form-label col-md-4">Date validité</label>
+                              <label for="dateValiditeVisa" class="col-form-label col-md-6">Date validité</label>
                               <input id="dateValiditeVisa" [(ngModel)]="driverDocument.dateValiditeVisa" type="date"
-                                class="form-control col-md-8">
+                                class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <span for="rapelJoursVisa" class="col-form-label col-md-4">Rappel dans</span>
-                              <input type="number" id="rapelJoursVisa" class="form-control col-md-7" placeholder="0"
+                              <span for="rapelJoursVisa" class="col-form-label col-md-6">Rappel dans</span>
+                              <input type="number" id="rapelJoursVisa" class="form-control col-md-6 col-sm-6 col-xs-6" placeholder="0"
                                 [(ngModel)]="driverDocument.rappelJoursVisa">
                               <span class="input-group-text col-md-1">jr(s)</span>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div class="col-lg-4 col-md-6 col-sm-1">
+                      <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
                         <div class="card">
                           <div class="card-header driverDocument">
                             <h5>Visit Médical</h5>
                           </div>
                           <div class="card-body cardInfo">
                             <div class="input-group row mb-1">
-                              <label for="dateValiditeVisit" class="col-form-label col-md-4">Date validité</label>
+                              <label for="dateValiditeVisit" class="col-form-label col-md-6">Date validité</label>
                               <input id="dateValiditeVisit" [(ngModel)]="driverDocument.dateValiditeVisit" type="date"
-                                class="form-control col-md-8">
+                                class="form-control col-md-6 col-sm-6 col-xs-6">
                             </div>
                             <div class="input-group row mb-1">
-                              <span for="rappelJoursVisit" class="col-form-label col-md-4">Rappel dans</span>
-                              <input type="number" id="rappelJoursVisit" class="form-control col-md-7" placeholder="0"
+                              <span for="rappelJoursVisit" class="col-form-label col-md-6">Rappel dans</span>
+                              <input type="number" id="rappelJoursVisit" class="form-control col-md-6 col-sm-6 col-xs-6" placeholder="0"
                                 [(ngModel)]="driverDocument.rappelJoursVisit">
                               <span class="input-group-text col-md-1">jr(s)</span>
                             </div>
@@ -386,7 +386,7 @@
                     <my-dropdown-select class="form-control" [placeholder]="'Sélection de véhicule'"
                       [selectPlaceholder]="'search...'" [errorMsg]="errorMessageDevice" [showErrorMsg]="showErrorDevice"
                       [options]="devices" [display]="'name'" [value]="'dID'" [multiple]="false" [labelCount]="0"
-                      [selectedOptions]="selectedDevices" (selectionChange)="getSelectedDevices($event)">
+                      [selectedOptions]="selectedDevices" (selectionChange)="getDev()">
                     </my-dropdown-select>
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-key fa-sm" *ngIf="selectedDevice == null"></i><i
@@ -420,4 +420,3 @@
       </my-gestiondriver-table>
     </div>
   </div>
-</div>

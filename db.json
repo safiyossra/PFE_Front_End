@@ -1,0 +1,56 @@
+{
+    "passager": [
+      {
+        "passagerId": 1,
+        "lastName": "chetouan",
+        "firstName": "aya",
+        "address": "tetouan",
+        "city": "ttttttttttt",
+        "tel": "7899003333333",
+        "cin": "KB45",
+        "client": "ffgg",
+        "cood_gps": "hh5677",
+        "country":"tanger",
+        "code":"466gggggggggg"
+      },
+      {
+        "passagerId": 2,
+        "lastName": "safi",
+        "firstName": "yossra",
+        "address": "tanger",
+        "city": "ttttttttttt",
+        "tel": "7899003333333",
+        "cin": "KB45",
+        "client": "ffgg",
+        "cood_gps": "hh5677",
+        "country":"tanger",
+        "code":"466gggggggggg"
+      },
+      {
+      "passagerId": 3,
+        "lastName": "kaddour",
+        "firstName": "ferdaous",
+        "address": "tanger",
+        "city": "ttttttttttt",
+        "tel": "7899003333333",
+        "cin": "KB45",
+        "client": "ffgg",
+        "cood_gps": "hh5677",
+        "country":"tanger",
+        "code":"466gggggggggg"
+      },
+      {
+      "passagerId": 4,
+        "lastName": "safi",
+        "firstName": "yossra",
+        "address": "tanger",
+        "city": "ttttttttttt",
+        "tel": "7899003333333",
+        "cin": "KB45",
+        "client": "ffgg",
+        "cood_gps": "hh5677",
+        "country":"tanger",
+        "code":"466gggggggggg"
+      }
+    ]
+  }

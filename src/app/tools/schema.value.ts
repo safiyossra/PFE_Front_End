@@ -4,7 +4,7 @@ export const schema = {
   $id: '#/Permissions',
   type: 'object',
   title: 'Permissions',
-  required: ["Dashboard", "Map","Zones","VehiculesPlusProches","Rapports","Eco","Parametrage","Maintenance","Notifications","TrajetPlanner"],
+  required: ["Dashboard", "Map","Zones","VehiculesPlusProches","Rapports","Eco","Parametrage","Maintenance","stock","Notifications","TrajetPlanner"],
   properties: {
     Dashboard: {
       $id: '#/Permissions/dashboard',
@@ -276,5 +276,24 @@ export const schema = {
       ],
       enum: ["Pas d'access", "Ajouter"]
     },
-  }
+  },
+  Stock: {
+    $id: '#/Permissions/Stock',
+    type: 'object',
+    title: 'Gestion de Stock',
+    required: ["stock"],
+    properties: {
+      PlanEntretien: {
+        $id: '#/Permissions/Stock/stock',
+        type: 'string',
+        title: 'Gestion de Stock',
+        default: "Ajouter",
+        examples: [
+          "Ajouter -> Mettre a jour -> Afficher ou pas d'access"
+        ],
+        enum: ["Pas d'access","Ajouter", "Mettre a jour", "Afficher"]
+      },
+    }
 }
+}
+

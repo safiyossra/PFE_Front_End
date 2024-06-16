@@ -30,12 +30,6 @@ export class CrudDeliveryNoteComponent {
   selectedDeliveryNote: DeliveryNote = new DeliveryNote();
   selectedOrder: any;
 
-  payementOptions = [
-    { label: 'Espece', value: 'cash' },
-    { label: 'Par Chèque', value: 'byCheck' },
-    { label: 'Carte Bancaire', value: 'creditCard' },
-    { label: 'Virement', value: 'creditCard' }
-  ];
 
 
   public devices: any = [];

@@ -14,7 +14,8 @@ export class Constant {
     Map: {
         Vehicules: "Afficher",
         Comparaison:"Afficher"
-    }, 
+    },
+    Stok:"Afficher",
     Zones: "Ajouter",
     VehiculesPlusProches: "Afficher",
     Rapports: {
